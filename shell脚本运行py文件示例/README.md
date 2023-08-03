@@ -6,9 +6,14 @@ run_main.sh:<br>
 可运行shell脚本，包含使用conda切换到指定虚拟环境，运行main.py指令。<br>
 
 ## 运行方式：
+cd 到当前目录，然后运行以下指令即可:
 ```shell
-chmod +x ./run_main.sh  # 开启权限；(可选)
 ./run_main.sh           # 终端直接输入即可。
+```
+
+如果提示 permission denied:./run_main.sh，运行以下指令，然后再次运行上一步的操作即可。
+```shell
+chmod +x ./run_main.sh  # 开启权限；
 ```
 
 ## run_main.sh 相关内容拓展：
