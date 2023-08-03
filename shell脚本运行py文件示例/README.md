@@ -7,7 +7,8 @@ run_main.sh:<br>
 
 ## 运行方式：
 ```shell
-./run_main.sh   # 终端直接输入即可。
+chmod +x ./run_main.sh  # 开启权限；(可选)
+./run_main.sh           # 终端直接输入即可。
 ```
 
 ## run_main.sh 相关内容拓展：
