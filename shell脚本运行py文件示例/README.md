@@ -43,6 +43,27 @@ fi
 source /opt/anaconda3/etc/profile.d/conda.sh
 ```
 
+## 应对的错误信息：
+```shell
+CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.
+To initialize your shell, run
+
+    $ conda init <SHELL_NAME>
+
+Currently supported shells are:
+  - bash
+  - fish
+  - tcsh
+  - xonsh
+  - zsh
+  - powershell
+
+See 'conda init --help' for more information and options.
+
+IMPORTANT: You may need to close and restart your shell after running 'conda init'.
+
+```
+
 ## shell 解释器相关指令：
 查看当前终端正在使用的 shell 解释器：<br>
 ```shell
