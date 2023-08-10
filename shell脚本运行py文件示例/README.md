@@ -27,7 +27,7 @@ echo $SHELL
 ```
 若上述指令显示 /bin/zsh，可通过以下指令确定 conda.sh 的路径。<br>
 ```shell
-cd ~/.zshrc
+cat ~/.zshrc
 ```
 我的 zshrc 中 conda.sh 相关内容如下:<br>
 ```shell
