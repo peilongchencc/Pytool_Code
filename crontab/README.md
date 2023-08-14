@@ -114,6 +114,7 @@ Crontab中的内容应为：
 `/your_python_interpreter_path/python`表示指定 python 解释器，如果你使用了 **python 的虚拟环境**， 一定要注意自己的 python 解释器路径是否正确。可以用 `which python` 确定。
 
 任务2的解释：
+
 `*/2 * * * *` 表示每2分钟执行一次任务。<br>
 `/your_script_path/main.sh` 表示要执行的 shell 脚本。<br>
 注意⚠️：如果要利用 crontab 运行 shell 脚本，一定要先确定 main.sh 是否开通了执行权限；<br>
@@ -129,7 +130,7 @@ chmod +x /your_script_path/main.sh  # 开启权限；
 1. 准备好你需要做定时任务的代码：<br>
 假设准备做定时任务的文件为 `main.py`，具体内容如下：
 ```python
-print('这里是定时任务测试代码')
+print('测试 Crontab 的使用')
 ```
 
 2. pwd 确定项目代码的路径：
