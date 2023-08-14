@@ -1,2 +1,0 @@
-# 每周一凌晨2点更新 Redis 数据；
-0 2 * * 1 /your_script_path/restart_get_redis.sh >> /your_log_path/get_redis_data.log  2>>/your_errorlog_path/crontab_error.log
