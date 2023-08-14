@@ -92,19 +92,19 @@ Crontab 支持同时设定多个定时任务，每一行都代表一个独立的
 3. 脚本的错误可能会影响后续任务：如果一个脚本的错误导致了系统资源问题或者系统崩溃，这可能会影响后续的任务执行。
 
 
-举个例子：<br>
+**举个例子：**<br>
 假设你想要执行2个定时任务：<br>
 1. **每周一凌晨2点** 执行一个 python 的定时任务，文件名称为 `main.py`；
 2. **每2分钟**执行一个 shell 脚本；
 
-Crontab中的内容应为：
+**Crontab中的内容应为：**
 ```shell
 # 每周一凌晨2点执行 main.py；
 0 2 * * 1 /your_python_interpreter_path/python /your_file_path/main.py
 # 每2分钟执行 main.sh 脚本；
 */2 * * * * /your_script_path/main.sh
 ```
-任务1的解释：
+**任务1的解释：**
 - 0：表示分钟字段，即在每个小时的第0分钟执行命令。
 - 2：表示小时字段，即在每天的第2小时执行命令。
 - *：表示天、月份和星期几可以是任意值，因此*表示可以匹配任意值。
@@ -113,7 +113,7 @@ Crontab中的内容应为：
 
 `/your_python_interpreter_path/python`表示指定 python 解释器，如果你使用了 **python 的虚拟环境**， 一定要注意自己的 python 解释器路径是否正确。可以用 `which python` 确定。
 
-任务2的解释：
+**任务2的解释：**
 
 `*/2 * * * *` 表示每2分钟执行一次任务。<br>
 `/your_script_path/main.sh` 表示要执行的 shell 脚本。<br>
@@ -125,6 +125,7 @@ chmod +x /your_script_path/main.sh  # 开启权限；
 ```
 ⚠️注意：必须要开启权限，否则脚本是无法正常运行的。❌❌❌
 
+> 更多 Crontab 常用指令请参考当前项目下txt文件。
 
 ## 设置定时任务的流程：
 1. 准备好你需要做定时任务的代码：<br>
@@ -181,19 +182,7 @@ crontab -r
 cat /var/log/syslog
 ```
 
-## 常用 Crontab 命令：
-### 每2分钟执行一个任务，将错误日志重定向：
-```shell
-*/2 * * * * /root/anaconda3/bin/python /your_file_path/main.py >> /your_log_path/crontab_log.log 2>>/your_errorlog_path/crontab_error.log
-```
-这段代码用于定时执行一段Python代码，并将输出结果和错误信息保存到日志文件中。<br>
-让我们逐行解释这段代码的含义：<br>
-1. */2 * * * *表示每2分钟执行一次任务。
-2. /root/anaconda3/bin/python：这是要执行的命令，指定了Python解释器的路径。
-3. /your_file_path/main.py：这是要执行的Python脚本文件的路径。
-3. >> /your_log_path/crontab_log.log：这是将脚本的输出结果追加到指定的文件中。>>表示追加，如果文件不存在则会创建一个新文件。
-4. 2>>/your_errorlog_path/crontab_error.log：这是将脚本的错误信息追加到指定的文件中。2>>表示将标准错误输出重定向到文件中。
-所以，这段代码的作用是每2分钟执行一次指定的Python脚本，并将输出结果追加到 /your_log_path/crontab_log.log 文件中，同时将错误信息追加到 /your_errorlog_path/crontab_error.log 文件中。
+
 
 
 
