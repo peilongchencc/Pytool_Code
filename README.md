@@ -10,6 +10,9 @@ python包和环境管理器：Anaconda<br>
 crontab是一个用于在Linux和Unix系统中定期执行任务的命令。它允许你按照特定的时间和日期计划执行脚本、命令或程序。<br>
 crontab 文件夹内含 crontab 基础教程和常用的定时任务指令。<br>
 
+## git:
+git使用教程，包括: git安装、ssh-key生成、建立git仓库、与远程仓库连接、创建git分支、拉取指定分支、合并分支等 git 常规指令介绍与使用。
+
 ## python_foundations:
 python 基础；<br>
 
