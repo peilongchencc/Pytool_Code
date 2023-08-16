@@ -36,6 +36,7 @@ my_car.stop_engine()
 # 2020 Toyota Camry
 # Engine stopped.
 ```
+代码解释：<br>
 以上代码将创建一个名为my_car的Car类的实例。然后，我们调用start_engine方法启动引擎，使用get_info方法获取关于汽车的信息，并最后调用stop_engine方法停止引擎。<br>
 
 
