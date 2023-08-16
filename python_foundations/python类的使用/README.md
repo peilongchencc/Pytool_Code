@@ -4,9 +4,9 @@
 ```python
 class Car:
     def __init__(self, make, model, year):
-        self.make = make    # 车的厂商；
-        self.model = model  # 车的型号；
-        self.year = year    # 车的出厂年份；
+        self.make = make    # 汽车厂商；
+        self.model = model  # 汽车型号；
+        self.year = year    # 汽车出厂年份；
 
     def start_engine(self):
         print("Engine started.")
