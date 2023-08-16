@@ -4,6 +4,7 @@
 ## 🧑‍💻个人配置：
 系统：Ubuntu 18.04<br>
 python 版本：Python 3.10.11<br>
+python包和环境管理器：Anaconda<br>
 
 ## crontab：
 crontab是一个用于在Linux和Unix系统中定期执行任务的命令。它允许你按照特定的时间和日期计划执行脚本、命令或程序。<br>
