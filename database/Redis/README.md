@@ -43,6 +43,7 @@ redis-cli
 INFO SERVER
 ```
 显示的内容为 Redis 服务器的信息，包括版本号。退出操作很多，包括输入 `exit`、`quit` 或 按 `Ctrl+c`。<br>
+<br>
 
 ### 查看存入 Redis 中的数据：
 注意⚠️：如果数据是以 byte(字节) 存入的 Redis，使用GET指令无法看到真实数据；<br>
