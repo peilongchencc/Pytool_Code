@@ -26,7 +26,7 @@ business_name = 'traffic'   # 每个 chunk 的 redis-key 前缀；
 chunk_size = 2
 
 if len(data_list) != 0:
-    # 将 tmp_QA_list 拆分为多个 chunks
+    # 将 data_list 拆分为多个 chunks
     # chunks = [[<__main__.Car object1>,<__main__.Car object2>],    # n个元素为一个list；
     #           [<__main__.Car object3>,<__main__.Car object4>]]
     #           [<__main__.Car object5>]]
