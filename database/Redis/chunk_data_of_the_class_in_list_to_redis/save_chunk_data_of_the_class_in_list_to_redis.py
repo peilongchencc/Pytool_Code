@@ -1,3 +1,9 @@
+import pickle
+import redis
+
+# 连接到Redis
+r = redis.Redis(host='localhost', port=6379)
+
 class Car:
     def __init__(self, make, model, year):
         self.make = make    # 汽车厂商；
@@ -9,11 +15,8 @@ data_list = [Car("长城","t1","2000"),Car("长城","t2","2001"),Car("奥迪","a
 # print(data_list)
 # print(len(data_list))
 
-import pickle
-import redis
-
-# 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+# 将数据长度存入Redis
+r.set("data_list_length",len(data_list))
 
 business_name = 'traffic'   # 每个 chunk 的 redis-key 前缀；
 
