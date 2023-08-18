@@ -20,6 +20,7 @@ sudo apt install redis-server
 redis-server          # 开启 Redis 服务；
 redis-cli shutdown    # 关闭 Redis 服务；
 ```
+<br>
 
 ### 查看 Redis 版本：
 可通过下列2种方法中的任何一种方法查看 Redis 版本：<br>
@@ -30,6 +31,7 @@ redis-cli shutdown    # 关闭 Redis 服务；
 redis-server --version
 ```
 注意⚠️：Ubuntu 18.04 只提供Redis 4.0.9版本的安装。<br>
+<br>
 
 #### 进入 Redis 数据库内部查看：
 1.打开终端并输入以下指令:
@@ -52,6 +54,7 @@ redis-cli          # 终端连接到 Redis；
 KEYS *             # 返回当前数据库中所有的键列表;
 GET "my_object"    # 获取键对应的值;
 ```
+<br>
 
 ### 清空 Redis 数据：
 > 如果Redis关闭了，所有数据都会被清空，无论是否设置了过期时间。当Redis重新启动时，它将是一个空的数据库，之前存储的数据将会丢失。
@@ -63,6 +66,7 @@ FLUSHALL    # "清除全部"
 这个命令将删除所有数据库中的数据，包括所有的键、值、过期时间以及配置信息。🚨🚨🚨请谨慎使用该命令，因为删除的数据无法恢复。<br>
 
 可以设置数据的过期时间，如果不是自己本地的 Redis，自己可以随意改动，最好不要使用此命令。<br>
+<br>
 
 ## Redis 在 python 的应用：
 
