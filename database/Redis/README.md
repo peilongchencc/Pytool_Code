@@ -208,4 +208,4 @@ print(restore_data)                     # {'key1': 'value1', 'key2': 'value2', '
 
 
 ## 文件介绍：
-chunk_data_of_the_class_in_list_to_redis: 将python类组成的列表按照chunk分段存入Redis，再从Redis中取出还原列表。<br>
+**chunk_data_of_the_class_in_list_to_redis:** 将python类组成的列表按照chunk分段存入Redis，再从Redis中取出还原列表。<br>
