@@ -12,36 +12,39 @@ sudo apt update
 sudo apt install redis-server
 ```
 安装完成后，Redis服务器将自动启动，此时终端即可使用 redis-cli 指令。（ Redis 的安装真的很简单🤭）<br>
+<br>
 
 ## 终端Redis常用指令：
-## 开启/关闭 Redis 服务：
+**开启/关闭 Redis 服务:**
 ```shell
 redis-server          # 开启 Redis 服务；
 redis-cli shutdown    # 关闭 Redis 服务；
 ```
 
-## 查看 Redis 版本：
-### 终端查看：
-终端输入下列指令即可查看到 Redis 版本信息：
+**查看 Redis 版本：**
+可通过下列2种方法中的任何一种方法查看 Redis 版本：<br>
+1. 终端查看：
+
+终端输入下列指令即可查看到 Redis 版本信息：<br>
 ```shell
 redis-server --version
 ```
 注意⚠️：Ubuntu 18.04 只提供Redis 4.0.9版本的安装。<br>
 
-### 进入 Redis 内容查看：
-1. 打开终端并输入:
+2. 进入 Redis 数据库内部查看：
+- 打开终端并输入:
 ```shell
 redis-cli
 ```
 此时会显示 `127.0.0.1:6379>` ，这表示你已经进入了 Redis 数据库。<br>
 
-2. 在 `127.0.0.1:6379>` 后输入： 
+- 在 `127.0.0.1:6379>` 后输入： 
 ```shell
 INFO SERVER
 ```
 显示的内容为 Redis 服务器的信息，包括版本号。退出操作很多，包括输入 `exit`、`quit` 或 按 `Ctrl+c`。<br>
 
-### 查看存入 Redis 中的数据：
+**查看存入 Redis 中的数据：**
 注意⚠️：如果数据是以 byte(字节) 存入的 Redis，使用GET指令无法看到真实数据；<br>
 ```shell
 redis-cli          # 终端连接到 Redis；
@@ -49,7 +52,7 @@ KEYS *             # 返回当前数据库中所有的键列表;
 GET "my_object"    # 获取键对应的值;
 ```
 
-## 清空 Redis 数据：
+**清空 Redis 数据：**
 > 如果Redis关闭了，所有数据都会被清空，无论是否设置了过期时间。当Redis重新启动时，它将是一个空的数据库，之前存储的数据将会丢失。
 
 终端输入 `redis-cli` 进入Redis数据库，然后输入：<br>
