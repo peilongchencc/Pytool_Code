@@ -1,14 +1,14 @@
 # Redis
 本文分两部分，前文介绍Redis一下基础使用，后文介绍各文件及文件夹作用。<br>
 
-## 基础使用:
-### Ubuntu 18.04安装Redis：
-1. 更新软件包列表：
+## Redis 的安装与基础指令:
+### Ubuntu 18.04 安装 Redis 步骤：
+1.更新软件包列表：
 ```shell
 sudo apt update
 ```
 
-2. 安装Redis服务器：
+2.安装Redis服务器：
 ```shell
 sudo apt install redis-server
 ```
@@ -22,9 +22,9 @@ redis-server          # 开启 Redis 服务；
 redis-cli shutdown    # 关闭 Redis 服务；
 ```
 
-**查看 Redis 版本：**
+#### 查看 Redis 版本：
 可通过下列2种方法中的任何一种方法查看 Redis 版本：<br>
-1. 终端查看：
+1.终端查看：
 
 终端输入下列指令即可查看到 Redis 版本信息：<br>
 ```shell
@@ -32,7 +32,7 @@ redis-server --version
 ```
 注意⚠️：Ubuntu 18.04 只提供Redis 4.0.9版本的安装。<br>
 
-2. 进入 Redis 数据库内部查看：
+2.进入 Redis 数据库内部查看：
 - 打开终端并输入:
 ```shell
 redis-cli
@@ -45,7 +45,7 @@ INFO SERVER
 ```
 显示的内容为 Redis 服务器的信息，包括版本号。退出操作很多，包括输入 `exit`、`quit` 或 按 `Ctrl+c`。<br>
 
-**查看存入 Redis 中的数据：**
+#### 查看存入 Redis 中的数据：
 注意⚠️：如果数据是以 byte(字节) 存入的 Redis，使用GET指令无法看到真实数据；<br>
 ```shell
 redis-cli          # 终端连接到 Redis；
@@ -53,7 +53,7 @@ KEYS *             # 返回当前数据库中所有的键列表;
 GET "my_object"    # 获取键对应的值;
 ```
 
-**清空 Redis 数据：**
+#### 清空 Redis 数据：
 > 如果Redis关闭了，所有数据都会被清空，无论是否设置了过期时间。当Redis重新启动时，它将是一个空的数据库，之前存储的数据将会丢失。
 
 终端输入 `redis-cli` 进入Redis数据库，然后输入：<br>
@@ -64,13 +64,15 @@ FLUSHALL    # "清除全部"
 
 可以设置数据的过期时间，如果不是自己本地的 Redis，自己可以随意改动，最好不要使用此命令。<br>
 
-## python 安装 Redis 库：
+## Redis 在 python 的应用：
+
+### python 安装 Redis 库：
 安装了Redis库才能使用python与Redis库连接，否则只能使用终端连接。<br>
 ```shell
 pip install redis
 ```
 
-## 测试 Redis 连接：
+### 测试 Redis 连接：
 ```python
 import redis
 
@@ -78,7 +80,7 @@ import redis
 r = redis.Redis(host='localhost', port=6379)
 ```
 
-## 使用python代码清空 Redis 中的数据：
+### 使用python代码清空 Redis 中的数据：
 ```python
 import redis
 
@@ -88,10 +90,10 @@ r = redis.Redis(host='localhost', port=6379)
 r.flushall()
 ```
 
-## 字符串存入 Redis 与提取：
+### 字符串存入 Redis 与提取：
 注意⚠️⚠️⚠️：从Redis获取到的数据类型均为 byte(字节)，需要进行转换为自己需要的形式，例如使用 Redis 自带的 decode() 方法，将数据转换为str。<br>
 
-### 使用 set 将字符串存入 Redis：
+#### 使用 set 将字符串存入 Redis：
 ```python
 import redis
 
@@ -104,7 +106,7 @@ data = "Hello, world!"
 r.set("my_str", data)
 ```
 
-### 使用 get 从 Redis 取出 字符串 数据：
+#### 使用 get 从 Redis 取出 字符串 数据：
 ```python
 import redis
 
