@@ -1,8 +1,7 @@
 # Redis
 本文分两部分，前文介绍Redis一下基础使用，后文介绍各文件及文件夹作用。<br>
 
-## Redis 的安装与基础指令:
-### Ubuntu 18.04 安装 Redis 步骤：
+## Ubuntu 18.04 安装 Redis 步骤：
 1.更新软件包列表：
 ```shell
 sudo apt update
@@ -15,14 +14,14 @@ sudo apt install redis-server
 安装完成后，Redis服务器将自动启动，此时终端即可使用 redis-cli 指令。（ Redis 的安装真的很简单🤭）<br>
 <br>
 
-### 终端Redis常用指令：
-#### 开启/关闭 Redis 服务:
+## 终端Redis常用指令：
+### 开启/关闭 Redis 服务:
 ```shell
 redis-server          # 开启 Redis 服务；
 redis-cli shutdown    # 关闭 Redis 服务；
 ```
 
-#### 查看 Redis 版本：
+### 查看 Redis 版本：
 可通过下列2种方法中的任何一种方法查看 Redis 版本：<br>
 **1.终端查看：**
 
@@ -45,7 +44,7 @@ INFO SERVER
 ```
 显示的内容为 Redis 服务器的信息，包括版本号。退出操作很多，包括输入 `exit`、`quit` 或 按 `Ctrl+c`。<br>
 
-#### 查看存入 Redis 中的数据：
+### 查看存入 Redis 中的数据：
 注意⚠️：如果数据是以 byte(字节) 存入的 Redis，使用GET指令无法看到真实数据；<br>
 ```shell
 redis-cli          # 终端连接到 Redis；
@@ -53,7 +52,7 @@ KEYS *             # 返回当前数据库中所有的键列表;
 GET "my_object"    # 获取键对应的值;
 ```
 
-#### 清空 Redis 数据：
+### 清空 Redis 数据：
 > 如果Redis关闭了，所有数据都会被清空，无论是否设置了过期时间。当Redis重新启动时，它将是一个空的数据库，之前存储的数据将会丢失。
 
 终端输入 `redis-cli` 进入Redis数据库，然后输入：<br>
