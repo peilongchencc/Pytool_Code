@@ -36,7 +36,7 @@ for i in range(num_chunks):
 
     # 如果 chunk 存在，则进行反序列化并添加到复原的列表中
     if chunk:
-        restored_chunk = pickle.loads(chunk)
+        restored_chunk = pickle.loads(chunk)         # 非必要不要使用pickle或json序列化与反序列化，非常耗时；
         restored_data_list.extend(restored_chunk)
 
 # 打印复原后的 tmp_QA_list

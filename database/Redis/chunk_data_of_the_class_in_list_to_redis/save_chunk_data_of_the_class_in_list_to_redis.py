@@ -37,4 +37,4 @@ if len(data_list) != 0:
         tmp_QA_list_rediskey = business_name + "_data_list_" + str(i)
 
         # 将 chunk 存入 Redis
-        r.set(tmp_QA_list_rediskey, pickle.dumps(chunk))
+        r.set(tmp_QA_list_rediskey, pickle.dumps(chunk))    # 非必要不要使用pickle或json序列化与反序列化，非常耗时；
