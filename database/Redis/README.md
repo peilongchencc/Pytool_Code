@@ -1,4 +1,5 @@
 # Redis
+本文分两部分，前文介绍Redis一下基础使用，后文介绍各文件及文件夹作用。<br>
 
 ## 测试 Redis 连接：
 ```python
@@ -53,3 +54,6 @@ print(res)          # 123.4
 print(type(res))    # <class 'float'>
 ```
 与从Redis取出整数相同，要注意数据类型的转化，以上述代码举例，`r.get("number")` 获取的结果为：`b'123.4'`，类型为：`<class 'bytes'>`。<br>
+
+## 文件介绍：
+chunk_data_of_the_class_in_list_to_redis: 将python类组成的列表按照chunk分段存入Redis，再从Redis中取出还原列表。<br>
