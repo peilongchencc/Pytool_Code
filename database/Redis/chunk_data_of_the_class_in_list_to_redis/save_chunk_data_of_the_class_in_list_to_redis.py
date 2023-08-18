@@ -6,8 +6,8 @@ class Car:
 
 # 数据都是捏造的；
 data_list = [Car("长城","t1","2000"),Car("长城","t2","2001"),Car("奥迪","a6","2010"),Car("奥迪","a8","2014"),Car("奥迪","a10","2016")]
-print(data_list)
-print(len(data_list))
+# print(data_list)
+# print(len(data_list))
 
 import pickle
 import redis
@@ -15,7 +15,7 @@ import redis
 # 连接到Redis
 r = redis.Redis(host='localhost', port=6379)
 
-business_name = 'financial'
+business_name = 'traffic'   # 每个 chunk 的 redis-key 前缀；
 
 #######################################
 # 将数据按照 n 个为一组进行存储；
@@ -31,7 +31,7 @@ if len(data_list) != 0:
 
     for i, chunk in enumerate(chunks):
         # 为每个 chunk 创建一个 Redis 键
-        tmp_QA_list_rediskey = business_name + "_tmp_QA_list_" + str(i)
+        tmp_QA_list_rediskey = business_name + "_data_list_" + str(i)
 
         # 将 chunk 存入 Redis
         r.set(tmp_QA_list_rediskey, pickle.dumps(chunk))
