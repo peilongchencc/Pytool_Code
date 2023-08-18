@@ -24,7 +24,7 @@ redis-cli shutdown    # 关闭 Redis 服务；
 
 #### 查看 Redis 版本：
 可通过下列2种方法中的任何一种方法查看 Redis 版本：<br>
-1.终端查看：
+**1.终端查看：**
 
 终端输入下列指令即可查看到 Redis 版本信息：<br>
 ```shell
@@ -32,7 +32,7 @@ redis-server --version
 ```
 注意⚠️：Ubuntu 18.04 只提供Redis 4.0.9版本的安装。<br>
 
-2.进入 Redis 数据库内部查看：
+**2.进入 Redis 数据库内部查看：**
 - 打开终端并输入:
 ```shell
 redis-cli
