@@ -56,7 +56,7 @@ GET "my_object"    # 获取键对应的值;
 ```
 <br>
 
-### 清空 Redis 数据：
+### 清空 Redis 中的数据：
 > 如果Redis关闭了，所有数据都会被清空，无论是否设置了过期时间。当Redis重新启动时，它将是一个空的数据库，之前存储的数据将会丢失。
 
 终端输入 `redis-cli` 进入Redis数据库，然后输入：<br>
@@ -133,8 +133,8 @@ print(decoded_result)                           # Hello, world!
 `decode` 方法默认将数据转化为 `str`。<br>
 
 
-## 数字存入 Redis 与提取：
-### 整数：
+### 数字存入 Redis 与提取：
+#### 整数：
 注意：在Redis中，set命令只能存储字符串值。即使你尝试将数字、列表、字典等非字符串类型的数据存储为值，Redis也会将其视为字符串进行存储，其实是字节形式。<br>
 ```python
 import pickle
@@ -152,7 +152,7 @@ print(type(res))    # <class 'int'>
 ```
 从Redis取出数据要注意数据类型的转化，以上述代码举例，`r.get("number")` 获取的结果为：`b'123'`，类型为：`<class 'bytes'>`。<br>
 
-### 浮点数：
+#### 浮点数：
 ```python
 import pickle
 import redis
@@ -169,8 +169,8 @@ print(type(res))    # <class 'float'>
 ```
 与从Redis取出整数相同，要注意数据类型的转化，以上述代码举例，`r.get("number")` 获取的结果为：`b'123.4'`，类型为：`<class 'bytes'>`。<br>
 
-## dict存入 Redis 与取出：
-### 使用 hmset 将 dict 存入 Redis：
+### dict存入 Redis 与取出：
+#### 使用 hmset 将 dict 存入 Redis：
 使用 `hmset` 会遇到提示 `DeprecationWarning: Redis.hmset() is deprecated. Use Redis.hset() instead.`，不影响使用，Ubuntu 18.04 只提供Redis 4.0.9版本的安装。<br>
 ```python
 # 将dict存入 Redis；
@@ -188,7 +188,7 @@ data = {"key1": "value1",
 r.hmset("my_dict", data)
 ```
 
-### 使用 hgetall 从 Redis 取出 dict 数据：
+#### 使用 hgetall 从 Redis 取出 dict 数据：
 ```python
 import redis
 
