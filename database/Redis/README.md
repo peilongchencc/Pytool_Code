@@ -20,7 +20,6 @@ sudo apt install redis-server
 redis-server          # 开启 Redis 服务；
 redis-cli shutdown    # 关闭 Redis 服务；
 ```
-<br>
 
 ### 查看 Redis 版本：
 可通过下列2种方法中的任何一种方法查看 Redis 版本：<br>
