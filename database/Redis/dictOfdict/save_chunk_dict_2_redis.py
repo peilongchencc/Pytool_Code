@@ -15,9 +15,9 @@ keys = list(data.keys())
 print(type(keys))
 print(keys)
 
-r.delete("data_replacing")   # 删除之前的键，避免采用数据插入的方式。
-r.lpush("data_replacing", *keys)
+r.delete("data_length")   # 删除之前的键，避免采用数据插入的方式。
+r.lpush("data_length", *keys)
 
 for i in range(0, len(keys), CHUNK_SIZE):
     chunk = {key: data[key] for key in keys[i:i+CHUNK_SIZE]}
-    r.set(f'sample_data_chunk_{i // CHUNK_SIZE}', pickle.dumps(chunk))
+    r.set(f'data_chunk_{i // CHUNK_SIZE}', pickle.dumps(chunk))
