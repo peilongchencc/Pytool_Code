@@ -319,3 +319,7 @@ results = pipeline.execute()
 
 ## 文件介绍：
 **chunk_data_of_the_class_in_list_to_redis:** 将python类组成的列表按照chunk分段存入Redis，再从Redis中取出还原列表。<br>
+
+**if_conditions_to_redis.py:**<br>
+应用场景：将满足不同if条件的值按照顺序存入 redis。<br>
+代码含义：将20以内满足不同if条件的值按照顺序存入 redis。<br>
