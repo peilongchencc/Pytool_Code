@@ -51,10 +51,10 @@ git rm --cached .
 ```
 ### 解决方案：
 假设你已经把某些要忽略的内容上传至 github ，现在的解决方案如下：<br>
-1. 进入自己要执行 `.gitignore` 的项目目录下。
+1. 进入自己的 `git` 项目目录下。
 2. 执行 `git pull` 拉取最新代码，如果你本地没有对应的项目，执行 `git clone` 拉取最新代码也是一样。
 3. 将你不想要上传至 github 的内容备份到本项目仓库之外；(可选，如果你本地也不想保留这部分内容，可以直接执行下一步。)
 4. 将你不想要上传至 github 的内容删除；
 5. 检查 `.gitignore` 中的内容是否正确；
-6. 执行 `git add .`,`git commit -m "xxx"`,`git push`操作；现在远程仓库中你不想上传的内容已经删除了。
-7. 本地，将刚刚备份的内容移回本仓库；此时你再执行`git add .`,`git commit -m "xxx"`,`git push`操作不会将对应的内容上传至github远程仓库。
+6. 执行 `git add .`,`git commit -m "xxx"`,`git push`操作，现在远程仓库中你不想上传的内容已经删除了。
+7. 本地，将刚刚备份的内容移回本仓库；此时你再执行`git add .`,`git commit -m "xxx"`,`git push`操作将不会把对应的内容上传至 github 远程仓库。
