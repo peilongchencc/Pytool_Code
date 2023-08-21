@@ -1,1 +1,5 @@
 push_commit_to_git.sh
+# redis存储的测试文件
+to_redis.py
+# redis提取的测试文件
+get_redis.py
