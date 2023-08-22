@@ -46,8 +46,6 @@ logger.info('This is info information')
 ```
 注意⚠️：这种方式会将 `log` 信息同时在终端和 `log` 文件输出。<br>
 
-logger默认有控制台输出，即sys.stderr，想要只输出到文本而不输出到控制台，需要关闭sys.stderr。<br>
-
 如果只想要在 `log` 文件输出，需要在 `logger.add()` 方法前添加以下代码：
 ```python
 # 关闭控制台输出
@@ -64,10 +62,69 @@ logger.info('This is info information')
 ```
 
 ## logger.add() 方法解析：
-前面简单讲了一下 `logger.add()` 的使用，其实 `logger.add()` 功能非常强大，loguru 比 python 自带的 logging 库方便就体现于此。
+前面简单讲了一下 `logger.add()` 的使用，其实 `logger.add()` 功能非常强大，loguru 比 python 自带的 logging 库方便就体现于此。<br>
 
+### rotation(轮转):
+`rotation` 参数的作用是设置创建新日志文件的条件，可选项为 **"文件大小"** 和 **"时间"**。🚼🚼🚼无法同时实现控制时间和文件大小，如果要同时实现这两个功能需要配合 logging 库。<br>
 
+下面以 "当文件大小达到 10 KB时，创建一个新log文件，文件名是 run+当时的时间。" 为例，讲解一下 `rotation` 的用法：<br>
+```python
+import time
+from loguru import logger
+# 关闭控制台输出
+logger.remove(handler_id=None)
+timestamp = time.time()
+current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(timestamp))
 
+# "10 KB"太小了，可以改为 "500 MB" 、 "1 GB" 或 "10 days"
+logger.add(f'run_{current_time}.log', rotation="10 KB")
+
+logger.debug('your log message.')
+```
+`rotation` 参数的可选项是多样的，支持各种字符串，例如："500 MB" 、 "1 GB" 、 "10 days" 、"Tuesday" 、"1 week" 或 "18:16"(表示每天的18:16创建新的日志文件)。<br>
+
+`rotation` 好像不能太具体的指定时间，比如 "每周二凌晨1点" 轮转日志文件(也可能是我对 `rotation` 的了解不深)。<br>
+
+`rotation` 无法直接解决没有关系，我们可以采用多个方法配合的方式实现。让 `rotation="1 week"` ，然后用 `crontab` 起一个定时任务，每周二凌晨1点触发日志创建。<br>
+
+`rotation` 参数的最小值和最大值取决于文件系统的限制以及具体的操作系统。在 loguru 的文档中并没有明确指定最小值和最大值的具体数值。通常来说，最小值可能为1字节或0字节，表示每次写入日志都会轮转文件，而最大值可能在几GB到几TB之间。<br>
+
+### filter：
+`filter` 参数用于指定一个🔶**自定义**🔶的过滤器函数，用于决定哪些日志消息应该被传入日志文件中。<br>
+
+下面是一个示例，演示了如何使用filter参数来过滤日志消息：<br>
+```python
+import loguru
+
+def custom_filter(record):
+    # 只将level为INFO的日志消息传入runtime.log文件
+    return record["level"].name == "INFO"
+
+loguru.logger.add("runtime.log", filter=custom_filter)
+loguru.logger.info("This is an INFO message")
+loguru.logger.debug("This is a DEBUG message")
+```
+运行上述代码，终端会完整显示所有日志信息，但 `runtime.log` 文件中只有 `info` 的日志信息。<br>
+
+构建自定义过滤器函数时，需要注意：<br>
+
+过滤器函数是一个可以接受一个日志记录器对象以及一个日志记录记录对象作为参数的函数。它应该返回一个布尔值，指示该日志消息是否应该被传入日志文件中。如果返回True，表示该日志消息应该被传入日志文件中；如果返回False，表示该日志消息应该被忽略。<br>
+
+### compression:
+当log文件达到 `rotation` 设置的大小后，将log文件压缩为 `zip` 格式。使用 `unzip` 解压缩后依旧是 `run_xxx.log` 文件<br>
+```python
+import time
+from loguru import logger
+# 关闭控制台输出
+logger.remove(handler_id=None)
+timestamp = time.time()
+current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(timestamp))
+
+# "10 KB"太小了，可以改为 "500 MB" 、 "1 GB" 或 "10 days"
+logger.add(f'run_{current_time}.log', rotation="10 KB", compression='zip')
+for i in range (500):
+    logger.debug(f'your log{i} message.')
+```
 
 ## 复杂示例：
 ```python
@@ -75,7 +132,7 @@ from loguru import logger
 # 关闭控制台输出
 logger.remove(handler_id=None)
 # 设置生成日志文件，utf-8编码，每天0点切割，zip压缩，保留3天，异步写入
-logger.add(sink='test.log', level=”INFO”, rotation=’00:00′, retention=’3 days’, compression=’zip’, encoding=’utf-8′, enqueue=True)  
+logger.add(sink='test.log', level="INFO", rotation='00:00', retention='3 days', compression='zip', encoding='utf-8', enqueue=True)  
 ```
 
 
