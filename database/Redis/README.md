@@ -432,6 +432,8 @@ results = pipeline.execute()
 ## 文件介绍：
 **chunk_data_of_the_class_in_list_to_redis:** 将python类组成的列表按照chunk分段存入Redis，再从Redis中取出还原列表。<br>
 
+**classOfclass:**展示 `类嵌套类嵌套类` 型数据的存储。<br>
+
 **dictOfdict:**利用 `pickle` 分段存储字典嵌套字典结构。<br>
 
 **empty_redis.py:**清空Redis中的数据，慎重操作！<br>
