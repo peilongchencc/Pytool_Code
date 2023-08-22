@@ -166,6 +166,57 @@ print(type(res))    # <class 'float'>
 ```
 与从Redis取出整数相同，要注意数据类型的转化，以上述代码举例，`r.get("number")` 获取的结果为：`b'123.4'`，类型为：`<class 'bytes'>`。<br>
 
+### List 存入 Redis 与取出：
+Redis 提供的将 List 数据存入 Redis 的方法有2种:<br>
+使用 `lpush(key, value1, value2, ...)` 方法将一个或多个值从左侧插入到列表中，创建一个列表。<br>
+使用 `rpush(key, value1, value2, ...)` 方法将一个或多个值从右侧插入到列表中，创建一个列表。<br>
+#### 使用 lpush/rpush 将list存入Redis：
+下面演示如何使用 `lpush` 存入 Redis 与取出数据，`rpush` 操作类似，举一反三即可：<br>
+```python
+import redis
+
+r = redis.Redis(host='localhost', port=6379, db=0)
+key = 'my_list'
+values = ['apple', 1, 'orange']
+r.lpush(key, *values)
+
+# 或者可以使用 rpush 方法
+# r.rpush(key, *values)
+```
+🔆🔆🔆从左侧插入可能不符合大部分人的习惯，改为 `rpush` 即可。
+
+当你的 `values=[]` 使用上述代码会出错，需要改为以下形式：<br>
+```python
+import redis
+
+r = redis.Redis(host='localhost', port=6379, db=0)
+key = 'my_list'
+values = ['apple', 1, 'orange']
+for i in values:
+    r.lpush(key, i)
+
+# 或者可以使用 rpush 方法
+# r.rpush(key, *values)
+```
+#### 使用 lrange 依靠索引将list从Redis取出：
+```python
+import redis
+
+r = redis.Redis(host='localhost', port=6379, db=0)
+key = 'my_list'
+# 按索引取出所需内容，lrange方法的索引是必填项
+res = r.lrange(key,0,-1)        
+print(type(res))                # <class 'list'>
+print(res)                      # [b'orange', b'1', b'apple']
+
+# 复原list
+restored_list = [x.decode() for x in res]
+print(type(restored_list))      # <class 'list'>
+print(restored_list)            # ['orange', '1', 'apple']
+```
+🔆🔆🔆从取出的结果我们可以看出，元素确实是按照左侧插入的方式构建的列表。另外：解码要注意转换为自己需要的格式，Redis统一按照字节的方式存储。
+
+
 ### dict存入 Redis 与取出：
 Redis 使用 `hmset` 存储含多个键值对的字典，注意 `hmset` 只能存储标准的字典，即 `key` 和 `value` 都是字符串的字典。如果是字典嵌套字典，或字典嵌套列表等结构，无法使用 `hmset` 方法存储。
 #### 使用 hmset 将 dict 存入 Redis：
