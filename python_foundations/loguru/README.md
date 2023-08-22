@@ -15,7 +15,7 @@ logger.info('This is info information')
 logger.warning('This is warn information')
 logger.error('This is error information')
 ```
-logger中不同 `level` 的日志信息颜色是不一样的，终端效果是彩色的，我这里因为是 Markdown 格式，所以不显示颜色。具体终端显示的信息如下：<br>
+logger 中不同 `level` 的日志信息颜色是不一样的，终端效果是彩色的，我这里因为是 Markdown 格式，所以不显示颜色。具体终端显示的信息如下：<br>
 ```shell
 2023-08-22 17:22:59.696 | DEBUG    | __main__:<module>:4 - This is debug information
 2023-08-22 17:22:59.697 | INFO     | __main__:<module>:5 - This is info information
