@@ -354,7 +354,7 @@ my_object = pickle.loads(my_object_bytes)
 # 打印提取到的对象的值
 print(my_object.value)  # 42
 ```
-🚨使用 `pickle` 存储的数据越复杂耗时要多，解析时花费的时间也越多！<br>
+🚨使用 `pickle` 存储的数据越复杂，耗时越多，解析时花费的时间也越多！<br>
 
 如果你对 `pickle` 参与其中的作用还不是很了解，可以试着运行下面的代码：<br>
 ```python
