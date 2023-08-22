@@ -25,7 +25,7 @@ logger 中不同 `level` 的日志信息颜色是不一样的，终端效果是�
 ```
 
 ## 格式化log信息：
-`logger` 支持 `f-string` 形式格式化log信息。<br>
+logger 支持 `f-string` 形式格式化log信息。<br>
 ```python
 from loguru import logger
 message = "nlp-server"
