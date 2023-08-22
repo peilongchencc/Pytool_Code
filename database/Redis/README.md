@@ -311,7 +311,67 @@ result = r.get("my_dict")
 result = pickle.loads(result)
 print(result)   # {'key1': 'value1', 'key2': 'value2', 'key3': 'value3'}
 ```
-🚨使用 `pickle` 一定要注意时间开销！
+🚨使用 `pickle` 一定要注意时间开销！<br>
+
+### class 存入 Redis 与取出：
+Redis 无法直接存储 python 的类，需要借助 `pickle` 或 `json` 进行序列化和反序列化才能存储和提取数据。<br>
+
+#### 使用 pickle.dumps 配合 set 将 class 存入 Redis：
+```python
+import redis
+import pickle
+
+class MyClass:
+    def __init__(self, value):
+        self.value = value
+
+# 连接到Redis
+r = redis.Redis(host='localhost', port=6379)
+
+# 将对象存入Redis
+my_object = MyClass(42)
+my_object_bytes = pickle.dumps(my_object)
+r.set('my_object', my_object_bytes)
+```
+
+#### 使用 pickle.loads 配合 get 将 class 从 Redis 取出：
+将 class 从 Redis 取出时必须确保在调用 `r.get('xxx')` 时已经导入了相关类的定义。如果存入的数据很复杂，比如 `类套类套类`，需要将对应类的定义都导入。可以采用在文件中写入类的完整定义，也可以采用 `from xxx import classA, classB, classC` 的形式。【可参考 classOfclass 文件中的内容】<br>
+```python
+import redis
+import pickle
+
+class MyClass:
+    def __init__(self, value):
+        self.value = value
+
+# 创建Redis客户端连接
+r = redis.Redis(host='localhost', port=6379)
+
+# 从Redis中提取对象
+my_object_bytes = r.get('my_object')
+my_object = pickle.loads(my_object_bytes)
+
+# 打印提取到的对象的值
+print(my_object.value)  # 42
+```
+🚨使用 `pickle` 存储的数据越复杂耗时要多，解析时花费的时间也越多！<br>
+
+如果你对 `pickle` 参与其中的作用还不是很了解，可以试着运行下面的代码：<br>
+```python
+import pickle
+
+class MyClass:
+    def __init__(self, value):
+        self.value = value
+
+# 序列化后的数据，其实是 MyClass(42)。
+serialized_data = b"\x80\x04\x95)\x00\x00\x00\x00\x00\x00\x00\x8c\b__main__\x94\x8c\aMyClass\x94\x93\x94)\x81\x94}\x94\x8c\x05value\x94K*sb."
+
+my_object = pickle.loads(serialized_data)       
+print(type(my_object))                          # # <class '__main__.MyClass'>
+print(my_object)                                # <__main__.MyClass object at 0x7f4973e73c10>
+print(my_object.value)                          # 42
+```
 
 ## Redis--大量键值对获取：
 当数据量特别大时，多次使用 `get` 方法与 Redis 连接、获取值的时间开销就会显得很高，此时使用 `mget` 和 `pipeline` 方法是一种更优的选择，两者都可以用于一次获取多个键的值。<br>
