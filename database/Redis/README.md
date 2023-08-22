@@ -218,7 +218,7 @@ print(restored_list)            # ['orange', '1', 'apple']
 
 
 ### dict存入 Redis 与取出：
-Redis 使用 `hmset` 存储含多个键值对的字典，注意 `hmset` 只能存储标准的字典，即 `key` 和 `value` 都是字符串的字典。如果是字典嵌套字典，或字典嵌套列表等结构，无法使用 `hmset` 方法存储。
+Redis 使用 `hmset` 存储含多个键值对的字典，‼️‼️注意 `hmset` 只能存储标准的字典，即 `key` 和 `value` 都是字符串的字典‼️‼️。如果是字典嵌套字典，或字典嵌套列表等结构，无法使用 `hmset` 方法存储，需要使用 `pickle` 或 `json`。
 #### 使用 hmset 将 dict 存入 Redis：
 使用 `hmset` 会遇到提示 `DeprecationWarning: Redis.hmset() is deprecated. Use Redis.hset() instead.`，不影响使用，Ubuntu 18.04 只提供Redis 4.0.9版本的安装。<br>
 ```python
