@@ -19,11 +19,11 @@ CNER中文实体识别数据集，数据格式类似：<br>
 跟	O
 他	O
 ```
-特点：<br>
+📊**数据特点：**<br>
 每行一个 `token` 与 `label` ，`token` 与 `label` 用空格分隔。<br>
 不同句子之间以空行分隔。<br>
 
-CNER中文实体识别数据集，标签列表为：<br>
+🔶**CNER中文实体识别数据集，标签列表为：**<br>
 ```python
 labels = ['B-NAME', 'I-NAME', 'O', 'B-CONT', 'I-CONT', 'B-RACE', 'I-RACE', 'B-TITLE', 'I-TITLE', 'B-EDU', 'I-EDU', 'B-ORG', 'I-ORG', 'B-PRO', 'I-PRO', 'B-LOC', 'I-LOC']
 NUM_LABELS = len(labels)    # 17
