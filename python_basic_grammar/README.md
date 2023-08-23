@@ -1,5 +1,15 @@
 # Python Basci Grammar
-介绍 python 基本语法与常见函数的使用。<br>
+介绍 python 基本语法、常见函数的使用与笔者常用的，感觉非常方便的python库。python 类由于其复杂性，单独创建一个文件夹讲解。<br>
+
+## 字典(dict):
+python中字典支持以数字作为键，但不推荐这种写法，毕竟我们也代码要考虑可读性，单纯的数字作为 `key` 自己或同时并不能看出代码的含义。<br>
+```python
+dictionary = {1: "financial", 2: "sale", 3: "insurance"}    # python中字典支持以数字作为键；
+print(dictionary)
+print(dictionary[1])    # 调用的时候也以数字的方式调用，如果写为 print(dictionary['1']) 会报错。
+print(dictionary[2])
+```
+
 
 ## join 函数：
 在Python中，`join()` 函数是用于将序列中的元素连接为一个字符串的方法。它可以将一个可迭代对象（比如列表、元组、字符串等）中的元素以🗯️**指定的分隔符**🗯️连接起来，生成一个新的字符串。<br>
