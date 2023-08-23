@@ -16,6 +16,9 @@ crontab 文件夹内含 crontab 基础教程和常用的定时任务指令。<br
 ## database:
 介绍 python 在常见数据库(MySQL、Redis、Neo4j)方面的使用，包括数据库连接、数据存储等代码。
 
+## deep_learning:
+记录深度学习相关代码。
+
 ## git:
 git使用教程，包括: git安装、ssh-key生成、建立git仓库、与远程仓库连接、创建git分支、拉取指定分支、合并分支等 git 常规指令介绍与使用。
 
