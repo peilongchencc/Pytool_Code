@@ -13,7 +13,8 @@ doccano 是一个开源的文本标注工具，用于人工标注。它提供了
 pip (Python 3.8+)<br>
 
 ## 安装方式：
-> 这里仅介绍虚拟环境安装doccano的方式，docker方式请访问github中doccano仓库。<br>
+> 这里仅介绍虚拟环境安装doccano的方式，docker方式安装doccano请访问github中doccano仓库。<br>
+
 切换到自己的虚拟环境，然后以pip的方式安装doccano:<br>
 ```shell
 pip install doccano
