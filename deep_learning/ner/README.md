@@ -30,3 +30,7 @@ NUM_LABELS = len(labels)    # 17
 ```
 
 数据集来自徐明大佬的github，链接为：https://github.com/shibing624/nerpy/tree/main<br>
+
+## 文件解释：
+**BertForTokenClassification_ner.py:** 利用Transformer的标准类BertForTokenClassification实现NER。<br>
+个人评价：逻辑清晰，方便学习。<br>
