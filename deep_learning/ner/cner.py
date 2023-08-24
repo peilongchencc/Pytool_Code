@@ -5,40 +5,11 @@ from transformers import BertTokenizer, BertForTokenClassification
 
 # 设定参数
 MAX_LEN = 128
-BATCH_SIZE = 32
+BATCH_SIZE = 2
 EPOCHS = 3
 LEARNING_RATE = 2e-5
 MODEL_PATH = "bert-base-chinese"
 
-# 数据路径
-train_data_path = "data_cner/train.char.bio.tsv"
-test_data_path = "data_cner/test.char.bio.tsv"
-# 数据标签列表
-labels = ['B-NAME', 'I-NAME', 'O', 'B-CONT', 'I-CONT', 'B-RACE', 'I-RACE', 'B-TITLE', 'I-TITLE', 'B-EDU', 'I-EDU', 'B-ORG', 'I-ORG', 'B-PRO', 'I-PRO', 'B-LOC', 'I-LOC']
-NUM_LABELS = len(labels)    # 17
-
-# 数据格式为：
-# 常 B-NAME
-# 建 I-NAME
-# 良 I-NAME
-# ， O
-# 男 O
-# ， O
-
-# 1 O
-# 9 O
-# 6 O
-# 3 O
-# 年 O
-# 出 O
-# 生 O
-# ， O
-# 工 B-PRO
-# 科 I-PRO
-# 学 B-EDU
-# 士 I-EDU
-
-# 将数据处理为dataloader可接受格式
 def process_data_from_txt(filename, has_labels=True):
     processed_data = []
     with open(filename, 'r', encoding='utf-8') as f:
@@ -70,6 +41,41 @@ def process_data_from_txt(filename, has_labels=True):
     
     return processed_data
 
+labels = ['B-NAME', 'I-NAME', 'O', 'B-CONT', 'I-CONT', 'B-RACE', 'I-RACE', 'B-TITLE', 'I-TITLE', 'B-EDU', 'I-EDU', 'B-ORG', 'I-ORG', 'B-PRO', 'I-PRO', 'B-LOC', 'I-LOC']
+NUM_LABELS = len(labels)    # 17
+
+# 数据路径
+train_data_path = "data_cner/train.char.bio.tsv"
+dev_data_path = "data_cner/dev.char.bio.tsv"
+test_data_path = "data_cner/test.char.bio.tsv"
+
+# 数据格式为：
+# 常 B-NAME
+# 建 I-NAME
+# 良 I-NAME
+# ， O
+# 男 O
+# ， O
+
+# 1 O
+# 9 O
+# 6 O
+# 3 O
+# 年 O
+# 出 O
+# 生 O
+# ， O
+# 工 B-PRO
+# 科 I-PRO
+# 学 B-EDU
+# 士 I-EDU
+
+# 将数据转化为Dataloader可接受数据
+# 数据格式类似：train_data = [{"text": "我喜欢吃苹果", "labels": [0, 0, 0, 1, 1, 1]}, ...]
+processed_train_data = process_data_from_txt(train_data_path, has_labels=True)
+processed_dev_data = process_data_from_txt(dev_data_path, has_labels=True)
+processed_test_data = process_data_from_txt(test_data_path, has_labels=False)
+
 # 加载数据集
 class NERDataset(Dataset):
     def __init__(self, data):
@@ -79,9 +85,8 @@ class NERDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, index):
+        # 利用索引抽取每条数据中的text，将text进行tokenizer
         text = self.data[index]["text"]
-        labels = self.data[index]["labels"]
-        
         encoding = tokenizer.encode_plus(
             text,
             add_special_tokens=True,
@@ -93,20 +98,29 @@ class NERDataset(Dataset):
         
         input_ids = encoding["input_ids"].squeeze()
         attention_mask = encoding["attention_mask"].squeeze()
+        
+        # 如果labels存在，利用索引抽取每条数据中的labels，将labels进行填充或截断，并转为tensor
+        if self.data[index].get("labels"):
+            labels = self.data[index]["labels"]
+            # 调整 labels 的长度，labels的长度也要进行填充或截断
+            if len(labels) < MAX_LEN:
+                labels += [-100] * (MAX_LEN - len(labels))  # padding with -100
+            elif len(labels) > MAX_LEN:
+                labels = labels[:MAX_LEN]  # truncation
 
-        # 调整 labels 的长度，labels的长度也要进行填充或截断
-        if len(labels) < MAX_LEN:
-            labels += [-100] * (MAX_LEN - len(labels))  # padding with -100
-        elif len(labels) > MAX_LEN:
-            labels = labels[:MAX_LEN]  # truncation
+            labels = torch.tensor(labels, dtype=torch.long)
 
-        labels = torch.tensor(labels, dtype=torch.long)
-
-        return {
-            "input_ids": input_ids,
-            "attention_mask": attention_mask,
-            "labels": labels
-        }
+            return {
+                "input_ids": input_ids,
+                "attention_mask": attention_mask,
+                "labels": labels
+            }
+        else:
+            # 对于test数据返回以下内容
+            return {
+                "input_ids": input_ids,
+                "attention_mask": attention_mask,
+            }
 
 # 定义模型
 model = BertForTokenClassification.from_pretrained(MODEL_PATH, num_labels=NUM_LABELS)
@@ -145,12 +159,8 @@ def predict(model, dataloader):
             predictions.extend(preds.tolist())
     return predictions
 
-# 将数据转化为Dataloader可接受数据
-# 数据格式类似：train_data = [{"text": "我喜欢吃苹果", "labels": [0, 0, 0, 1, 1, 1]}, ...]
-processed_train_data = process_data_from_txt(train_data_path, has_labels=True)
-processed_test_data = process_data_from_txt(test_data_path, has_labels=False)
-
-# 数据传入dataloader
+# 加载训练数据和测试数据，存储为字典列表格式，示例如下：
+# train_data = [{"text": "我喜欢吃苹果", "labels": [0, 0, 0, 1, 1, 1]}, ...]
 train_dataset = NERDataset(processed_train_data)
 train_dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 
