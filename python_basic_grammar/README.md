@@ -10,6 +10,23 @@ print(dictionary[1])    # 调用的时候也以数字的方式调用，如果写
 print(dictionary[2])
 ```
 
+### 查看字典中是否有某个key及该key对应的值：
+如果不确定字典中是否有某个key，需要用 `get()` 函数进行判断，不能用 `if item["key_name"]:` 的方式判断，如果字典中没有 `"key_name"` 这个键，使用 `if item["key_name"]:` 运行代码会报错。<br>
+```python
+data = [{"name":"Tom(汤姆)","score":"640(720)"}, {"name":"Spike(斯派克)"},{"name":"Jerry(杰瑞)","score":"700(720)"}]
+
+for item in data:
+    if item.get("score"):
+        name = item["name"]
+        score = item["score"]
+        print(f"{name}的考试成绩为:{score}")    # f-string 不支持 f"...{item["name"]}..." 写法。
+    else:
+        name = item["name"]
+        print(f"没有查询到{name}的考试成绩，TA可能缺考了。")
+```
+
+
+
 
 ## join 函数：
 在Python中，`join()` 函数是用于将序列中的元素连接为一个字符串的方法。它可以将一个可迭代对象（比如列表、元组、字符串等）中的元素以🌵**指定的分隔符**🌵连接起来，生成一个新的字符串。<br>
