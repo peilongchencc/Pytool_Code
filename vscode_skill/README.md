@@ -8,6 +8,7 @@
   - [vscode光标移动--进出函数特别有用：](#vscode光标移动--进出函数特别有用)
   - [vscode跳转到当前文件的指定行：](#vscode跳转到当前文件的指定行)
   - [VScode相对路径无法使用问题：](#vscode相对路径无法使用问题)
+  - [vscode查找文件时如何设置排除文件：](#vscode查找文件时如何设置排除文件)
   - [Github中MarkDown文档中所用的目录生成方式：](#github中markdown文档中所用的目录生成方式)
 
 ## 断点调试：
@@ -65,6 +66,7 @@ ctrl + g，然后输入想要跳转的行数并回车。
 
 ## vscode查找文件时如何设置排除文件：
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/1360ff80-2ee5-4b9f-8417-7f8dcc11e008" alt="image" width="40%" height="40%">
+<br>
 
 ## Github中MarkDown文档中所用的目录生成方式：
 **起因**：Markdown可以使用`[TOC]`自动生成Markdown文件的标题目录，比如在typora等编辑器，但是Github却不支持`[TOC]`标签，所以在Github上使用`[TOC]`无法正确显示目录，所以需要借助vscode的插件实现目录生成。<br>
@@ -75,3 +77,4 @@ ctrl + g，然后输入想要跳转的行数并回车。
 ```txt
 "Markdown All in One: Create Table of Contents"；
 ```
+Ps:由于github无法自动同步目录，需要在本地 `git pull` 拉取代码，然后 `cmd + s` 保存下代码，此时目录会自动更新。然后 `git push` 上传代码即可。<br>
