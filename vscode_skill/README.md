@@ -63,6 +63,9 @@ ctrl + g，然后输入想要跳转的行数并回车。
 运行成功！<br>
 原因解析：因为vscode对工作区特别敏感，点击右上角的 <运行python文件> 定位其实是工作区，不是当前路径。<br>
 
+## vscode查找文件时如何设置排除文件：
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/1360ff80-2ee5-4b9f-8417-7f8dcc11e008" alt="image" width="40%" height="40%">
+
 ## Github中MarkDown文档中所用的目录生成方式：
 **起因**：Markdown可以使用`[TOC]`自动生成Markdown文件的标题目录，比如在typora等编辑器，但是Github却不支持`[TOC]`标签，所以在Github上使用`[TOC]`无法正确显示目录，所以需要借助vscode的插件实现目录生成。<br>
 1. vscode拓展中搜索 `Markdown All in One`； 
