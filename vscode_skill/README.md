@@ -2,6 +2,13 @@
 本文记录笔者在使用vscode时所遇到的一些问题和解决方案，希望对大家有帮助。<br>
 
 声明：本文所列快捷键为 MacOs 版，windows用于请自行百度对应快捷键。<br>
+- [Vscode Skill](#vscode-skill)
+  - [断点调试：](#断点调试)
+  - [vscode关闭预览模式：](#vscode关闭预览模式)
+  - [vscode光标移动--进出函数特别有用：](#vscode光标移动--进出函数特别有用)
+  - [vscode跳转到当前文件的指定行：](#vscode跳转到当前文件的指定行)
+  - [VScode相对路径无法使用问题：](#vscode相对路径无法使用问题)
+  - [Github中MarkDown文档中所用的目录生成方式：](#github中markdown文档中所用的目录生成方式)
 
 ## 断点调试：
 跳转到对应函数：command + 左键点击函数<br>
