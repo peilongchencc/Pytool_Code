@@ -25,10 +25,58 @@ for item in data:
         print(f"没有查询到{name}的考试成绩，TA可能缺考了。")
 ```
 
+## open() 函数：
+Python 的内建函数 `open()` 函数用于打开文件，常搭配 `read()`, `readline()` 和 `readlines()` 方法来读取文件内容。<br>
 
+`read()`:一次性读取所有内容为字符串。可通过在添加 `size` 参数控制读取的字节，例如 `file.read(100)` 表示读取前100个字节的内容。<br>
+`readline()`:每次调用，读取文件的下一行。通常用于逐行读取大文件，这样可以不必一次加载整个文件到内存。<br>
+`readlines()`:读取整个文件并返回一个包含文件每一行的列表。虽然这个方法很方便，但如果文件很大，一次性加载所有行到一个列表可能会消耗大量内存。<br>
 
+现在以读取 `test.txt` 文件为例，讲解三种读取方式的不同。`test.txt`文件内容如下：<br>
+```txt
+黄鹤楼送孟浩然之广陵
+    唐·李白
+故人西辞黄鹤楼，烟花三月下扬州。
+孤帆远影碧空尽，唯见长江天际流。
+```
+### read():
+```python
+with open("test.txt", "r") as file:
+    content = file.read()
+    print(content)
+```
+`python read_file.py` 运行结果如下，以😲😲😲字符串形式😲😲😲一次性返回所有内容：<br>
+```shell
+黄鹤楼送孟浩然之广陵
+    唐·李白
+故人西辞黄鹤楼，烟花三月下扬州。
+孤帆远影碧空尽，唯见长江天际流。
+```
 
-## join 函数：
+### readline():
+```python
+with open("test.txt", "r") as file:
+    line = file.readline()
+    while line:                     # 当line存在时，读取下一行
+        print(line, end='')         # end='' 用来避免重复的换行
+        line = file.readline()
+```
+`line` 第一次调用 `print` 的结果为 "黄鹤楼送孟浩然之广陵"，`line` 第二次调用 `print` 的结果为 "    唐·李白"，每次返回一行内容。<br>
+
+### readlines():
+```python
+with open("test.txt", "r") as file:
+    lines = file.readlines()
+    for line in lines:
+        print(line, end='')  # end='' 用来避免重复的换行
+```
+`lines` 的结果如下：<br>
+```shell
+['黄鹤楼送孟浩然之广陵\n', '    唐·李白\n', '故人西辞黄鹤楼，烟花三月下扬州。\n', '孤帆远影碧空尽，唯见长江天际流。']
+```
+所以要进行 `for循环` 遍历，同时控制 `end` 才能复原数据。<br>
+
+## join() 函数：
 在Python中，`join()` 函数是用于将序列中的元素连接为一个字符串的方法。它可以将一个可迭代对象（比如列表、元组、字符串等）中的元素以🌵**指定的分隔符**🌵连接起来，生成一个新的字符串。<br>
 
 ☪️**可迭代对象的要求：** 必须每一项都是字符串类型。如果不是，可以借助列表推导式或 `map()` 函数将每一项元素都转为字符串类型，再执行 `json()` 函数。接下来看几个例子：<br>
