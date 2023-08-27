@@ -1,7 +1,6 @@
 # Linux Command
 Linux指令都是通过终端或shell脚本操作的，所以下文笔者不会备注在哪里操作。<br>
 Ps:本文所有指令为 Linux 版本，Windows 或 MacOS 指令请自行从网络寻找。<br>
-<br>
 - [Linux Command](#linux-command)
   - [权限指令：](#权限指令)
   - [系统信息指令：](#系统信息指令)
