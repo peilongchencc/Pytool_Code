@@ -77,3 +77,15 @@ separator = '-'
 result = separator.join(map(str, information))
 print(result)   # O-l-d-:-1-8
 ```
+
+## 常见库解释：
+### flask
+介绍Python Web应用程序框架Flask的安装和使用。<br>
+
+### nginx:
+以Nginx在反向代理方面的应用为切入，介绍Nginx的安装和使用。<br>
+
+### time
+time库是Python标准库中的一个模块，它提供了处理时间的功能。time 文件夹下是一些常见的time库的用法。<br>
+**Ps1**:文章中的时间如果格式化，统一转化为 2022-01-01 12:05:44 形式，原因为：该时间格式可以直接写入mysql，在实际操作中非常方便。<br>
+**Ps2**:文章中使用的都是 `time` 模块中的用法，并没有使用利用 `datetime` 等其他时间模块，这样做的好处是：在项目中使用统一的时间获取方式。<br>
