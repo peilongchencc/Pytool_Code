@@ -7,7 +7,7 @@ python 版本：Python 3.10.11<br>
 python包和环境管理器：Anaconda<br>
 
 ## connect_remote_server:
-connect_remote_server 记录连接远程服务器的一些经验，包括如何连接远程服务器，出现的错误和相应的解决方案。<br>
+connect_remote_server 记录vscode连接阿里云远程服务器的一些经验，包括如何连接远程服务器，出现的错误和相应的解决方案。<br>
 
 ## crontab：
 crontab是一个用于在Linux和Unix系统中定期执行任务的命令。它允许你按照特定的时间和日期计划执行脚本、命令或程序。<br>
