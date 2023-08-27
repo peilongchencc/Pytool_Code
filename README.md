@@ -36,3 +36,6 @@ python_skillcode 内含 python 在各种场景下的应用型代码；<br>
 
 ## restart_server:
 设置定时任务，利用 Redis 每周一凌晨2点定时读取数据，如果 Redis 数据获取成功，向 mysql 中的 task_monitor 表写入成功信息。Redis 数据获取失败时，重启3次，如果连续3次重启都失败，向 mysql 中的 task_monitor 表写入失败信息，同时向企业微信个人账号发送报警消息。<br>
+
+## Vscode Skill
+本文记录笔者在使用vscode时所遇到的一些问题和解决方案，希望对大家有帮助。<br>
