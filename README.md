@@ -6,6 +6,9 @@
 python 版本：Python 3.10.11<br>
 python包和环境管理器：Anaconda<br>
 
+## command:
+介绍常见的指令，暂时包括：Linux常见指令<br>
+
 ## connect_remote_server:
 connect_remote_server 记录vscode连接阿里云远程服务器的一些经验，包括如何连接远程服务器，出现的错误和相应的解决方案。<br>
 
