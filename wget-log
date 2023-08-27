@@ -1,0 +1,16 @@
+--2023-08-27 13:55:27--  https://image.baidu.com/search/detail?ct=503316480
+Resolving image.baidu.com (image.baidu.com)... 124.237.176.67, 240e:83:205:e:0:ff:b035:137d
+Connecting to image.baidu.com (image.baidu.com)|124.237.176.67|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://wappass.baidu.com/static/captcha/tuxing.html?&logid=10216604606007615221&ak=5c55ec1d6f983c7c410423a63d2071b6&backurl=https%3A%2F%2Fimage.baidu.com%2Fsearch%2Fdetail%3Fct%3D503316480&ext=teV2tmljlW96WuTkCJ1P9Mtfl%2Bs%2Bpf%2FW%2FoUMJHYLJuP6HHWjL1IUmBpixghmqbs4lc261i5%2BP0SWRiWZlNxZBHYfURZ5cU3Bsw68ZvXw46M%3D&signature=f9b8a2b662ead95519305d47fb319360&timestamp=1693115727 [following]
+--2023-08-27 13:55:27--  https://wappass.baidu.com/static/captcha/tuxing.html?&logid=10216604606007615221&ak=5c55ec1d6f983c7c410423a63d2071b6&backurl=https%3A%2F%2Fimage.baidu.com%2Fsearch%2Fdetail%3Fct%3D503316480&ext=teV2tmljlW96WuTkCJ1P9Mtfl%2Bs%2Bpf%2FW%2FoUMJHYLJuP6HHWjL1IUmBpixghmqbs4lc261i5%2BP0SWRiWZlNxZBHYfURZ5cU3Bsw68ZvXw46M%3D&signature=f9b8a2b662ead95519305d47fb319360&timestamp=1693115727
+Resolving wappass.baidu.com (wappass.baidu.com)... 36.110.192.160, 240e:83:205:41:0:ff:b009:245c
+Connecting to wappass.baidu.com (wappass.baidu.com)|36.110.192.160|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1545 (1.5K) [text/html]
+Saving to: ‘detail?ct=503316480’
+
+detail?ct=503316480                                       0%[                                                                                                                               ]       0  --.-KB/s               detail?ct=503316480                                     100%[==============================================================================================================================>]   1.51K  --.-KB/s    in 0s      
+
+2023-08-27 13:55:27 (88.2 MB/s) - ‘detail?ct=503316480’ saved [1545/1545]
+
