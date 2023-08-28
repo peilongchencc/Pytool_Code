@@ -25,6 +25,57 @@ for item in data:
         print(f"没有查询到{name}的考试成绩，TA可能缺考了。")
 ```
 
+## import 导入时文件顺序解析：
+项目有入口文件和工具文件之分，我们经常从入口文件引入工具文件中的部分内容，很多人很迷惑import导入文件的流程，这里借助 `jieba` 和 `python类` 梳理一下 `import` 时代码读取流程。<br>
+假设我们现在有两个文件 入口文件`main.py` 和 工具文件`tools.py`，具体内容如下：<br>
+```python
+# tools.py
+import time
+import jieba
+print('This is the start of tools.py')
+
+current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
+class Segment:
+    # 模拟根据用户的登录id、user_name、text，返回附加时间的分词结果。
+    def __init__(self,id,name) -> None:
+        self.id = id
+        self.name = name
+        self.date = current_time
+    
+    def split_words(self,text):
+        result = jieba.lcut(text)
+        return f'{self.date}：用户{self.id}，{self.name}先生/女士您好，您的分词结果是：{result}'
+
+print('This is the end of tools.py')
+```
+
+```python
+# main.py
+from tools import Segment
+text = '长江市市长江大桥。'
+
+# 模拟用户登录
+personal_information = Segment('007','peilongchencc')
+# 模拟获取到用户输入文本
+res = personal_information.split_words(text)    # 执行分词方法
+print(res)
+```
+
+输出：<br>
+```txt
+This is the start of tools.py
+This is the end of tools.py
+Building prefix dict from the default dictionary ...
+Loading model from cache /tmp/jieba.cache
+Loading model cost 0.706 seconds.
+Prefix dict has been built successfully.
+2023-07-28 17:01:32：用户007，peilongchencc先生/女士您好，您的分词结果是：['长江', '市市', '长江大桥', '。']
+```
+从输出可以看出，`from tools import Segment` 会将导入文件的所有内容都执行一遍，`函数、类`是因为没有调用所以没有执行。当运行到 `personal_information.split_words(text)` 才真正执行了类 `Segment` 中的函数。<br>
+
+笔者讲这个的原因是：希望大家不要随意在工具文件中写可执行内容，很容易重复调用，产生无用的开销。尤其是文件中有 python类，不要在定义类的文件中就把类实例化了。可能有部分人觉得这样便于维护，调用方便(只需要`from ... import ...`)，但这会增加共同维护项目仓库人员的负担，会增大内存、CPU开销，因为只要调用这个文件就会自动实例化一次对应的类。除非这个文件中你只写了一个类，或是专门用于各种类实例化的文件，但这种方式显然不可能。所以最好的方式依旧是在该实例化的地方实例化，至于维护问题，采用 `from config import ...` 这种方式维护即可。 ❌❌❌<br>
+
 ## open() 函数：
 Python 的内建函数 `open()` 函数用于打开文件，常搭配 `read()`, `readline()` 和 `readlines()` 方法来读取文件内容。<br>
 
