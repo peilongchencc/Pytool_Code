@@ -359,6 +359,7 @@ print(result)   # {'key1': 'value1', 'key2': 'value2', 'key3': 'value3'}
 
 ### class 存入 Redis 与取出：
 Redis 无法直接存储 python 的类，需要借助 `pickle` 或 `json` 进行序列化和反序列化才能存储和提取数据。<br>
+‼️‼️‼️‼️注意，python 类对象无法截断存入 Redis，即使强行将 `pickle.dumps()` 后的字节流截断存入 Redis，从 Redis 将截断的字节流取出后，也无法复原数据。<br>
 
 #### 使用 pickle.dumps 配合 set 将 class 存入 Redis：
 ```python

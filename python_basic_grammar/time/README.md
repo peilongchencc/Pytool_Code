@@ -93,7 +93,7 @@ print("End")
 import time
 start_time = time.time() 
 """
-这里执行一些代码 
+这里执行自己的代码 
 """
 end_time = time.time() 
 execution_time = end_time - start_time 
