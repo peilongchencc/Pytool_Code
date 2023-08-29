@@ -8,6 +8,7 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
   - [查看MySQL配置信息：](#查看mysql配置信息)
   - [MySQL密码设置：(root账号)](#mysql密码设置root账号)
   - [本地使用 Navicat 远程连接 MySQL ：](#本地使用-navicat-远程连接-mysql-)
+  - [常用 SQL 语句：](#常用-sql-语句)
 ## 服务器安装MySQL数据库：
 MySQL数据库的安装非常简单～<br>
 1. 更新系统软件包信息：
@@ -141,3 +142,14 @@ netstat -ntlp
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/cd8936d6-eca9-42a1-806f-845ecf5694b1)
 
 成功连接！现在就可以利用 Navicat 操作 MySQL 数据库了。<br>
+
+## 常用 SQL 语句：
+假设现在有一个 "qa_information" 的表，"qa_information" 中有很多字段，例如 "id"、"question"、"answer"、"undate_time"。如果想要将其中 "question" 字段的所有内容提取出来需要使用以下指令：<br>
+```sql
+SELECT question FROM qa_information;
+```
+如果想要只抽取10条数据，可以使用指令：<br>
+```sql
+SELECT question FROM qa_information LIMIT 10;
+```
+这个查询语句将🔥🔥🔥**按照默认的排序规则**抽取出 "qa_information" 表的前10条记录。<br>
