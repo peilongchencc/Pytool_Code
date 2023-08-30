@@ -4,11 +4,14 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
 笔者使用的是Ubuntu 18.04.6系统，就以此讲解 MySQL 数据库的安装、配置信息查看和常规操作。<br>
 - [MySQL](#mysql)
   - [服务器安装MySQL数据库：](#服务器安装mysql数据库)
-  - [MySQL常用指令(开启、关闭、重启、状态指令)：](#mysql常用指令开启关闭重启状态指令)
+  - [终端MySQL常用指令(开启、关闭、重启、状态指令)：](#终端mysql常用指令开启关闭重启状态指令)
   - [查看MySQL配置信息：](#查看mysql配置信息)
   - [MySQL密码设置：(root账号)](#mysql密码设置root账号)
   - [本地使用 Navicat 远程连接 MySQL ：](#本地使用-navicat-远程连接-mysql-)
-  - [常用 SQL 语句：](#常用-sql-语句)
+  - [Python与MySQL：](#python与mysql)
+    - [使用pymysql测试连接MySQL：](#使用pymysql测试连接mysql)
+    - [pymysql操作数据库的关键：](#pymysql操作数据库的关键)
+    - [创建表：](#创建表)
 ## 服务器安装MySQL数据库：
 MySQL数据库的安装非常简单～<br>
 1. 更新系统软件包信息：
@@ -21,7 +24,7 @@ apt update
 apt install mysql-server
 ```
 
-## MySQL常用指令(开启、关闭、重启、状态指令)：
+## 终端MySQL常用指令(开启、关闭、重启、状态指令)：
 MySQL数据库安装后，首先我们要熟悉下MySQL数据库的常用指令。注意⚠️⚠️⚠️：以下指令均在终端使用，而不是在终端进入MySQL服务器后使用。<br>
 - 关闭MySQL服务
 ```shell
@@ -143,13 +146,126 @@ netstat -ntlp
 
 成功连接！现在就可以利用 Navicat 操作 MySQL 数据库了。<br>
 
-## 常用 SQL 语句：
-假设现在有一个 "qa_information" 的表，"qa_information" 中有很多字段，例如 "id"、"question"、"answer"、"undate_time"。如果想要将其中 "question" 字段的所有内容提取出来需要使用以下指令：<br>
-```sql
-SELECT question FROM qa_information;
+## Python与MySQL：
+在应用程序中，获取用户输入等信息都是存入MySQL的，怎么存呢？肯定是代码配合SQL语句。笔者主用的python，就介绍一下python与SQL语句的联合使用。如果你只是在Navicat中操作，也可以从下列python代码中复制自己需要的SQL语句进行使用。<br>
+
+python连接MySQL的方式有很多，例如 `pymysql`、`mysqlclient`、`aiomysql`。笔者常用的为连接方式为 `pymysql`，以下内容全部以 `pymysql+python`的方式介绍。<br>
+pymysql的安装方式很简单：<br>
+```shell
+pip install pymysql
 ```
-如果想要只抽取10条数据，可以使用指令：<br>
-```sql
-SELECT question FROM qa_information LIMIT 10;
+
+### 使用pymysql测试连接MySQL：
+首先要确保和MySQL数据库的正常连接才能进行更多的操作，将下列代码中 `host`、`user`、`password`、`database` 改为自己的信息即可。<br>
+```python
+import pymysql.cursors
+
+try:
+    print('----开始尝试连接MySQL----')
+    tmp_connection = pymysql.connect(host='localhost',
+                                     user='root',
+                                     password='Flameaway3.',
+                                     database='irmdata',
+                                     port=3306,
+                                     cursorclass=pymysql.cursors.DictCursor)
+    print('MySQL连接成功!!!')
+except:
+    print('MySQL连接失败。')
 ```
-这个查询语句将🔥🔥🔥**按照默认的排序规则**抽取出 "qa_information" 表的前10条记录。<br>
+如果你是本地连接本地电脑搭建的MySQL数据库，`host` 不需要更改。如果你是本地连接远程服务器的MySQL，需要将 `host` 改为远程服务器对应的 `ip`，例如 `8.140.203.xxx`。
+```python
+host = '8.140.203.xxx'
+```
+如果你使用的是阿里云提供的MySQL数据库，那 `host` 改为阿里云提供给你的域名信息即可，类似于：`rdsxxxxxxxx.mysql.rds.aliyuncs.com`。<br>
+```python
+host = 'rdsxxxxxxxx.mysql.rds.aliyuncs.com'
+```
+
+### pymysql操作数据库的关键：
+在python中使用pymysql连接MySQL时，`cursor` 是我们操作的基础，`cursor` 是用于执行SQL语句并处理查询结果的对象。<br>
+具体来说，`cursor` 对象提供了以下功能：<br>
+- 执行SQL语句: 可以使用 `execute()` 方法来执行SQL语句，可以是查询语句或非查询语句（如`INSERT` 、`UPDATE` 等）。
+- 处理查询结果：可以使用`fetchone()`、 `fetchall()` 等方法来获取查询结果。`fetchone()` 用于获取一条记录，而 `fetchall()` 用于获取所有记录。还可以使用 `fetchmany()` 来获取指定数量的记录，例如获取SQL语句执行结果中的2条数据，`fetchmany(2)`。
+- 控制事务：可以使用commit()方法提交事务或使用rollback()方法回滚事务。
+- 获取执行结果信息：可以通过rowcount属性获取受影响的行数。此外，description属性可以获得查询结果集中列的元数据信息。
+使用cursor可以灵活地执行SQL语句、处理结果集以及管理事务，进而实现对MySQL数据库的有效操作。<br>
+
+了解pymysql中 `cursor` 的作用后，我们看下 `cursor` 的使用位置：<br>
+> 只需要简单看下结构，了解在上一步的基础上扩充了哪些内容即可～🚀 更具体的用法，之后的内容会讲。
+
+```python
+import pymysql.cursors
+
+try:
+    print('----开始尝试连接MySQL----')
+    mysql_connection = pymysql.connect(host='localhost',
+                                     user='root',
+                                     password='Flameaway3.',
+                                     database='irmdata',
+                                     port=3306,
+                                     cursorclass=pymysql.cursors.DictCursor)
+    print('MySQL连接成功!!!')
+
+    # 创建一个新的cursor对象
+    with mysql_connection.cursor() as cursor:
+        # 执行SQL命令
+        sql = """..."""              # 输入自己的SQL命令；
+        cursor.execute(sql)          # execute()方法用于执行SQL语句；
+    # 提交更改
+    mysql_connection.commit()
+    print('SQL命令执行成功~')
+
+except Exception as e:
+    print(f'MySQL连接或创建表失败: {e}')
+
+finally:
+    # 关闭连接
+    mysql_connection.close()
+```
+
+### 创建表：
+了解了代码结构后，我们看下如何创建表。毕竟数据都存在表中，没有表我们就没有可操作的数据。^_^<br>
+要创建一个MySQL数据库中的表格，需要使用 `CREATE TABLE` 语句。以下是一个示例代码来创建一个名为 `"task_monitor"` 的表格，其中包括 `"task_id"`、`"task_description"`、 `"task_command"` 、`task_status`、 `task_status`、 `task_execution_time`、 `log_path` 这六个列：<br>
+```python
+import pymysql.cursors
+
+################################################################################
+# 注意：task_status 字段为集合，必须选择 ('成功', '失败') 其中一项进行写入。
+################################################################################
+
+try:
+    print('开始尝试连接mysql----')
+    mysql_connection = pymysql.connect(host='localhost',
+                                     user='root',
+                                     password='Flameaway3.',
+                                     database='irmdata',
+                                     port=3306,
+                                     cursorclass=pymysql.cursors.DictCursor)
+    print('欧吼～mysql连接成功！！！')
+
+    # 创建一个新的cursor对象
+    with mysql_connection.cursor() as cursor:
+        # 执行SQL命令
+        sql = """
+        CREATE TABLE task_monitor (
+            task_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '任务的唯一ID',
+            task_description VARCHAR(255) COMMENT '任务描述',
+            task_command VARCHAR(255) COMMENT '执行的命令',
+            task_status ENUM('成功', '失败') COMMENT '任务状态',
+            task_execution_time DATETIME COMMENT '任务执行的时间',
+            log_path VARCHAR(255) COMMENT '日志文件的路径'
+        );
+        """
+        cursor.execute(sql)
+    # 提交更改
+    mysql_connection.commit()
+    print('SQL命令执行成功~')
+
+except Exception as e:
+    print(f'mysql连接或创建表失败: {e}')
+
+finally:
+    # 关闭连接
+    mysql_connection.close()
+```
+执行上述代码就可以在 `MySQL` 中名 `irmdata` 的 `database` 下创建一个 `task_monitor` 表。<br>
