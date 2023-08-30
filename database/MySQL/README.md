@@ -8,10 +8,14 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
   - [查看MySQL配置信息：](#查看mysql配置信息)
   - [MySQL密码设置：(root账号)](#mysql密码设置root账号)
   - [本地使用 Navicat 远程连接 MySQL ：](#本地使用-navicat-远程连接-mysql-)
+  - [常用SQL语句：](#常用sql语句)
+    - [创建表：](#创建表)
+    - [查看表中的内容：](#查看表中的内容)
   - [Python与MySQL：](#python与mysql)
     - [使用pymysql测试连接MySQL：](#使用pymysql测试连接mysql)
     - [pymysql操作数据库的关键：](#pymysql操作数据库的关键)
-    - [创建表：](#创建表)
+    - [创建表：](#创建表-1)
+    - [获取表中的内容：](#获取表中的内容)
 ## 服务器安装MySQL数据库：
 MySQL数据库的安装非常简单～<br>
 1. 更新系统软件包信息：
@@ -146,6 +150,70 @@ netstat -ntlp
 
 成功连接！现在就可以利用 Navicat 操作 MySQL 数据库了。<br>
 
+## 常用SQL语句：
+### 创建表：
+要创建一个MySQL数据库中的表格，需要使用 `CREATE TABLE` 语句。以下是一个示例代码来创建一个名为 `"task_monitor"` 的表格，其中包括 `"task_id"`、`"task_description"`、 `"task_command"` 、`task_status`、 `task_status`、 `task_execution_time`、 `log_path` 这六个列：<br>
+```sql
+CREATE TABLE task_monitor (
+    task_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '任务的唯一ID',
+    task_description VARCHAR(255) COMMENT '任务描述',
+    task_command VARCHAR(255) COMMENT '执行的命令',
+    task_status ENUM('成功', '失败') COMMENT '任务状态',
+    task_execution_time DATETIME COMMENT '任务执行的时间',
+    log_path VARCHAR(255) COMMENT '日志文件的路径'
+);
+```
+如果要在 Navicat 中使用，先点击查询，然后点击 `"+"` 号，新建查询，选择对应的数据库即可。<br>
+
+相信大家已经注意到了，对于不同的列，我使用了不同的数据类型，这是因为MySQL支持多种数据类型，可以根据具体需要选择适合的数据类型。以下是常见的MySQL数据类型：<br>
+<br>
+🥷🥷🥷🥷🥷🥷简单了解以下内容即可，需要的时候再返回这里看，刚开始一下子记住不现实。🌿🌿🌿🌿🌿<br>
+
+**数值类型**： - `INT`（整型） - `BIGINT`（长整型） - `FLOAT`（单精度浮点型） - `DOUBLE`（双精度浮点型） - `DECIMAL`（高精度浮点型） - `TINYINT`（小整型）<br>
+
+**字符串类型**： - `VARCHAR`（可变长度字符串） - `CHAR`（固定长度字符串） - `TEXT`（长文本）<br>
+
+**日期和时间类型**： - `DATE`（日期） - `TIME`（时间） - `DATETIME`（日期和时间） - `TIMESTAMP`（时间戳）<br>
+
+**布尔类型**： - `BOOLEAN`（布尔值，通常以0或1表示）<br>
+
+**二进制类型**： - `BINARY`（二进制数据） - `VARBINARY`（可变长度二进制数据） - `BLOB`（二进制大对象）<br>
+
+**其他特殊类型**： - `ENUM`（枚举类型，可以从预定义的值列表中选择） - `SET`（集合类型，可以从预定义的值集合中选择）<br>
+
+以上仅列举了常见的MySQL数据类型，还有其他一些特定的数据类型可以根据需要使用。请注意，在创建表格时，应根据实际需求选择合适的数据类型来存储和处理数据。<br>
+
+注意⚠️⚠️⚠️：`ENUM` 和 `SET` 类型是用于在数据库中定义一组预定义的值。这意味着你只能选择列表中定义的值，并不能插入其他值。<br>
+
+**`ENUM` 类型**：`ENUM` 列定义了一个可以选择的预定义值列表。你可以在创建表格时为 `ENUM` 列指定可用值，并且只允许在该列表中选择的值。例如，你可以定义一个ENUM类型的列来表示用户的性别，只允许选择"男"或"女"这两个值。<br>
+
+**`SET` 类型**：`SET` 列定义了一个可供选择的预定义值集合。与 `ENUM` 不同，`SET` 允许你选择多个值。你可以在创建表格时为 `SET` 列指定可用的值，并从中选择一个或多个值。例如，你可以定义一个 `SET` 类型的列来表示用户的兴趣爱好，可选择的值可以是"足球"、"篮球"、"音乐"、"旅行"等。<br>
+
+当使用 `ENUM` 和 `SET` 时，确保你确实只需要从预定义的值列表中选择值。如果你需要存储不受限制的值，应该使用其他适合的数据类型，如 `VARCHAR` 或`TEXT`。<br>
+🥷🥷🥷🥷🥷🥷<br>
+
+### 查看表中的内容：
+要查看某个表中的内容需要使用到 `SELECT` 和 `FROM` 语句，假设我们要从名为task_monitor的数据库表中检索所有的列和行：：<br>
+```sql
+SELECT * FROM task_monitor
+```
+SQL语句解释：关键字 `"SELECT"` 用于指定要检索的数据，而 `"*"` 表示所有的列。关键字 `"FROM"` 用于指定要从哪个表中检索数据，这里是 `task_monitor` 表。因此，该语句将返回 `task_monitor` 表中的所有数据。<br>
+<br>
+
+如果我们要从名为"task_monitor"的表中检索数据，并按照 `"task_execution_time"` 字段的降序排列，并只显示前3行：<br>
+```sql
+SELECT * FROM task_monitor ORDER BY task_execution_time DESC LIMIT 3
+```
+SQL语句解释：<br>
+`"SELECT "`: 这表示从表中选择所有的列。如果你想选择特定的列，可以将星号 `*` 替换为列名。<br>
+`"FROM task_monitor"`: 这表示你从名为 `"task_monitor"` 的表中进行数据检索。`"task_monitor"` 是表的名称，你可以根据自己的表名进行相应替换。<br>
+`ORDER BY` 是一个SQL关键字，用于按照特定的列对查询结果进行排序。通过指定一个或多个列作为排序规则，可以控制结果行的顺序。<br>
+`"ORDER BY task_execution_time DESC"`: 这表示使用 `"task_execution_time"` 字段对结果进行降序排序。DESC关键字指定降序排序，如果不写，默认为升序（ASC）排序。`ORDER` 表示顺序、排序，`DESCENDING` 表示降序，`ASCENDING` 表示升序，这个命令应该很好理解。<br>
+`"LIMIT 3"``: 这表示只返回前3行结果。你可以更改数字来返回所需数量的行数。
+综上所述，这个SQL语句的结果将返回 `"task_monitor"` 表中前3个根据 `"task_execution_time"`字段降序排列的记录。
+
+
+
 ## Python与MySQL：
 在应用程序中，获取用户输入等信息都是存入MySQL的，怎么存呢？肯定是代码配合SQL语句。笔者主用的python，就介绍一下python与SQL语句的联合使用。如果你只是在Navicat中操作，也可以从下列python代码中复制自己需要的SQL语句进行使用。<br>
 
@@ -226,7 +294,6 @@ finally:
 ### 创建表：
 了解了代码结构后，我们看下如何创建表。毕竟数据都存在表中，没有表我们就没有可操作的数据。^_^<br>
 
-要创建一个MySQL数据库中的表格，需要使用 `CREATE TABLE` 语句。以下是一个示例代码来创建一个名为 `"task_monitor"` 的表格，其中包括 `"task_id"`、`"task_description"`、 `"task_command"` 、`task_status`、 `task_status`、 `task_execution_time`、 `log_path` 这六个列：<br>
 ```python
 import pymysql.cursors
 
@@ -272,29 +339,4 @@ finally:
 执行上述代码就可以在 `MySQL` 中名 `irmdata` 的 `database` 下创建一个 `task_monitor` 表。<br>
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/940d72e3-e339-4d93-ad33-f0eea9aa4647)
 
-相信大家已经注意到了，我写的大大的注释 `注意：task_status 字段为集合，必须选择 ('成功', '失败') 其中一项进行写入`，这是因为MySQL支持多种数据类型，可以根据具体需要选择适合的数据类型。以下是常见的MySQL数据类型：<br>
-<br>
-🥷🥷🥷🥷🥷🥷简单了解以下内容即可，需要的时候再返回这里看，刚开始一下子记住不现实。🌿🌿🌿🌿🌿<br>
-
-**数值类型**： - `INT`（整型） - `BIGINT`（长整型） - `FLOAT`（单精度浮点型） - `DOUBLE`（双精度浮点型） - `DECIMAL`（高精度浮点型） - `TINYINT`（小整型）<br>
-
-**字符串类型**： - `VARCHAR`（可变长度字符串） - `CHAR`（固定长度字符串） - `TEXT`（长文本）<br>
-
-**日期和时间类型**： - `DATE`（日期） - `TIME`（时间） - `DATETIME`（日期和时间） - `TIMESTAMP`（时间戳）<br>
-
-**布尔类型**： - `BOOLEAN`（布尔值，通常以0或1表示）<br>
-
-**二进制类型**： - `BINARY`（二进制数据） - `VARBINARY`（可变长度二进制数据） - `BLOB`（二进制大对象）<br>
-
-**其他特殊类型**： - `ENUM`（枚举类型，可以从预定义的值列表中选择） - `SET`（集合类型，可以从预定义的值集合中选择）<br>
-
-以上仅列举了常见的MySQL数据类型，还有其他一些特定的数据类型可以根据需要使用。请注意，在创建表格时，应根据实际需求选择合适的数据类型来存储和处理数据。<br>
-
-注意⚠️⚠️⚠️：`ENUM` 和 `SET` 类型是用于在数据库中定义一组预定义的值。这意味着你只能选择列表中定义的值，并不能插入其他值。<br>
-
-**`ENUM` 类型**：`ENUM` 列定义了一个可以选择的预定义值列表。你可以在创建表格时为 `ENUM` 列指定可用值，并且只允许在该列表中选择的值。例如，你可以定义一个ENUM类型的列来表示用户的性别，只允许选择"男"或"女"这两个值。<br>
-
-**`SET` 类型**：`SET` 列定义了一个可供选择的预定义值集合。与 `ENUM` 不同，`SET` 允许你选择多个值。你可以在创建表格时为 `SET` 列指定可用的值，并从中选择一个或多个值。例如，你可以定义一个 `SET` 类型的列来表示用户的兴趣爱好，可选择的值可以是"足球"、"篮球"、"音乐"、"旅行"等。<br>
-
-当使用 `ENUM` 和 `SET` 时，确保你确实只需要从预定义的值列表中选择值。如果你需要存储不受限制的值，应该使用其他适合的数据类型，如 `VARCHAR` 或`TEXT`。<br>
-🥷🥷🥷🥷🥷🥷
+### 获取表中的内容：
