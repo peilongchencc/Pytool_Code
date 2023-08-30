@@ -18,6 +18,7 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
     - [向表中写入内容：](#向表中写入内容)
     - [更新表中的内容：](#更新表中的内容)
     - [删除表中的内容：](#删除表中的内容)
+  - [删除表：](#删除表)
   - [Python与MySQL：](#python与mysql)
     - [使用pymysql测试连接MySQL：](#使用pymysql测试连接mysql)
     - [pymysql操作数据库的关键：](#pymysql操作数据库的关键)
@@ -279,6 +280,13 @@ DELETE FROM task_monitor;
 ```
 这会从数据库中永久删除 `task_monitor` 表中的所有记录。<br>
 
+## 删除表：
+要删除某个表，需要使用 `DROP TABLE` 关键字。假设删除 `task_monitor` 表：<br>
+```sql
+DROP TABLE task_monitor;
+```
+SQL语句解释：这个示例将从数据库中永久删除 task_monitor 表及其所有数据。请谨慎使用，因为删除操作是不可逆的。在执行此操作之前，确保你没有需要保留的数据。<br>
+<br>
 
 ## Python与MySQL：
 在应用程序中，获取用户输入等信息都是存入MySQL的，怎么存呢？肯定是代码配合SQL语句。笔者主用的python，就介绍一下python与SQL语句的联合使用。如果你只是在Navicat中操作，也可以从下列python代码中复制自己需要的SQL语句进行使用。<br>
