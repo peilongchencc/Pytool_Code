@@ -271,7 +271,7 @@ finally:
 执行上述代码就可以在 `MySQL` 中名 `irmdata` 的 `database` 下创建一个 `task_monitor` 表。<br>
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/940d72e3-e339-4d93-ad33-f0eea9aa4647)
 
-相信大家已经注意到了，我写的大大的注释 `注意：task_status 字段为集合，必须选择 ('成功', '失败') 其中一项进行写入。` ，这是因为MySQL支持多种数据类型，可以根据具体需要选择适合的数据类型。以下是常见的MySQL数据类型：<br>
+相信大家已经注意到了，我写的大大的注释 `注意：task_status 字段为集合，必须选择 ('成功', '失败') 其中一项进行写入`，这是因为MySQL支持多种数据类型，可以根据具体需要选择适合的数据类型。以下是常见的MySQL数据类型：<br>
 <br>
 🥷🥷🥷🥷🥷🥷简单了解以下内容即可，需要的时候再返回这里看，刚开始一下子记住不现实。<br>
 数值类型： - `INT`（整型） - `BIGINT`（长整型） - `FLOAT`（单精度浮点型） - `DOUBLE`（双精度浮点型） - `DECIMAL`（高精度浮点型） - `TINYINT`（小整型）<br>
