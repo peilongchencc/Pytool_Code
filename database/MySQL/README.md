@@ -10,7 +10,13 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
   - [本地使用 Navicat 远程连接 MySQL ：](#本地使用-navicat-远程连接-mysql-)
   - [常用SQL语句：](#常用sql语句)
     - [创建表：](#创建表)
-    - [查看表中的内容：](#查看表中的内容)
+    - [查看表中内容：](#查看表中内容)
+      - [查看表中所有内容：](#查看表中所有内容)
+      - [查看表中部分内容：](#查看表中部分内容)
+      - [查看表中某一列的部分内容：](#查看表中某一列的部分内容)
+      - [根据表中某个字段排序，查看表中部分内容：](#根据表中某个字段排序查看表中部分内容)
+    - [向表中写入内容：](#向表中写入内容)
+    - [更新表中的内容：](#更新表中的内容)
   - [Python与MySQL：](#python与mysql)
     - [使用pymysql测试连接MySQL：](#使用pymysql测试连接mysql)
     - [pymysql操作数据库的关键：](#pymysql操作数据库的关键)
@@ -192,28 +198,71 @@ CREATE TABLE task_monitor (
 
 当使用 `ENUM` 和 `SET` 时，确保你确实只需要从预定义的值列表中选择值。如果你需要存储不受限制的值，应该使用其他适合的数据类型，如 `VARCHAR` 或`TEXT`。<br>
 🥷🥷🥷🥷🥷🥷<br>
+<br>
 
-### 查看表中的内容：
-要查看某个表中的内容需要使用到 `SELECT` 和 `FROM` 语句，假设我们要从名为task_monitor的数据库表中检索所有的列和行：：<br>
+### 查看表中内容：
+要查看某个表中的内容主要使用 `SELECT` 和 `FROM` 关键字。<br>
+
+#### 查看表中所有内容：
+假设我们要从名为 `task_monitor` 的数据库表中检索所有的列和行:<br>
 ```sql
-SELECT * FROM task_monitor
+SELECT * FROM task_monitor;
 ```
 SQL语句解释：关键字 `"SELECT"` 用于指定要检索的数据，而 `"*"` 表示所有的列。关键字 `"FROM"` 用于指定要从哪个表中检索数据，这里是 `task_monitor` 表。因此，该语句将返回 `task_monitor` 表中的所有数据。<br>
 <br>
 
-如果我们要从名为"task_monitor"的表中检索数据，并按照 `"task_execution_time"` 字段的降序排列，并只显示前3行：<br>
+#### 查看表中部分内容：
+假设我们要从名为 `task_monitor` 的数据库表中检索所有的列和行，然后将前3行内容返回:<br>
 ```sql
-SELECT * FROM task_monitor ORDER BY task_execution_time DESC LIMIT 3
+SELECT * FROM task_monitor LIMIT 3;
+```
+
+#### 查看表中某一列的部分内容：
+假设我们要从名为 `task_monitor` 的数据库表中检索 `task_command` 列，然后将前3行内容返回:<br>
+```sql
+SELECT task_command FROM task_monitor LIMIT 3;
+```
+
+#### 根据表中某个字段排序，查看表中部分内容：
+如果我们要从名为 `"task_monitor"` 的表中检索数据，并按照 `"task_execution_time"` 字段的降序排列，并只显示前3行：<br>
+```sql
+SELECT * FROM task_monitor ORDER BY task_execution_time DESC LIMIT 3;
 ```
 SQL语句解释：<br>
 `"SELECT "`: 这表示从表中选择所有的列。如果你想选择特定的列，可以将星号 `*` 替换为列名。<br>
 `"FROM task_monitor"`: 这表示你从名为 `"task_monitor"` 的表中进行数据检索。`"task_monitor"` 是表的名称，你可以根据自己的表名进行相应替换。<br>
 `ORDER BY` 是一个SQL关键字，用于按照特定的列对查询结果进行排序。通过指定一个或多个列作为排序规则，可以控制结果行的顺序。<br>
 `"ORDER BY task_execution_time DESC"`: 这表示使用 `"task_execution_time"` 字段对结果进行降序排序。DESC关键字指定降序排序，如果不写，默认为升序（ASC）排序。`ORDER` 表示顺序、排序，`DESCENDING` 表示降序，`ASCENDING` 表示升序，这个命令应该很好理解。<br>
-`"LIMIT 3"``: 这表示只返回前3行结果。你可以更改数字来返回所需数量的行数。
-综上所述，这个SQL语句的结果将返回 `"task_monitor"` 表中前3个根据 `"task_execution_time"`字段降序排列的记录。
+`"LIMIT 3"`: 这表示只返回前3行结果。你可以更改数字来返回所需数量的行数。<br>
+综上所述，这个SQL语句的结果将返回 `"task_monitor"` 表中前3个根据 `"task_execution_time"`字段降序排列的记录。<br>
 
+### 向表中写入内容：
+要向MySQL某个表写入内容主要使用 `INSERT INTO` 和 `VALUES` 关键字。<br>
+假设我们要向名为 `task_monitor` 的表中写入数据：<br>
+```sql
+INSERT INTO task_monitor (task_id, task_description, task_command, task_status, task_execution_time, log_path) 
+VALUES (1, '任务1', '命令1', '成功', '2022-01-01 12:00:00', '/logs/task1.log');
+```
+<br>
 
+### 更新表中的内容：
+更新MySQL某个表的内容，主要使用 `UPDATE` 、`SET` 和 `WHERE` 关键字。<br>
+```sql
+UPDATE task_monitor SET task_status = '失败', 
+task_execution_time = '2022-01-02 10:00:00' WHERE task_id = 1;
+```
+SQL语句解释：这个示例将更新 `task_monitor` 表中 `task_id` 为 `1` 的记录的任务状态为 `'失败'`，以及任务执行时间为 `'2022-01-02 10:00:00'`。你可以根据需要更新其他字段的值，并使用 `WHERE` 子句来指定要更新的记录的条件。
+🚨🚨🚨注意字段字段之间要用逗号隔开，如：`SET task_status = '失败', task_execution_time = '2022-01-02 10:00:00'` ‼️‼️‼️<br>
+<br>
+
+再来个例子，假设只想更新这个表中 `'task_command'` 列所有为 `python app.py` 的数据呢？<br>
+```sql
+UPDATE task_monitor SET task_status = '失败', task_execution_time = '2022-01-02 10:00:00' 
+WHERE task_command = 'python app.py';
+```
+> SQL语句支持断句的，看着怎么方便怎么来即可～
+
+SQL语句解释：这个示例将更新 `task_monitor` 表中 `'task_command'` 列为 `'python app.py'` 的记录的任务状态为 `'失败'`，以及任务执行时间为 `'2022-01-02 10:00:00'`。只有满足 `WHERE` 子句条件的记录会被更新。你可以根据需要更新其他字段的值。<br>
 
 ## Python与MySQL：
 在应用程序中，获取用户输入等信息都是存入MySQL的，怎么存呢？肯定是代码配合SQL语句。笔者主用的python，就介绍一下python与SQL语句的联合使用。如果你只是在Navicat中操作，也可以从下列python代码中复制自己需要的SQL语句进行使用。<br>
