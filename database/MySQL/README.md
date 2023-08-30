@@ -164,7 +164,7 @@ CREATE TABLE task_monitor (
 );
 ```
 如果要在 Navicat 中使用，先点击查询，然后点击 `"+"` 号，新建查询，选择对应的数据库即可。<br>
-<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/6943e85a-8fbd-42b9-9196-bfef558c780a" alt="image" width="50%" height="50%">
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/6943e85a-8fbd-42b9-9196-bfef558c780a" alt="image" width="20%" height="20%">
 
 相信大家已经注意到了，对于不同的列，我使用了不同的数据类型，这是因为MySQL支持多种数据类型，可以根据具体需要选择适合的数据类型。以下是常见的MySQL数据类型：<br>
 <br>
