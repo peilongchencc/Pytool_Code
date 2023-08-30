@@ -17,6 +17,7 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
       - [根据表中某个字段排序，查看表中部分内容：](#根据表中某个字段排序查看表中部分内容)
     - [向表中写入内容：](#向表中写入内容)
     - [更新表中的内容：](#更新表中的内容)
+    - [删除表中的内容：](#删除表中的内容)
   - [Python与MySQL：](#python与mysql)
     - [使用pymysql测试连接MySQL：](#使用pymysql测试连接mysql)
     - [pymysql操作数据库的关键：](#pymysql操作数据库的关键)
@@ -263,6 +264,21 @@ WHERE task_command = 'python app.py';
 > SQL语句支持断句的，看着怎么方便怎么来即可～
 
 SQL语句解释：这个示例将更新 `task_monitor` 表中 `'task_command'` 列为 `'python app.py'` 的记录的任务状态为 `'失败'`，以及任务执行时间为 `'2022-01-02 10:00:00'`。只有满足 `WHERE` 子句条件的记录会被更新。你可以根据需要更新其他字段的值。<br>
+<br>
+
+### 删除表中的内容：
+更新MySQL某个表的内容，主要使用 `DELETE` 和 `WHERE` 关键字。请谨慎使用，因为删除操作是不可逆的🚨🚨🚨<br>
+```sql
+DELETE FROM task_monitor WHERE task_id = 1;
+```
+SQL语句解释：这个示例将删除 `task_monitor` 表中 `task_id` 为 `1` 的记录。你可以根据需要使用不同的条件来删除符合条件的记录。<br>
+
+如果你想删除整个表中的内容，而不是其中的特定记录，可以使用以下语句：<br>
+```sql
+DELETE FROM task_monitor;
+```
+这会从数据库中永久删除 `task_monitor` 表中的所有记录。<br>
+
 
 ## Python与MySQL：
 在应用程序中，获取用户输入等信息都是存入MySQL的，怎么存呢？肯定是代码配合SQL语句。笔者主用的python，就介绍一下python与SQL语句的联合使用。如果你只是在Navicat中操作，也可以从下列python代码中复制自己需要的SQL语句进行使用。<br>
