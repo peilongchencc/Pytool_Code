@@ -1,6 +1,28 @@
 # Python Basci Grammar
 介绍 python 基本语法、常见函数的使用与笔者常用的感觉非常方便的python库。python 类由于其复杂性，单独创建一个文件夹讲解。<br>
 
+## pip 查看某个库的版本：
+假设你要查询 `pandas` 库的详细信息：<br>
+```shell
+pip show pandas
+```
+如果你已经安装了这个库，将显示类似下面的信息：<br>
+```txt
+(nudge_new) root@iZ2zea5v77oawjy2qz7c20Z:/data/Pytool_Code# pip show pandas
+Name: pandas
+Version: 1.5.3
+Summary: Powerful data structures for data analysis, time series, and statistics
+Home-page: https://pandas.pydata.org
+Author: The Pandas Development Team
+Author-email: pandas-dev@python.org
+License: BSD-3-Clause
+Location: /root/anaconda3/envs/nudge_new/lib/python3.10/site-packages
+Requires: numpy, python-dateutil, pytz
+Required-by: 
+```
+了解相信的信息有时很有用，例如可以根据 `Home-page` 的链接访问原网页，查询该库的更多细节。尤其是对于用户较少的某些库，例如 `snowflake-id`。
+
+
 ## 字典(dict):
 python中字典支持以数字作为键，但不推荐这种写法，毕竟我们也代码要考虑可读性，单纯的数字作为 `key` 自己或同时并不能看出代码的含义。<br>
 ```python
