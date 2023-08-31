@@ -24,6 +24,7 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [MERGE创建三元组：](#merge创建三元组)
     - [CREATE的必要性：](#create的必要性)
     - [为2个节点创建多个关系：](#为2个节点创建多个关系)
+    - [更新Neo4j中的实体和关系：](#更新neo4j中的实体和关系)
 
 ## Neo4j的安装：
 ### 更新系统软件包信息：
@@ -290,6 +291,13 @@ MATCH (n) RETURN n
 MATCH ()-[r]->() RETURN r
 ```
 
+如果你想要查看含有 `catch` 关系的所有节点，可以使用：
+```sql
+MATCH (m)-[r:catch]->(n)
+RETURN m,n,r
+```
+
+
 如果你想按节点`n`的`name`属性排序，你可以这样写：<br>
 ```sql
 MATCH (n)-[r]->(m)
@@ -390,4 +398,32 @@ Neo4j效果：<br>
 
 你可能注意到了，我这里使用的变量名为 `zhangsan`、`lisi`，不是前面经常使用的 `m,n,r`，这是因为在Cypher中，变量名的选择完全取决于开发者的个人习惯和上下文。🤣🤣🤣<br>
 
+为了避免遗忘，这里我们再回顾一下查询，假设你要查询含有 `领导` 关系的所有节点，你只需要输入以下语句即可：<br>
+```sql
+MATCH (m)-[r:领导]->(n)
+RETURN m,n,r
+```
+
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/cc3083d9-4c93-4924-8695-4b440c7bce6b" alt="image" width="40%" height="40%">
+
+别被 `Graph` 吓到了，从 `Text` 选项我们可以看到，返回的内容是正确的～🌿🌿🌿🤭🤭🤭<br>
+
+### 更新Neo4j中的实体和关系：
+假如现在张三和李四的姐姐离婚了，你要将张三和李四的 `姐夫` 关系改为 `前姐夫`，运行下列语句即可：<br>
+```sql
+MATCH (zhangsan:Person {name: '张三'})-[rel:姐夫]->(lisi:Person {name: '李四'})
+DELETE rel
+CREATE (zhangsan)-[:前姐夫]->(lisi)
+```
+‼️‼️注意，Neo4j不支持直接重命名关系类型，所以这里的方法是删除旧的关系并创建一个新的关系。<br>
+
+
+
+
+假设现在李四觉得自己的名字不好听，改名了，改成了 `李斯`，你可以运行下列语句更新数据：<br>
+```sql
+MATCH (lisi:Person {name: '李四'})
+SET lisi.name = '李斯'
+RETURN lisi
+```
+‼️‼️注意，更改属性时需要点击实体或知道创建语句，知道 `实体名称` 对应的是属性名，由上文可知，这里的 `李四` 是实体类型为 `Person` 的 `name` 属性。<br>
