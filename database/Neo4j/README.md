@@ -210,6 +210,8 @@ neo4j console
 ```sql
 CREATE (:Person {name: "John"})-[:KNOWS]->(:Person {name: "Jane"})
 ```
+效果如下：<br>
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/92309f1b-8354-4e7f-80f4-04443577cbff)
 
 查看写入Neo4j的结果：<br>
 ```sql
