@@ -13,6 +13,7 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [开启服务器端口：](#开启服务器端口)
     - [启动/关闭 Neo4j 数据库：](#启动关闭-neo4j-数据库)
     - [Neo4j Desktop 连接远程Neo4j数据库：](#neo4j-desktop-连接远程neo4j数据库)
+  - [终端Neo4j常用指令：](#终端neo4j常用指令)
   - [Neo4j常用语句：](#neo4j常用语句)
 
 ## Neo4j的安装：
@@ -148,9 +149,35 @@ Trying 8.140.203.xxx...
 Connected to 8.140.203.xxx
 Escape charcter is '^]'.
 ```
-也可以通过域名连接，例如：<br>
+也可以通过域名测试连接状态，例如：<br>
 ```shell
 telnet my_server.com 7474
+```
+
+## 终端Neo4j常用指令：
+启动Neo4j数据库作为后台服务:<br>
+```shell
+neo4j start
+```
+停止Neo4j数据库服务:<br>
+```shell
+neo4j stop
+```
+重新启动Neo4j数据库服务:<br>
+```shell
+neo4j restart
+```
+检查Neo4j数据库服务的状态:<br>
+```shell
+neo4j status
+```
+显示Neo4j的版本信息:<br>
+```shell
+neo4j version
+```
+以控制台模式查看 Neo4j 数据库基本信息:<br>
+```shell
+neo4j console 
 ```
 
 ## Neo4j常用语句：
