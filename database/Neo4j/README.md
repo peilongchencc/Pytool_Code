@@ -4,6 +4,8 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
 虽然Neo4j是基于Java的软件，但不妨碍我们python用户使用🤣🤣🤣。接下来，笔者就讲一下 Ubuntu 18.4 安装Neo4j 4.1.0和Neo4j的使用经验。<br>
 - [Neo4j](#neo4j)
   - [Neo4j的安装：](#neo4j的安装)
+    - [更新系统软件包信息：](#更新系统软件包信息)
+    - [安装jdk11:](#安装jdk11)
     - [下载安装包：](#下载安装包)
     - [安装包上传/移动到指定位置：](#安装包上传移动到指定位置)
     - [解压tar.gz文件：](#解压targz文件)
@@ -14,9 +16,32 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [启动/关闭 Neo4j 数据库：](#启动关闭-neo4j-数据库)
     - [Neo4j Desktop 连接远程Neo4j数据库：](#neo4j-desktop-连接远程neo4j数据库)
   - [终端Neo4j常用指令：](#终端neo4j常用指令)
-  - [Neo4j常用语句：](#neo4j常用语句)
+  - [Neo4j Desktop 中常用Cypher语句：](#neo4j-desktop-中常用cypher语句)
 
 ## Neo4j的安装：
+### 更新系统软件包信息：
+终端输入以下指令：<br>
+```shell
+sudo apt update
+```
+不用担心，这一步只是让系统确认安装的包的信息，并不会更新或改变包的版本。<br>
+
+### 安装jdk11:
+安装 Java 运行时环境（JRE），Neo4j 需要 Java 运行。运行以下命令安装 OpenJDK 11<br>
+```shell
+sudo apt install openjdk-11-jre
+```
+如果你使用的不同系统，注意jdk版本是否与自己的系统兼容～🌿🌿🌿<br>
+
+上述指令运行成功后，输入以下指令查看jdk版本信息：<br>
+```shell
+java -version
+```
+此时终端应该可以看到以下信息：<br>
+```txt
+openjdk version "11.0.19"
+```
+
 ### 下载安装包：
 要安装Neo4j，首先要确定适合自己的版本，Ubuntu 18.4 的用户直接访问下方链接下载 Neo4j 4.1.0 版本即可。<br>
 ```txt
@@ -180,4 +205,27 @@ neo4j version
 neo4j console 
 ```
 
-## Neo4j常用语句：
+## Neo4j Desktop 中常用Cypher语句：
+创建一个三元组：<br>
+```sql
+CREATE (:Person {name: "John"})-[:KNOWS]->(:Person {name: "Jane"})
+```
+```sql
+MATCH (n) RETURN n
+```
+
+查看写入Neo4j的结果：<br>
+```sql
+MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 25
+```
+上述指令将返回随机的25个节点和关系。<br>
+
+如果你想要查看Neo4j中所有节点和关系，可以使用：<br>
+```sql
+MATCH (n)-[r]->(m) RETURN n, r, m
+```
+
+如果你只是想要查看所有关系，可以使用：<br>
+```sql
+MATCH ()-[r]->() RETURN r
+```
