@@ -295,4 +295,4 @@ LIMIT 25
 ```
 
 Neo4j中效果如下：<br>
-![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/ec50592e-1b2a-4e6c-ba9b-a596ab00dce2)
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/ec50592e-1b2a-4e6c-ba9b-a596ab00dce2" alt="image" width="50%" height="50%">
