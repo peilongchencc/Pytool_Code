@@ -243,6 +243,9 @@ RETURN m,r,n
 
 所以，这条Cypher语句的大致意思是：“创建一个名为`Tom`的`Leading_role`类型节点，一个名为`Jerry`的`supporting_role`类型节点，并在它们之间创建一个类型为`catch`的关系。之后返回创建的实体与关系。”。<br>
 <br>
+Neo4j中效果如下：<br>
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/e78e22cd-fe02-4115-a0ba-df5529bbf9a2" alt="image" width="30%" height="30%">
+<br>
 
 查询时可以选择忽略关系方向，视为无向关系：<br>
 ```sql
@@ -253,8 +256,6 @@ MATCH (m:Leading_role {name: 'Tom'})-[r:catch]-(n:supporting_role {name: 'Jerry'
 
 总之，虽然在创建时必须指定关系的方向，但在查询时你可以选择视其为无向关系。<br>
 
-Neo4j中效果如下：<br>
-<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/b08d76c7-68bd-47d9-9f45-a10b291520a9" alt="image" width="30%" height="30%">
 
 查看写入Neo4j的结果：<br>
 ```sql
