@@ -425,5 +425,8 @@ MATCH (lisi:Person {name: '李四'})
 SET lisi.name = '李斯'
 RETURN lisi
 ```
-‼️‼️注意，更改属性时需要点击实体或知道创建语句，知道 `实体名称` 对应的是属性名，由上文可知，这里的 `李四` 是实体类型为 `Person` 的 `name` 属性。<br>
+‼️‼️注意，更改属性时需要点击实体或知道创建语句，知道 `实体名称` 对应的属性名称。例如 `李四` 是实体类型为 `Person` 的 `name` 属性。<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/d3e7d7d7-87ee-401f-a463-59922d60c8e7" alt="image" width="30%" height="30%">
+<br>
+
+那如何将李斯的实体类型改为Actor，属性name改为true_name呢？<br>
