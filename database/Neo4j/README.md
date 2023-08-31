@@ -389,4 +389,5 @@ Neo4j效果：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/26e4c2f1-f5eb-4ec5-b66c-d3a55cf70ffe" alt="image" width="30%" height="30%">
 
 你可能注意到了，我这里使用的变量名为 `zhangsan`、`lisi`，不是前面经常使用的 `m,n,r`，这是因为在Cypher中，变量名的选择完全取决于开发者的个人习惯和上下文。🤣🤣🤣<br>
-<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/17143b0b-8ffb-4e77-be01-3bcc96cce407" alt="image" width="40%" height="40%">
+
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/cc3083d9-4c93-4924-8695-4b440c7bce6b" alt="image" width="40%" height="40%">
