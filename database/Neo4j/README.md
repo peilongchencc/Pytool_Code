@@ -246,7 +246,7 @@ RETURN m,r,n
 Neo4j中效果如下：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/e78e22cd-fe02-4115-a0ba-df5529bbf9a2" alt="image" width="30%" height="30%">
 节点或关系颜色可以通过点击对应图标设置：<br>
-![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/45fb1c3d-8e82-4cb8-8c2f-80f267787e7f)
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/45fb1c3d-8e82-4cb8-8c2f-80f267787e7f" alt="image" width="30%" height="30%">
 <br>
 
 查询时可以选择忽略关系方向，视为无向关系：<br>
