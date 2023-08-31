@@ -318,6 +318,10 @@ RETURN m,r,n
 CREATE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '王五'})
 RETURN m,r,n
 ```
+Neo4j效果：<br>
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/db837467-b0cd-4d20-8511-863641efa6a1" alt="image" width="30%" height="30%">
+
+
 如果你是想将2组关系关联起来，需要使用关键子字 `MERGE` ：<br>
 ```sql
 // 首先检查张三的节点是否存在，如果不存在，会创建一个名为张三的节点
