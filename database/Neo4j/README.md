@@ -322,7 +322,7 @@ Neo4j效果：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/db837467-b0cd-4d20-8511-863641efa6a1" alt="image" width="30%" height="30%">
 
 
-如果你是想将2组关系关联起来，需要使用关键子字 `MERGE` ：<br>
+如果你是想将2组关系关联起来，需要使用关键字 `MERGE` ：<br>
 ```sql
 // 首先检查张三的节点是否存在，如果不存在，会创建一个名为张三的节点
 MERGE (m:Person {name: '张三'})
@@ -335,7 +335,8 @@ MERGE (m)-[r2:知道]->(n2:Person {name: '王五'})
 
 RETURN m, r1, n1, r2, n2
 ```
-
+Neo4j效果：<br>
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/742ff813-972f-4e18-b277-460ae5a4be56" alt="image" width="30%" height="30%">
 
 以下是使用 CREATE 的一些必要性和场景：
 
