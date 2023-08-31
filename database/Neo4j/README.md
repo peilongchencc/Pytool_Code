@@ -12,6 +12,7 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [修改环境变量:](#修改环境变量)
     - [开启服务器端口：](#开启服务器端口)
     - [启动/关闭 Neo4j 数据库：](#启动关闭-neo4j-数据库)
+    - [Neo4j Desktop 连接远程Neo4j数据库：](#neo4j-desktop-连接远程neo4j数据库)
   - [Neo4j常用语句：](#neo4j常用语句)
 
 ## Neo4j的安装：
@@ -105,10 +106,8 @@ source ~/.bashrc
 ```
 
 ### 开启服务器端口：
-以阿里云服务器为例，
+以阿里云服务器为例，按照下图所示，依次开放 `7474` 和 `7687` 端口即可。🥴🥴🥴<br>
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/af9f8f1c-44a9-4af6-ac24-73dce3609bcd)
-
-
 
 ### 启动/关闭 Neo4j 数据库：
 此时你就可以终端输入以下指令启动 Neo4j 数据库了：<br>
@@ -119,6 +118,13 @@ neo4j start
 ```shell
 netstat -tuln
 ```
+<br>
+如果你想要关闭 Neo4j 数据库，使用以下指令：<br>
+```shell
+neo4j stop
+```
+
+### Neo4j Desktop 连接远程Neo4j数据库：
 此时你应该能看到7474和7687端口的监听地址为：`:::7474`、`:::7687`，现在你就可以本地通过 Neo4j Desktop 连接到远程服务器部署的Neo4j了。输入用户名和密码后，`Connect URL` 输入类似下列内容即可：<br>
 ```txt
 neo4j://8.140.203.xxx:7687
@@ -126,10 +132,24 @@ neo4j://8.140.203.xxx:7687
 效果如下：<br>
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/76e88574-2a60-40e2-9006-7cfeb27a1665)
 
+你也可以本地通过 `telnet` 查看连接状态：<br>
+> 不能使用 `ping` 测试的，`ping` 无法指定端口。
 
-如果你想要关闭 Neo4j 数据库，使用以下指令：<br>
 ```shell
-neo4j stop
+telnet 8.140.203.xxx 7474
+```
+```shell
+telnet 8.140.203.xxx 7687
+```
+如果出现以下内容，表示成功连接:<br>
+```txt
+Trying 8.140.203.xxx...
+Connected to 8.140.203.xxx
+Escape charcter is '^]'.
+```
+也可以通过域名连接，例如：<br>
+```shell
+telnet my_server.com 7474
 ```
 
 ## Neo4j常用语句：
