@@ -17,10 +17,11 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [Neo4j Desktop 连接远程Neo4j数据库：](#neo4j-desktop-连接远程neo4j数据库)
   - [终端Neo4j常用指令：](#终端neo4j常用指令)
   - [Neo4j Desktop 中常用Cypher语句：](#neo4j-desktop-中常用cypher语句)
-    - [创建有向关系示例：](#创建有向关系示例)
+    - [CREATE创建有向关系示例：](#create创建有向关系示例)
     - [查询创建的节点和关系：](#查询创建的节点和关系)
     - [常用查询语句：](#常用查询语句)
-    - [创建中文三元组：](#创建中文三元组)
+    - [CREATE创建中文三元组：](#create创建中文三元组)
+    - [MERGE创建三元组：](#merge创建三元组)
 
 ## Neo4j的安装：
 ### 更新系统软件包信息：
@@ -212,9 +213,10 @@ neo4j console
 ## Neo4j Desktop 中常用Cypher语句：
 在Neo4j中，关系是有向的‼️‼️‼️。这意味着当你创建一个关系时，你必须指定它的方向🥶🥶🥶。然而，当查询这些关系时，你可以选择忽略方向🥴🥴🥴。<br>
 
-### 创建有向关系示例：
+### CREATE创建有向关系示例：
 假设你想创建一个描述 `汤姆抓杰瑞` 的三元组信息，你可以使用以下指令：<br>
 ```sql
+// 汤姆抓杰瑞，neo4j支持以 "//" 作为注释
 CREATE (m:Leading_role {name: 'Tom'})-[r:catch]->(n:supporting_role {name: 'Jerry'})
 RETURN m,r,n
 ```
@@ -294,7 +296,7 @@ ORDER BY n.name
 LIMIT 25
 ```
 
-### 创建中文三元组：
+### CREATE创建中文三元组：
 Neo4j中的关系类型、节点标签以及属性的键和值都支持中文字符。你可以使用中文字符来定义关系类型或属性名称:<br>
 ```sql
 CREATE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '李四'})
@@ -302,3 +304,36 @@ RETURN m,r,n
 ```
 Neo4j中效果如下：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/ec50592e-1b2a-4e6c-ba9b-a596ab00dce2" alt="image" width="30%" height="30%">
+
+### MERGE创建三元组：
+`CREATE` 和 `MERGE` 都是用于在Neo4j中创建数据的命令，`CREATE` 更关注于直接创建，`MERGE` 更关注于检查Neo4j中是否有重复数据。<br>
+举例来说，当你依次运行下面两个语句时，会在Neo4j中创建2个张三节点，而不是关联了2组关系。<br>
+```sql
+// 语句1
+CREATE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '李四'})
+RETURN m,r,n
+```
+```sql
+// 语句2
+CREATE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '王五'})
+RETURN m,r,n
+```
+
+
+
+
+以下是使用 CREATE 的一些必要性和场景：
+
+明确性：当你知道要创建的节点或关系绝对不在数据库中时，使用CREATE可以明确地表示这一点。这在语义上为读代码的人提供了清晰性。
+
+性能：在某些情况下，CREATE 可能比 MERGE 更快，因为它不需要先检查节点或关系是否已存在。
+
+数据导入：当从没有重复数据的来源导入数据时，使用 CREATE 是有意义的。
+
+临时或测试数据：当需要插入临时或测试数据并且不担心数据重复时，CREATE 是一个好选择。
+
+特定的模型设计：在某些图形模型设计中，可能需要允许具有相同属性的多个节点存在。在这种情况下，CREATE 可以确保总是创建一个新节点，而不是复用现有节点。
+
+错误处理和事务：MERGE 在找不到预期的模式时可能会导致意外的结果（例如，如果预期是复用现有的节点，但实际上创建了一个新的）。使用 CREATE 可以为你提供更具预测性的错误处理。
+
+总的来说，尽管 MERGE 提供了确保数据唯一性的功能，但 CREATE 仍然在很多场景下是有必要的。选择使用哪一个取决于你的具体需求和上下文。
