@@ -1,4 +1,15 @@
 # Git
+- [Git](#git)
+  - [声明：](#声明)
+  - [git 和 github、gitlab 的区别：](#git-和-githubgitlab-的区别)
+  - [场景：git如何查看自己本地文件夹对应的是哪个远程仓库？](#场景git如何查看自己本地文件夹对应的是哪个远程仓库)
+  - [场景：git如何查看自己所在的分支与所有分支(包含git远程仓库的分支)？](#场景git如何查看自己所在的分支与所有分支包含git远程仓库的分支)
+  - [场景：git如何放弃当前分支上一次提交到现在的所有修改，自上一次提交到现在，我还没有commit过。](#场景git如何放弃当前分支上一次提交到现在的所有修改自上一次提交到现在我还没有commit过)
+  - [场景：为什么我把要忽略的内容写入了gitignore，git push时还是把gitignore中的内容上传了？是有什么操作顺序吗？](#场景为什么我把要忽略的内容写入了gitignoregit-push时还是把gitignore中的内容上传了是有什么操作顺序吗)
+    - [原因：](#原因)
+    - [解决方案：](#解决方案)
+  - [git pull 提示以下信息该怎么做：](#git-pull-提示以下信息该怎么做)
+
 ## 声明：
 因 git 的作为工具的特性，将 git 置于特定场景下更便于理解 git 的使用，所以本篇教程采用🧜‍♂️🧜‍♂️🧜‍♂️**场景**🧜‍♂️🧜‍♂️🧜‍♂️的形式介绍 git 的使用。
 
@@ -58,3 +69,36 @@ git rm --cached .
 5. 检查 `.gitignore` 中的内容是否正确；
 6. 执行 `git add .`,`git commit -m "xxx"`,`git push`操作，现在远程仓库中你不想上传的内容已经删除了。
 7. 本地，将刚刚备份的内容移回本仓库；此时你再执行`git add .`,`git commit -m "xxx"`,`git push`操作将不会把对应的内容上传至 github 远程仓库。
+
+## git pull 提示以下信息该怎么做：
+```txt
+  GNU nano 2.9.3                                                               /data/Pytool_Code/.git/MERGE_MSG                                                                         
+
+Merge branch 'main' of github.com:peilongchencc/Pytool_Code into main
+
+# Please enter a commit message to explain why this merge is necessary,
+# especially if it merges an updated upstream into a topic branch.
+#
+# Lines starting with '#' will be ignored, and an empty message aborts
+# the commit.
+
+                                                                                    [ Read 7 lines ]
+^G Get Help     ^O Write Out    ^W Where Is     ^K Cut Text     ^J Justify      ^C Cur Pos      M-U Undo        M-A Mark Text   M-] To Bracket  M-▲ Previous    ^B Back
+^X Exit         ^R Read File    ^\ Replace      ^U Uncut Text   ^T To Spell     ^_ Go To Line   M-E Redo        M-6 Copy Text   M-W WhereIs NextM-▼ Next        ^F Forward
+```
+你正处于一个合并冲突的状态，并且Git已经打开了一个文本编辑器（在这里是`nano`）让你输入合并提交的信息。<br>
+
+以下是你可以采取的步骤：<br>
+```txt
+1. 在该编辑器中，你可以修改提交信息或者使用默认的提交信息。
+2. 如果你想使用默认的提交信息，只需确保不删除任何内容，直接保存并退出即可。
+3. 保存并退出`nano`的方法是按下`^O` (这意味着同时按下“Control”和“O”键)。这会询问你是否要写入更改，按“Enter”键确认。
+4. 然后按下`^X` (这意味着同时按下“Control”和“X”键)来退出`nano`。
+```
+完成上述步骤后，你的合并提交就会完成。但是，如果在`git pull`时出现了冲突，你可能需要解决这些冲突才能继续。要检查是否有冲突，可以运行：<br>
+
+```shell
+git status
+```
+
+如果看到有冲突的文件，需要手动编辑这些文件来解决冲突，然后继续提交。<br>
