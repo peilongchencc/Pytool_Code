@@ -416,9 +416,8 @@ DELETE rel
 CREATE (zhangsan)-[:前姐夫]->(lisi)
 ```
 ‼️‼️注意，Neo4j不支持直接重命名关系类型，所以这里的方法是删除旧的关系并创建一个新的关系。<br>
-
-
-
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/4e9f6183-a2bc-4f2d-9e37-a238c021cbba" alt="image" width="30%" height="30%">
+<br>
 
 假设现在李四觉得自己的名字不好听，改名了，改成了 `李斯`，你可以运行下列语句更新数据：<br>
 ```sql
@@ -427,3 +426,4 @@ SET lisi.name = '李斯'
 RETURN lisi
 ```
 ‼️‼️注意，更改属性时需要点击实体或知道创建语句，知道 `实体名称` 对应的是属性名，由上文可知，这里的 `李四` 是实体类型为 `Person` 的 `name` 属性。<br>
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/d3e7d7d7-87ee-401f-a463-59922d60c8e7" alt="image" width="30%" height="30%">
