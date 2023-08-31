@@ -208,21 +208,23 @@ neo4j console
 
 ## Neo4j Desktop 中常用Cypher语句：
 ### 创建三元组：
-在Neo4j中，关系是有向的。这意味着当你创建一个关系时，你必须指定它的方向🥶🥶🥶。然而，当查询这些关系时，你可以选择忽略方向🥴🥴🥴。<br>
+在Neo4j中，关系是有向的‼️‼️‼️。这意味着当你创建一个关系时，你必须指定它的方向🥶🥶🥶。然而，当查询这些关系时，你可以选择忽略方向🥴🥴🥴。<br>
 
 虽然物理存储的关系是有向的，但你可以通过查询时的方式来看待它们为无向关系。<br>
 
 创建有向关系示例：<br>
-```cypher
-CREATE (m:Leading role {name: 'Tom'})-[r:catch]->(n:supporting role {name: 'Jerry'})
+```sql
+CREATE (m:Leading_role {name: 'Tom'})-[r:catch]->(n:supporting_role {name: 'Jerry'})
 RETURN m,r,n
 ```
+> 注意变量名不能以空格为间隔，`Leading role` 会报错，需要使用 `Leading_role` 或 `LeadingRole` 形式。
+
 上述语句的情境为 `汤姆抓杰瑞`，接下来详细解释下上述语句：<br>
 `CREATE`: 这是一个Cypher命令，用于创建节点或关系。<br>
-`(m:Person {name: 'Tom'})`: <br>
-- 此处创建了一个名为`Tom`的`Person`类型节点。<br>
+`(m:Leading_role {name: 'Tom'})`: <br>
+- 此处创建了一个名为`Tom`的`Leading_role`类型节点。<br>
 - `(m)`表示节点的变量名或引用🔥🔥🔥，这样在后面的查询中你可以使用这个变量名引用该节点。<br>
-- `:Person` 表示节点的标签，标签通常用来表示**节点的类型或类别**。🌿🌿🌿<br>
+- `:Leading_role` 表示节点的标签，标签通常用来表示**节点的类型或类别**。🌿🌿🌿<br>
 - `{name: 'Tom'}` 是节点的属性，这里定义了一个名为`name`的属性，其值为`Tom`。<br>
 
 `-[r:catch]->`: <br>
@@ -230,32 +232,27 @@ RETURN m,r,n
 - `-[]->` 是一个关系的模式，其中`-`表示开始节点，`->`表示关系的方向，指向结束节点。<br>
 - `[r:catch]` 中，`r`是关系的变量名🔥🔥🔥，`:catch`是关系的类型。<br>
 
-`(n:Object {name: 'Jerry'})`: <br>
-- 此处创建了一个名为`Jerry`的`Object`类型节点。<br>
+`(n:supporting_role {name: 'Jerry'})`: <br>
+- 此处创建了一个名为`Jerry`的`supporting_role`类型节点。<br>
 - `(n)`表示节点的变量名。<br>
-- `:Object` 是节点的标签。<br>
+- `:supporting_role` 是节点的标签。<br>
 - `{name: 'Jerry'}` 是节点的属性。<br>
 
 `RETURN m,r,n`:<br>
 - 在执行完上述创建操作后，返回创建的节点`m`和`n`以及关系`r`作为结果。<br>
 
-所以，这条Cypher语句的大致意思是：“创建一个名为`Tom`的`Person`类型节点，一个名为`Jerry`的`Object`类型节点，并在它们之间创建一个类型为`catch`的关系。之后返回创建的实体与关系。”。<br>
+所以，这条Cypher语句的大致意思是：“创建一个名为`Tom`的`Leading_role`类型节点，一个名为`Jerry`的`supporting_role`类型节点，并在它们之间创建一个类型为`catch`的关系。之后返回创建的实体与关系。”。<br>
+<br>
 
-
-1. 查询时忽略关系方向，视为无向关系：
-```cypher
-MATCH (a:Node {name: 'A'})-[r:RELATES_TO]-(b:Node {name: 'B'})
-RETURN a,b,r
-```
-
-在上述查询中，由于我们在关系模式 `-[r:RELATES_TO]-` 中没有指定箭头，因此该查询将返回与节点A通过`RELATES_TO`关系连接的任何节点，无论该关系的实际方向如何。
-
-总之，虽然在创建时必须指定关系的方向，但在查询时你可以选择视其为无向关系。
-
-创建一个三元组：<br>
+查询时可以选择忽略关系方向，视为无向关系：<br>
 ```sql
-CREATE (:Person {name: "John"})-[:KNOWS]->(:Person {name: "Jane"})
+MATCH (m:Leading_role {name: 'Tom'})-[r:catch]-(n:supporting_role {name: 'Jerry'})
 ```
+
+在上述查询中，由于我们在关系模式 `-[r:catch]-` 中没有指定箭头，但返回的信息，无论该关系的实际方向如何。
+
+总之，虽然在创建时必须指定关系的方向，但在查询时你可以选择视其为无向关系。<br>
+
 Neo4j中效果如下：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/b08d76c7-68bd-47d9-9f45-a10b291520a9" alt="image" width="30%" height="30%">
 
