@@ -286,8 +286,7 @@ MATCH (n) RETURN n
 MATCH ()-[r]->() RETURN r
 ```
 
-如果你想按节点`n`的`name`属性排序，你可以这样写：
-
+如果你想按节点`n`的`name`属性排序，你可以这样写：<br>
 ```sql
 MATCH (n)-[r]->(m)
 RETURN n, r, m
@@ -296,5 +295,10 @@ LIMIT 25
 ```
 
 ### 创建中文三元组：
+Neo4j中的关系类型、节点标签以及属性的键和值都支持中文字符。你可以使用中文字符来定义关系类型或属性名称:<br>
+```sql
+CREATE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '李四'})
+RETURN m,r,n
+```
 Neo4j中效果如下：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/ec50592e-1b2a-4e6c-ba9b-a596ab00dce2" alt="image" width="30%" height="30%">
