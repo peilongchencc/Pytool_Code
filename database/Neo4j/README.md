@@ -12,7 +12,7 @@ https://we-yun.com/doc/neo4j/   # 国内镜像源，微云数聚的仓库，内�
 
 ### 安装包上传/移动到指定位置：
 将 `neo4j-community-4.1.0-unix.tar.gz` 文件上传/移动到你希望安装 Neo4j 的目录，这里推荐移动/上传到 `/opt` 目录下。<br>
-> 为什么推荐将Neo4j移动到`/opt`目录中？🥹🥹🥹
+> 为什么推荐将Neo4j移动到`/opt`目录中？🥹🥹🥹<br>
 > 将Neo4j移动到/opt目录是一种良好的做法，主要基于以下几个原因：
 > 1. 遵循标准惯例：/opt目录是用于安装可选软件的常见位置之一。根据Linux Filesystem Hierarchy Standard (FHS)规范，/opt目录用于安装可选软件包，这些软件包在系统中占据独立的位置，与系统的其他部分分离开来。
 > 2. 系统范围的可访问性：将Neo4j安装在/opt目录下可以使该软件对整个系统的用户可见和访问，而不仅仅是当前用户。这对于在多个用户之间共享Neo4j或让其他用户管理和维护Neo4j数据库非常有用。
@@ -107,6 +107,7 @@ netstat -tuln
 neo4j://8.140.203.xxx:7687
 ```
 效果如下：<br>
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/76e88574-2a60-40e2-9006-7cfeb27a1665)
 
 
 如果你想要关闭 Neo4j 数据库，使用以下指令：<br>
