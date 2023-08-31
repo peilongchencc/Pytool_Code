@@ -210,9 +210,6 @@ neo4j console
 ```sql
 CREATE (:Person {name: "John"})-[:KNOWS]->(:Person {name: "Jane"})
 ```
-```sql
-MATCH (n) RETURN n
-```
 
 查看写入Neo4j的结果：<br>
 ```sql
@@ -223,6 +220,11 @@ MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 25
 如果你想要查看Neo4j中所有节点和关系，可以使用：<br>
 ```sql
 MATCH (n)-[r]->(m) RETURN n, r, m
+```
+
+如果你只想要查看所有节点，可以使用：<br>
+```sql
+MATCH (n) RETURN n
 ```
 
 如果你只是想要查看所有关系，可以使用：<br>
