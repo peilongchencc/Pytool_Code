@@ -368,3 +368,4 @@ Neo4j效果：<br>
 总的来说，尽管 `MERGE` 提供了确保数据唯一性的功能，但 `CREATE` 仍然在很多场景下是有必要的。选择使用哪一个取决于你的具体需求和上下文。<br>
 
 ### 为2个节点创建多个关系：
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/26e4c2f1-f5eb-4ec5-b66c-d3a55cf70ffe" alt="image" width="30%" height="30%">
