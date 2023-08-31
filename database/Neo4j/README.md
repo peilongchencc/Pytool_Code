@@ -38,10 +38,11 @@ tar -xf neo4j-community-4.1.0-unix.tar.gz
 ```
 
 ### 修改neo4j.conf 中的配置，开放远程连接限制:
-默认Neo4j是不启用远程连接的，使用 `netstat -ntlp` 查看到的端口状态为 `127.0.0.1:7687 ` 和 `127.0.0.1:7687 ` 。`127.0.0.1` 只支持 `localhost` 的方式连接，如果你是在自己电脑上部署的Neo4j，只是本地连接Neo4j，到这一步就可以了。使用 Neo4j Desktop 连接时，`Connect URL` 使用如下内容即可：<br>
+默认Neo4j是不启用远程连接的，使用 `netstat -ntlp` 查看到的端口状态为 `127.0.0.1:7687 ` 和 `127.0.0.1:7687 ` 。`127.0.0.1` 只支持 `localhost` 的方式连接，如果你是在自己电脑上部署的Neo4j，只是本地连接Neo4j，可以跳过这一步和"开启服务器端口"的内容。在自己电脑上部署的Neo4j使用 Neo4j Desktop 连接Neo4j时，`Connect URL` 使用如下内容即可：<br>
 ```txt
 neo4j://localhost:7687
 ```
+
 如果你是在远程服务器上部署的Neo4j，需要修改配置文件 `neo4j.conf` 中的监听地址。<br>
 输入以下指令打开 neo4j.conf 文件：<br>
 ```confg
