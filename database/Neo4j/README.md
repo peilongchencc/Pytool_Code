@@ -25,29 +25,17 @@ https://we-yun.com/doc/neo4j/   # 国内镜像源，微云数聚的仓库，内�
 tar -xf neo4j-community-4.1.0-unix.tar.gz
 ```
 
-### 修改环境变量:
-不修改环境变量会导致终端使用类似 `neo4j start` 指令时会提示 "命令无法识别"。<br>
-运行以下指令打开 `.bashrc` 文件：<br>
-```shell
-vim ~/.bashrc 
-```
-在文件末尾添加如下两行代码：<br>
-```conf
-export NEO4J_HOME=/opt/neo4j-community-4.1.0
-export PATH=$NEO4J_HOME/bin:$PATH
-```
-修改后，英文状态下点击`:`，输入`x`，回车关闭文件，终端运行以下指令使新的环境变量生效。<br>
-```shell
-source ~/.bashrc
-```
-
-
-## 开启远程连接限制：
-默认Neo4j是不启用远程连接的，即使用 `netstat -ntlp` 查看到的端口状态为 `127.0.0.1:7687 ` 和 `127.0.0.1:7687 ` 。`127.0.0.1` 只支持 `localhost` 的方式连接，如果你是在自己电脑上部署的Neo4j，到这一步就可以了。使用 Neo4j Desktop 连接时，`Connect URL` 使用如下内容即可：<br>
+### 修改neo4j.conf 中的配置，开放远程连接限制:
+默认Neo4j是不启用远程连接的，使用 `netstat -ntlp` 查看到的端口状态为 `127.0.0.1:7687 ` 和 `127.0.0.1:7687 ` 。`127.0.0.1` 只支持 `localhost` 的方式连接，如果你是在自己电脑上部署的Neo4j，只是本地连接Neo4j，到这一步就可以了。使用 Neo4j Desktop 连接时，`Connect URL` 使用如下内容即可：<br>
 ```txt
 neo4j://localhost:7687
 ```
 如果你是在远程服务器上部署的Neo4j，需要修改配置文件 `neo4j.conf` 中的监听地址。<br>
+输入以下指令打开 neo4j.conf 文件：<br>
+```confg
+vim /opt/neo4j-community-4.1.0/conf/neo4j.conf
+```
+修改 `Bolt connector` 和 `HTTP Connector`:<br>
 修改前：<br>
 ```conf
 # Bolt connector
@@ -73,6 +61,55 @@ dbms.connector.http.enabled=true
 dbms.connector.http.listen_address=0.0.0.0:7474
 ```
 
+### 更改默认密码：
+在Neo4j中，💢💢💢不能直接更改默认用户名（默认为neo4j），但可以更改默认用户的密码。使用如下命令更改密码：<br>
+首先确保路径正确：<br>
+```shell
+cd /opt/neo4j-community-4.1.0/bin
+```
+路径正确后输入如下指令：<br>
+```shell
+sudo neo4j-admin set-initial-password new_password
+```
+将 `new_password` 改为你的密码即可，笔者设置如下：<br>
+```shell
+sudo neo4j-admin set-initial-password Flameaway3.
+```
+回车后，会看到终端提示 `Changed password for user 'neo4j'.`。👏👏👏<br>
+
+### 修改环境变量:
+不修改环境变量会导致终端使用类似 `neo4j start` 指令时会提示 "命令无法识别"。<br>
+运行以下指令打开 `.bashrc` 文件：<br>
+```shell
+vim ~/.bashrc 
+```
+在文件末尾添加如下两行代码：<br>
+```conf
+export NEO4J_HOME=/opt/neo4j-community-4.1.0
+export PATH=$NEO4J_HOME/bin:$PATH
+```
+修改后，英文状态下点击`:`，输入`x`，回车关闭文件，终端运行以下指令使新的环境变量生效。<br>
+```shell
+source ~/.bashrc
+```
+
+### 启动/关闭 Neo4j 数据库：
+此时你就可以终端输入以下指令启动 Neo4j 数据库了：<br>
+```shell
+neo4j start
+```
+你也可以输入以下指令查看端口情况：<br>
+```shell
+netstat -tuln
+```
+此时你应该能看到7474和7687端口的监听地址为：`:::7474`、`:::7687`，现在你就可以本地通过 Neo4j Desktop 连接到远程服务器部署的Neo4j了。输入用户名和密码后，`Connect URL` 输入类似下列内容即可：<br>
 ```txt
 neo4j://8.140.203.xxx:7687
+```
+效果如下：<br>
+
+
+如果你想要关闭 Neo4j 数据库，使用以下指令：<br>
+```shell
+neo4j stop
 ```
