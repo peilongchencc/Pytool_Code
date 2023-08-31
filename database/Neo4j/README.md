@@ -257,7 +257,7 @@ RETURN a,b,r
 CREATE (:Person {name: "John"})-[:KNOWS]->(:Person {name: "Jane"})
 ```
 Neo4j中效果如下：<br>
-<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/92309f1b-8354-4e7f-80f4-04443577cbff" alt="image" width="10%" height="10%">
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/b08d76c7-68bd-47d9-9f45-a10b291520a9" alt="image" width="30%" height="30%">
 
 查看写入Neo4j的结果：<br>
 ```sql
