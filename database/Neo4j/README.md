@@ -106,6 +106,9 @@ source ~/.bashrc
 
 ### 开启服务器端口：
 以阿里云服务器为例，
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/af9f8f1c-44a9-4af6-ac24-73dce3609bcd)
+
+
 
 ### 启动/关闭 Neo4j 数据库：
 此时你就可以终端输入以下指令启动 Neo4j 数据库了：<br>
