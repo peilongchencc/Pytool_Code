@@ -368,4 +368,24 @@ Neo4j效果：<br>
 总的来说，尽管 `MERGE` 提供了确保数据唯一性的功能，但 `CREATE` 仍然在很多场景下是有必要的。选择使用哪一个取决于你的具体需求和上下文。<br>
 
 ### 为2个节点创建多个关系：
+工作中，你可能会遇到需要为2个节点创建多个关系的情况，例如张三和李四既是同事，张三又是李四的姐夫，张三还是李四的领导。下面介绍一下这种创建方式：<br>
+```sql
+// 首先确保张三和李四的节点存在
+MERGE (zhangsan:Person {name: '张三'})
+MERGE (lisi:Person {name: '李四'})
+
+// 创建“同事”关系
+MERGE (zhangsan)-[:同事]->(lisi)
+
+// 创建“姐夫”关系
+MERGE (zhangsan)-[:姐夫]->(lisi)
+
+// 创建“领导”关系
+MERGE (zhangsan)-[:领导]->(lisi)
+
+RETURN zhangsan, lisi
+```
+Neo4j效果：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/26e4c2f1-f5eb-4ec5-b66c-d3a55cf70ffe" alt="image" width="30%" height="30%">
+
+你可能注意到了，我这里使用的变量名为 `zhangsan`、`lisi`，不是前面经常使用的 `m,n,r`，这是因为在Cypher中，变量名的选择完全取决于开发者的个人习惯和上下文。🤣🤣🤣<br>
