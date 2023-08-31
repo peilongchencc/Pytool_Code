@@ -17,7 +17,9 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [Neo4j Desktop 连接远程Neo4j数据库：](#neo4j-desktop-连接远程neo4j数据库)
   - [终端Neo4j常用指令：](#终端neo4j常用指令)
   - [Neo4j Desktop 中常用Cypher语句：](#neo4j-desktop-中常用cypher语句)
-    - [创建三元组：](#创建三元组)
+    - [创建有向关系示例：](#创建有向关系示例)
+    - [查询创建的节点和关系：](#查询创建的节点和关系)
+    - [常用查询语句：](#常用查询语句)
 
 ## Neo4j的安装：
 ### 更新系统软件包信息：
@@ -207,19 +209,17 @@ neo4j console
 ```
 
 ## Neo4j Desktop 中常用Cypher语句：
-### 创建三元组：
 在Neo4j中，关系是有向的‼️‼️‼️。这意味着当你创建一个关系时，你必须指定它的方向🥶🥶🥶。然而，当查询这些关系时，你可以选择忽略方向🥴🥴🥴。<br>
 
-虽然物理存储的关系是有向的，但你可以通过查询时的方式来看待它们为无向关系。<br>
-
-创建有向关系示例：<br>
+### 创建有向关系示例：
+假设你想创建一个描述 `汤姆抓杰瑞` 的三元组信息，你可以使用以下指令：<br>
 ```sql
 CREATE (m:Leading_role {name: 'Tom'})-[r:catch]->(n:supporting_role {name: 'Jerry'})
 RETURN m,r,n
 ```
 > 注意变量名不能以空格为间隔，`Leading role` 会报错，需要使用 `Leading_role` 或 `LeadingRole` 形式。
 
-上述语句的情境为 `汤姆抓杰瑞`，接下来详细解释下上述语句：<br>
+这里详细解释下上述语句：<br>
 `CREATE`: 这是一个Cypher命令，用于创建节点或关系。<br>
 `(m:Leading_role {name: 'Tom'})`: <br>
 - 此处创建了一个名为`Tom`的`Leading_role`类型节点。<br>
@@ -241,7 +241,7 @@ RETURN m,r,n
 `RETURN m,r,n`:<br>
 - 在执行完上述创建操作后，返回创建的节点`m`和`n`以及关系`r`作为结果。<br>
 
-所以，这条Cypher语句的大致意思是：“创建一个名为`Tom`的`Leading_role`类型节点，一个名为`Jerry`的`supporting_role`类型节点，并在它们之间创建一个类型为`catch`的关系。之后返回创建的实体与关系。”。<br>
+所以，这条Cypher语句的大致意思是：“创建一个名为`Tom`的`Leading_role`类型节点，一个名为`Jerry`的`supporting_role`类型节点，并在它们之间创建一个类型为`catch`的关系，之后返回创建的实体与关系。”<br>
 <br>
 Neo4j中效果如下：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/e78e22cd-fe02-4115-a0ba-df5529bbf9a2" alt="image" width="30%" height="30%">
@@ -250,21 +250,25 @@ Neo4j中效果如下：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/45fb1c3d-8e82-4cb8-8c2f-80f267787e7f" alt="image" width="50%" height="50%">
 <br>
 
-查询时可以选择忽略关系方向，视为无向关系：<br>
+### 查询创建的节点和关系：
+虽然物理存储的关系是有向的，但你可以通过查询时的方式来看待它们为无向关系。查询时可以选择忽略关系方向，视为无向关系：<br>
 ```sql
 MATCH (m:Leading_role {name: 'Tom'})-[r:catch]-(n:supporting_role {name: 'Jerry'})
+RETURN m,r,n
 ```
-
-在上述查询中，由于我们在关系模式 `-[r:catch]-` 中没有指定箭头，但返回的信息，无论该关系的实际方向如何。
-
+当然，你也可以把方向带上：<br>
+```sql
+MATCH (m:Leading_role {name: 'Tom'})-[r:catch]->(n:supporting_role {name: 'Jerry'})
+RETURN m,r,n
+```
 总之，虽然在创建时必须指定关系的方向，但在查询时你可以选择视其为无向关系。<br>
 
-
-查看写入Neo4j的结果：<br>
+### 常用查询语句：
+从Neo4j数据库中匹配所有的节点`n`、关系`r`和节点`m`的组合，并返回这些结果，但限制返回的记录数为25。<br>
+> 默认情况下，当你不指定排序或其他筛选条件时，Neo4j可能会基于内部存储和处理的顺序返回结果，这可能会看起来像是随机的，尤其是在大型数据集中。
 ```sql
 MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 25
 ```
-上述指令将返回随机的25个节点和关系。<br>
 
 如果你想要查看Neo4j中所有节点和关系，可以使用：<br>
 ```sql
@@ -279,4 +283,13 @@ MATCH (n) RETURN n
 如果你只是想要查看所有关系，可以使用：<br>
 ```sql
 MATCH ()-[r]->() RETURN r
+```
+
+如果你想按节点`n`的`name`属性排序，你可以这样写：
+
+```cypher
+MATCH (n)-[r]->(m)
+RETURN n, r, m
+ORDER BY n.name
+LIMIT 25
 ```
