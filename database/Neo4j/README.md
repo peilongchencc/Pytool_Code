@@ -338,7 +338,7 @@ Neo4j效果：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/db837467-b0cd-4d20-8511-863641efa6a1" alt="image" width="30%" height="30%">
 
 
-如果你是想将2组关系关联起来，需要使用关键字 `MERGE` ：<br>
+如果你想将2组关系关联起来，需要使用关键字 `MERGE` ：<br>
 ```sql
 // 首先检查张三的节点是否存在，如果不存在，会创建一个名为张三的节点
 MERGE (m:Person {name: '张三'})
@@ -354,7 +354,7 @@ RETURN m, r1, n1, r2, n2
 Neo4j效果：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/742ff813-972f-4e18-b277-460ae5a4be56" alt="image" width="30%" height="30%">
 
-‼️‼️‼️注意：`MERGE` 的使用一定要正确，要按照上述语句中的逻辑。举个例子，假设你依次运行了下面2个语句，猜猜会发生什么~🥴🥴🥴<br>
+‼️‼️‼️注意：`MERGE` 的使用一定要正确，必须按照上述语句中的逻辑。举个例子，假设你依次运行了下面2个语句，猜猜会发生什么~🥴🥴🥴<br>
 ```sql
 // 语句1
 MERGE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '李四'})
@@ -365,7 +365,7 @@ RETURN m,r,n
 MERGE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '王五'})
 RETURN m,r,n
 ```
-答案是和使用 `CREATE` 效果相同，会在Neo4j中创建2个张三节点，而不是关联了2组关系。🥹🥹🥹<br>
+Bingo! 答案是和使用 `CREATE` 效果相同，会在Neo4j中创建2个张三节点，而不是关联了2组关系。🥹🥹🥹<br>
 Neo4j效果：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/db837467-b0cd-4d20-8511-863641efa6a1" alt="image" width="30%" height="30%">
 
