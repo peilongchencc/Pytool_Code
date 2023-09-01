@@ -502,6 +502,7 @@ DELETE r
 
 RETURN zhangsan, lisi
 ```
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/6ba391a2-760d-451f-943a-3c1f9c950da7" alt="image" width="70%" height="70%">
 <br>
 
 如果你是想要删除所有 `Person` 类型实体间的 `前姐夫` 关系，可以使用下列语句：<br>
