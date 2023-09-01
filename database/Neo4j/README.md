@@ -495,7 +495,6 @@ Cypher语句解释：<br>
 ```sql
 MATCH (m:Person{true_name:'李斯'}) remove m:Person  set m:Actor:Man
 ```
-<br>
 
 ### 为节点添加多个属性：
 前面折腾张三和李四(斯)已经够多了，这里暂且放过他们，同时用一个简单的例子实现为节点添加多个属性，这样也方便大家查看效果：<br>
