@@ -256,7 +256,7 @@ RETURN m,r,n
 Neo4j中效果如下：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/e78e22cd-fe02-4115-a0ba-df5529bbf9a2" alt="image" width="30%" height="30%">
 
-节点或关系颜色可以通过点击对应图标设置：<br>
+🚀🚀🚀节点颜色、节点大小、关系颜色、对外显示的属性都可以通过点击对应图标设置：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/45fb1c3d-8e82-4cb8-8c2f-80f267787e7f" alt="image" width="50%" height="50%">
 <br>
 
@@ -439,11 +439,28 @@ RETURN lisi
 ```sql
 MATCH (lisi:Person {name: '李斯'})
 SET lisi.true_name = lisi.name
+// 删除原属性需要视情况而定
 REMOVE lisi.name
 RETURN lisi
 ```
+Cypher语句解释：<br>
+使用`MATCH`语句查找到名为`李斯`的节点。<br>
+使用`SET`设置`true_name`属性的值为`name`属性的值。<br>
+使用`REMOVE`删除原先的`name`属性。<br>
+最后返回更新后的`lisi`节点。<br>
+
 Neo4j效果：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/4e86442b-8390-4eb0-bfac-8590d7f3784f" alt="image" width="50%" height="50%">
+
+咦？好像和我们设想的有些出入，为什么只有一个实体显示了内容，另一个实体什么也不显示❓❓❓<br>
+🚀🚀🚀这是因为一个实体只能有一个对外显示的属性，而 `张三` 并没有 `true_name` 属性，`张三` 是 `name` 属性，所以对外显示的内容为空。<br>
+
+这种做法看似不合理，但在某些时候实体有某些独有的属性时，这种设置就比较合理了，具体的使用场景需要你在工作中慢慢体会～<br>
+
+Ps:这里再介绍下将所有 `Person` 类型的 `name` 属性改名为 `true_name` 的语句：<br>
+```sql
+
+```
 
 ### 更新Neo4j中实体的类型：
 那如何将李斯的实体类型改为Actor，属性name改为true_name呢？<br>
