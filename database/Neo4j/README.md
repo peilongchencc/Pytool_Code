@@ -540,3 +540,5 @@ RETURN m, n
 ```sql
 MATCH (m) OPTIONAL MATCH (m)-[r]-() DELETE m, r
 ```
+
+## python与Neo4j：
