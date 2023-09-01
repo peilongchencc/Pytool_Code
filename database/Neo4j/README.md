@@ -443,7 +443,7 @@ REMOVE lisi.name
 RETURN lisi
 ```
 Neo4j效果：<br>
-
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/4e86442b-8390-4eb0-bfac-8590d7f3784f" alt="image" width="30%" height="30%">
 
 ### 更新Neo4j中实体的类型：
 那如何将李斯的实体类型改为Actor，属性name改为true_name呢？<br>
