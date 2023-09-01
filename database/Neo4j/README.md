@@ -461,6 +461,8 @@ Ps:这里再介绍下将所有 `Person` 类型的 `name` 属性改名为 `true_n
 ```sql
 
 ```
+Neo4j效果：<br>
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/63c4f4c3-917e-44d1-b1e0-a001cb423525" alt="image" width="50%" height="50%">
 
 ### 更新Neo4j中实体的类型：
 那如何将李斯的实体类型改为Actor，属性name改为true_name呢？<br>
