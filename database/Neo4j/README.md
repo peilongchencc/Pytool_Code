@@ -28,7 +28,8 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [更新Neo4j中实体的属性的值：](#更新neo4j中实体的属性的值)
     - [更新Neo4j中实体的属性的名称：](#更新neo4j中实体的属性的名称)
     - [更新Neo4j中实体的类型：](#更新neo4j中实体的类型)
-  - [删除Neo4j中所有节点和关系：](#删除neo4j中所有节点和关系)
+    - [删除指定关系：](#删除指定关系)
+    - [删除Neo4j中所有节点和关系：](#删除neo4j中所有节点和关系)
 
 ## Neo4j的安装：
 ### 更新系统软件包信息：
@@ -459,22 +460,26 @@ Neo4j效果：<br>
 
 Ps:这里再介绍下将所有 `Person` 类型的 `name` 属性改名为 `true_name` 的语句：<br>
 ```sql
-
+MATCH (p:Person)
+// 使用 `SET` 设置每个节点的 `true_name` 属性为当前的 `name` 属性值。
+SET p.true_name = p.name
+REMOVE p.name
+RETURN p
 ```
 Neo4j效果：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/63c4f4c3-917e-44d1-b1e0-a001cb423525" alt="image" width="50%" height="50%">
 
-### 更新Neo4j中实体的类型：
-那如何将李斯的实体类型改为Actor，属性name改为true_name呢？<br>
+可以看到，`Person` 类型现在已经没有 `name` 属性了，只有 `true_name` 属性了，且 `张三` 和 `李斯` 两个 `true_name` 都正常显示了。<br>
 
+### 更新Neo4j中实体的类型：
 假如 `李斯` 翻身了，从一个普通人变成了 `Actor`，你此时需要将他的标签类型更改，可以使用下列语句：<br>
 ```sql
-MATCH (m:Person{name:'李斯'}) remove m:Person  set m:Actor
+MATCH (m:Person{true_name:'李斯'}) remove m:Person  set m:Actor
 RETURN m
 ```
 Cypher语句解释：<br>
-`MATCH (m:Person{name:'李斯'})`: <br>
-- 这是一个匹配指令，它在数据库中查找一个标签为`Person`且`name`属性为 `'李斯'` 的节点，并将其赋给变量`m`。<br>
+`MATCH (m:Person{true_name:'李斯'})`: <br>
+- 这是一个匹配指令，它在数据库中查找一个标签为`Person`且`true_name`属性为 `'李斯'` 的节点，并将其赋给变量`m`。<br>
 `remove m:Person`:<br>
 - 这是一个删除操作，它从与变量`m`匹配的节点中移除`Person`标签。注意‼️‼️‼️，这并不是删除节点本身，而只是移除该节点的`Person`标签。🌿🌿🌿<br>
 `set m:Actor`:<br>
@@ -484,18 +489,30 @@ Cypher语句解释：<br>
 
 简而言之，这个Cypher语句的功能是找到名为'李斯'的`Person`节点，移除其`Person`标签，并为其添加一个`Actor`标签，然后返回这个修改后的节点。<br>
 
+假如你是想将 `李斯` 设定为2种实体类型，可以参考下方语句写法：<br>
 ```sql
-MATCH (m:Actor {name: '李斯'})
-SET lisi.name = '李斯'
-RETURN lisi
+MATCH (m:Person{true_name:'李斯'}) remove m:Person  set m:Actor:Man
 ```
 
-
+### 删除指定关系：
+假设你现在想删除张三和李四之间的"前姐夫"关系，运行下列语句即可：(做法与 `更新Neo4j中实体间的关系` 那一节的语句相似)<br>
 ```sql
-MATCH (m:Person{name:'李斯'}) remove m:Person  set m:Actor:Man
+MATCH (zhangsan:Person {true_name: '张三'})-[r:前姐夫]->(lisi:Person {true_name: '李斯'})
+DELETE r
+
+RETURN zhangsan, lisi
+```
+<br>
+
+如果你是想要删除所有 `Person` 类型间的 `前姐夫` 关系，可以使用下列语句：<br>
+```sql
+MATCH (m:Person)-[r:前姐夫]->(n:Person)
+DELETE r
+
+RETURN m, n
 ```
 
-## 删除Neo4j中所有节点和关系：
+### 删除Neo4j中所有节点和关系：
 删除操作无法撤回，尤其是删除所有‼️‼️‼️除非你打算删库跑路🥴🥴🥴<br>
 ```sql
 MATCH (m) OPTIONAL MATCH (m)-[r]-() DELETE m, r
