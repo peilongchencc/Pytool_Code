@@ -24,7 +24,10 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [MERGE创建三元组：](#merge创建三元组)
     - [CREATE的必要性：](#create的必要性)
     - [为2个节点创建多个关系：](#为2个节点创建多个关系)
-    - [更新Neo4j中的实体和关系：](#更新neo4j中的实体和关系)
+    - [更新Neo4j中实体间的关系：](#更新neo4j中实体间的关系)
+    - [更新Neo4j中实体的属性的值：](#更新neo4j中实体的属性的值)
+    - [更新Neo4j中实体的属性的名称：](#更新neo4j中实体的属性的名称)
+    - [更新Neo4j中实体的类型：](#更新neo4j中实体的类型)
   - [删除Neo4j中所有节点和关系：](#删除neo4j中所有节点和关系)
 
 ## Neo4j的安装：
@@ -409,7 +412,7 @@ RETURN m,n,r
 
 别被 `Graph` 吓到了，从 `Text` 选项我们可以看到，返回的内容是正确的～🌿🌿🌿🤭🤭🤭<br>
 
-### 更新Neo4j中的实体和关系：
+### 更新Neo4j中实体间的关系：
 假如现在张三和李四的姐姐离婚了，你要将张三和李四的 `姐夫` 关系改为 `前姐夫`，运行下列语句即可：<br>
 ```sql
 MATCH (zhangsan:Person {name: '张三'})-[rel:姐夫]->(lisi:Person {name: '李四'})
@@ -420,6 +423,7 @@ CREATE (zhangsan)-[:前姐夫]->(lisi)
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/4e9f6183-a2bc-4f2d-9e37-a238c021cbba" alt="image" width="30%" height="30%">
 <br>
 
+### 更新Neo4j中实体的属性的值：
 假设现在李四觉得自己的名字不好听，改名了，改成了 `李斯`，你可以运行下列语句更新数据：<br>
 ```sql
 MATCH (lisi:Person {name: '李四'})
@@ -430,11 +434,50 @@ RETURN lisi
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/d3e7d7d7-87ee-401f-a463-59922d60c8e7" alt="image" width="30%" height="30%">
 <br>
 
+### 更新Neo4j中实体的属性的名称：
+假设你现在觉得 `name` 属性无法完全体现 `李斯` 的意义，想要将 `name` 属性的名称改为 `true_name` 可以使用以下语句：<br>
+```sql
+MATCH (lisi:Person {name: '李斯'})
+SET lisi.true_name = lisi.name
+REMOVE lisi.name
+RETURN lisi
+```
+Neo4j效果：<br>
+
+
+### 更新Neo4j中实体的类型：
 那如何将李斯的实体类型改为Actor，属性name改为true_name呢？<br>
 
+假如 `李斯` 翻身了，从一个普通人变成了 `Actor`，你此时需要将他的标签类型更改，可以使用下列语句：<br>
+```sql
+MATCH (m:Person{name:'李斯'}) remove m:Person  set m:Actor
+RETURN m
+```
+Cypher语句解释：<br>
+`MATCH (m:Person{name:'李斯'})`: <br>
+- 这是一个匹配指令，它在数据库中查找一个标签为`Person`且`name`属性为 `'李斯'` 的节点，并将其赋给变量`m`。<br>
+`remove m:Person`:<br>
+- 这是一个删除操作，它从与变量`m`匹配的节点中移除`Person`标签。注意‼️‼️‼️，这并不是删除节点本身，而只是移除该节点的`Person`标签。🌿🌿🌿<br>
+`set m:Actor`:<br>
+- 这是一个设置操作，它为与变量`m`匹配的节点添加`Actor`标签。🌿🌿🌿<br>
+`RETURN m`:<br>
+- 这个指令表示将经过上述操作修改的节点返回给用户。<br>
+
+简而言之，这个Cypher语句的功能是找到名为'李斯'的`Person`节点，移除其`Person`标签，并为其添加一个`Actor`标签，然后返回这个修改后的节点。<br>
+
+```sql
+MATCH (m:Actor {name: '李斯'})
+SET lisi.name = '李斯'
+RETURN lisi
+```
+
+
+```sql
+MATCH (m:Person{name:'李斯'}) remove m:Person  set m:Actor:Man
+```
 
 ## 删除Neo4j中所有节点和关系：
 删除操作无法撤回，尤其是删除所有‼️‼️‼️除非你打算删库跑路🥴🥴🥴<br>
 ```sql
-MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n, r
+MATCH (m) OPTIONAL MATCH (m)-[r]-() DELETE m, r
 ```
