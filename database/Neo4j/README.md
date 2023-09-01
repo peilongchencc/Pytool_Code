@@ -509,6 +509,13 @@ return m,r,n
 Neo4j效果：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/59e9c5e7-17cd-45cf-b9b7-dc2d43d39b64" alt="image" width="50%" height="50%">
 
+这里再回顾一下查询，假如你想要查看节点 `Alice` 的 `email` 属性的值，使用下列语句即可：<br>
+```sql
+MATCH (m:Person {name: 'Alice'}) RETURN m.email
+```
+Neo4j效果如下：<br>
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/053bbba1-3a9a-4dcd-9336-b7ba5db3d243" alt="image" width="50%" height="50%">
+
 ### 删除指定关系：
 假设你现在想删除张三和李四之间的"前姐夫"关系，运行下列语句即可：(做法与 `更新Neo4j中实体间的关系` 那一节的语句相似)<br>
 ```sql
