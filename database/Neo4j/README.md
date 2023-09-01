@@ -496,22 +496,19 @@ Cypher语句解释：<br>
 MATCH (m:Person{true_name:'李斯'}) remove m:Person  set m:Actor:Man
 ```
 
-### 为节点添加多个属性：
-前面折腾张三和李四(斯)已经够多了，这里暂且放过他们，同时用一个简单的例子实现为节点添加多个属性，这样也方便大家查看效果：<br>
+### 为节点和关系添加多个属性：
+前面折腾张三和李四(斯)已经够多了，这里暂且放过他们，同时用一个简单的例子实现为节点和关系添加多个属性，这样也方便大家查看效果。如果你只想为单个节点添加多个属性可以使用以下代码：<br>
 ```sql
 MERGE (a:Person {name: 'Alice', age: 30, email: 'alice@example.com'})
 ```
-Neo4j效果：<br>
 
-
-### 为关系添加多个属性：
-Neo4j中，一个节点可以有多个属性，而且关系也可以有多个属性。<br>
+如果你想同时为节点和关系添加多个属性，可以使用以下代码：🤗🤗🤗<br>
 ```sql
 MERGE (m:Person {name: 'Alice', age: 30, email: 'alice@example.com'})-[r:KNOWS {since: 2020, reason: 'work'}]->(n:Person {name: 'Bob', age: 26, email: 'bob@example.com'})
 return m,r,n
 ```
 Neo4j效果：<br>
-
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/59e9c5e7-17cd-45cf-b9b7-dc2d43d39b64" alt="image" width="50%" height="50%">
 
 ### 删除指定关系：
 假设你现在想删除张三和李四之间的"前姐夫"关系，运行下列语句即可：(做法与 `更新Neo4j中实体间的关系` 那一节的语句相似)<br>
