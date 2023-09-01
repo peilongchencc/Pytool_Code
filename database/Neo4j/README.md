@@ -504,7 +504,7 @@ RETURN zhangsan, lisi
 ```
 <br>
 
-如果你是想要删除所有 `Person` 类型间的 `前姐夫` 关系，可以使用下列语句：<br>
+如果你是想要删除所有 `Person` 类型实体间的 `前姐夫` 关系，可以使用下列语句：<br>
 ```sql
 MATCH (m:Person)-[r:前姐夫]->(n:Person)
 DELETE r
