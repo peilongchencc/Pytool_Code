@@ -292,6 +292,7 @@ sudo neo4j-admin set-initial-password Giveaway3.
 
 ### 修改环境变量:
 这一节的内容针对的是已经设置过Neo4j环境变量的朋友，当要在同一台服务器上运行2个或多个Neo4j时，最好的做法是都不设置环境变量。如果你已经设置了Neo4j环境，按照下方操作注释掉环境变量即可。<br>
+
 运行以下指令打开 `.bashrc` 文件：<br>
 ```shell
 vim ~/.bashrc 
