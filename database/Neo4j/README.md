@@ -201,6 +201,8 @@ neo4j://8.140.203.xxx:7687
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/3d49c7db-311e-488f-aff7-fb93ebd164c2" alt="image" width="70%" height="70%">
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/868ca524-7232-4f1b-abb3-2e3180904dc8" alt="image" width="70%" height="70%">
 
+设置好数据库信息后，点击 `connect` 然后点击 `open` 即可进入 neo4j_1:<br>
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/8d836036-a472-4876-a0bb-a783547bf781" alt="image" width="70%" height="70%">
 
 你也可以本地通过 `telnet` 查看连接状态：<br>
 > 不能使用 `ping` 测试的，`ping` 无法指定端口。
@@ -339,11 +341,20 @@ netstat -tuln
 ```
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/6ce187f7-ad14-4b2a-859f-6a1117160597" alt="image" width="70%" height="70%">
 
+从图中我们可以看到，`neo4j_1` 和 `neo4j_2` 数据库都启动了～🌿🌿🌿<br>
+
+如果想要关闭 neo4j_2 数据库，在 `/opt/neo4j_2/bin` 路径下使用以下指令即可：<br>
+```shell
+./neo4j stop
+```
 
 ### Neo4j Desktop 连接远程neo4j_2数据库：
 做法与本地连接neo4j_1操作相同：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/9c401e72-f2e7-4deb-a453-87644be3f256" alt="image" width="70%" height="70%">
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/bb235d5e-40e1-4082-b115-ecc0ea4e7ea5" alt="image" width="60%" height="60%">
+
+设置好数据库信息后，点击 `connect` 然后点击 `open` 即可进入 neo4j_2:<br>
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/39e1ceb7-198b-4d9e-81df-3a23a2e714d0" alt="image" width="70%" height="70%">
 
 ## 终端Neo4j常用指令：
 启动Neo4j数据库作为后台服务:<br>
