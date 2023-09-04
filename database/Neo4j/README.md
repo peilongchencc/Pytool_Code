@@ -231,6 +231,7 @@ cd /opt
 依旧是刚刚的服务器，因为我们前面已经安装过jdk，所以这里不需要再安装。<br>
 
 ### 解压tar.gz文件并重命名：
+终端依次运行下列2个指令：<br>
 ```shell
 tar -xf neo4j-community-4.1.0-unix.tar.gz
 ```
