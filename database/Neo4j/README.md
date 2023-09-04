@@ -198,7 +198,9 @@ neo4j stop
 neo4j://8.140.203.xxx:7687
 ```
 效果如下：<br>
-![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/76e88574-2a60-40e2-9006-7cfeb27a1665)
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/3d49c7db-311e-488f-aff7-fb93ebd164c2" alt="image" width="70%" height="70%">
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/868ca524-7232-4f1b-abb3-2e3180904dc8" alt="image" width="70%" height="70%">
+
 
 你也可以本地通过 `telnet` 查看连接状态：<br>
 > 不能使用 `ping` 测试的，`ping` 无法指定端口。
@@ -315,6 +317,8 @@ source ~/.bashrc
 
 ### 开启服务器端口：
 以阿里云服务器为例，按照下图所示，依次开放你为 `neo4j_2` 配置的端口即可，笔者为 `neo4j_2` 配置的端口为 `7475` 和 `7688` 。🥴🥴🥴<br>
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/b935996e-0ee6-482d-b7ef-9041eaca1df9)
+
 
 ### 启动/关闭 neo4j_2 数据库：
 因为我们注释了环境变量，所以我们需要采用完整路径或进入文件中启动 neo4j：<br>
@@ -330,9 +334,16 @@ cd /opt/neo4j_2/bin
 /opt/neo4j_2/bin/neo4j start
 ```
 现在查看端口情况，观察neo4j_2是否开启：<br>
+```shell
+netstat -tuln
+```
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/6ce187f7-ad14-4b2a-859f-6a1117160597" alt="image" width="70%" height="70%">
+
 
 ### Neo4j Desktop 连接远程neo4j_2数据库：
-做法相同：<br>
+做法与本地连接neo4j_1操作相同：<br>
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/9c401e72-f2e7-4deb-a453-87644be3f256" alt="image" width="70%" height="70%">
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/bb235d5e-40e1-4082-b115-ecc0ea4e7ea5" alt="image" width="60%" height="60%">
 
 ## 终端Neo4j常用指令：
 启动Neo4j数据库作为后台服务:<br>
