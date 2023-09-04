@@ -304,7 +304,7 @@ export PATH=$NEO4J_HOME/bin:$PATH
 ```
 将这两行代码注释：<br>
 ```shell
-#export NEO4J_HOME=/opt/neo4j-community-4.1.0
+#export NEO4J_HOME=/opt/neo4j_1
 #export PATH=$NEO4J_HOME/bin:$PATH
 ```
 保存并退出 `.bashrc` 文件，运行下列文件激活更改：<br>
