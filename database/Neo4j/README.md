@@ -299,7 +299,7 @@ vim ~/.bashrc
 ```
 找到如下两行代码：<br>
 ```shell
-export NEO4J_HOME=/opt/neo4j-community-4.1.0
+export NEO4J_HOME=/opt/neo4j_1
 export PATH=$NEO4J_HOME/bin:$PATH
 ```
 将这两行代码注释：<br>
