@@ -163,11 +163,11 @@ neo4j start
 netstat -tuln
 ```
 <br>
+
 如果你想要关闭 Neo4j 数据库，使用以下指令：<br>
 ```shell
 neo4j stop
 ```
-
 
 ### Neo4j Desktop 连接远程Neo4j数据库：
 此时你应该能看到7474和7687端口的监听地址为：`:::7474`、`:::7687`，现在你就可以本地通过 Neo4j Desktop 连接到远程服务器部署的Neo4j了。输入用户名和密码后，`Connect URL` 输入类似下列内容即可：<br>
