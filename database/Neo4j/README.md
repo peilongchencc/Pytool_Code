@@ -341,6 +341,12 @@ MATCH (n) WHERE n.name = 'Tom' RETURN labels(n);
 MATCH (n {name: 'Tom'})-[r:catch]->()
 RETURN n, r
 ```
+如果你想获取特定属性的值，比如假设节点`Tom`还有一个`age`属性，你可以这样查询：<br>
+```sql
+MATCH (n {name: 'Tom'})-[r:catch]->()
+RETURN n.name, n.age, r
+```
+
 如果你想获取节点的所有属性，可以使用以下查询：<br>
 ```sql
 MATCH (n {name: 'Tom'})-[r:catch]->()
