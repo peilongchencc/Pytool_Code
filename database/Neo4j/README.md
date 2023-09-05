@@ -45,6 +45,7 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
   - [python与Neo4j：](#python与neo4j)
     - [测试python与Neo4j的连接状态：](#测试python与neo4j的连接状态)
     - [创建三元组：](#创建三元组)
+    - [获取三元组的值：](#获取三元组的值)
 
 ## Neo4j的安装：
 ### 更新系统软件包信息：
@@ -807,4 +808,29 @@ RETURN zhangsan, lisi
 """
 
 result = graph.run(cypher_query)
+```
+
+### 获取三元组的值：
+获取三元组的值时需要采用 `graph.run().data()` 方法，这样才方便操作～🌿🌿🌿<br>
+```python
+from py2neo import Graph
+
+# 连接到Neo4j数据库
+graph = Graph('neo4j://localhost:7688', auth=("neo4j", "Giveaway3."))
+
+# 使用MATCH来查找lisi节点
+cypher_query = """
+MATCH (lisi:Person {name: '李四'})
+RETURN lisi
+"""
+
+result = graph.run(cypher_query).data()
+print(result)                       # [{'lisi': Node('Person', name='李四')}]
+node_info = result[0]['lisi']       
+print(node_info)                    # (_2:Person {name: '\u674e\u56db'})
+print(node_info['name'])            # 李四，类型为 str
+# print(vars(node_info))              # 查看node实例属性
+print(node_info._labels)            # {'Person'}，类型为 set
+for i in node_info._labels:
+    print(i)                        # Person，类型为 str
 ```
