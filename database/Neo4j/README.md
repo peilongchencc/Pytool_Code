@@ -837,7 +837,7 @@ graph = Graph('neo4j://localhost:7688', auth=("neo4j", "Giveaway3."))
 
 # 使用MATCH来查找lisi节点
 cypher_query = """
-MATCH (m:Word {name: '卖出'})-[r:Pat {name_zh: '受事', snowflake_id: 7104708589926234047}]->(n:Word {name: '货币三佳'})
+MATCH (m:Word {name: '卖出'})-[r:Pat {name_zh: '受事', snowflake_id: 7104708589926234047}]->(n:Word {name: '钢琴'})
 RETURN m, n, r
 """
 
