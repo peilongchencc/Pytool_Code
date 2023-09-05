@@ -43,6 +43,8 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [删除指定关系：](#删除指定关系)
     - [删除Neo4j中所有节点和关系：](#删除neo4j中所有节点和关系)
   - [python与Neo4j：](#python与neo4j)
+    - [测试python与Neo4j的连接状态：](#测试python与neo4j的连接状态)
+    - [创建三元组：](#创建三元组)
 
 ## Neo4j的安装：
 ### 更新系统软件包信息：
@@ -753,3 +755,56 @@ MATCH (m) OPTIONAL MATCH (m)-[r]-() DELETE m, r
 ```
 
 ## python与Neo4j：
+在 Neo4j Desktop 中输入 Cypher 语句执行查询等操作是我们工作中必须要掌握的本领，但更常见的是我们使用代码与Neo4j连接执行操作，笔者常用的语言为python，这里就介绍python连接Neo4j的常见操作。<br>
+
+笔者惯用 `py2neo` 库连接 Neo4j，安装方法非常简单：<br>
+```shell
+pip install py2neo
+```
+
+### 测试python与Neo4j的连接状态：
+如果你是访问远程Neo4j数据库，可以按照类似下方代码的方式，修改自己的信息进行测试。如果你开了多个Neo4j数据库，注意端口是否正确。🚀🚀🚀<br>
+```python
+from py2neo import Graph
+try:
+    print('----开始尝试连接Neo4j----')
+    # 连接到Neo4j数据库
+    Graph('neo4j://8.140.203.xxx:7687', auth=("neo4j", "Flameaway3."))
+    print('Neo4j连接成功!!!')
+except:
+    print('Neo4j连接失败')
+```
+如果你是在部署Neo4j的机器上操作，将 `ip` 改为 `localhost` 即可。<br>
+```python
+from py2neo import Graph
+try:
+    print('----开始尝试连接Neo4j----')
+    # 连接到Neo4j数据库
+    Graph('neo4j://localhost:7687', auth=("neo4j", "Flameaway3."))
+    print('Neo4j连接成功!!!')
+except:
+    print('Neo4j连接失败')
+```
+
+### 创建三元组：
+`py2neo` 支持很多类似Neo4j中Cypher的操作，比如 `create`、`Node` 等方法，但笔者用的最多的还是 `Graph` 对象和 `run` 方法，`Graph` 对象可以直接接受Cypher语句，然后使用 `run` 方法运行Cypher语句。<br>
+
+`Graph` 对象和 `run` 方法的使用的使用很简单，通过复用之前的代码，这里介绍下具体操作：<br>
+```python
+from py2neo import Graph
+
+# 连接到Neo4j数据库
+graph = Graph('neo4j://localhost:7688', auth=("neo4j", "Giveaway3."))
+
+# 使用MERGE创建或查找节点和关系
+cypher_query = """
+MERGE (zhangsan:Person {name: '张三'})
+MERGE (lisi:Person {name: '李四'})
+MERGE (zhangsan)-[:同事]->(lisi)
+MERGE (zhangsan)-[:姐夫]->(lisi)
+MERGE (zhangsan)-[:领导]->(lisi)
+RETURN zhangsan, lisi
+"""
+
+result = graph.run(cypher_query)
+```
