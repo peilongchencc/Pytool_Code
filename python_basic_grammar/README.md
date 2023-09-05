@@ -54,7 +54,7 @@ Required-by:
 
 
 ## 字典(dict):
-python中字典支持以数字作为键，但不推荐这种写法，毕竟我们也代码要考虑可读性，单纯的数字作为 `key` 自己或同时并不能看出代码的含义。<br>
+python中字典支持以数字作为键，但不推荐这种写法，毕竟我们也代码要考虑可读性，单纯的数字作为 `key` 自己或同事并不能看出代码的含义。<br>
 ```python
 dictionary = {1: "financial", 2: "sale", 3: "insurance"}    # python中字典支持以数字作为键；
 print(dictionary)
