@@ -812,6 +812,8 @@ result = graph.run(cypher_query)
 
 ### 获取三元组的值：
 获取三元组的值时需要采用 `graph.run().data()` 方法，这样才方便操作～🌿🌿🌿<br>
+
+假设我们构建三元组的代码如下：<br>
 ```python
 from py2neo import Graph
 
@@ -820,17 +822,51 @@ graph = Graph('neo4j://localhost:7688', auth=("neo4j", "Giveaway3."))
 
 # 使用MATCH来查找lisi节点
 cypher_query = """
-MATCH (lisi:Person {name: '李四'})
-RETURN lisi
+MERGE (m:Word {name: '卖出'})-[r:Pat {name_zh: '受事', snowflake_id: 7104708589926234047}]->(n:Word {name: '钢琴'})
+return m,r,n
+"""
+
+result = graph.run(cypher_query)
+```
+我们如果想要利用 `py2neo` 获取详细的实体和关系信息，可以使用如下代码：<br>
+```python
+from py2neo import Graph
+
+# 连接到Neo4j数据库
+graph = Graph('neo4j://localhost:7688', auth=("neo4j", "Giveaway3."))
+
+# 使用MATCH来查找lisi节点
+cypher_query = """
+MATCH (m:Word {name: '卖出'})-[r:Pat {name_zh: '受事', snowflake_id: 7104708589926234047}]->(n:Word {name: '货币三佳'})
+RETURN m, n, r
 """
 
 result = graph.run(cypher_query).data()
-print(result)                       # [{'lisi': Node('Person', name='李四')}]
-node_info = result[0]['lisi']       
-print(node_info)                    # (_2:Person {name: '\u674e\u56db'})
-print(node_info['name'])            # 李四，类型为 str
-# print(vars(node_info))              # 查看node实例属性
-print(node_info._labels)            # {'Person'}，类型为 set
-for i in node_info._labels:
-    print(i)                        # Person，类型为 str
+# print(result)
+# [{'m': Node('Word', name='卖出'), 'n': Node('Word', name='货币三佳'), 'r': Pat(Node('Word', name='卖出'), Node('Word', name='货币三佳'), snowflake_id=7104708589926234047)}]
+
+#########################
+# m 信息
+#########################
+node_m_info = result[0]['m']['name']
+print(node_m_info)  # 卖出，类型为 str
+
+#########################
+# n 信息
+#########################
+node_n_info = result[0]['n']['name']
+print(node_n_info)  # 钢琴，类型为 str
+
+#########################
+# relation 信息
+#########################
+relationship = result[0]['r']
+relationship_type = type(relationship).__name__
+print(relationship_type)  # Pat，类型为 str
+
+name_zh = relationship['name_zh']
+print(name_zh)        # 受事，类型为 str
+
+snowflake_id = relationship['snowflake_id']
+print(snowflake_id)        # 7104708589926234047，类型为 int
 ```
