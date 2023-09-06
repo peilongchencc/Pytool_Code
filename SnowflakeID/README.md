@@ -1,0 +1,222 @@
+# SnowflakeID
+- [SnowflakeID](#snowflakeid)
+  - [雪花ID简介：](#雪花id简介)
+  - [雪花ID的位数分配规则：](#雪花id的位数分配规则)
+  - [雪花ID的实例：](#雪花id的实例)
+  - [使用时间基线生成雪花ID：](#使用时间基线生成雪花id)
+
+## 雪花ID简介：
+雪花ID（Snowflake ID）是一种分布式唯一标识符生成算法，旨在为分布式系统中生成全局唯一的ID。它由Twitter公司开发，用于解决数据库主键生成的性能瓶颈和冲突问题。<br>
+
+雪花ID由64位二进制数字组成，转换为十进制数字后，可能为17、18或19位数字，雪花ID的组成结构如下：<br>
+```txt
+1位标志位（始终为0）     41位时间戳（精确到毫秒）     10位工作节点ID       12位序列号
+```
+雪花ID通常由64位组成，其中标志位始终为0标识为正数，41位时间戳记录了生成ID的时间，10位工作节点ID标识了不同的机器，12位序列号在同一毫秒内自增，以保证同一机器在同一毫秒内生成不同的ID。<br>
+
+通过这种方式，雪花ID生成的ID是有序的，且趋势递增，便于数据库索引的管理。而且它的生成过程是无锁的，可以在高并发环境下快速生成唯一ID。<br>
+
+我们也可以根据自己的需求，手动分配位数，创建不同需求。例如利用 `[时间戳、节点A、节点B、关系]` 组成雪花ID，且为不同需求更改位数的限制，比如降低时间戳所占位数，但降低时间戳所占位数会导致生成ID的范围降低。<br>
+
+
+## 雪花ID的位数分配规则：
+在 `SnowflakeID` 中，我们需要决定如何为不同的字段分配位数。但我们不是直接为文字长短分配位数，而是为可能的不同值分配位数。<br>
+
+例如，如果你知道实体A只可能有4种不同的2字中文词，那么你只需要2位来表示它（因为 \(2^2 = 4\)）。同样，如果实体B可能有16种不同的4字中文词，那么你需要4位来表示它（因为 \(2^4 = 16\)）。<br>
+
+所以，需要注意：位数的占用是可能的不同值的数量，而不是文字的长度。🚨🚨🚨<br>
+
+假设：
+- 实体A有4种可能值：需要2位
+- 实体B有16种可能值：需要4位
+- 关系有64种可能值：需要6位
+
+这样，你总共需要2 + 4 + 6 = 12位来为这些字段编码到 `SnowflakeID` 中。当然，这还不包括时间戳，时间戳将占据其余的位数。<br>
+
+## 雪花ID的实例：
+假设你要根据 `data_list` 中的信息为每个元素生成雪花❄️ID，其中 `data_list` 中每个元素由实体A、实体B和关系组成，现在数据量要扩充到超级大的程度，实体A的可能值为1万多种，实体B的可能值也为1万多种，关系的可能值为100多种，尽可能的多设想一些可能值，必须ID的生成限制。<br>
+
+首先，我们将可能性近似转化为2的倍数，1万多种转化为16384种\(2^14 = 16384\)，100多种转化为128种\(2^7 = 128\)，所以此时应该将位数安排如下：<br>
+```txt
+1. `时间戳`：29位 (约合17年)--最低位
+2. `实体A`：14位 (代表 2^{14} = 16384 种)
+3. `实体B`：14位 (代表 2^{14} = 16384 种)
+4. `关系`：7位 (代表 2^{7} = 128 种)
+ 
+总位数：64位
+```
+接下来看一下具体的代码实现：<br>
+```python
+import time
+
+class SnowflakeID:
+    def __init__(self):
+        # Adjusting the shifts
+        self.relation_shift = 57   # 14(A) + 14(B) + 7(relation) + 29(timestamp) = 64
+        self.entity_b_shift = 43   # 14(B) + 7(relation) + 29(timestamp) = 50
+        self.entity_a_shift = 29   # 7(relation) + 29(timestamp) = 36
+        self.timestamp_shift = 0   # Timestamp stays at the least significant position
+
+        self.relation = {}
+        self.entity_a = {}
+        self.entity_b = {}
+
+    def add_mapping(self, entity_a, entity_b, relation):
+        # 添加或更新映射
+        if entity_a not in self.entity_a:
+            self.entity_a[entity_a] = len(self.entity_a) + 1
+
+        if entity_b not in self.entity_b:
+            self.entity_b[entity_b] = len(self.entity_b) + 1
+
+        if relation not in self.relation:
+            self.relation[relation] = len(self.relation) + 1
+
+    def generate_id(self, entity_a, entity_b, relation):
+        curr_timestamp = int(time.time()) & ((1 << 29) - 1)   # Ensure timestamp is 29 bits
+        id = (self.relation[relation] << self.relation_shift) | \
+             (self.entity_a[entity_a] << self.entity_a_shift) | \
+             (self.entity_b[entity_b] << self.entity_b_shift) | \
+             (curr_timestamp << self.timestamp_shift)
+        return id
+
+    def parse_id(self, id):
+        # Adjusting the masks
+        question_value = (id >> self.relation_shift) & ((1 << 7) - 1)
+        a_value = (id >> self.entity_a_shift) & ((1 << 14) - 1)
+        b_value = (id >> self.entity_b_shift) & ((1 << 14) - 1)
+        timestamp = id & ((1 << 29) - 1)
+
+        question_name = list(self.relation.keys())[list(self.relation.values()).index(question_value)]
+        a_name = list(self.entity_a.keys())[list(self.entity_a.values()).index(a_value)]
+        b_name = list(self.entity_b.keys())[list(self.entity_b.values()).index(b_value)]
+
+        return a_name, b_name, question_name, timestamp
+
+data_list = [['卖出', '钢琴', 'Pat'], 
+             ['买入', '黄金', 'Exp'], 
+             ['交换', '比特币', 'Clas']]
+
+sf = SnowflakeID()
+
+# 为每个子列表生成和解析雪花 ID
+for data in data_list:
+    sf.add_mapping(data[0], data[1], data[2])
+    id = sf.generate_id(data[0], data[1], data[2])
+    print(f"Generated ID: {id}")
+    print(f"Generated ID Length: {len(str(id))}")
+    # 解析数据
+    parsed_data = sf.parse_id(id)
+    print(f"Parsed Data: {parsed_data}")    # 注意时间戳移了29位
+    print()
+```
+终端输出效果：<br>
+```txt
+Generated ID: 144123984789102556
+Generated ID Length: 18
+Parsed Data: ('卖出', '钢琴', 'Pat', 83353564)
+
+Generated ID: 288247969494851548
+Generated ID Length: 18
+Parsed Data: ('买入', '黄金', 'Exp', 83353564)
+
+Generated ID: 432371954200600540
+Generated ID Length: 18
+Parsed Data: ('交换', '比特币', 'Clas', 83353564)
+```
+> 上述时间戳在转化为 `年-月-日 时-分-秒` 时只能转化为靠近 `1970年` 的时间。
+
+由于将时间戳限制为了29位，时间戳的值实际上只包含了1970年以来的部分秒数，这是不足以表示当前的日期和时间的。如果你希望将其解析为当前日期和时间，那么你需要存储一个基线时间戳，并在解析时将其添加回去。
+
+## 使用时间基线生成雪花ID：
+如果你不关注时间戳的转化，使用上一节的代码没有任何问题，如果你关注时间戳的转化，会发现时间戳只能转化为 `1970年` 左右还是很难受的。那么我们要怎样才能让时间正常显示呢？☕️☕️☕️<br>
+
+一个简单的方法是使用 `2023年1月1日` 作为基线时间戳，具体操作如下：<br>
+
+在`SnowflakeID`的`__init__`方法中，添加一个基线时间戳。<br>
+在`generate_id`方法中，从当前时间减去这个基线时间戳。<br>
+在`parse_id`方法中，将基线时间戳加回来。<br>
+
+具体代码如下：<br>
+```python
+import time
+
+class SnowflakeID:
+    def __init__(self):
+        # 基线时间戳：2023年1月1日
+        self.baseline_timestamp = int(time.mktime(time.strptime('2023-01-01 00:00:00', '%Y-%m-%d %H:%M:%S')))
+        self.relation_shift = 57   # 14(A) + 14(B) + 7(relation) + 29(timestamp) = 64
+        self.entity_b_shift = 43   # 14(B) + 7(relation) + 29(timestamp) = 50
+        self.entity_a_shift = 29   # 7(relation) + 29(timestamp) = 36
+        self.timestamp_shift = 0   # Timestamp stays at the least significant position
+
+        self.relation = {}
+        self.entity_a = {}
+        self.entity_b = {}
+
+    def add_mapping(self, entity_a, entity_b, relation):
+        # 添加或更新映射
+        if entity_a not in self.entity_a:
+            self.entity_a[entity_a] = len(self.entity_a) + 1
+
+        if entity_b not in self.entity_b:
+            self.entity_b[entity_b] = len(self.entity_b) + 1
+
+        if relation not in self.relation:
+            self.relation[relation] = len(self.relation) + 1
+
+    def generate_id(self, entity_a, entity_b, relation):
+        curr_timestamp = (int(time.time()) - self.baseline_timestamp) & ((1 << 29) - 1)   # Ensure timestamp is 29 bits
+        id = (self.relation[relation] << self.relation_shift) | \
+             (self.entity_a[entity_a] << self.entity_a_shift) | \
+             (self.entity_b[entity_b] << self.entity_b_shift) | \
+             (curr_timestamp << self.timestamp_shift)
+        return id
+
+    def parse_id(self, id):
+        # Adjusting the masks
+        question_value = (id >> self.relation_shift) & ((1 << 7) - 1)
+        a_value = (id >> self.entity_a_shift) & ((1 << 14) - 1)
+        b_value = (id >> self.entity_b_shift) & ((1 << 14) - 1)
+        timestamp = id & ((1 << 29) - 1)
+
+        question_name = list(self.relation.keys())[list(self.relation.values()).index(question_value)]
+        a_name = list(self.entity_a.keys())[list(self.entity_a.values()).index(a_value)]
+        b_name = list(self.entity_b.keys())[list(self.entity_b.values()).index(b_value)]
+
+        timestamp_in_seconds = self.baseline_timestamp + timestamp
+        formatted_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(timestamp_in_seconds))
+        return a_name, b_name, question_name, formatted_time
+
+data_list = [['卖出', '钢琴', 'Pat'], 
+             ['买入', '黄金', 'Exp'], 
+             ['交换', '比特币', 'Clas']]
+
+sf = SnowflakeID()
+
+# 为每个子列表生成和解析雪花 ID
+for data in data_list:
+    sf.add_mapping(data[0], data[1], data[2])
+    id = sf.generate_id(data[0], data[1], data[2])
+    print(f"Generated ID: {id}")
+    print(f"Generated ID Length: {len(str(id))}")
+    # 解析数据
+    parsed_data = sf.parse_id(id)
+    print(f"Parsed Data: {parsed_data}")
+    print()
+```
+终端输出效果：<br>
+```txt
+Generated ID: 144123984727215140
+Generated ID Length: 18
+Parsed Data: ('卖出', '钢琴', 'Pat', '2023-09-06 10:49:08')
+
+Generated ID: 288247969432964132
+Generated ID Length: 18
+Parsed Data: ('买入', '黄金', 'Exp', '2023-09-06 10:49:08')
+
+Generated ID: 432371954138713124
+Generated ID Length: 18
+Parsed Data: ('交换', '比特币', 'Clas', '2023-09-06 10:49:08')
+```
+现在是不是看着就很舒服了～🤭🤭🤭<br>
