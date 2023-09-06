@@ -1,5 +1,5 @@
-# SnowflakeID
-- [SnowflakeID](#snowflakeid)
+# SnowflakeID❄️
+- [SnowflakeID❄️](#snowflakeid️)
   - [雪花ID简介：](#雪花id简介)
   - [雪花ID为什么由64位组成，而不是更多：](#雪花id为什么由64位组成而不是更多)
   - [雪花ID的位数分配规则：](#雪花id的位数分配规则)
