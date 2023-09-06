@@ -53,7 +53,7 @@ Markdown文档直接图片从粘贴板复制，复制后图片的格式大致如
 
 ## 控制图片大小：
 有时粘贴入Markdown的图片会显示太大或太小，此时可以使用 `HTML` 语言的方式控制图片大小，将 `![image](https://github.com/peilongchencc/Pytool_Code/......)` 形式改为下列形式即可。<br>
-> Markdown本身就是为了简化操作的一种设计，所以这里不介绍太具体控制图片长、宽的操作，只以百分比形式放大或缩小。<br>
+> Markdown本身就是为了简化操作的一种设计，所以这里不介绍太细节的操作，例如控制图片长、宽等操作，只介绍以百分比形式放大或缩小图片。<br>
 
 ```shell
 <img src="https://github.com/peilongchencc/Pytool_Code/......" alt="image" width="50%" height="50%">
