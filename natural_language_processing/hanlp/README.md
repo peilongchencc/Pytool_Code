@@ -4,12 +4,14 @@
   - [HanLP的安装：](#hanlp的安装)
   - [分词：](#分词)
     - [根据自定义词库分词：](#根据自定义词库分词)
+  - [语义文本相似度：](#语义文本相似度)
   - [语义依存分析(sdp):](#语义依存分析sdp)
     - [单个输入的语义依存分析：](#单个输入的语义依存分析)
     - [多个输入的语义依存分析：](#多个输入的语义依存分析)
   - [多任务模型：](#多任务模型)
   - [流水线模式--pipeline：](#流水线模式--pipeline)
     - [分句型pipeline:](#分句型pipeline)
+    - [分句函数的具体代码：](#分句函数的具体代码)
     - [列表形式输入：](#列表形式输入)
     - [修改pipeline中插入的hanlp内置函数：](#修改pipeline中插入的hanlp内置函数)
     - [在pipeline插入自定义函数：](#在pipeline插入自定义函数)
@@ -52,6 +54,25 @@ print(res)
 终端效果：<br>
 ```python
 [['急性肠胃炎', '要', '如何', '治疗', '？'], ['盛剑环境', '的', '股价', '太', '高', '了', '。']]
+```
+
+## 语义文本相似度：
+```python
+import hanlp
+# 语义文本相似度(Semantic text similarity)
+HanLP = hanlp.load(hanlp.pretrained.sts.STS_ELECTRA_BASE_ZH)
+
+doc = HanLP([
+    ('急性肠胃炎要如何治疗？', '盛剑环境的股价太高了。'),
+    ('看图猜一电影名', '看图猜电影'),
+    ('无线路由器怎么无线上网', '无线上网卡和无线路由器怎么用'),
+    ('北京到上海的动车票', '上海到北京的动车票'),
+    ])
+print(doc)  # 结果为 list 类型
+```
+终端效果：<br>
+```txt
+[0.0, 0.9764468669891357, 0.0, 0.003458678722381592]
 ```
 
 ## 语义依存分析(sdp):
@@ -224,6 +245,49 @@ print(doc)
   ]
 }
 ```
+
+### 分句函数的具体代码：
+```python
+import re
+
+_SEPARATOR = r'@'
+_RE_SENTENCE = re.compile(r'(\S.+?[.!?])(?=\s+|$)|(\S.+?)(?=[\n]|$)', re.UNICODE)
+_AB_SENIOR = re.compile(r'([A-Z][a-z]{1,2}\.)\s(\w)', re.UNICODE)
+_AB_ACRONYM = re.compile(r'(\.[a-zA-Z]\.)\s(\w)', re.UNICODE)
+_UNDO_AB_SENIOR = re.compile(r'([A-Z][a-z]{1,2}\.)' + _SEPARATOR + r'(\w)', re.UNICODE)
+_UNDO_AB_ACRONYM = re.compile(r'(\.[a-zA-Z]\.)' + _SEPARATOR + r'(\w)', re.UNICODE)
+
+
+def _replace_with_separator(text, separator, regexs):
+    replacement = r"\1" + separator + r"\2"
+    result = text
+    for regex in regexs:
+        result = regex.sub(replacement, result)
+    return result
+
+
+def split_sentence(text, best=True):
+    text = re.sub(r'([。！？?])([^”’])', r"\1\n\2", text)
+    text = re.sub(r'(\.{6})([^”’])', r"\1\n\2", text)
+    text = re.sub(r'(…{2})([^”’])', r"\1\n\2", text)
+    text = re.sub(r'([。！？?][”’])([^，。！？?])', r'\1\n\2', text)
+    for chunk in text.split("\n"):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        if not best:
+            yield chunk
+            continue
+        processed = _replace_with_separator(chunk, _SEPARATOR, [_AB_SENIOR, _AB_ACRONYM])
+        sents = list(_RE_SENTENCE.finditer(processed))
+        if not sents:
+            yield chunk
+            continue
+        for sentence in sents:
+            sentence = _replace_with_separator(sentence.group(), r" ", [_UNDO_AB_SENIOR, _UNDO_AB_ACRONYM])
+            yield sentence
+```
+
 
 ### 列表形式输入：
 上一节模型输入的限制主要由分句函数决定，分句函数的输入需要是字符串，如果我们去除分句函数，那么可以按照列表的形式传入我们的输入。<br>
