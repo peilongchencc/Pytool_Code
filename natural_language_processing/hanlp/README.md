@@ -11,7 +11,7 @@
   - [流水线模式--pipeline：](#流水线模式--pipeline)
     - [分句型pipeline:](#分句型pipeline)
     - [列表形式输入：](#列表形式输入)
-- [修改pipeline中插入的hanlp内置函数：](#修改pipeline中插入的hanlp内置函数)
+    - [修改pipeline中插入的hanlp内置函数：](#修改pipeline中插入的hanlp内置函数)
     - [在pipeline插入自定义函数：](#在pipeline插入自定义函数)
 
 `HanLP` 的 `RESTful API` 用法笔者不做介绍，因为 `RESTful API` 有使用次数限制，这里只介绍 `HanLP Native` 形式的使用。<br>
@@ -246,7 +246,7 @@ print(doc)
 # print(doc["tok"])
 ```
 
-# 修改pipeline中插入的hanlp内置函数：
+### 修改pipeline中插入的hanlp内置函数：
 以分词为例，在工作中我们经常需要在分词的时候加入自定义词库。如果只使用一个分词模型，加入自定义词库很容易，但如何在pipeline的分词模型中加入自定义词库呢？可以参考以下代码：<br>
 > 当你在管道中使用自定义函数时，你只需要将关键字参数(`seg_dict`)传递给它，位置参数（如 `input_list`）会自动由管道进行传递。
 
