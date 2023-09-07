@@ -103,7 +103,7 @@ print(type(graphs))
 5       ？      _       _       _       _       _       _       4:mPunc _
 <class 'hanlp_common.conll.CoNLLSentence'>
 ```
-相信你已经注意到了，我打印出了 `graphs` 的类型，类型为 `hanlp_common.conll.CoNLLSentence` 类。
+相信你已经注意到了，我打印出了 `graphs` 的类型，类型为 `hanlp_common.conll.CoNLLSentence` 类，如果你需要提取需要的内容组成三元组，可以参考 `"分词+语义依存分析的pipeline构建"` 那一节中的内容。<br>
 
 ### 多个输入的语义依存分析：
 ```python
