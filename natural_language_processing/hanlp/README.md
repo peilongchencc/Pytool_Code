@@ -412,7 +412,6 @@ print(doc["custom_function_result"]["my_project_name"])
 ### 分词+语义依存分析的pipeline构建：
 ```python
 import hanlp
-# 自定义分词库
 segment_dict = {'急性肠胃炎','盛剑环境'}
 
 def segment(input_list,seg_dict):
@@ -433,29 +432,29 @@ need_data = doc['sdp']
 
 # 需要提取的关系
 needed_semantic_relation = {
-    "Pat": {"mean_zh": "受事", "subject_role": "受事主体", "object_role": "受事客体"},
-    "Exp": {"mean_zh": "当事", "subject_role": "当事主体", "object_role": "当事客体"},
-    "Belg": {"mean_zh": "属事", "subject_role": "属事主体", "object_role": "属事客体"},
-    "Clas": {"mean_zh": "类事", "subject_role": "类事主体", "object_role": "类事客体"},
-    "Cont": {"mean_zh": "客事", "subject_role": "客事主体", "object_role": "客事客体"},
-    "Poss": {"mean_zh": "领事", "subject_role": "领事主体", "object_role": "领事客体"},
-    "Desc": {"mean_zh": "描写角色", "subject_role": "描写主体", "object_role": "描写客体"},
-    "Comp": {"mean_zh": "比较角色", "subject_role": "比较主体", "object_role": "比较客体"},
-    "Mann": {"mean_zh": "方式角色", "subject_role": "方式主体", "object_role": "方式客体"},
-    "eCoo": {"mean_zh": "并列角色", "subject_role": "并列主体", "object_role": "并列客体"},
-    "Quan": {"mean_zh": "数量角色", "subject_role": "数量主体", "object_role": "数量客体"},
-    "Qp": {"mean_zh": "数量组合", "subject_role": "数量组合主体", "object_role": "数量组合客体"},
-    "Host": {"mean_zh": "宿主角色", "subject_role": "宿主主体", "object_role": "宿主客体"},
-    "Time": {"mean_zh": "时间角色", "subject_role": "时间主体", "object_role": "时间客体"},
-    "Loc": {"mean_zh": "空间角色", "subject_role": "空间主体", "object_role": "空间客体"},
-    "Accd": {"mean_zh": "依据角色", "subject_role": "依据主体", "object_role": "依据客体"},
-    "Reas": {"mean_zh": "缘故角色", "subject_role": "缘故主体", "object_role": "缘故客体"},
-    "rReas": {"mean_zh": "反缘故角色", "subject_role": "反缘故主体", "object_role": "反缘故客体"},
-    "mNeg": {"mean_zh": "否定标记", "subject_role": "否定标记主体", "object_role": "否定标记客体"},
-    "Tmod": {"mean_zh": "时间修饰角色", "subject_role": "时间修饰主体", "object_role": "时间修饰客体"},
-    "mTime": {"mean_zh": "时间标记", "subject_role": "时间标记主体", "object_role": "时间标记客体"},
-    "Freq": {"mean_zh": "频率角色", "subject_role": "频率主体", "object_role": "频率客体"},
-    "dExp": {"mean_zh": "嵌套当事", "subject_role": "嵌套当事主体", "object_role": "嵌套当事客体"}
+    "Pat": {"mean_zh": "受事", "subject_role": "受事主体", "object_role": "受事客体", "subject_role_id": 1001, "object_role_id": 1002},
+    "Exp": {"mean_zh": "当事", "subject_role": "当事主体", "object_role": "当事客体", "subject_role_id": 1003, "object_role_id": 1004},
+    "Belg": {"mean_zh": "属事", "subject_role": "属事主体", "object_role": "属事客体", "subject_role_id": 1005, "object_role_id": 1006},
+    "Clas": {"mean_zh": "类事", "subject_role": "类事主体", "object_role": "类事客体", "subject_role_id": 1007, "object_role_id": 1008},
+    "Cont": {"mean_zh": "客事", "subject_role": "客事主体", "object_role": "客事客体", "subject_role_id": 1009, "object_role_id": 1010},
+    "Poss": {"mean_zh": "领事", "subject_role": "领事主体", "object_role": "领事客体", "subject_role_id": 1011, "object_role_id": 1012},
+    "Desc": {"mean_zh": "描写角色", "subject_role": "描写主体", "object_role": "描写客体", "subject_role_id": 1013, "object_role_id": 1014},
+    "Comp": {"mean_zh": "比较角色", "subject_role": "比较主体", "object_role": "比较客体", "subject_role_id": 1015, "object_role_id": 1016},
+    "Mann": {"mean_zh": "方式角色", "subject_role": "方式主体", "object_role": "方式客体", "subject_role_id": 1017, "object_role_id": 1018},
+    "eCoo": {"mean_zh": "并列角色", "subject_role": "并列主体", "object_role": "并列客体", "subject_role_id": 1019, "object_role_id": 1020},
+    "Quan": {"mean_zh": "数量角色", "subject_role": "数量主体", "object_role": "数量客体", "subject_role_id": 1021, "object_role_id": 1022},
+    "Qp": {"mean_zh": "数量组合", "subject_role": "数量组合主体", "object_role": "数量组合客体", "subject_role_id": 1023, "object_role_id": 1024},
+    "Host": {"mean_zh": "宿主角色", "subject_role": "宿主主体", "object_role": "宿主客体", "subject_role_id": 1025, "object_role_id": 1026},
+    "Time": {"mean_zh": "时间角色", "subject_role": "时间主体", "object_role": "时间客体", "subject_role_id": 1027, "object_role_id": 1028},
+    "Loc": {"mean_zh": "空间角色", "subject_role": "空间主体", "object_role": "空间客体", "subject_role_id": 1029, "object_role_id": 1030},
+    "Accd": {"mean_zh": "依据角色", "subject_role": "依据主体", "object_role": "依据客体", "subject_role_id": 1031, "object_role_id": 1032},
+    "Reas": {"mean_zh": "缘故角色", "subject_role": "缘故主体", "object_role": "缘故客体", "subject_role_id": 1033, "object_role_id": 1034},
+    "rReas": {"mean_zh": "反缘故角色", "subject_role": "反缘故主体", "object_role": "反缘故客体", "subject_role_id": 1035, "object_role_id": 1036},
+    "mNeg": {"mean_zh": "否定标记", "subject_role": "否定标记主体", "object_role": "否定标记客体", "subject_role_id": 1037, "object_role_id": 1038},
+    "Tmod": {"mean_zh": "时间修饰角色", "subject_role": "时间修饰主体", "object_role": "时间修饰客体", "subject_role_id": 1039, "object_role_id": 1040},
+    "mTime": {"mean_zh": "时间标记", "subject_role": "时间标记主体", "object_role": "时间标记客体", "subject_role_id": 1041, "object_role_id": 1042},
+    "Freq": {"mean_zh": "频率角色", "subject_role": "频率主体", "object_role": "频率客体", "subject_role_id": 1043, "object_role_id": 1044},
+    "dExp": {"mean_zh": "嵌套当事", "subject_role": "嵌套当事主体", "object_role": "嵌套当事客体", "subject_role_id": 1045, "object_role_id": 1046}
 }
 
 
@@ -471,8 +470,10 @@ for element in need_data:
             mean_zh = needed_semantic_relation[relation]["mean_zh"]
             subject_role = needed_semantic_relation[relation]["subject_role"]
             object_role = needed_semantic_relation[relation]["subject_role"]
-            # 存入的信息分别为：[实体A，实体B，关系(英文缩写)，关系(中文)，实体A的角色，实体B的角色]
-            triple = [entity_a, entity_b, relation, mean_zh, subject_role, object_role]
+            subject_role_id = needed_semantic_relation[relation]["subject_role_id"]
+            object_role_id = needed_semantic_relation[relation]["object_role_id"]
+            # 存入的信息分别为：[实体A，实体B，关系(英文缩写)，关系(中文)，实体A的角色，实体B的角色，实体A的角色对应的id，实体B的角色对应的id]
+            triple = [entity_a, entity_b, relation, mean_zh, subject_role, object_role, subject_role_id, object_role_id]
             semantic_triples.append(triple)
     print("----------")
 print(semantic_triples)
@@ -493,5 +494,5 @@ print(semantic_triples)
 6       了      _       _       _       _       _       _       5:mTone _
 7       。      _       _       _       _       _       _       5:mPunc _
 ----------
-[['治疗', '急性肠胃炎', 'Pat', '受事', '受事主体', '受事主体'], ['治疗', '如何', 'Mann', '方式角色', '方式主体', '方式主体'], ['股价', '盛剑环境', 'Desc', '描写角色', '描写主体', '描写主体'], ['高', '股价', 'Exp', '当事', '当事主体', '当事主体']]
+[['治疗', '急性肠胃炎', 'Pat', '受事', '受事主体', '受事主体', 1001, 1002], ['治疗', '如何', 'Mann', '方式角色', '方式主体', '方式主体', 1017, 1018], ['股价', '盛剑环境', 'Desc', '描写角色', '描写主体', '描写主体', 1013, 1014], ['高', '股价', 'Exp', '当事', '当事主体', '当事主体', 1003, 1004]]
 ```
