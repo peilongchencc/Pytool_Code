@@ -469,7 +469,7 @@ for element in need_data:
         if relation in needed_semantic_relation:
             mean_zh = needed_semantic_relation[relation]["mean_zh"]
             subject_role = needed_semantic_relation[relation]["subject_role"]
-            object_role = needed_semantic_relation[relation]["subject_role"]
+            object_role = needed_semantic_relation[relation]["object_role"]
             subject_role_id = needed_semantic_relation[relation]["subject_role_id"]
             object_role_id = needed_semantic_relation[relation]["object_role_id"]
             # 存入的信息分别为：[实体A，实体B，关系(英文缩写)，关系(中文)，实体A的角色，实体B的角色，实体A的角色对应的id，实体B的角色对应的id]
@@ -496,5 +496,5 @@ print(semantic_triples)
 7       。      _       _       _       _       _       _       5:mPunc _
 ----------
 每一项数据的内容为：[实体A，实体B，关系(英文缩写)，关系(中文)，实体A的角色，实体B的角色，实体A的角色对应的id，实体B的角色对应的id]
-[['治疗', '急性肠胃炎', 'Pat', '受事', '受事主体', '受事主体', 1001, 1002], ['治疗', '如何', 'Mann', '方式角色', '方式主体', '方式主体', 1017, 1018], ['股价', '盛剑环境', 'Desc', '描写角色', '描写主体', '描写主体', 1013, 1014], ['高', '股价', 'Exp', '当事', '当事主体', '当事主体', 1003, 1004]]
+[['治疗', '急性肠胃炎', 'Pat', '受事', '受事主体', '受事客体', 1001, 1002], ['治疗', '如何', 'Mann', '方式角色', '方式主体', '方式客体', 1017, 1018], ['股价', '盛剑环境', 'Desc', '描写角色', '描写主体', '描写客体', 1013, 1014], ['高', '股价', 'Exp', '当事', '当事主体', '当事客体', 1003, 1004]]
 ```
