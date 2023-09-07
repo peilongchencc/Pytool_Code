@@ -171,7 +171,7 @@ print(res)
 ```
 
 ## 流水线模式--pipeline：
-`pipeline` 模式如果没有指定 `input_key` ，默认将上一步的输出作为输入。<br>
+`pipeline` 模式如果没有指定 `input_key` ，默认将上一步的输出作为输入。参数的传递依靠 `input_key` 和 `ouput_key`，`input_key` 和 `ouput_key` 的变量名可以根据自己的喜好定义。<br>
 
 ### 分句型pipeline:
 如果你的输入是一个超长的字符串，而你又不知道怎样便捷分句，可以执行以下代码。<br>
