@@ -428,10 +428,12 @@ HanLP = hanlp.pipeline() \
 
 doc = HanLP(['急性肠胃炎要如何治疗？','盛剑环境的股价太高了。'])
 # 提取出我们需要的语义依存分析结果
+# print(doc)
 need_data = doc['sdp']
 
 # 需要提取的关系
 needed_semantic_relation = {
+    "Agt": {"mean_zh": "Agt中文", "subject_role": "agt主体", "object_role": "agt客体", "subject_role_id": 1111, "object_role_id": 1112},
     "Pat": {"mean_zh": "受事", "subject_role": "受事主体", "object_role": "受事客体", "subject_role_id": 1001, "object_role_id": 1002},
     "Exp": {"mean_zh": "当事", "subject_role": "当事主体", "object_role": "当事客体", "subject_role_id": 1003, "object_role_id": 1004},
     "Belg": {"mean_zh": "属事", "subject_role": "属事主体", "object_role": "属事客体", "subject_role_id": 1005, "object_role_id": 1006},
@@ -459,25 +461,33 @@ needed_semantic_relation = {
 
 
 semantic_triples = []
+# 按句子获取不同输入的分析结果
 for element in need_data:
+    # 按分词获取每个分词与其他分词的关系与关系词索引
     for i in element:
         print(i)
         entity_b = i.form                 # 当前词的名称
-        entity_a_idx = i.deps[0][0]-1     # i.deps的结果为：[(4, 'Pat')]，因HanLP序列后的结果从1开始编号，所以需要-1。
-        entity_a = element[entity_a_idx].form
-        relation = i.deps[0][1]
-        if relation in needed_semantic_relation:
-            mean_zh = needed_semantic_relation[relation]["mean_zh"]
-            subject_role = needed_semantic_relation[relation]["subject_role"]
-            object_role = needed_semantic_relation[relation]["object_role"]
-            subject_role_id = needed_semantic_relation[relation]["subject_role_id"]
-            object_role_id = needed_semantic_relation[relation]["object_role_id"]
-            # 存入的信息分别为：[实体A，实体B，关系(英文缩写)，关系(中文)，实体A的角色，实体B的角色，实体A的角色对应的id，实体B的角色对应的id]
-            triple = [entity_a, entity_b, relation, mean_zh, subject_role, object_role, subject_role_id, object_role_id]
-            semantic_triples.append(triple)
+        # 一个分词可能和多个分词组成关系，i.deps的结果为：[(4, 'Pat'), [6, "Agt"]]
+        for each_dep in i.deps:
+            entity_a_idx = each_dep[0]-1     # 因HanLP序列后的结果从1开始编号，所以需要-1。
+            entity_a = element[entity_a_idx].form
+            relation = each_dep[1]
+            if relation in needed_semantic_relation:
+                mean_zh = needed_semantic_relation[relation]["mean_zh"]
+                subject_role = needed_semantic_relation[relation]["subject_role"]
+                object_role = needed_semantic_relation[relation]["object_role"]
+                subject_role_id = needed_semantic_relation[relation]["subject_role_id"]
+                object_role_id = needed_semantic_relation[relation]["object_role_id"]
+                # 存入的信息分别为：[实体A，实体B，关系(英文缩写)，关系(中文)，实体A的角色，实体B的角色，实体A的角色对应的id，实体B的角色对应的id]
+                triple = [entity_a, entity_b, relation, mean_zh, subject_role, object_role, subject_role_id, object_role_id]
+                semantic_triples.append(triple)
     print("----------")
 print("每一项数据的内容为：[实体A，实体B，关系(英文缩写)，关系(中文)，实体A的角色，实体B的角色，实体A的角色对应的id，实体B的角色对应的id]")
 print(semantic_triples)
+
+# 查看每一项的结果
+for x in semantic_triples:
+    print(x)
 ```
 终端效果：<br>
 ```txt
@@ -497,4 +507,8 @@ print(semantic_triples)
 ----------
 每一项数据的内容为：[实体A，实体B，关系(英文缩写)，关系(中文)，实体A的角色，实体B的角色，实体A的角色对应的id，实体B的角色对应的id]
 [['治疗', '急性肠胃炎', 'Pat', '受事', '受事主体', '受事客体', 1001, 1002], ['治疗', '如何', 'Mann', '方式角色', '方式主体', '方式客体', 1017, 1018], ['股价', '盛剑环境', 'Desc', '描写角色', '描写主体', '描写客体', 1013, 1014], ['高', '股价', 'Exp', '当事', '当事主体', '当事客体', 1003, 1004]]
+['治疗', '急性肠胃炎', 'Pat', '受事', '受事主体', '受事客体', 1001, 1002]
+['治疗', '如何', 'Mann', '方式角色', '方式主体', '方式客体', 1017, 1018]
+['股价', '盛剑环境', 'Desc', '描写角色', '描写主体', '描写客体', 1013, 1014]
+['高', '股价', 'Exp', '当事', '当事主体', '当事客体', 1003, 1004]
 ```
