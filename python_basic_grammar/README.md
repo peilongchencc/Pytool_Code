@@ -26,6 +26,11 @@
     - [函数调用：](#函数调用)
     - [返回值：](#返回值)
     - [函数的文档字符串：](#函数的文档字符串)
+    - [默认参数：](#默认参数)
+    - [指定参数数据类型：](#指定参数数据类型)
+    - [不定参数：](#不定参数)
+      - [不定位置参数 (\*args)：](#不定位置参数-args)
+      - [不定关键字参数 (\*\*kwargs)：](#不定关键字参数-kwargs)
     - [函数中定义函数：](#函数中定义函数)
   - [python常用内建函数：](#python常用内建函数)
     - [open() 函数：](#open-函数)
@@ -494,7 +499,7 @@ def add(a, b):
 - 返回值说明，描述函数的返回值类型和含义。
 - 示例用法，提供函数的使用示例。
 
-示例Google风格的文档字符串：<br>
+示例，Google风格的文档字符串：<br>
 ```python
 def calculate_total(price, quantity):
     """Calculate the total cost of items.
@@ -509,30 +514,114 @@ def calculate_total(price, quantity):
     total_cost = price * quantity
     return total_cost
 
-help(calculate_total)
+help(calculate_total)   # 也可以使用 print(help(calculate_total)) 的形式。
 ```
+终端显示效果：<br>
+```log
+Help on function calculate_total in module __main__:
 
+calculate_total(price, quantity)
+    Calculate the total cost of items.
+    
+    Args:
+        price (float): The price of a single item.
+        quantity (int): The number of items.
+    
+    Returns:
+        float: The total cost of the items.
+(END)
+```
+上述内容会自动在一个新的界面显示，可以按字母`q`退出。<br>
 
-1. 默认参数：
-   可以为函数的参数指定默认值，这样在调用函数时如果没有提供该参数，将使用默认值。
-
-2. 不定参数：
-   Python支持不定数量的位置参数和关键字参数，可以使用`*args`和`**kwargs`来处理这些参数。
-
-下面是一个简单的Python函数示例，演示了函数的定义和使用：
-
+### 默认参数：
+可以为函数的参数指定默认值，这样在调用函数时如果没有提供该参数，将使用默认值。<br>
 ```python
-def add_numbers(a, b):
+def add_numbers(a=5, b=3):
     """计算并返回两个数的和。"""
     result = a + b
     return result
 
 # 调用函数
-sum_result = add_numbers(5, 3)
+sum_result = add_numbers()
 print(sum_result)  # 输出：8
 ```
 
-这只是Python函数的基础知识，Python中有许多更高级的概念和技术，可以根据需要进一步学习和掌握。函数是组织和重用代码的重要工具，它们在编写大型和模块化的程序时非常有用。
+### 指定参数数据类型：
+在Python中，通常不需要显式指定函数参数的数据类型，因为Python是一种动态类型语言，它会自动推断参数的类型。这意味着你可以将不同类型的数据传递给函数参数，Python会根据传入的实际数据来执行相应的操作。这种特性称为动态类型检查。<br>
+
+例如，你可以编写一个函数，接受整数、浮点数、字符串或其他数据类型的参数，Python会根据传递的参数执行相应的操作，而不需要显式指定参数的数据类型：<br>
+
+```python
+def add(a, b):
+    return a + b
+
+result1 = add(3, 5)           # 整数相加，结果是整数 8
+result2 = add(3.5, 2.5)       # 浮点数相加，结果是浮点数 6.0
+result3 = add("Hello, ", "world")  # 字符串连接，结果是字符串 "Hello, world"
+```
+
+虽然Python通常不需要显式指定参数的数据类型，但有时你可能希望在函数内部进行类型检查或处理。你可以使用`isinstance()`函数来检查变量的类型。例如：<br>
+
+```python
+def add(a, b):
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+        return a + b
+    else:
+        raise ValueError("Both arguments must be numeric.")
+```
+
+在这个示例中，函数内部使用`isinstance()`来检查参数 `a` 和 `b` 是否属于整数或浮点数类型，如果不是，则抛出一个值错误。<br>
+
+尽管Python支持动态类型，但有时在文档和代码可读性方面，显式指定函数参数的预期数据类型是一个好习惯。你可以使用函数的文档字符串（docstring）来描述参数的预期类型和用法，以帮助其他开发者理解函数的行为。<br>
+
+请注意，从Python 3.5开始，引入了类型提示（Type Hints）的功能，可以使用类型注解来标注函数参数和返回值的预期类型，这有助于提高代码的可读性和静态类型检查工具的效果。例如：<br>
+
+```python
+def add(a: int, b: int) -> int:
+    return a + b
+```
+
+尽管这些类型提示不会影响运行时的行为，但它们可以在编辑器中提供更好的自动补全和静态类型检查支持。同时，一些工具和IDE（集成开发环境）可以根据这些类型提示提供更好的代码分析和错误检查。<br>
+
+### 不定参数：
+Python支持不定数量的位置参数和关键字参数，可以使用不定位置参数`*args`和不定关键字参数`**kwargs`来处理这些参数。<br>
+
+#### 不定位置参数 (*args)：
+不定位置参数允许你传递任意数量的位置参数给函数。这些参数将被打包成一个元组（tuple），可以在函数内部进行迭代或处理。<br>
+
+示例：<br>
+```python
+def print_args(*args):
+    for arg in args:
+        print(arg)
+
+print_args(1, 2, 3, "hello")
+# 输出:
+# 1
+# 2
+# 3
+# hello
+```
+在这个示例中，`*args` 接受了任意数量的位置参数，并在函数内部以元组的形式进行处理。<br>
+
+#### 不定关键字参数 (**kwargs)：
+不定关键字参数允许你传递任意数量的关键字参数给函数。这些参数将被打包成一个字典（dictionary），其中关键字是参数名称，对应的值是参数的值。<br>
+
+示例：<br>
+```python
+def print_kwargs(**kwargs):
+    for key, value in kwargs.items():
+        print(f"{key}: {value}")
+
+print_kwargs(name="Alice", age=30, city="New York")
+# 输出:
+# name: Alice
+# age: 30
+# city: New York
+```
+在这个示例中，`**kwargs` 接受了任意数量的关键字参数，并在函数内部以字典的形式进行处理。<br>
+
+使用不定参数可以使函数更加灵活，因为它们允许函数接受不同数量的参数而不需要提前定义固定数量的参数。通常，`*args` 用于不确定数量的位置参数，而 `**kwargs` 用于不确定数量的关键字参数。这对于编写通用函数或包装其他函数时非常有用，因为它们可以适应各种输入情况。<br>
 
 ### 函数中定义函数：
 python支持在函数内部定义函数，这被称为**内嵌函数或局部函数**。内嵌函数在外部函数的作用域内定义，只能在外部函数内部访问。这可以用于封装某些逻辑或将代码模块化，以便在外部函数中更清晰地组织代码。🌵🌵🌵<br>
