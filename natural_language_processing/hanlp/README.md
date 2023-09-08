@@ -490,7 +490,7 @@ for x in semantic_triples:
     print(x)
 ```
 终端效果：<br>
-```txt
+```log
 1       急性肠胃炎      _       _       _       _       _       _       4:Pat   _
 2       要      _       _       _       _       _       _       4:mMod  _
 3       如何    _       _       _       _       _       _       4:Mann  _
