@@ -433,7 +433,6 @@ need_data = doc['sdp']
 
 # 需要提取的关系
 needed_semantic_relation = {
-    "Agt": {"mean_zh": "Agt中文", "subject_role": "agt主体", "object_role": "agt客体", "subject_role_id": 1111, "object_role_id": 1112},
     "Pat": {"mean_zh": "受事", "subject_role": "受事主体", "object_role": "受事客体", "subject_role_id": 1001, "object_role_id": 1002},
     "Exp": {"mean_zh": "当事", "subject_role": "当事主体", "object_role": "当事客体", "subject_role_id": 1003, "object_role_id": 1004},
     "Belg": {"mean_zh": "属事", "subject_role": "属事主体", "object_role": "属事客体", "subject_role_id": 1005, "object_role_id": 1006},
