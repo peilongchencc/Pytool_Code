@@ -20,7 +20,14 @@
       - [@staticmethod：](#staticmethod)
       - [@classmethod:](#classmethod)
     - [python类使用 import 导入时文件顺序解析：](#python类使用-import-导入时文件顺序解析)
-  - [python常用函数：](#python常用函数)
+  - [python的函数语法：](#python的函数语法)
+    - [函数的定义：](#函数的定义)
+    - [参数传递：](#参数传递)
+    - [函数调用：](#函数调用)
+    - [返回值：](#返回值)
+    - [函数的文档字符串：](#函数的文档字符串)
+    - [函数中定义函数：](#函数中定义函数)
+  - [python常用内建函数：](#python常用内建函数)
     - [open() 函数：](#open-函数)
     - [read():](#read)
     - [readline():](#readline)
@@ -444,8 +451,120 @@ Prefix dict has been built successfully.
 
 笔者讲这个的原因是：希望大家不要随意在工具文件中写可执行内容，很容易重复调用，产生无用的开销。尤其是文件中有 python类，不要在定义类的文件中就把类实例化了。可能有部分人觉得这样便于维护，调用方便(只需要`from ... import ...`)，但这会增加共同维护项目仓库人员的负担，会增大内存、CPU开销，因为只要调用这个文件就会自动实例化一次对应的类。除非这个文件中你只写了一个类，或是专门用于各种类实例化的文件，但这种方式显然不可能。所以最好的方式依旧是在该实例化的地方实例化，至于维护问题，采用 `from config import ...` 这种方式维护即可。 ❌❌❌<br>
 
+## python的函数语法：
+函数是一段可重复使用的代码块，它可以接受输入参数，执行一些操作，然后返回结果。在Python中，函数使用`def`关键字来定义，下面是一些关于Python函数的基本用法：<br>
 
-## python常用函数：
+### 函数的定义：
+使用`def`关键字来定义函数，后面跟着函数的名称和一对小括号，括号内可以包含参数列表。函数定义的基本语法如下：<br>
+```python
+def function_name(parameters):
+    # 函数体，包含一系列操作
+    # 可以使用参数执行操作
+    return result  # 可选，如果需要返回结果
+```
+
+### 参数传递：
+函数可以接受零个或多个参数。参数是在函数调用时传递给函数的值。有两种类型的参数：**位置参数**和**关键字参数**。<br>
+- 位置参数：按照参数在函数定义中的位置传递值。
+- 关键字参数：通过参数名称来传递值，这可以使代码更加清晰和可读。
+
+
+### 函数调用：
+要调用一个函数，只需使用函数的名称，并传递所需的参数。例如：<br>
+```python
+result = function_name(arg1, arg2, kwarg1=value1, kwarg2=value2)
+```
+
+### 返回值：
+函数可以使用`return`语句返回一个值。如果没有`return`语句，函数将返回`None`。<br>
+```python
+def add(a, b):
+    return a + b
+```
+
+### 函数的文档字符串：
+函数通常应该包含一个文档字符串（docstring），它用于描述函数的用途和参数，以及其他相关信息。它是函数的用户和其他开发者了解函数如何工作的重要来源。<br>
+
+良好的文档字符串可以提高代码的可读性和可维护性。这个文档字符串会在调用`help()`函数时显示出来。<br>
+
+格式约定：Python社区通常采用一种特定的文档字符串格式约定，称为"Google风格"或"reStructuredText风格"。这些约定包括以下部分：<br>
+- 函数的简短描述（一行），概括性地描述函数的用途。
+- 空行。
+- 参数说明，列出每个参数的名称、类型和说明。
+- 返回值说明，描述函数的返回值类型和含义。
+- 示例用法，提供函数的使用示例。
+
+示例Google风格的文档字符串：<br>
+```python
+def calculate_total(price, quantity):
+    """Calculate the total cost of items.
+    
+    Args:
+        price (float): The price of a single item.
+        quantity (int): The number of items.
+    
+    Returns:
+        float: The total cost of the items.
+    """
+    total_cost = price * quantity
+    return total_cost
+
+help(calculate_total)
+```
+
+
+1. 默认参数：
+   可以为函数的参数指定默认值，这样在调用函数时如果没有提供该参数，将使用默认值。
+
+2. 不定参数：
+   Python支持不定数量的位置参数和关键字参数，可以使用`*args`和`**kwargs`来处理这些参数。
+
+下面是一个简单的Python函数示例，演示了函数的定义和使用：
+
+```python
+def add_numbers(a, b):
+    """计算并返回两个数的和。"""
+    result = a + b
+    return result
+
+# 调用函数
+sum_result = add_numbers(5, 3)
+print(sum_result)  # 输出：8
+```
+
+这只是Python函数的基础知识，Python中有许多更高级的概念和技术，可以根据需要进一步学习和掌握。函数是组织和重用代码的重要工具，它们在编写大型和模块化的程序时非常有用。
+
+### 函数中定义函数：
+python支持在函数内部定义函数，这被称为**内嵌函数或局部函数**。内嵌函数在外部函数的作用域内定义，只能在外部函数内部访问。这可以用于封装某些逻辑或将代码模块化，以便在外部函数中更清晰地组织代码。🌵🌵🌵<br>
+示例代码如下：<br>
+```python
+def outer_function():
+    def inner_function():
+        print("这是内部函数")
+    
+    # 调用内部函数
+    inner_function()
+
+# 调用外部函数
+outer_function()
+```
+🚨🚨🚨一定要注意，内部函数是无法在外部调用的，除非你采用了返回值的方式。例如下列代码形式的调用会返回 `NameError`。<br>
+```python
+def outer_function():
+    def inner_function():
+        print("这是内部函数")
+    
+    # 调用内部函数
+    inner_function()
+
+# 调用外部函数
+outer_function()
+
+# 尝试在外部函数之外调用内部函数，将引发 NameError: name 'inner_function' is not defined. 
+inner_function()
+```
+
+## python常用内建函数：
 python一些内建函数非常有用，这里介绍一些笔者常用的python内建函数，笔者常用的python库会在对应的文件夹中介绍，如果需要请自行查看～<br>
 ### open() 函数：
 Python 的内建函数 `open()` 函数用于打开文件，常搭配 `read()`, `readline()` 和 `readlines()` 方法来读取文件内容。<br>
