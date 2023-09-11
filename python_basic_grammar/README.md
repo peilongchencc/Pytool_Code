@@ -20,6 +20,7 @@
       - [@staticmethod：](#staticmethod)
       - [@classmethod:](#classmethod)
     - [python类使用 import 导入时文件顺序解析：](#python类使用-import-导入时文件顺序解析)
+    - [__init__.py文件的作用和使用方法](#initpy文件的作用和使用方法)
   - [python的函数语法：](#python的函数语法)
     - [函数的定义：](#函数的定义)
     - [参数传递：](#参数传递)
@@ -455,6 +456,114 @@ Prefix dict has been built successfully.
 从输出可以看出，`from tools import Segment` 会将导入文件的所有内容都执行一遍，`函数、类`是因为没有调用所以没有执行。当运行到 `personal_information.split_words(text)` 才真正执行了类 `Segment` 中的函数。<br>
 
 笔者讲这个的原因是：希望大家不要随意在工具文件中写可执行内容，很容易重复调用，产生无用的开销。尤其是文件中有 python类，不要在定义类的文件中就把类实例化了。可能有部分人觉得这样便于维护，调用方便(只需要`from ... import ...`)，但这会增加共同维护项目仓库人员的负担，会增大内存、CPU开销，因为只要调用这个文件就会自动实例化一次对应的类。除非这个文件中你只写了一个类，或是专门用于各种类实例化的文件，但这种方式显然不可能。所以最好的方式依旧是在该实例化的地方实例化，至于维护问题，采用 `from config import ...` 这种方式维护即可。 ❌❌❌<br>
+
+### __init__.py文件的作用和使用方法
+`__init__.py` 文件是 Python 中的一个特殊文件，主要用于标记一个目录是 Python 的模块或包。当你有一个目录，想要将其当作 Python 包来使用时，你需要在该目录下创建一个 `__init__.py` 文件。这样 Python 才会将该目录视为包或模块，否则它只会被视为一个普通的目录。<br>
+
+`__init__.py` 的主要作用和使用方法如下：
+
+1. **标记目录为包或模块**：如上所述，`__init__.py` 的存在使得 Python 认为包含该文件的目录是一个包或模块。
+
+2. **初始化代码**：当你导入一个包时，`__init__.py` 中的代码会自动运行。这对于包的初始化非常有用。例如，你可以在此文件中初始化包级的变量或执行其他启动代码。
+
+3. **包的导入控制**：你可以在 `__init__.py` 中定义 `__all__` 变量，来指定当从包中使用 `from package import *` 时应该导入哪些模块，`__all__` 以”白名单“的形式指明要暴露的接口。
+
+`__all__` 是一个特殊的模块级变量，通常在 `__init__.py` 中定义，但也可以在其他模块中定义。如果没有定义 `__all__`，则 `from package import *` 时默认会导入所有不以下划线 (`_`) 开头的名称🚨🚨🚨。<br>
+
+假设你的文件结构如下：<br>
+```log
+.
+├── mypackage
+│   ├── __init__.py
+│   ├── module1.py
+│   ├── module2.py
+│   └── module3.py
+└── main.py
+```
+当你在 `__init__.py` 文件中加入以下代码：<br>
+```python
+__all__ = ["module1", "module2"]
+```
+在 `main.py` 文件中使用 `from my_package import *` 时仅可以导入 `module1.py` 和 `module2.py` ：<br>
+```python
+from my_package import *
+
+fun1 = module1.func()   # 正常引入
+fun2 = module2.func()   # 正常引入
+fun3 = module3.func()   # 无法引入，会提示 NameError: name 'module3' is not defined. 
+```
+
+拓展--`__all__`在文件中的使用：<br>
+刚才介绍的是 `__all__` 在 `__init__.py` 文件中的使用，其实 `__all__` 也可以在常规文件中使用，接下来介绍一下 `__all__` 在常规文件中的使用：<br>
+假设你的文件结构如下：<br>
+```log
+.
+├── test1.py
+├── test2.py
+└── main.py
+```
+`test1.py` 文件内容如下：<br>
+```python
+#__all__ = ['func']
+def func():
+    pass
+```
+
+`test2.py` 文件内容如下：<br>
+```python
+import test1
+
+__all__ = ['func2', 'test1']    # 如果 __all__ = ['func2']，则main.py文件中 test1.func() 无法引用。
+
+def func2():
+    pass
+
+def func22():
+    pass
+```
+
+`main.py` 文件内容如下：<br>
+```python
+from test2 import *
+
+func2()         # 正常引用
+test1.func()    # 正常引用
+func22()        # 无法引用
+```
+当运行 `main.py` 时，会发现 `func22()` 无法引用，这就是 `__all__` 白名单的作用。<br>
+
+💢💢💢尽管我在这里讲述了 `__all__` 的用法，但我不得不提示你，一般建议尽量避免使用 `from module_or_package import *` 这种导入方式，因为它可能使代码的来源不清晰，导致后续维护困难。<br>
+
+4. **简化导入**：你可以在 `__init__.py` 中导入包内的模块，这样外部使用包时可以更加简洁。
+
+例如，包结构如下：<br>
+```log
+mypackage
+├── __init__.py
+├── module1.py
+└── module2.py
+```
+如果在 `__init__.py` 中写入以下代码：<br>
+```python
+from .module1 import func1
+from .module2 import func2
+```
+
+那么在外部导入时可以直接这样写：<br>
+```python
+from mypackage import func1, func2
+```
+
+而不是：<br>
+```python
+from mypackage.module1 import func1
+from mypackage.module2 import func2
+```
+
+5. **提供包的元信息**：你可以在 `__init__.py` 中定义变量如 `__version__` 来提供包的版本信息。
+
+总之，`__init__.py` 文件在 Python 包和模块的设计中扮演了非常关键的角色，它提供了很多灵活的方式来组织和控制你的代码结构。
+
 
 ## python的函数语法：
 函数是一段可重复使用的代码块，它可以接受输入参数，执行一些操作，然后返回结果。在Python中，函数使用`def`关键字来定义，下面是一些关于Python函数的基本用法：<br>
