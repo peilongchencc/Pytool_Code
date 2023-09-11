@@ -112,7 +112,7 @@ bash Anaconda3-2023.07-2-Linux-x86_64.sh
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/2c83fa1b-3a83-4427-a12b-a829781515bf)
 现在就已经完成了anaconda的安装了，重启当前界面，终端前显示`(base)`就表明你已经进入了conda环境~<br>
 
-PS：Anaconda安装完成以后出现 "英文提示" 解读
+PS：Anaconda安装完成以后出现 "英文提示" 解读<br>
 1️⃣For changes to take effect, close and re-open your current shell.<br>
 翻译过来就是：关闭当前命令行，并重新打开，刚刚安装和初始化Anaconda设置才可以生效，重新打开一个命令行后直接就进入了conda的base环境。<br>
 
@@ -121,7 +121,7 @@ PS：Anaconda安装完成以后出现 "英文提示" 解读
 ```shell
 conda config --set auto_activate_base false
 ```
-当这一条命令执行完毕后，想要再次进入conda的base环境，只需要使用对应的conda指令即可，如下：<>
+当这一条命令执行完毕后，想要再次进入conda的base环境，只需要使用对应的conda指令即可，如下：<br>
 ```shell
 conda activate base
 ```
