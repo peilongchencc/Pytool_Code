@@ -65,8 +65,32 @@
       - [`reverse()`反转：](#reverse反转)
       - [`index()`获取索引：](#index获取索引)
     - [列表解析：](#列表解析)
-  - [字典(dict):](#字典dict)
-    - [查看字典中是否有某个key及该key对应的值：](#查看字典中是否有某个key及该key对应的值)
+  - [元组：](#元组)
+    - [创建元组：](#创建元组)
+    - [访问元组元素：](#访问元组元素)
+    - [切片元组：](#切片元组)
+    - [元组的长度和成员检查：](#元组的长度和成员检查)
+    - [元组的拼接和复制：](#元组的拼接和复制)
+    - [元组的解包（Unpacking）：](#元组的解包unpacking)
+  - [字典：](#字典)
+    - [创建字典](#创建字典)
+    - [访问字典中的值](#访问字典中的值)
+      - [使用键来访问字典中的值：](#使用键来访问字典中的值)
+      - [使用get()方法来访问字典中的值：](#使用get方法来访问字典中的值)
+      - [使用关键字in判断字典中是否存在某个键：](#使用关键字in判断字典中是否存在某个键)
+    - [修改字典中的值：](#修改字典中的值)
+    - [添加新键值对：](#添加新键值对)
+    - [删除键值对：](#删除键值对)
+      - [使用del语句：](#使用del语句)
+      - [使用pop()方法：](#使用pop方法)
+      - [使用popitem()方法删除最后一个键值对：](#使用popitem方法删除最后一个键值对)
+      - [使用clear()方法删除所有键值对：](#使用clear方法删除所有键值对)
+    - [字典的常用方法:](#字典的常用方法)
+      - [`keys()`, `values()`, 和 `items()` 方法:](#keys-values-和-items-方法)
+      - [`for` 循环遍历字典:](#for-循环遍历字典)
+      - [清空字典--`clear()`:](#清空字典--clear)
+    - [字典的嵌套:](#字典的嵌套)
+    - [以数字作为字典的key:](#以数字作为字典的key)
   - [python集合：](#python集合)
     - [创建集合并添加元素：](#创建集合并添加元素)
     - [删除集合中的元素：](#删除集合中的元素)
@@ -854,20 +878,108 @@ squares = [x**2 for x in range(1, 6)]  # 创建包含 1 到 5 的平方的列表
 ```
 
 Python 列表是非常灵活和强大的数据结构，用于处理和操作一组元素。它们在编程中非常常见，用途广泛。希望这个详细的介绍对你有所帮助！<br>
+<br>
 
+## 元组：
+Python中的元组（tuple）是一种有序、不可变的数据结构，它允许你存储多个元素，就像列表（list）一样，但与列表不同，元组的内容不可修改‼️‼️‼️。<br>
 
+以下是关于Python元组的详细介绍：<br>
 
-
-## 字典(dict):
-python中字典支持以数字作为键，但不推荐这种写法，毕竟我们也代码要考虑可读性，单纯的数字作为 `key` 自己或同事并不能看出代码的含义。<br>
+### 创建元组：
+你可以使用圆括号来创建元组，可以包含一个或多个元素。例如：<br>
 ```python
-dictionary = {1: "financial", 2: "sale", 3: "insurance"}    # python中字典支持以数字作为键；
-print(dictionary)
-print(dictionary[1])    # 调用的时候也以数字的方式调用，如果写为 print(dictionary['1']) 会报错。
-print(dictionary[2])
+my_tuple = (1, 2, 3)
+another_tuple = ('apple', 'banana', 'cherry')
+empty_tuple = ()
+single_element_tuple = (42,)
 ```
 
-### 查看字典中是否有某个key及该key对应的值：
+🔥🔥🔥注意：单个元素的元组需要在元素后面加上逗号，以区分它与一个普通值或表达式的区别。<br>
+
+元组的元素不可修改，这意味着一旦创建，你不能更改、添加或删除元素。如果你尝试修改元组中的元素，会引发`TypeError`。<br>
+
+### 访问元组元素：
+你可以使用索引来访问元组中的元素，索引从0开始。例如：<br>
+```python
+my_tuple = (1, 2, 3)
+another_tuple = ('apple', 'banana', 'cherry')
+
+print(my_tuple[0])  # 输出 1
+print(another_tuple[2])  # 输出 'cherry'
+```
+
+### 切片元组：
+你可以使用切片来访问元组的子集。切片的语法是`[start:stop:step]`，其中`start`是起始索引，`stop`是结束索引（不包括该位置的元素），`step`是步长。例如：<br>
+```python
+my_tuple = (1, 2, 3)
+a_slice = my_tuple[1:3]  # 返回一个包含(2, 3)的新元组
+```
+
+### 元组的长度和成员检查：
+你可以使用内置函数`len()`来获取元组的长度，并使用`in`来检查某个元素是否存在于元组中。例如：
+
+```python
+my_tuple = (1, 2, 3)
+another_tuple = ('apple', 'banana', 'cherry')
+
+print(len(my_tuple))  # 输出 3
+print('apple' in another_tuple)  # 输出 True
+```
+
+### 元组的拼接和复制：
+你可以通过使用`+`操作符将两个元组拼接在一起，创建一个新的元组。也可以使用`*`操作符复制元组中的元素。例如：<br>
+```python
+my_tuple = (1, 2, 3)
+another_tuple = ('apple', 'banana', 'cherry')
+
+combined_tuple = my_tuple + another_tuple  # 创建一个新元组包含(1, 2, 3, 'apple', 'banana', 'cherry')
+repeated_tuple = my_tuple * 3  # 创建一个新元组包含(1, 2, 3, 1, 2, 3, 1, 2, 3)
+```
+
+### 元组的解包（Unpacking）：
+你可以将元组中的元素解包给多个变量。例如：<br>
+```python
+my_tuple = (1, 2, 3)
+
+x, y, z = my_tuple  # 将元组中的元素分别赋值给x、y、z变量
+```
+
+## 字典：
+Python 中的字典允许你存储键值对（key-value pairs），并且可以根据键来快速检索和访问值。字典是可变的（Mutable）和无序的（Unordered），这意味着你可以随时添加、修改和删除键值对，但字典中的元素没有固定的顺序。<br>
+> 在 Python 3.7 之前，字典是无序的，这意味着字典中的键值对没有固定的顺序。Python 3.8 开始字典变为有序。
+
+以下是 Python 字典的详细用法和操作：<br>
+
+### 创建字典
+可以使用花括号 `{}` 或者内置的 `dict()` 构造函数来创建一个字典。键值对用冒号 `:` 分隔，键与键值对之间用逗号 `,` 分隔。<br>
+```python
+# 创建一个空字典
+my_dict = {}
+
+# 创建一个带有键值对的字典
+my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
+```
+
+### 访问字典中的值
+
+#### 使用键来访问字典中的值：
+```python
+my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
+
+name = my_dict['name']  # 获取键'name'对应的值
+print(name)  # 输出: 'John'
+```
+
+#### 使用get()方法来访问字典中的值：
+可以使用 `get()` 方法来安全地获取值，如果键不存在，不会抛出异常。<br>
+```python
+my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
+
+age = my_dict.get('age')  # 获取键'age'对应的值
+if age is not None:
+    print(age)
+```
+
 如果不确定字典中是否有某个key，需要用 `get()` 函数进行判断，不能用 `if item["key_name"]:` 的方式判断，如果字典中没有 `"key_name"` 这个键，使用 `if item["key_name"]:` 运行代码会报错。<br>
 ```python
 data = [{"name":"Tom(汤姆)","score":"640(720)"}, {"name":"Spike(斯派克)"},{"name":"Jerry(杰瑞)","score":"700(720)"}]
@@ -881,6 +993,144 @@ for item in data:
         name = item["name"]
         print(f"没有查询到{name}的考试成绩，TA可能缺考了。")
 ```
+
+#### 使用关键字in判断字典中是否存在某个键：
+可以使用 `in` 操作符来检查键是否存在于字典中。<br>
+```python
+my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
+
+key_name = 'id'
+if key_name in my_dict:
+    print(f'my_dict中{key_name}键存在。')
+else:
+    print(f'my_dict中{key_name}键不存在。')
+    
+# 终端输出：
+# my_dict中id键不存在。
+```
+
+### 修改字典中的值：
+可以通过赋值操作来修改字典中的值。<br>
+```python
+my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
+
+my_dict['age'] = 31  # 修改键'age'对应的值为31
+```
+
+### 添加新键值对：
+可以通过赋值操作来添加新的键值对。<br>
+```python
+my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
+
+my_dict['country'] = 'USA'  # 添加新的键值对'country': 'USA'
+```
+
+### 删除键值对：
+
+#### 使用del语句：
+```python
+my_dict = {"key1": "value1", "key2": "value2", "key3": "value3"}
+del my_dict["key2"]  # 删除键"key2"及其对应的值
+```
+
+#### 使用pop()方法：
+```python
+my_dict = {"key1": "value1", "key2": "value2", "key3": "value3"}
+my_dict.pop("key2")  # 删除键"key2"及其对应的值
+print(my_dict)       # {'key1': 'value1', 'key3': 'value3'}
+```
+
+请注意，如果要删除一个不存在的键，使用`del`语句或`pop()`方法会引发`KeyError`异常。如果不确定键是否存在，可以使用`pop()`方法的第二个参数来设置默认值，以避免异常。例如：<br>
+```python
+my_dict = {"key1": "value1", "key2": "value2", "key3": "value3"}
+deleted_value = my_dict.pop("key4", None)  # 如果键"key4"不存在，则返回None，而不会引发异常
+print(my_dict)                             # {'key1': 'value1', 'key2': 'value2', 'key3': 'value3'}
+print(deleted_value)                       # None
+```
+
+#### 使用popitem()方法删除最后一个键值对：
+```python
+my_dict = {"key1": "value1", "key2": "value2", "key3": "value3"}
+my_dict.popitem()  # 删除最后一个键值对，返回一个元组
+print(my_dict)     # {'key1': 'value1', 'key2': 'value2'}
+```
+
+#### 使用clear()方法删除所有键值对：
+```python
+my_dict = {"key1": "value1", "key2": "value2", "key3": "value3"}
+my_dict.clear()  # 删除所有键值对，字典变为空字典
+print(my_dict)   # {}
+```
+
+### 字典的常用方法:
+
+#### `keys()`, `values()`, 和 `items()` 方法:
+
+- `keys()`: 返回所有的键。
+- `values()`: 返回所有的值。
+- `items()`: 返回所有的键值对作为元组。
+
+```python
+my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
+
+keys = my_dict.keys()
+values = my_dict.values()
+items = my_dict.items()
+
+print(keys)  # 输出: dict_keys(['name', 'age', 'country'])
+print(values)  # 输出: dict_values(['John', 31, 'USA'])
+print(items)  # 输出: dict_items([('name', 'John'), ('age', 31), ('country', 'USA')])
+```
+
+#### `for` 循环遍历字典:
+可以使用 `for` 循环来遍历字典的键值对。<br>
+
+```python
+my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
+for key in my_dict:
+    print(key, my_dict[key])
+```
+
+或者使用 `items()` 方法:<br>
+```python
+my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
+
+for key, value in my_dict.items():
+    print(key, value)
+```
+
+#### 清空字典--`clear()`:
+可以使用 `clear()` 方法来清空字典。<br>
+```python
+my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
+
+my_dict.clear()  # 清空字典中的所有键值对
+```
+
+### 字典的嵌套:
+字典可以嵌套在其他字典中，或者嵌套在列表中，以构建更复杂的数据结构。<br>
+```python
+nested_dict = {
+    'person': {'name': 'Alice', 'age': 25},
+    'address': {'street': '123 Main St', 'city': 'Some City'}
+}
+
+# 访问嵌套字典的值
+name = nested_dict['person']['name']  # 获取'person'字典中'name'键对应的值
+print(name)  # 输出: 'Alice'
+```
+
+### 以数字作为字典的key:
+python中字典支持以数字作为键，但不推荐这种写法，毕竟我们也代码要考虑可读性，单纯的数字作为 `key` 自己或同事并不能看出代码的含义。<br>
+> 无用的知识又增加了。。。我真不想在工作中见到这种无用的知识。😰😰😰
+
+```python
+my_dict = {1: "financial", 2: "sale", 3: "insurance"}    # python中字典支持以数字作为键；
+print(my_dict)
+print(my_dict[1])    # 调用的时候也以数字的方式调用，如果写为 print(dictionary['1']) 会报错。
+print(my_dict[2])
+```
+<br>
 
 ## python集合：
 Python中的集合是一种**无序且不重复**的数据结构。你可以使用 `set` 关键字创建集合，也可以使用大括号 `{}` 来表示。集合中只能包含唯一的元素，重复的元素会被自动去重。你可以向集合添加、删除元素，还可以执行交集、并集、差集等操作。需要注意的是，集合中的元素必须是不可变的，例如数字、字符串、元组等。<br>
