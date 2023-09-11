@@ -9,13 +9,16 @@
     - [确认安装位置：](#确认安装位置)
     - [初始化Anaconda（包含环境变量的设置）:](#初始化anaconda包含环境变量的设置)
   - [Conda虚拟环境：](#conda虚拟环境)
+    - [创建虚拟环境：](#创建虚拟环境)
+    - [激活虚拟环境：](#激活虚拟环境)
     - [安装和管理软件包：](#安装和管理软件包)
+  - [查看当前虚拟环境的软件包列表：](#查看当前虚拟环境的软件包列表)
+    - [pip 查看某个库的版本：](#pip-查看某个库的版本)
     - [切换虚拟环境：](#切换虚拟环境)
     - [安装 jupyter 内核，使系统支持jupyter端环境切换:(可选)](#安装-jupyter-内核使系统支持jupyter端环境切换可选)
     - [退出虚拟环境：](#退出虚拟环境)
     - [克隆环境](#克隆环境)
     - [删除虚拟环境：](#删除虚拟环境)
-  - [pip 查看某个库的版本：](#pip-查看某个库的版本)
   - [字典(dict):](#字典dict)
     - [查看字典中是否有某个key及该key对应的值：](#查看字典中是否有某个key及该key对应的值)
   - [python集合：](#python集合)
@@ -137,13 +140,15 @@ conda activate base
 Conda虚拟环境是一种用于管理和隔离Python软件包和其依赖关系的工具。它允许你在同一系统上创建多个独立的Python环境，每个环境都可以具有不同版本的Python解释器和不同的软件包集合。这对于在同一计算机上开发和运行不同项目，每个项目需要不同的Python版本或软件包组合时非常有用。<br>
 
 以下是使用Conda虚拟环境的一般步骤：<br>
-1. 创建虚拟环境：使用以下命令创建一个新的Conda虚拟环境，其中`"myenv"`是虚拟环境的名称，你可以自行替换为其他名称：
+### 创建虚拟环境：
+使用以下命令创建一个新的Conda虚拟环境，其中`"myenv"`是虚拟环境的名称，你可以自行替换为其他名称：<br>
 ```shell
 conda create --name myenv python=3.8
 ```
 这将创建一个名为`"myenv"`的虚拟环境，并且指定了Python的版本为3.8。你也可以根据需要选择不同的Python版本。<br>
 
-2. 激活虚拟环境：激活虚拟环境以开始使用它。不同系统支持的指令方式不同，运行以下两种命令看看自己的系统支持哪一种：
+### 激活虚拟环境：
+激活虚拟环境以开始使用它，不同系统支持的指令方式不同，运行以下两种命令看看自己的系统支持哪一种就选哪一种：<br>
 方式一：<br>
 ```shell
 conda activate myenv
@@ -164,10 +169,37 @@ pip install jieba
 ```
 `conda install`的优势在于不仅会安装指定库，更会安装指定库的相关依赖库，更方便。但有一些库只支持`pip install`安装，这就没办法了，只能一点点安装了～<br>
 
-这些软件包将仅在虚拟环境中可用，不会影响系统的全局Python安装。你可以使用以下指令来查看**当前虚拟环境**中已安装的软件包列表。<br>
+## 查看当前虚拟环境的软件包列表：
+虚拟环境中的软件包仅在虚拟环境中可用，不会影响系统的全局Python安装。你可以使用以下指令来查看**当前虚拟环境**中已安装的软件包列表。<br>
 ```shell
 conda list
 ```
+也可以使用`pip`的方式进行查看，两者显示的结果是一样的：<br>
+```shell
+pip list
+```
+
+### pip 查看某个库的版本：
+假设你要查询 `pandas` 库的详细信息：<br>
+```shell
+pip show pandas
+```
+如果你已经安装了这个库，将显示类似下面的信息：<br>
+```txt
+(nudge_new) root@iZ2zea5v77oawjy2qxxxxxx:/data/Pytool_Code# pip show pandas
+Name: pandas
+Version: 1.5.3
+Summary: Powerful data structures for data analysis, time series, and statistics
+Home-page: https://pandas.pydata.org
+Author: The Pandas Development Team
+Author-email: pandas-dev@python.org
+License: BSD-3-Clause
+Location: /root/anaconda3/envs/nudge_new/lib/python3.10/site-packages
+Requires: numpy, python-dateutil, pytz
+Required-by: 
+```
+了解详细的信息有时很有用，例如可以根据 `Home-page` 的链接访问原网页，查询该库的更多细节。尤其是对于用户较少的某些库，例如 `snowflake-id`。<br>
+
 
 ### 切换虚拟环境：
 你可以在终端输入以下指令查看系统有哪些虚拟环境：<br>
@@ -239,29 +271,6 @@ conda create --clone old_env_name --name new_env_name
 ```shell
 conda remove -n env_name --all
 ```
-
-
-
-## pip 查看某个库的版本：
-假设你要查询 `pandas` 库的详细信息：<br>
-```shell
-pip show pandas
-```
-如果你已经安装了这个库，将显示类似下面的信息：<br>
-```txt
-(nudge_new) root@iZ2zea5v77oawjy2qxxxxxx:/data/Pytool_Code# pip show pandas
-Name: pandas
-Version: 1.5.3
-Summary: Powerful data structures for data analysis, time series, and statistics
-Home-page: https://pandas.pydata.org
-Author: The Pandas Development Team
-Author-email: pandas-dev@python.org
-License: BSD-3-Clause
-Location: /root/anaconda3/envs/nudge_new/lib/python3.10/site-packages
-Requires: numpy, python-dateutil, pytz
-Required-by: 
-```
-了解详细的信息有时很有用，例如可以根据 `Home-page` 的链接访问原网页，查询该库的更多细节。尤其是对于用户较少的某些库，例如 `snowflake-id`。<br>
 
 
 ## 字典(dict):
