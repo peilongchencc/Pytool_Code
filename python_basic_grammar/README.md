@@ -300,7 +300,7 @@ jupyter kernelspec remove kernel_name
 ```
 
 #### 安装kernel时可能出现的错误--'jedi'not defined：
-![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/405a0c58-7e5a-4268-83f1-2756c6ec4e06)
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/405a0c58-7e5a-4268-83f1-2756c6ec4e06" alt="image" width="50%" height="50%">
 
 问题出在`jedi`的版本问题，终端运行下列指令即可:<br>
 ```shell
