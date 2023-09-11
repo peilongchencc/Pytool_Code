@@ -492,8 +492,9 @@ fun1 = module1.func()   # 正常引入
 fun2 = module2.func()   # 正常引入
 fun3 = module3.func()   # 无法引入，会提示 NameError: name 'module3' is not defined. 
 ```
+<br>
 
-拓展--`__all__`在文件中的使用：<br>
+**拓展--`__all__`在文件中的使用：**<br>
 刚才介绍的是 `__all__` 在 `__init__.py` 文件中的使用，其实 `__all__` 也可以在常规文件中使用，接下来介绍一下 `__all__` 在常规文件中的使用：<br>
 假设你的文件结构如下：<br>
 ```log
