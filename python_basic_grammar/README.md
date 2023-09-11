@@ -204,6 +204,18 @@ conda list
 pip list
 ```
 
+#### 查看pip版本：
+终端运行以下指令：<br>
+```shell
+pip --version
+```
+
+#### 安装最新版pip:
+终端运行以下指令：<br>
+```shell
+pip install --upgrade pip
+```
+
 #### pip 查看某个库的版本：
 假设你要查询 `pandas` 库的详细信息：<br>
 ```shell
@@ -278,6 +290,9 @@ jupyter kernelspec remove kernel_name
 ```
 
 #### 安装kernel时可能出现的错误--'jedi'not defined：
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/405a0c58-7e5a-4268-83f1-2756c6ec4e06)
+
+问题出在`jedi`的版本问题，终端运行下列指令即可:<br>
 ```shell
 pip install jedi==0.17
 ```
