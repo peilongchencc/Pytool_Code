@@ -1,6 +1,8 @@
 # Python Basci Grammar
 介绍 python 基本语法、常见函数的使用与笔者常用的感觉非常方便的python库。<br>
 - [Python Basci Grammar](#python-basci-grammar)
+  - [Anaconda、pip 和 Python的关系：](#anacondapip-和-python的关系)
+  - [Ubuntu 18.04.6 LTS安装anaconda：](#ubuntu-18046-lts安装anaconda)
   - [pip 查看某个库的版本：](#pip-查看某个库的版本)
   - [字典(dict):](#字典dict)
     - [查看字典中是否有某个key及该key对应的值：](#查看字典中是否有某个key及该key对应的值)
@@ -43,6 +45,32 @@
     - [flask](#flask)
     - [nginx:](#nginx)
     - [time](#time)
+
+## Anaconda、pip 和 Python的关系：
+Anaconda、pip 和 Python 是与 Python 编程语言相关的三个工具或概念，它们之间有一定的关系，但它们的作用和功能有所不同。<br>
+
+1. Python（Python 编程语言）：
+   - Python 是一种高级编程语言，广泛用于开发各种类型的应用程序，包括网站、桌面应用程序、数据分析、机器学习、科学计算等等。
+   - Python 由一个核心解释器和标准库组成，可以用于执行 Python 代码。
+
+2. pip（Python 包管理器）：
+   - pip 是 Python 的包管理器，用于安装、升级和管理 Python 包（也称为模块或库）。Python 包是用于扩展 Python 功能的代码块，它们可以包含函数、类、变量等。
+   - pip 可以从 Python 包索引（PyPI）下载和安装第三方 Python 包。它是 Python 生态系统中的标准包管理工具。
+
+3. Anaconda（Python 数据科学平台）：
+   - Anaconda 是一个开源的数据科学平台，用于数据科学家和分析师进行数据分析、机器学习和科学计算。
+   - Anaconda 包含了 Python 解释器以及大量用于数据科学的包和工具，如 NumPy、Pandas、Matplotlib、scikit-learn 等。
+   - Anaconda 还提供了 conda，这是一个包管理器和环境管理器，类似于 pip，但更强大。conda 可以用于创建和管理独立的 Python 环境，以便在同一系统上安装和管理不同版本的 Python 和包。
+
+关系总结：
+- Python 是编程语言本身，用于编写和执行代码。
+- pip 是 Python 的包管理器，用于安装和管理 Python 包。
+- Anaconda 是一个包含 Python 解释器和数据科学相关工具的综合平台，同时提供了 conda 包管理器和环境管理功能，使得数据科学家能够更轻松地配置和管理环境。
+
+🚀🚀🥴🥴通常情况下，工作中都会使用 Anaconda，安装或管理 Python 包可以使用conda(anaconda的缩写)也可以使用pip(部分库只支持pip)。<br>
+
+## Ubuntu 18.04.6 LTS安装anaconda：
+
 
 ## pip 查看某个库的版本：
 假设你要查询 `pandas` 库的详细信息：<br>
