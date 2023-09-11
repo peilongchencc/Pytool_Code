@@ -490,6 +490,7 @@ index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 print('hello,world')
 ```
 现在，请在屏幕右下角选择你的python解释器，根据需要选择自己需要的解释器即可～<br>
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/87f42aa3-ff36-4bc9-8c23-6436c09985d1)
 
 终端运行以下指令即可运行`sample.py`文件：<br>
 > Tips:终端输入一部分内容后，可以按 `tab` 进行智能填充。
