@@ -148,6 +148,29 @@ conda create --name myenv python=3.8
 ```
 这将创建一个名为`"myenv"`的虚拟环境，并且指定了Python的版本为3.8。你也可以根据需要选择不同的Python版本。<br>
 
+### conda 创建虚拟环境失败解决方案：
+> 首先检查在关闭 VPN 情况下重试命令是否可行，若不行则尝试以下方案。
+
+终端输入以下指令，查看是否为proxy的原因：<br>
+```shell
+env | grep -i "_PROXY"
+```
+若终端显示类似如下的内容，需要关闭网络代理：<br>
+```log
+http_proxy=http://127.0.0.1:8118
+https_proxy=http://127.0.0.1:8118
+```
+在终端中依次输入以下内容即可：<br>
+指令1:<br>
+```shell
+unset http_proxy
+```
+指令2:<br>
+```shell
+unset https_proxy
+```
+此时 `conda create` 或 `conda install` 指令就可以使用了，出现这个错误的原因是因为 `conda` 的源在国外，问题出现在网络代理，没有完美的解决方案，只能遇到的时候注意个人科学上网的状态。<br>
+
 ### 激活虚拟环境：
 激活虚拟环境以开始使用它，不同系统支持的指令方式不同，运行以下两种命令看看自己的系统支持哪一种就选哪一种：<br>
 方式一：<br>
