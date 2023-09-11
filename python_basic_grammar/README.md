@@ -537,12 +537,14 @@ func22()        # 无法引用
 
 4. **简化导入**：你可以在 `__init__.py` 中导入包内的模块，这样外部使用包时可以更加简洁。
 
-例如，包结构如下：<br>
+假设你的文件结构如下：<br>
 ```log
-mypackage
-├── __init__.py
-├── module1.py
-└── module2.py
+.
+├── mypackage
+│   ├── __init__.py
+│   ├── module1.py
+│   └── module2.py
+└── main.py
 ```
 如果在 `__init__.py` 中写入以下代码：<br>
 ```python
@@ -550,7 +552,7 @@ from .module1 import func1
 from .module2 import func2
 ```
 
-那么在外部导入时可以直接这样写：<br>
+那么在`main.py`导入时可以直接这样写：<br>
 ```python
 from mypackage import func1, func2
 ```
