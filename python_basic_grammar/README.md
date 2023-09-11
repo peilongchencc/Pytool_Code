@@ -70,7 +70,56 @@ Anaconda、pip 和 Python 是与 Python 编程语言相关的三个工具或概�
 🚀🚀🥴🥴通常情况下，工作中都会使用 Anaconda，安装或管理 Python 包可以使用conda(anaconda的缩写)也可以使用pip(部分库只支持pip)。<br>
 
 ## Ubuntu 18.04.6 LTS安装anaconda：
+### 下载ubuntu脚本：
+可使用清华大学镜像或使用anaconda网站，可从清华镜像网查看需要的版本。<br>
+清华大学开软软件镜像站：<br>
+```log
+https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/
+```
+选定需要的conda版本后，可以通过`wget`下载需要的文件。下列指令会将文件下载到当前目录下，如果你想下载到其他位置，请先`cd`到指定位置，或自行搜索`wget`下载到指定位置的指令：<br>
+```shell
+wget https://repo.anaconda.com/archive/Anaconda3-2023.07-2-Linux-x86_64.sh
+```
+> 如果下载失败就多试几次，或者可以手动下载~
 
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/57187acd-b05d-40aa-a75b-9cb2291fa6c6)
+
+
+下载成功后的样子：<br>
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/5de4d067-9501-4cd1-9296-c6a58fef18cf)
+
+### 运行anaconda脚本：
+找到你刚刚下载的 `Anaconda3-2023.07-2-Linux-x86_64.sh`文件所在位置，然后终端运行以下指令即可运行anaconda脚本:<br>
+```shell
+bash Anaconda3-2023.07-2-Linux-x86_64.sh 
+```
+
+### 接受协议：
+运行anaconda脚本后，首先让我们审阅安装协议，这里一直按Enter直到出现 `Do you accept the license terms? [yes|no]` ，表示协议阅读完毕输入`yes`即可继续安装。<br>
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/58b9f7ee-1586-4d90-a268-03f5615bccd7)
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/ff077302-acee-451a-a37e-0c00db426f3b)
+
+### 确认安装位置：
+输入 Enter 就是选用默认安装路径。<br>
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/37c14bd9-e516-4e2e-be44-8fe0eefa3561)
+
+### 初始化Anaconda（包含环境变量的设置）:
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/2c83fa1b-3a83-4427-a12b-a829781515bf)
+现在就已经完成了anaconda的安装了，重启当前界面，终端前显示`(base)`就表明你已经进入了conda环境~<br>
+
+PS：Anaconda安装完成以后出现 "英文提示" 解读
+1️⃣For changes to take effect, close and re-open your current shell.<br>
+翻译过来就是：关闭当前命令行，并重新打开，刚刚安装和初始化Anaconda设置才可以生效，重新打开一个命令行后直接就进入了conda的base环境。<br>
+
+2️⃣If you'd prefer that conda's base environment not be activated on startup, set the auto_activate_base parameter to false:<br>
+翻译过来就是：如果您希望 conda 的基础环境在启动时不被激活，请将 auto_activate_base 参数设置为 false，命令如下：<br>
+```shell
+conda config --set auto_activate_base false
+```
+当这一条命令执行完毕后，想要再次进入conda的base环境，只需要使用对应的conda指令即可，如下：<>
+```shell
+conda activate base
+```
 
 ## pip 查看某个库的版本：
 假设你要查询 `pandas` 库的详细信息：<br>
