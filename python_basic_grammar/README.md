@@ -31,6 +31,10 @@
     - [pip镜像源设置：](#pip镜像源设置)
     - [conda镜像源重置：](#conda镜像源重置)
     - [pip镜像源重置：](#pip镜像源重置)
+  - [python入门：](#python入门)
+    - [IDE的选择：](#ide的选择)
+    - [第一个代码文件--hello,world:](#第一个代码文件--helloworld)
+    - [print()换行控制：](#print换行控制)
   - [python基础数据结构：](#python基础数据结构)
   - [字符串(str):](#字符串str)
     - [创建字符串：](#创建字符串)
@@ -473,6 +477,44 @@ conda config --remove-key channels
 [global]
 index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 ```
+
+## python入门：
+### IDE的选择：
+以python作为开发语言的程序员，IDE(集成开发环境)的选择一般都是vscode或pycharm。笔者习惯使用的IDE为vscode，没什么特殊的，各有各的优势，仅仅是用习惯了～<br>
+
+安装方式也很简单，网页搜索对应名称下载即可。<br>
+
+### 第一个代码文件--hello,world:
+安装了vscode后，新建一个以`.py`为后缀的文件，就可以开始我们的代码之旅了。假设你创建的文件为 `sample.py`，将以下内容复制到你的文件中：<br>
+```python
+print('hello,world')
+```
+现在，请在屏幕右下角选择你的python解释器，根据需要选择自己需要的解释器即可～<br>
+
+终端运行以下指令即可运行`sample.py`文件：<br>
+> Tips:终端输入一部分内容后，可以按 `tab` 进行智能填充。
+
+```python
+python sample.py
+```
+此时，你应该可以从终端看到以下内容：<br>
+```log
+hello,world
+```
+
+### print()换行控制：
+在Python中，print 函数默认会在打印完内容后自动添加换行符(`\n`)，使下一次打印内容从新的一行开始。如果你想控制 print 函数不换行，可以使用 `end` 参数来指定打印结束时的字符，将其设置为空字符串 `""` 即可。例如：<br>
+```python
+print("这是一行内容", end="")
+print("这是同一行的内容")
+print("这是另一行内容")  # 这个print会自动换行
+```
+终端效果：<br>
+```log
+这是一行内容这是同一行的内容
+这是另一行内容
+```
+🤭🤭🤭从上述内容我们可以看出，`print()` 其实等效于 `print(end="\n")`。<br>
 
 ## python基础数据结构：
 数据结构是不同编程语言的操作基础，各种函数，对象都与数据结构密不可分，对基础数据结构的了解是必要的。Python具有多种基础数据结构，这些数据结构用于存储和组织数据。以下是Python中常见的基础数据结构：<br>
