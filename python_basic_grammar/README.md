@@ -13,6 +13,9 @@
       - [conda 创建虚拟环境失败解决方案--关闭网络代理：](#conda-创建虚拟环境失败解决方案--关闭网络代理)
     - [激活虚拟环境：](#激活虚拟环境)
     - [安装和管理软件包：](#安装和管理软件包)
+      - [指定库的版本号安装：](#指定库的版本号安装)
+      - [同时安装多个库：](#同时安装多个库)
+      - [通过requirements.txt安装多个库：](#通过requirementstxt安装多个库)
       - [查看当前虚拟环境的软件包列表：](#查看当前虚拟环境的软件包列表)
       - [查看pip版本：](#查看pip版本)
       - [安装最新版pip:](#安装最新版pip)
@@ -28,6 +31,7 @@
     - [pip镜像源设置：](#pip镜像源设置)
     - [conda镜像源重置：](#conda镜像源重置)
     - [pip镜像源重置：](#pip镜像源重置)
+  - [python基础数据结构：](#python基础数据结构)
   - [字典(dict):](#字典dict)
     - [查看字典中是否有某个key及该key对应的值：](#查看字典中是否有某个key及该key对应的值)
   - [python集合：](#python集合)
@@ -191,18 +195,66 @@ source activate myenv
 ```
 
 ### 安装和管理软件包：
-在虚拟环境中，你可以使用`conda install`命令来安装Python软件包。例如安装`jieba`库：<br>
+🚨🚨🚨如果你是第一次接触anaconda，请先学习 `conda/pip镜像源设置` 部分的内容，否则会因为网络原因(互联网墙，懂得都懂)导致指令运行失败。🚨🚨🚨<br>
+
+在虚拟环境中，你可以使用`conda install`命令来安装Python软件包。例如安装`numpy`库：<br>
 ```shell
-conda install jieba
+conda install numpy
 ```
 当然，也可以使用 `pip install` 的方式安装：<br>
 ```shell
-pip install jieba
+pip install numpy
+```
+`conda install`的优势在于不仅会安装指定库，更会安装指定库的相关依赖库，更方便。但有一些库只支持`pip install`安装，这就没办法了，只能一点点安装了～<br>
+
+#### 指定库的版本号安装：
+conda和pip可以指定库的版本号进行安装：<br>
+```shell
+conda install numpy==1.19.5
+```
+```shell
+pip install numpy==1.19.5
 ```
 
-`pip` 支持批量安装库： 
+#### 同时安装多个库：
+conda 和 pip 都支持一次性安装多个库。以下是如何使用它们来一次性安装多个库的方法：<br>
+使用 conda 安装多个库的形式如下：<br>
+```bash
+conda install 包名1 包名2 包名3
+```
 
-`conda install`的优势在于不仅会安装指定库，更会安装指定库的相关依赖库，更方便。但有一些库只支持`pip install`安装，这就没办法了，只能一点点安装了～<br>
+你可以通过在一条命令中列出多个包名来同时安装它们。例如，要安装 NumPy、Pandas 和 Matplotlib，可以运行以下命令：<br>
+
+```bash
+conda install numpy pandas matplotlib
+```
+
+使用 pip 安装多个库：<br>
+```bash
+pip install 包名1 包名2 包名3
+```
+
+与 conda 类似，如果你想通过 pip 安装 NumPy、Pandas 和 Matplotlib，你可以运行以下命令：<br>
+```bash
+pip install numpy pandas matplotlib
+```
+
+#### 通过requirements.txt安装多个库：
+工作中，你经常会看到大家把项目所需要的库写在了 `requirements.txt` 文件中，格式如下：<br>
+> 确保每行一个库，如果有特定的版本要求需要指明库的版本号。
+
+```txt
+numpy==1.19.5
+pandas
+matplotlib==3.4.3
+```
+此时，可通过下方任意一种方式安装对应的库：<br>
+```bash
+conda install -f requirements.txt
+```
+```bash
+pip install -r requirements.txt
+```
 
 #### 查看当前虚拟环境的软件包列表：
 虚拟环境中的软件包仅在虚拟环境中可用，不会影响系统的全局Python安装。你可以使用以下指令来查看**当前虚拟环境**中已安装的软件包列表。<br>
@@ -364,6 +416,30 @@ conda config --remove-key channels
 [global]
 index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 ```
+
+## python基础数据结构：
+Python具有多种基础数据结构，这些数据结构用于存储和组织数据。以下是Python中常见的基础数据结构：<br>
+
+1. **整数（int）**：整数是不带小数点的数字，可以是正数、负数或零。例如：`-5`, `0`, `42`。
+
+2. **浮点数（float）**：浮点数用于表示带有小数点的数字。例如：`3.14`, `2.71828`。
+
+3. **字符串（str）**：字符串是一系列字符的序列，可以用单引号或双引号括起来。例如：`"Hello, World!"`, `'Python'`。
+
+4. **列表（list）**：列表是有序的可变序列，可以包含不同类型的元素。列表使用方括号表示。例如：`[1, 2, 3]`, `['apple', 'banana', 'cherry']`。
+
+5. **元组（tuple）**：元组也是有序的序列，但是与列表不同，元组是不可变的，用圆括号表示。例如：`(1, 2, 3)`, `('red', 'green', 'blue')`。
+
+6. **集合（set）**：集合是无序的唯一元素的集合。集合中不允许重复的元素，用大括号或`set()`构造函数表示。例如：`{1, 2, 3}`, `set([2, 2, 3, 4])`。
+
+7. **字典（dictionary）**：字典是一种键-值对的映射，用大括号表示。每个键都是唯一的，用于查找相应的值。例如：`{'name': 'Alice', 'age': 30}`。
+
+8. **布尔值（bool）**：布尔值表示逻辑真或假，只有两个可能的值：`True`和`False`。
+
+9. **None**：`None`是Python中的特殊值，表示空或缺失的数据。
+
+这些基础数据结构是Python编程中的基础，开发人员可以使用它们来存储和操作不同类型的数据。 Python还提供了许多内置函数和方法来处理这些数据结构，以满足各种编程需求。之后的内容我们会逐渐讲解其中的内容。<br>
+
 
 ## 字典(dict):
 python中字典支持以数字作为键，但不推荐这种写法，毕竟我们也代码要考虑可读性，单纯的数字作为 `key` 自己或同事并不能看出代码的含义。<br>
