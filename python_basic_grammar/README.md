@@ -16,6 +16,7 @@
       - [pip 查看某个库的版本：](#pip-查看某个库的版本)
     - [切换虚拟环境：](#切换虚拟环境)
     - [安装 jupyter 内核，使系统支持jupyter端环境切换:(可选)](#安装-jupyter-内核使系统支持jupyter端环境切换可选)
+      - [安装kernel时可能出现的错误--'jedi'not defined：](#安装kernel时可能出现的错误--jedinot-defined)
     - [退出虚拟环境：](#退出虚拟环境)
     - [克隆环境:](#克隆环境)
     - [删除虚拟环境：](#删除虚拟环境)
@@ -251,6 +252,12 @@ jupyter kernelspec list
 ```shell
 jupyter kernelspec remove kernel_name
 ```
+
+#### 安装kernel时可能出现的错误--'jedi'not defined：
+```shell
+pip install jedi==0.17
+```
+
 
 ### 退出虚拟环境：
 当你完成虚拟环境中的工作时，可以使用以下命令来退出它：<br>
