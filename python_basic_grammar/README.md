@@ -10,7 +10,7 @@
     - [初始化Anaconda（包含环境变量的设置）:](#初始化anaconda包含环境变量的设置)
   - [Conda虚拟环境：](#conda虚拟环境)
     - [创建虚拟环境：](#创建虚拟环境)
-      - [conda 创建虚拟环境失败解决方案：](#conda-创建虚拟环境失败解决方案)
+      - [conda 创建虚拟环境失败解决方案--关闭网络代理：](#conda-创建虚拟环境失败解决方案--关闭网络代理)
     - [激活虚拟环境：](#激活虚拟环境)
     - [安装和管理软件包：](#安装和管理软件包)
       - [查看当前虚拟环境的软件包列表：](#查看当前虚拟环境的软件包列表)
@@ -23,6 +23,11 @@
     - [退出虚拟环境：](#退出虚拟环境)
     - [克隆环境:](#克隆环境)
     - [删除虚拟环境：](#删除虚拟环境)
+  - [conda/pip镜像源设置：](#condapip镜像源设置)
+    - [conda镜像源设置：](#conda镜像源设置)
+    - [pip镜像源设置：](#pip镜像源设置)
+    - [conda镜像源重置：](#conda镜像源重置)
+    - [pip镜像源重置：](#pip镜像源重置)
   - [字典(dict):](#字典dict)
     - [查看字典中是否有某个key及该key对应的值：](#查看字典中是否有某个key及该key对应的值)
   - [python集合：](#python集合)
@@ -151,7 +156,7 @@ conda create --name myenv python=3.8
 ```
 这将创建一个名为`"myenv"`的虚拟环境，并且指定了Python的版本为3.8。你也可以根据需要选择不同的Python版本。<br>
 
-#### conda 创建虚拟环境失败解决方案：
+#### conda 创建虚拟环境失败解决方案--关闭网络代理：
 > 首先检查在关闭 VPN 情况下重试命令是否可行，若不行则尝试以下方案。
 
 终端输入以下指令，查看是否为proxy的原因：<br>
@@ -194,6 +199,9 @@ conda install jieba
 ```shell
 pip install jieba
 ```
+
+`pip` 支持批量安装库： 
+
 `conda install`的优势在于不仅会安装指定库，更会安装指定库的相关依赖库，更方便。但有一些库只支持`pip install`安装，这就没办法了，只能一点点安装了～<br>
 
 #### 查看当前虚拟环境的软件包列表：
@@ -320,6 +328,42 @@ conda create --clone old_env_name --name new_env_name
 conda remove -n env_name --all
 ```
 
+## conda/pip镜像源设置：
+由于墙🧱🧱🧱的存在，我们在使用 `conda install` 或 `pip install` 下载我们需要的库时，总是会由于网络原因失败。所以将库的下载链接转向国内镜像源是一个非常好的方式，常见的镜像源有好几种，例如阿里云镜像源、清华镜像源。笔者经常使用的是清华镜像源，这里介绍下清华镜像源的设置方式，如果你想采用其他镜像源，只需要替换对应链接即可～<br>
+### conda镜像源设置：
+```shell
+# 查看镜像源
+conda config --show channels
+# 添加镜像源
+conda config --add channels http://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+conda config --add channels http://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
+conda config --add channels http://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r
+# 显示检索路径，每次安装包时会将包源路径显示出来
+conda config --set show_channel_urls yes
+conda config --set always_yes True
+```
+### pip镜像源设置：
+```shell
+# 查看镜像源
+pip config list
+# 添加镜像源
+pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+### conda镜像源重置：
+```shell
+# 查看镜像源
+conda config --show channels
+# 重置镜像源
+conda config --remove-key channels
+```
+
+### pip镜像源重置：
+清空/修改 `~/.pip/pip.conf` (没有就创建一个)内容，示例内容如下：<br>
+```shell
+[global]
+index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+```
 
 ## 字典(dict):
 python中字典支持以数字作为键，但不推荐这种写法，毕竟我们也代码要考虑可读性，单纯的数字作为 `key` 自己或同事并不能看出代码的含义。<br>
