@@ -228,7 +228,7 @@ conda activate myenv
 ```
 
 ### 安装 jupyter 内核，使系统支持jupyter端环境切换:(可选)
-如果你只想通过终端的方式操作，可以跳过此节内容。如果你需要使用`jupyter`，想要在`jupyter`中也能切换虚拟环境，那么这节内容很适合你🥴🥴🥴<br>
+如果你只想通过终端的方式操作conda虚拟环境，可以跳过此节内容。如果你需要使用`jupyter`，想要在`jupyter`中也能切换虚拟环境，那么这节内容很适合你🥴🥴🥴<br>
 
 想要在`jupyter`中也能切换虚拟环境，首先需要安装`jupyter`内核：<br>
 ```shell
