@@ -8,6 +8,13 @@
     - [接受协议：](#接受协议)
     - [确认安装位置：](#确认安装位置)
     - [初始化Anaconda（包含环境变量的设置）:](#初始化anaconda包含环境变量的设置)
+  - [Conda虚拟环境：](#conda虚拟环境)
+    - [安装和管理软件包：](#安装和管理软件包)
+    - [切换虚拟环境：](#切换虚拟环境)
+    - [安装 jupyter 内核，使系统支持jupyter端环境切换:(可选)](#安装-jupyter-内核使系统支持jupyter端环境切换可选)
+    - [退出虚拟环境：](#退出虚拟环境)
+    - [克隆环境](#克隆环境)
+    - [删除虚拟环境：](#删除虚拟环境)
   - [pip 查看某个库的版本：](#pip-查看某个库的版本)
   - [字典(dict):](#字典dict)
     - [查看字典中是否有某个key及该key对应的值：](#查看字典中是否有某个key及该key对应的值)
@@ -125,6 +132,115 @@ conda config --set auto_activate_base false
 ```shell
 conda activate base
 ```
+
+## Conda虚拟环境：
+Conda虚拟环境是一种用于管理和隔离Python软件包和其依赖关系的工具。它允许你在同一系统上创建多个独立的Python环境，每个环境都可以具有不同版本的Python解释器和不同的软件包集合。这对于在同一计算机上开发和运行不同项目，每个项目需要不同的Python版本或软件包组合时非常有用。<br>
+
+以下是使用Conda虚拟环境的一般步骤：<br>
+1. 创建虚拟环境：使用以下命令创建一个新的Conda虚拟环境，其中`"myenv"`是虚拟环境的名称，你可以自行替换为其他名称：
+```shell
+conda create --name myenv python=3.8
+```
+这将创建一个名为`"myenv"`的虚拟环境，并且指定了Python的版本为3.8。你也可以根据需要选择不同的Python版本。<br>
+
+2. 激活虚拟环境：激活虚拟环境以开始使用它。不同系统支持的指令方式不同，运行以下两种命令看看自己的系统支持哪一种：
+方式一：<br>
+```shell
+conda activate myenv
+```
+方式二：<br>
+```shell
+source activate myenv
+```
+
+### 安装和管理软件包：
+在虚拟环境中，你可以使用`conda install`命令来安装Python软件包。例如安装`jieba`库：<br>
+```shell
+conda install jieba
+```
+当然，也可以使用 `pip install` 的方式安装：<br>
+```shell
+pip install jieba
+```
+`conda install`的优势在于不仅会安装指定库，更会安装指定库的相关依赖库，更方便。但有一些库只支持`pip install`安装，这就没办法了，只能一点点安装了～<br>
+
+这些软件包将仅在虚拟环境中可用，不会影响系统的全局Python安装。你可以使用以下指令来查看**当前虚拟环境**中已安装的软件包列表。<br>
+```shell
+conda list
+```
+
+### 切换虚拟环境：
+你可以在终端输入以下指令查看系统有哪些虚拟环境：<br>
+```shell
+conda env list
+```
+效果如下：<br>
+> `*` 表示你当前所处的虚拟环境。
+
+```log
+(base) root@iZ2zea5v77oawjy2qz7xxxx:/root# conda env list
+# conda environments:
+#
+base                  *  /root/anaconda3
+doccano                  /root/anaconda3/envs/doccano
+myenv                    /root/anaconda3/envs/myenv
+```
+
+现在可以通过激活虚拟环境的指令，切换环境：<br>
+```shell
+conda activate myenv
+```
+你的终端状态栏就会变为以下形式:<br>
+```shell
+(myenv) root@iZ2zea5v77oawjy2qz7xxxx:/root#
+```
+
+### 安装 jupyter 内核，使系统支持jupyter端环境切换:(可选)
+如果你只想通过终端的方式操作，可以跳过此节内容。如果你需要使用`jupyter`，想要在`jupyter`中也能切换虚拟环境，那么这节内容很适合你🥴🥴🥴<br>
+
+想要在`jupyter`中也能切换虚拟环境，首先需要安装`jupyter`内核：<br>
+```shell
+conda install -c anaconda ipykernel
+```
+有了`jupyter`内核后，需要为当前虚拟环境创建jupyter环境，使jupyter主界面可以切换`kernel`：<br>
+```shell
+python -m ipykernel install --user --name=new_env_name
+```
+注意将 `new_env_name` 替换为你`jupyter`中想要定义的环境名称，建议终端的虚拟环境名称和jupyter的虚拟环境名称对应：<br>
+
+现在，你已经可以在jupyter中切换环境了～<br>
+
+可以通过以下指令查看自己安装的 `kernel` 列表:<br>
+```shell
+jupyter kernelspec list
+```
+
+也可以通过以下指令删除对应的 `kernel`:<br>
+```shell
+jupyter kernelspec remove kernel_name
+```
+
+### 退出虚拟环境：
+当你完成虚拟环境中的工作时，可以使用以下命令来退出它：<br>
+```shell
+conda deactivate
+```
+
+### 克隆环境 
+工作中，你可能不想要从0搭建一下新环境，此时我们可以克隆某个已存在的环境，在这个环境的基础上进行修改。那么你就可以使用以下指令：<br>
+> `old_env_name` 为克隆源，`new_env_name` 为克隆后的环境名称。
+
+```shell
+conda create --clone old_env_name --name new_env_name
+```
+
+### 删除虚拟环境：
+如果你想要删除某个虚拟环境，可以运行以下指令，注意将 `env_name` 替换为你要删除的环境名：<br>
+```shell
+conda remove -n env_name --all
+```
+
+
 
 ## pip 查看某个库的版本：
 假设你要查询 `pandas` 库的详细信息：<br>
