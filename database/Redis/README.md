@@ -43,6 +43,10 @@ Redis具有快速、可靠、灵活、可扩展的特点，支持多种数据结
     - [mget 方法：](#mget-方法)
     - [pipeline 方法：](#pipeline-方法)
     - [mget 与 pipeline 的选择：](#mget-与-pipeline-的选择)
+  - [Redis连接池的使用：](#redis连接池的使用)
+    - [Redis连接池示例：](#redis连接池示例)
+    - [特别声明：](#特别声明)
+    - [Redis连接池使用pipeline:](#redis连接池使用pipeline)
   - [文件介绍：](#文件介绍)
 
 ## Ubuntu 18.04 安装 Redis 步骤：
@@ -473,6 +477,123 @@ results = pipeline.execute()
 通常，在少量键的情况下，两种方法的性能差异可能不明显。当需要获取大量键的值时，使用 `pipeline` 方法会比使用 `mget` 方法更快。<br>
 
 需要注意的是，使用 `pipeline` 方法虽然可以提高性能，但是它的实际效果取决于你的具体使用情况，包括网络延迟、数据量大小以及Redis服务器的性能等因素。因此，在选择使用哪种方法时，建议根据具体情况进行测试和评估。<br>
+<br>
+
+## Redis连接池的使用：
+使用连接池的方式相较于在每个需要Redis连接的地方直接创建连接（如使用`redis.Redis(host='localhost', port=6379)`）有几个主要好处：<br>
+
+**资源重用和管理**：连接池会管理连接的创建、重用和释放，确保连接得到充分重用，而不是频繁地创建和断开连接。这有助于降低资源消耗和提高性能，尤其在高并发环境下。<br>
+
+**性能优化**：连接池可以显著提高应用程序的性能，因为它减少了每次操作的连接建立和断开开销。连接池内的连接可以被多次复用，从而减少了网络通信的开销。<br>
+
+**并发处理**：连接池是线程安全的，这意味着多个线程可以安全地共享同一个连接池，而不会引发竞态条件或其他并发问题。这是多线程或多进程应用程序中使用连接池的一个重要优势。<br>
+
+**可维护性和可扩展性**：将连接池的配置封装在一个独立的模块中（如`redis_utils.py`），可以提高代码的可维护性。如果以后需要更改连接配置，你只需修改一个地方，而不是在整个代码库中查找和修改所有连接的地方。<br>
+
+总的来说，连接池提供了一种更加灵活、高效和可维护的方式来处理与Redis的连接。它是在生产环境中使用Redis的推荐做法之一，可以帮助你更好地管理和优化与Redis的通信。<br>
+
+### Redis连接池示例：
+Redis连接池通常用于项目中多个文件需要从redis获取数据的情况，以下是一个示例，展示如何在多个文件中使用Redis：<br>
+
+假设你的项目结构如下：<br>
+
+```
+project/
+    └── config/
+        ├── redis_config.py
+    └── utils/
+        ├── redis_utils.py
+    └── main.py
+```
+
+`redis_config.py` 文件包含Redis连接配置：<br>
+
+```python
+# config/redis_config.py
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0
+```
+
+`redis_utils.py` 文件包含与Redis操作相关的工具函数，并使用连接池：<br>
+
+```python
+# utils/redis_utils.py
+
+import redis
+from project.config.redis_config import REDIS_HOST, REDIS_PORT, REDIS_DB
+
+# 创建Redis连接池
+pool = redis.ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+
+# 获取Redis连接
+def get_redis_connection():
+    return redis.Redis(connection_pool=pool)
+
+# 从Redis中获取数据的示例函数
+def get_data_from_redis(key):
+    redis_conn = get_redis_connection()
+    data = redis_conn.get(key)
+    return data
+```
+
+在 `main.py` 文件中使用上述工具函数：<br>
+
+```python
+# main.py
+
+from project.utils.redis_utils import get_data_from_redis
+
+def main():
+    key = 'your_key'
+    data = get_data_from_redis(key)
+    if data:
+        print(f'Data from Redis: {data.decode("utf-8")}')
+    else:
+        print('Data not found in Redis.')
+
+if __name__ == '__main__':
+    main()
+```
+
+这样，你可以在多个文件中使用相同的连接池来处理Redis操作，而不必在每个文件中单独创建连接。此外，你可以在其他文件中导入 `redis_utils.py` 中的工具函数来执行Redis操作。这种方式可以提高代码的可维护性和重用性。<br>
+
+### 特别声明：
+使用连接池的方式，每次调用 `get_redis_connection()` 函数时，都会获取一个从连接池中分配的连接。🤭🤭🤭这并不会导致每次都创建一个新的连接，而是会重复使用已经建立的连接，从而减少连接和断开连接的开销。<br>
+
+所以，每次调用 `get_redis_connection()` 函数都会返回一个已经存在的连接，而不是创建一个新的连接。<br>
+
+这样，你可以在多个文件和函数中重复使用相同的连接池，从而降低了与Redis的连接开销。连接池会管理连接的生命周期，包括连接的创建、释放和重用。这有助于提高你的应用程序的性能和效率。<br>
+
+### Redis连接池使用pipeline:
+使用连接池的方式也支持Redis的pipeline操作，在使用连接池的情况下，你可以像以下代码这样使用Redis的pipeline：<br>
+
+```python
+import redis
+from project.utils.redis_utils import get_redis_connection
+
+# 获取Redis连接
+redis_conn = get_redis_connection()
+
+# 创建pipeline对象
+pipeline = redis_conn.pipeline()
+
+# 向pipeline中添加多个命令
+pipeline.set('key1', 'value1')
+pipeline.set('key2', 'value2')
+
+# 执行pipeline中的命令
+results = pipeline.execute()
+
+# 打印结果
+for result in results:
+    print(result)
+```
+
+上述示例中，我们首先从连接池中获取一个Redis连接，然后创建了一个pipeline对象，将多个命令添加到pipeline中，最后通过`pipeline.execute()`一次性发送并执行这些命令。这样，你可以充分利用Redis的pipeline功能，减少了多次网络通信的开销。<br>
+
+使用连接池的方式并不影响Redis的pipeline操作，你可以在代码中方便地组织和执行pipeline中的多个命令。这有助于提高与Redis的通信效率。<br>
 
 ## 文件介绍：
 **chunk_data_of_the_class_in_list_to_redis:** 将python类组成的列表按照chunk分段存入Redis，再从Redis中取出还原列表。<br>
