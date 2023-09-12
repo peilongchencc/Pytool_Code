@@ -37,7 +37,11 @@ for day in Weekday:
 if today == Weekday.WEDNESDAY:
     print("It's Wednesday!")
 ```
-🫠🫠🫠很陌生吧，类竟然可以遍历，但这就是枚举，这就是`Enum`。接下来，我们再多看几个例子～<br>
+🫠🫠🫠很陌生吧，类竟然可以遍历，但这就是枚举，这就是`Enum`。<br>
+> 注意 print(Weekday.WEDNESDAY) 的终端输出为：Weekday.WEDNESDAY。若要输出值需要使用 print(Weekday.WEDNESDAY.vallue)。
+
+接下来，我们再多看几个例子～<br>
+
 
 例如，你可以创建一个颜色枚举来表示不同的颜色：<br>
 
