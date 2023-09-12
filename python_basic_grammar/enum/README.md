@@ -85,6 +85,7 @@ class People(Enum):
 print(People.JOHN.value.name)  # 输出: "John"
 print(People.ALICE.value.age)   # 输出: 25
 ```
+<br>
 
 ## `unique` 装饰器：
 讲完了 `Enum`，我们再来看一下 `unique` 的用法。`unique` 装饰器用于确保枚举成员的值是唯一的。<br>
