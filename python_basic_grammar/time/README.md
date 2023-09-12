@@ -16,6 +16,7 @@ time库是Python标准库中的一个模块，它提供了处理时间的功能�
     - [计算python类中函数执行时间：](#计算python类中函数执行时间)
     - [计算类实例(内置文本处理方法)执行时间：](#计算类实例内置文本处理方法执行时间)
     - [跨文件导入：](#跨文件导入)
+    - [timing\_decorator与staticmethod联合使用：](#timing_decorator与staticmethod联合使用)
 
 ## 获取当前时间的时间戳：
 ```python
@@ -329,3 +330,22 @@ print(result)
 Function add took 0.000001 seconds to execute.
 4
 ```
+
+### timing_decorator与staticmethod联合使用：
+现在，我们讲一个稍显复杂的情况，如果你想在一个静态方法(`staticmethod`)上使用这个装饰器，你应该怎么做呢？`timing_decorator` 和 `staticmethod` 都是装饰器，能连用吗？<br>
+
+如果你有这个疑问，可以查看下列代码：<br>
+```python
+class MyClass:
+    
+    @staticmethod
+    @timing_decorator
+    def my_static_method(x, y):
+        # ... method body ...
+```
+
+当有多个装饰器时，一定要注意装饰器的顺序。💦💦💦**首先应用的装饰器是最接近方法定义的那个，然后是其上方的装饰器**🐳🐳🐳。<br>
+
+在这个例子中，首先`timing_decorator`被应用于`my_static_method`，然后`staticmethod`装饰器被应用于已经被`timing_decorator`装饰过的`my_static_method`。<br>
+
+这样，当你调用静态方法时，会首先执行`timing_decorator`中的逻辑，然后执行实际的静态方法，最后输出方法的执行时间。<br>
