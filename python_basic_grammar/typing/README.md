@@ -5,6 +5,17 @@
 ```python
 from typing import List, Tuple, Any, Union
 ```
+- [typing](#typing)
+  - [类型提示：](#类型提示)
+    - [Tuple 类型：](#tuple-类型)
+    - [Tuple 类型：](#tuple-类型-1)
+    - [Any 类型：](#any-类型)
+    - [Union 和 Optional 类型：](#union-和-optional-类型)
+  - [泛型（Generics）：](#泛型generics)
+    - [使用 List 泛型：](#使用-list-泛型)
+    - [使用 Dict 泛型：](#使用-dict-泛型)
+    - [使用 Callable 泛型：](#使用-callable-泛型)
+
 
 以下是 `typing` 库的一些主要用法和作用：<br>
 
