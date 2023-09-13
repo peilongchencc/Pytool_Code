@@ -7,8 +7,8 @@ from typing import List, Tuple, Any, Union
 ```
 - [typing](#typing)
   - [类型提示：](#类型提示)
+    - [List 类型：](#list-类型)
     - [Tuple 类型：](#tuple-类型)
-    - [Tuple 类型：](#tuple-类型-1)
     - [Any 类型：](#any-类型)
     - [Union 和 Optional 类型：](#union-和-optional-类型)
   - [泛型（Generics）：](#泛型generics)
@@ -24,7 +24,7 @@ from typing import List, Tuple, Any, Union
 
 🚨🚨🚨注意，当输入的参数与 `typing` 指定的类型不符时，终端运行时会提示 `TypeError`。<br>
 
-### Tuple 类型：
+### List 类型：
 
 ```python
 from typing import List
