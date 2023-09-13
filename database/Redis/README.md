@@ -46,6 +46,7 @@ Redis具有快速、可靠、灵活、可扩展的特点，支持多种数据结
   - [Redis连接池的使用：](#redis连接池的使用)
     - [Redis连接池示例：](#redis连接池示例)
     - [特别声明：](#特别声明)
+    - [整体结构：](#整体结构)
     - [Redis连接池使用pipeline:](#redis连接池使用pipeline)
   - [文件介绍：](#文件介绍)
 
@@ -565,6 +566,42 @@ if __name__ == '__main__':
 所以，每次调用 `get_redis_connection()` 函数都会返回一个已经存在的连接，而不是创建一个新的连接。<br>
 
 这样，你可以在多个文件和函数中重复使用相同的连接池，从而降低了与Redis的连接开销。连接池会管理连接的生命周期，包括连接的创建、释放和重用。这有助于提高你的应用程序的性能和效率。<br>
+
+### 整体结构：
+如果你想在一个文件中测试Redis连接池效果，可以直接使用下列代码：<br>
+> 注意将代码中的 `key = 'your_key'` 修改为自己存入redis中的key。
+
+```python
+import redis
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0
+
+# 创建Redis连接池
+pool = redis.ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+
+# 获取Redis连接
+def get_redis_connection():
+    return redis.Redis(connection_pool=pool)
+
+# 从Redis中获取数据的示例函数
+def get_data_from_redis(key):
+    redis_conn = get_redis_connection()
+    data = redis_conn.get(key)
+    return data
+
+def main():
+    key = 'your_key'
+    data = get_data_from_redis(key)
+    if data:
+        print(f'Data from Redis: {data.decode("utf-8")}')
+    else:
+        print('Data not found in Redis.')
+
+if __name__ == '__main__':
+    main()
+```
 
 ### Redis连接池使用pipeline:
 使用连接池的方式也支持Redis的pipeline操作，在使用连接池的情况下，你可以像以下代码这样使用Redis的pipeline：<br>
