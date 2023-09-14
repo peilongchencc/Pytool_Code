@@ -104,12 +104,14 @@ vscode更智能，直接按下图点击选项即可：<br>
 <br>
 
 ## cannot create temp file for here-document: No space left on device
-当你使用 `cd` 指令时，如果一直提示下列信息，表明你的服务器上的磁盘空间已经用完，无法创建临时文件来处理一个"here-document"。"here-document" 是一种用于在shell脚本中包含多行文本的方式。当服务器上的磁盘空间不足时，系统无法创建所需的临时文件，从而导致这个错误。<br>
+当你使用 `cd` 指令时，如果一直提示下列信息，表明你的服务器上的磁盘空间已经用完，无法创建临时文件来处理一个"here-document"。<br>
 ```bash
 cannot create temp file for here-document: No space left on device
 ```
 
-要解决这个问题，你可以采取以下步骤：<br>
+"here-document" 是一种用于在shell脚本中包含多行文本的方式。当服务器上的磁盘空间不足时，系统无法创建所需的临时文件，从而导致这个错误。<br>
+
+🚨🚨🚨要解决这个问题，你可以采取以下步骤：<br>
 
 **检查磁盘空间使用情况：**<br> 
 首先，使用 `df -h` 命令来查看服务器上各个分区的磁盘空间使用情况。这将显示磁盘空间使用百分比以及可用空间。<br>
