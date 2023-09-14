@@ -134,6 +134,11 @@
     - [readline():](#readline)
     - [readlines():](#readlines)
     - [join() 函数：](#join-函数)
+    - [isinstance():](#isinstance)
+      - [检查对象是否是特定类型：](#检查对象是否是特定类型)
+      - [检查对象是否是多个类型之一：](#检查对象是否是多个类型之一)
+      - [检查对象是否是某个类的实例-含避坑指南：](#检查对象是否是某个类的实例-含避坑指南)
+      - [检查对象是否是某个基本数据类型：](#检查对象是否是某个基本数据类型)
   - [常见库解释：](#常见库解释)
     - [flask](#flask)
     - [nginx:](#nginx)
@@ -2078,6 +2083,108 @@ separator = '-'
 result = separator.join(map(str, information))
 print(result)   # O-l-d-:-1-8
 ```
+
+### isinstance():
+`isinstance()` 函数是 Python 中用于检查一个对象是否是某个特定类型或特定类型之一的函数。其语法如下：<br>
+
+```python
+isinstance(object, classinfo)
+```
+
+- `object`：要检查的对象。
+- `classinfo`：可以是一个类型（类或类型）或包含多个类型的元组。如果 `object` 是 `classinfo` 指定的类型之一，函数返回 `True`，否则返回 `False`。
+
+以下是一些 `isinstance()` 函数的示例用法：<br>
+
+#### 检查对象是否是特定类型：
+
+```python
+x = 5
+if isinstance(x, int):
+    print("x 是一个整数")
+```
+
+#### 检查对象是否是多个类型之一：
+
+```python
+x = 5
+if isinstance(x, (int, float)):
+    print("x 是整数或浮点数")
+```
+
+#### 检查对象是否是某个类的实例-含避坑指南：
+```python
+class Person:
+    pass
+
+person = Person()
+if isinstance(person, Person):
+    print("person 是 Person 类的实例")
+```
+
+🪼🪼🪼重中之重：<br>
+`isinstance()` 在检查对象是否是某个类的实例时，不仅与类的定义方式有关，也与类的定义位置有关。举一个极端的例子：<br>
+
+假设有两个不同的文件 `module1.py` 和 `module2.py`，它们都包含一个名为 `MyClass` 的类定义：<br>
+
+```python
+# module1.py
+class MyClass:
+    pass
+```
+
+```python
+# module2.py
+class MyClass:
+    pass
+```
+
+然后在另一个文件(假设为`main.py`)中，你可以导入这两个模块并使用 `isinstance()` 检查对象是否是这两个类的实例：<br>
+
+```python
+# main.py
+from module1 import MyClass as MyClass1
+from module2 import MyClass as MyClass2
+
+obj1 = MyClass1()
+obj2 = MyClass2()
+
+if isinstance(obj1, MyClass1):
+    print("obj1 是 module1 中的 MyClass1 的实例")
+
+if isinstance(obj2, MyClass2):
+    print("obj2 是 module2 中的 MyClass2 的实例")
+
+if isinstance(obj1, MyClass2):
+    print("obj1 是 module2 中的 MyClass2 的实例")
+else:
+    print("类的定义虽然完全相同，但由于类的导入位置不同，判断结果也不同。")
+```
+
+在上述示例中，类的定义完全一样，我们用 `isinstance()` 进行检查，猜猜运行 `main.py` 文件后，终端会显示什么❓❓❓<br>
+
+公布答案，终端显示：<br>
+```log
+obj1 是 module1 中的 MyClass1 的实例
+obj2 是 module2 中的 MyClass2 的实例
+类的定义虽然完全相同，但由于类的导入位置不同，判断结果也不同。
+```
+
+看到终端显示的内容，想必你就明白了笔者前面所说的话了吧。<br>
+
+再次重申：`isinstance()` 在检查对象是否是某个类的实例时，不仅与类的定义方式有关，也与类的定义位置有关。<br>
+
+Tips: 在同一个项目中，如果你要用到某一个python类，最好的方式一定是导入，而不是将这个类复制到当前文件夹，尤其是当你的项目文件中有 `isinstance()` 进行对象检查的时候。🚨🚨🚨<br>
+
+#### 检查对象是否是某个基本数据类型：
+```python
+x = 3.14
+if isinstance(x, (int, float, str)):
+    print("x 是整数、浮点数或字符串")
+```
+
+`isinstance()` 函数在编写具有灵活性的代码时非常有用，因为它允许您在不确定对象类型的情况下进行类型检查，从而避免出现类型错误。<br>
+
 
 ## 常见库解释：
 ### flask
