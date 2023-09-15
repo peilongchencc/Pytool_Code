@@ -124,6 +124,7 @@
     - [`__getitem__()` 和 `__setitem__()` 方法：](#__getitem__-和-__setitem__-方法)
     - [`__del__()` 方法：](#__del__-方法)
     - [`__call__()` 方法：](#__call__-方法)
+    - [`__eq__()` 方法：](#__eq__-方法)
   - [python的函数语法：](#python的函数语法)
     - [函数的定义：](#函数的定义)
     - [参数传递：](#参数传递)
@@ -1928,6 +1929,27 @@ class Adder:
 add = Adder()
 result = add(2, 3)
 print(result)  # 输出：5
+```
+
+### `__eq__()` 方法：
+- 作用：用于定义对象的相等性。它在比较两个对象是否相等时自动调用。默认情况下，它比较对象的身份（内存地址），但您可以重写它以根据对象的属性来定义相等性。
+- 示例：
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def __eq__(self, other):
+        if isinstance(other, Person):
+            return self.name == other.name and self.age == other.age
+        return False
+
+person1 = Person("Alice", 30)
+person2 = Person("Alice", 30)
+
+print(person1 == person2)  # 输出：True
 ```
 
 <br>
