@@ -116,7 +116,14 @@
       - [@classmethod:](#classmethod)
     - [python类使用 import 导入时文件顺序解析：](#python类使用-import-导入时文件顺序解析)
     - [`__init__.py`文件的作用和使用方法](#__init__py文件的作用和使用方法)
-    - [python类的特殊方法(双"\_"开头)：](#python类的特殊方法双_开头)
+  - [python类的特殊方法(双"\_"开头)：](#python类的特殊方法双_开头)
+    - [`__init__()` 方法：](#__init__-方法)
+    - [`__str__()` 方法：](#__str__-方法)
+    - [`__repr__()` 方法：](#__repr__-方法)
+    - [`__len__()` 方法：](#__len__-方法)
+    - [`__getitem__()` 和 `__setitem__()` 方法：](#__getitem__-和-__setitem__-方法)
+    - [`__del__()` 方法：](#__del__-方法)
+    - [`__call__()` 方法：](#__call__-方法)
   - [python的函数语法：](#python的函数语法)
     - [函数的定义：](#函数的定义)
     - [参数传递：](#参数传递)
@@ -1783,11 +1790,145 @@ from mypackage.module2 import func2
 
 总之，`__init__.py` 文件在 Python 包和模块的设计中扮演了非常关键的角色，它提供了很多灵活的方式来组织和控制你的代码结构。<br>
 
-### python类的特殊方法(双"_"开头)：
-`__post_init__(self)`：这是一个特殊方法，当对象初始化后被调用。<br>
+## python类的特殊方法(双"_"开头)：
 
-`__str__(self)`：这是另一个特殊方法，用于返回对象的可读字符串表示形式<br>
+Python中的特殊方法（也称为魔术方法或双下划线方法）是具有特定名称和行为的方法，它们在类中定义，用于控制类的一些特殊行为。这些方法通常由Python解释器在特定情况下自动调用，以执行与对象创建、运算符重载、容器操作等相关的操作。特殊方法的名称由双下划线（例如`__init__`）括起来。<br>
 
+以下是一些常见的Python特殊方法及其用途：<br>
+
+1. `__init__(self, ...)`: 构造函数，用于初始化类的实例。
+2. `__str__(self)`: 返回一个可打印的字符串表示对象，通过`str(obj)`调用。
+3. `__repr__(self)`: 返回一个字符串，用于表示对象的"官方"字符串表示，通过`repr(obj)`调用。
+4. `__len__(self)`: 返回对象的长度，通过`len(obj)`调用。
+5. `__getitem__(self, key)`: 用于获取对象的元素，通过`obj[key]`调用。
+6. `__setitem__(self, key, value)`: 用于设置对象的元素，通过`obj[key] = value`调用。
+7. `__delitem__(self, key)`: 用于删除对象的元素，通过`del obj[key]`调用。
+8. `__iter__(self)`: 返回一个迭代器对象，通过`iter(obj)`调用，用于迭代对象的元素。
+9. `__next__(self)`: 用于迭代器的下一个元素，通过`next(obj)`调用。
+10. `__eq__(self, other)`: 用于比较两个对象是否相等，通过`obj == other`调用。
+11. `__lt__(self, other)`: 用于比较两个对象是否小于，通过`obj < other`调用。
+12. `__gt__(self, other)`: 用于比较两个对象是否大于，通过`obj > other`调用。
+
+这些特殊方法允许您自定义类的行为，使其与Python的内置功能（如运算符、迭代和容器）交互。通过重写这些方法，您可以为自己的类添加自定义行为，使其更加灵活和强大。<br>
+
+接下来，我会讲解工作中经常用到的几个特殊方法：<br>
+
+### `__init__()` 方法：
+- 作用：用于对象的初始化。它在创建类的实例时自动调用，允许您为对象的属性设置初始值。
+- 示例：
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+# 创建一个Person类的实例
+person = Person("Alice", 30)
+```
+
+🌿🌿🌿补充：<br>
+如果你使用的是 `from dataclasses import dataclass` 创建的类，你可能需要定义 `__post_init__(self)`，`__post_init__(self)`是 `dataclass` 中的一个特殊方法，当对象初始化后被调用。<br>
+
+
+### `__str__()` 方法：
+- 作用：类似于`__repr__()`方法，用于返回对象的字符串表示。不过，`__str__()`通常用于返回对象的用户友好字符串表示。
+- 示例：
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def __str__(self):
+        return f"Name: {self.name}, Age: {self.age}"
+
+person = Person("Alice", 30)
+print(person)  # 输出：Name: Alice, Age: 30
+```
+
+
+### `__repr__()` 方法：
+- 作用：用于返回对象的字符串表示。通常用于开发和调试，以便以可读的方式表示对象的内容。
+- 示例：
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def __repr__(self):
+        return f"Person(name='{self.name}', age={self.age})"
+
+person = Person("Alice", 30)
+print(person)  # 输出：Person(name='Alice', age=30)
+```
+
+### `__len__()` 方法：
+- 作用：定义对象的长度。通常用于自定义容器类，例如列表、字典等。
+- 示例：
+
+```python
+class MyList:
+    def __init__(self, data):
+        self.data = data
+
+    def __len__(self):
+        return len(self.data)
+
+my_list = MyList([1, 2, 3, 4, 5])
+print(len(my_list))  # 输出：5
+```
+
+### `__getitem__()` 和 `__setitem__()` 方法：
+- 作用：用于定义对象的索引和赋值操作。通常用于创建自定义容器类，使其支持索引操作。
+- 示例：
+
+```python
+class MyList:
+    def __init__(self, data):
+        self.data = data
+
+    def __getitem__(self, index):
+        return self.data[index]
+
+    def __setitem__(self, index, value):
+        self.data[index] = value
+
+my_list = MyList([1, 2, 3, 4, 5])
+print(my_list[2])  # 输出：3
+my_list[2] = 10
+print(my_list[2])  # 输出：10
+```
+
+### `__del__()` 方法：
+- 作用：用于定义对象销毁时的行为。通常不建议使用，因为Python会自动管理对象的垃圾回收。只有在需要进行资源清理时才使用它。
+- 示例：
+
+```python
+class MyClass:
+    def __del__(self):
+        print("Object is being destroyed")
+
+obj = MyClass()
+del obj  # 在这里对象被销毁
+```
+
+### `__call__()` 方法：
+- 作用：使对象可以像函数一样被调用。通过定义`__call__()`方法，您可以使对象的实例成为可调用的。
+- 示例：
+
+```python
+class Adder:
+    def __call__(self, x, y):
+        return x + y
+
+add = Adder()
+result = add(2, 3)
+print(result)  # 输出：5
+```
 
 <br>
 
