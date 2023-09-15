@@ -8,6 +8,7 @@
   - [vscode光标移动--进出函数特别有用：](#vscode光标移动--进出函数特别有用)
   - [vscode跳转到当前文件的指定行：](#vscode跳转到当前文件的指定行)
   - [VScode相对路径无法使用问题：](#vscode相对路径无法使用问题)
+    - [相对路径设置后可能引发的根目录问题：](#相对路径设置后可能引发的根目录问题)
   - [vscode查找文件时如何设置排除文件：](#vscode查找文件时如何设置排除文件)
   - [Github中MarkDown文档中所用的目录生成方式：](#github中markdown文档中所用的目录生成方式)
 
@@ -63,6 +64,67 @@ ctrl + g，然后输入想要跳转的行数并回车。
 
 运行成功！<br>
 原因解析：因为vscode对工作区特别敏感，点击右上角的 <运行python文件> 定位其实是工作区，不是当前路径。<br>
+
+### 相对路径设置后可能引发的根目录问题：
+相对路径设置后会有根目录识别问题，例如，假设你的项目目录如下：<br>
+```log
+.
+├── answer
+│   ├── eneities
+│   │   └── answer_stem.py
+│   └── utils
+│       └── answer_sorting.py
+├── data_output
+│   ├── data_makers
+│   │   ├── dimension_data_maker.py
+│   │   └── sensitive_data_maker.py
+│   └── all_data_output.py
+├── README.md
+├── requirements.txt
+└── main.py
+```
+`all_data_output.py`中部分代码如下：<br>
+```python
+from data_output.data_makers.dimension_data_maker import DimensionDataMaker
+from answer.eneities.answer_stem import AnswerStem
+"""
+其他代码省略
+"""
+```
+
+当你直接在当前目录运行 `all_data_output.py` 时，会被提示以下内容：<br>
+```log
+ModuleNotFoundError: No module named 'data_output'
+```
+
+这是因为vscode将执行文件的父目录当作了根目录，检查方法也很简单，在 `import` 前加入以下代码，然后执行文件就行：<br>
+```python
+import os
+
+# 获取当前脚本文件的绝对路径
+current_script_path = os.path.abspath(__file__)
+
+# 提取根目录
+root_directory = os.path.dirname(current_script_path)
+
+print("当前文件的根目录是:", root_directory)
+```
+
+终端显示：<br>
+```log
+当前文件的根目录是:/data/nlp/data_output/
+ModuleNotFoundError: No module named 'data_output'
+```
+
+现在清楚了吧，当根目录处于 `/data/nlp/data_output/` 又怎么能使用 `from data_output...` 这种导入方式呢。解决方法也很简单，在代码上方添加以下代码，为文件指明根目录即可：<br>
+```python
+import sys 
+sys.path.append("/data/nlp/")
+```
+
+现在你的文件应该可以正常运行了，但一定要注意，笔者这里这样改是因为纯粹的想要测试项目底层中的某个文件，而不是把 `all_data_output.py` 当作了主文件，主文件依旧是 `main.py`。<br>
+
+再次提醒：一定要注意代码中可导入和可执行的区别，关键在于根目录的确定.<br>
 
 ## vscode查找文件时如何设置排除文件：
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/1360ff80-2ee5-4b9f-8417-7f8dcc11e008" alt="image" width="40%" height="40%">
