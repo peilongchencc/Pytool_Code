@@ -1003,6 +1003,13 @@ my_list.extend(values_to_add)
 print(my_list)  # 输出 [1, 2, 3, 4, 5, 6]
 ```
 
+相信你也发现了笔者并没有使用 `my_list.extend(4, 5, 6)` 这种写法，因为这种写法也会报错，同样提示：<br>
+```log
+TypeError: list.extend() takes exactly one argument (3 given)
+```
+
+所以，需要将传入的内容转为list才能使用`extend()`。<br>
+
 使用加法操作符`+`：<br>
 ```python
 my_list = [1, 2, 3]
