@@ -1107,6 +1107,9 @@ my_dict = {}
 
 # 创建一个带有键值对的字典
 my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
+
+# 创建一个字典嵌套字典的结构
+my_dict = {'name': 'John', 'age': 30, 'score': {'chinese':87, 'math':99, 'english':92}}
 ```
 
 ### 访问字典中的值
