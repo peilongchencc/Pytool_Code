@@ -17,5 +17,5 @@ https://www.processon.com/*
 
 添加多个白名单时，以英文逗号分隔：<br>
 ```log
-https://www.processon.com/*,https://account.aliyun.com/*
+https://www.processon.com/*, https://account.aliyun.com/*
 ```
