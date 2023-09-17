@@ -21,6 +21,7 @@ Redis具有快速、可靠、灵活、可扩展的特点，支持多种数据结
     - [使用python代码清空 Redis 中的数据：](#使用python代码清空-redis-中的数据)
     - [字符串存入 Redis 与提取：](#字符串存入-redis-与提取)
       - [使用 set 将字符串存入 Redis：](#使用-set-将字符串存入-redis)
+      - [redis设置过期时间：](#redis设置过期时间)
       - [使用 get 从 Redis 取出 字符串 数据：](#使用-get-从-redis-取出-字符串-数据)
     - [Redis 中 decode 函数解释：](#redis-中-decode-函数解释)
     - [数字存入 Redis 与提取：](#数字存入-redis-与提取)
@@ -156,6 +157,21 @@ data = "Hello, world!"
 
 # 使用set命令将字符串存储
 r.set("my_str", data)
+```
+
+#### redis设置过期时间：
+redis通过`expire`设置过期时间：<br>
+```python
+import redis
+
+# 连接到Redis
+r = redis.Redis(host='localhost', port=6379)
+
+data = "Hello, world!"
+
+# 使用set命令将字符串存储
+r.set("my_str", data)
+r.expire("my_str", 7*24*60*60)    # 设置存储时间为7天；
 ```
 
 #### 使用 get 从 Redis 取出 字符串 数据：
