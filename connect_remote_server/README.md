@@ -7,6 +7,9 @@
     - [workbench连接阿里云服务器：](#workbench连接阿里云服务器)
     - [终端、vscode连接阿里云服务器：](#终端vscode连接阿里云服务器)
     - [通过ssh密钥连接--创建密钥对：(强烈推荐🤭🤭🤭)](#通过ssh密钥连接--创建密钥对强烈推荐)
+  - [使用阿里云提供的Redis时流量占用问题：](#使用阿里云提供的redis时流量占用问题)
+    - [问题描述：](#问题描述)
+    - [阿里云客服回应：](#阿里云客服回应)
   - [cannot create temp file for here-document: No space left on device](#cannot-create-temp-file-for-here-document-no-space-left-on-device)
   - [Could not establish connection to "xxx.xxx.xxx.xxx": Cannot read properties of undefined (reading 'replace').](#could-not-establish-connection-to-xxxxxxxxxxxx-cannot-read-properties-of-undefined-reading-replace)
 
@@ -101,6 +104,25 @@ ssh root@8.140.203.xxx
 vscode更智能，直接按下图点击选项即可：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/d138d0f7-a974-4c2d-b895-b5aff9f121a3" alt="image" width="50%" height="50%">
 
+<br>
+
+## 使用阿里云提供的Redis时流量占用问题：
+### 问题描述：
+我的服务向阿里云提供的redis写入数据，和从阿里云提供的redis获取数据会占用流量吗？<br>
+### 阿里云客服回应：
+```log
+您好：
+
+请问，我的服务向阿里云提供的redis写入数据，和从阿里云提供的redis获取数据会占用流量吗？
+
+----您可以理解为会占用带宽
+
+Redis实例作为更靠近应用服务的数据层，通常会执行较多的数据存取并消耗网络带宽。不同的实例规格对应的最大带宽有所不同，当超过该规格的最大带宽时，将对应用服务的数据访问性能造成影响。
+
+参考文档：
+
+排查Redis实例流量使用率高的问题  https://help.aliyun.com/zh/redis/user-guide/troubleshoot-high-traffic-usage-on-an-apsaradb-for-redis-instance?spm=a2c4g.11174283.0.i10
+```
 <br>
 
 ## cannot create temp file for here-document: No space left on device
