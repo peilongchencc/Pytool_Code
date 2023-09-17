@@ -369,6 +369,11 @@ rm nlp.2023062[1-9].log nlp.2023063[0-1].log
 ```shell
 rm -r !(settings)
 ```
+
+假设要保留多个文件或文件夹，删除其他所有内容，可以参考以下指令：<br>
+```bash
+rm -r !(config|nlp_models|simple)
+```
 <br>
 
 
