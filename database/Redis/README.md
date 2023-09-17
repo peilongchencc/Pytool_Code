@@ -577,9 +577,10 @@ import redis
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 REDIS_DB = 0
+REDIS_PASSWORD = '' # 这里为空，笔者没有设置密码
 
 # 创建Redis连接池
-pool = redis.ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+pool = redis.ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, password=REDIS_PASSWORD)
 
 # 获取Redis连接
 def get_redis_connection():
