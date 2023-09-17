@@ -14,3 +14,8 @@ https://www.processon.com/*
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/ff453e53-d16a-4ef9-b725-dc349a39ac1d)
 
 网址添加后，点击 `Save&Apply` 即可。此时你就可以正常访问 `processon.com` 了～🥴🥴🥴<br>
+
+添加多个白名单时，以英文逗号分隔：<br>
+```log
+https://www.processon.com/*,https://account.aliyun.com/*
+```
