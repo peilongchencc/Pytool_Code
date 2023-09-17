@@ -126,6 +126,7 @@
     - [`__del__()` 方法：](#__del__-方法)
     - [`__call__()` 方法：](#__call__-方法)
     - [`__eq__()` 方法：](#__eq__-方法)
+    - [__dict__：](#dict)
   - [python的函数语法：](#python的函数语法)
     - [函数的定义：](#函数的定义)
     - [参数类型：](#参数类型)
@@ -2001,6 +2002,38 @@ person1 = Person("Alice", 30)
 person2 = Person("Alice", 30)
 
 print(person1 == person2)  # 输出：True
+```
+
+### __dict__：
+- 作用：用于获取或操作对象的所有属性(包括属性名和值)，而不是直接访问对象的属性。
+- 示例：
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+# 创建一个Person对象
+person1 = Person("Alice", 30)
+
+# 使用__dict__属性查看对象的属性字典
+print(person1.__dict__)
+# 输出: {'name': 'Alice', 'age': 30}
+
+# 使用__dict__属性动态添加属性
+person1.__dict__["city"] = "New York"
+
+# 再次使用__dict__属性查看对象的属性字典
+print(person1.__dict__)
+# 输出: {'name': 'Alice', 'age': 30, 'city': 'New York'}
+
+# 使用__dict__属性动态修改属性
+person1.__dict__["age"] = 31
+
+# 再次使用__dict__属性查看对象的属性字典
+print(person1.__dict__)
+# 输出: {'name': 'Alice', 'age': 31, 'city': 'New York'}
 ```
 
 <br>
