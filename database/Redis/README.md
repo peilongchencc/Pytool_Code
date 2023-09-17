@@ -42,6 +42,7 @@ Redis具有快速、可靠、灵活、可扩展的特点，支持多种数据结
     - [场景描述：](#场景描述)
     - [mget 方法：](#mget-方法)
     - [pipeline 方法：](#pipeline-方法)
+    - [pipeline完整示例：](#pipeline完整示例)
     - [mget 与 pipeline 的选择：](#mget-与-pipeline-的选择)
   - [Redis连接池的使用：](#redis连接池的使用)
     - [Redis连接池示例：](#redis连接池示例)
@@ -469,6 +470,52 @@ for i in range(100):
 results = pipeline.execute()
 ```
 单个结果可采用 `results[0]`、`results[1]`、`results[2]` 的方式获取，数据的顺序与存入 `pipeline` 中的顺序相同。数据如果需要转换，按照自己的数据格式转换即可。<br>
+
+### pipeline完整示例：
+数据写入：<br>
+```python
+import redis
+
+# 建立到Redis服务器的连接
+r = redis.Redis(host='localhost', port=6379, db=0)
+
+# 创建一个Pipeline对象
+pipeline = r.pipeline()
+
+# 在Pipeline中添加多个SET命令
+pipeline.set('key1', 'value1')
+pipeline.set('key2', 'value2')
+pipeline.set('key3', 'value3')
+
+# 执行Pipeline中的所有命令
+pipeline.execute()
+```
+数据获取：<br>
+```python
+import redis
+
+# 建立到Redis服务器的连接
+r = redis.Redis(host='localhost', port=6379, db=0)
+
+# 创建一个Pipeline对象
+pipeline = r.pipeline()
+
+# 在Pipeline中添加多个SET命令
+pipeline.get('key1')
+pipeline.get('key2')
+pipeline.get('key3')
+
+# 执行Pipeline中的所有命令
+result = pipeline.execute()
+for i in result:
+    print(i.decode())
+```
+终端效果：<br>
+```log
+value1
+value2
+value3
+```
 
 ### mget 与 pipeline 的选择：
 在 Redis 中，`mget` 和 `pipeline` 方法都可以用于一次获取多个键的值。<br>
