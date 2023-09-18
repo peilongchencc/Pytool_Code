@@ -157,6 +157,7 @@ git branch -a
 git分支，每次commit是一个树的节点，可以将不同的分支合并。<br>
 
 Git分支是Git版本控制系统中的一个重要概念，Git分支是树🌲结构，它允许你在代码库中创建不同的分支，以便并行开发、测试和管理代码的不同版本。分支可以帮助开发团队更有效地协作，同时保持代码的稳定性。
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/5ccf44ce-a66b-46ff-9261-16d5aa58fba3" alt="image" width="70%" height="70%">
 
 ### 分支创建：
 
