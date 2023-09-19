@@ -145,7 +145,7 @@ DATA = {
     'advisorId': 1,
     'labelIds': ''
 }
-TEST_TIMES = 10
+TEST_TIMES = 500
 
 def test_response_time(session):
     start_time = time.time()
