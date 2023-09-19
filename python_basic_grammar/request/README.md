@@ -8,11 +8,11 @@ pip install requests
 ```
 
 - [Request](#request)
-  - [get方法向接口传数据并计算平均时间：](#get方法向接口传数据并计算平均时间)
-  - [post方法向接口传数据并计算平均时间：](#post方法向接口传数据并计算平均时间)
+  - [get方法向接口传数据并计算平均时间-基础版本：](#get方法向接口传数据并计算平均时间-基础版本)
+  - [post方法向接口传数据并计算平均时间-session：](#post方法向接口传数据并计算平均时间-session)
   - [post方法向接口传数据、计算平均时间并查看返回的数据：](#post方法向接口传数据计算平均时间并查看返回的数据)
 
-## get方法向接口传数据并计算平均时间：
+## get方法向接口传数据并计算平均时间-基础版本：
 以下是接口方法为`get`时的简单示例，说明如何测试 `http://localhost:7711/answer` 接口 500 次，并计算平均响应时间：<br>
 
 ```python
@@ -62,21 +62,18 @@ if __name__ == '__main__':
 
 此代码将测试指定的接口500次，计算每次的响应时间，并最后输出平均响应时间。<br>
 
-注意：
-1. 为了避免反复创建新连接，可以考虑使用 `requests.Session()` 进行优化。
-2. 这只是一个基本示例，你可能需要根据具体的情况进行调整（例如，是否有其他需要的HTTP头，是否需要使用POST而不是GET，是否需要动态生成参数等）。
-3. 安装 `requests` 库，如果你还没有的话：`pip install requests`。
 
-
-## post方法向接口传数据并计算平均时间：
+## post方法向接口传数据并计算平均时间-session：
 如果你的接口是一个POST方法，那么你需要做以下几个修改：<br>
 
 1. 使用`requests.post()`方法代替`requests.get()`。
 2. 将`params`参数更改为`data`或`json`，具体取决于你的API期望的数据格式。
+3. 为了避免反复创建新连接，可以考虑使用 `requests.Session()` 进行**优化**。🚀🚀🚀
+> 使用 `requests.Session()` 可以在多次请求之间保持某些参数，例如 `headers` 和 `cookies`，这也可以使得TCP连接保持活跃，从而提高请求速度。对于反复请求相同的URL或者相同的服务器，使用 `session` 是一个很好的方法。
 
 以下是修改后的代码：<br>
 
-```python
+``` python
 import requests
 import time
 
@@ -88,12 +85,12 @@ DATA = {
     'advisorId': 1,
     'labelIds': ''
 }
-TEST_TIMES = 10
+TEST_TIMES = 500
 
-def test_response_time():
+def test_response_time(session):
     start_time = time.time()
-    # 使用 POST 方法并将数据传给 data 参数
-    response = requests.post(URL, data=DATA)
+    # 使用 session.post 替代 requests.post
+    response = session.post(URL, data=DATA)
     response_time = time.time() - start_time
     
     if response.status_code != 200:
@@ -105,11 +102,13 @@ def main():
     total_response_time = 0
     successful_tests = 0
 
-    for i in range(TEST_TIMES):
-        time_taken = test_response_time()
-        if time_taken is not None:
-            total_response_time += time_taken
-            successful_tests += 1
+    # 创建一个 session 对象
+    with requests.Session() as session:
+        for i in range(TEST_TIMES):
+            time_taken = test_response_time(session)
+            if time_taken is not None:
+                total_response_time += time_taken
+                successful_tests += 1
 
     if successful_tests == 0:
         print("所有测试请求均失败!")
@@ -121,6 +120,8 @@ def main():
 if __name__ == '__main__':
     main()
 ```
+
+注意的是，我们在 `main` 函数中使用了 `requests.Session()` 创建了一个 session 对象，并在 `test_response_time` 函数中传递了这个 `session` 对象，这样所有的请求都会在这一个 session 中执行。<br>
 
 注意：上述代码假设你的接口接受`x-www-form-urlencoded`格式的数据（这是默认的POST数据格式）。如果你的接口接受JSON格式的数据，你可以将`requests.post(URL, data=DATA)`替换为`requests.post(URL, json=DATA)`。<br>
 
@@ -146,9 +147,10 @@ DATA = {
 }
 TEST_TIMES = 10
 
-def test_response_time():
+def test_response_time(session):
     start_time = time.time()
-    response = requests.post(URL, data=DATA)
+    # 使用 session.post 替代 requests.post
+    response = session.post(URL, data=DATA)
     response_time = time.time() - start_time
     
     if response.status_code != 200:
@@ -164,11 +166,13 @@ def main():
     total_response_time = 0
     successful_tests = 0
 
-    for i in range(TEST_TIMES):
-        time_taken = test_response_time()
-        if time_taken is not None:
-            total_response_time += time_taken
-            successful_tests += 1
+    # 创建一个 session 对象
+    with requests.Session() as session:
+        for i in range(TEST_TIMES):
+            time_taken = test_response_time(session)
+            if time_taken is not None:
+                total_response_time += time_taken
+                successful_tests += 1
 
     if successful_tests == 0:
         print("所有测试请求均失败!")
