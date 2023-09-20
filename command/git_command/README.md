@@ -20,7 +20,8 @@
     - [删除remote记录：](#删除remote记录)
     - [`git init`创建非master的分支名：](#git-init创建非master的分支名)
   - [git 和 github、gitlab 的区别：](#git-和-githubgitlab-的区别)
-  - [git clone 和 git pull 的区别：(含部分 git fetch讲解)](#git-clone-和-git-pull-的区别含部分-git-fetch讲解)
+  - [git clone 的使用：](#git-clone-的使用)
+    - [git clone 和 git pull 的区别：(含部分 git fetch讲解)](#git-clone-和-git-pull-的区别含部分-git-fetch讲解)
   - [Git常见场景运用：](#git常见场景运用)
     - [协同工作时，你当前所在的分支被其他人更新，你需要拉取最新的内容再接着自己的工作：](#协同工作时你当前所在的分支被其他人更新你需要拉取最新的内容再接着自己的工作)
       - [git pull 让你选择分支合并方式：](#git-pull-让你选择分支合并方式)
@@ -53,11 +54,11 @@ sudo apt install git
 🧜‍♂️🧜‍♂️🧜‍♂️注意：`git` 命令只能在 `git` 仓库中使用（除了 `git init` 初始化命令），`git` 仓库外无法使用 `git` 指令。<br>
 
 
-接下来，您可以按照以下步骤将文件夹变成Git仓库：
+接下来，您可以按照以下步骤将文件夹变成Git仓库：<br>
+<br>
 
 ## 创建git仓库：
 git仓库的创建是针对文件夹(或路径)下的所有内容，常见的有2种情况，一种是将空文件夹变成Git仓库，另一种是将非空文件夹变成Git仓库。接下来，我分别讲解：<br>
-
 
 ### 将空文件夹变成Git仓库：
 
@@ -140,7 +141,7 @@ Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
 ```
 
 请注意，执行这些步骤后，你将失去Git版本控制的所有优势，包括历史记录和版本管理。🔥🔥🔥确保你已经备份了任何重要的文件或历史记录，以防需要在将来恢复它们。🔥🔥🔥<br>
-
+<br>
 
 ## 设置git仓库信息(个人、远程仓库)：
 1. 获取github或gitlab的仓库信息。
@@ -199,6 +200,7 @@ git branch -a
 git push origin 分支A的名称
 ```
 
+<br>
 
 ## git分支：
 Git分支是Git版本控制系统中的一个重要概念，Git分支是树🌲结构，它允许你在代码库中创建不同的分支，以便并行开发、测试和管理代码的不同版本。分支可以帮助开发团队更有效地协作，同时保持代码的稳定性。<br>
@@ -466,6 +468,7 @@ git branch -d branch_b
 git branch -D branch_b
 ```
 
+<br>
 
 ## 修改git仓库信息：
 我们在使用git时，可能会由于各种情况需要修改git仓库的信息，这里就讲述下修改常见信息的方式：<br>
@@ -512,22 +515,65 @@ git init --initial-branch=yourbranchname
 ```
 
 这将创建一个新的Git仓库并将默认分支设置为"yourbranchname"。<br>
-
-
-
-
+<br>
 
 ## git 和 github、gitlab 的区别：
-git 是一个版本控制软件，github 是一个代码托管平台。github 或 gitlab 可以使用 git 进行代码的版本控制，可以执行修改代码、切换分支、查看不同代码版本、分享代码、提交bug等操作。
+git 是一个版本控制软件，github 是一个代码托管平台。github 或 gitlab 可以使用 git 进行代码的版本控制，可以执行修改代码、切换分支、查看不同代码版本、分享代码、提交bug等操作。<br>
+<br>
 
-## git clone 和 git pull 的区别：(含部分 git fetch讲解)
-从字面意思也可以理解，都是往下拉代码，git clone是克隆，git pull 是拉取。
-但是，也有区别：
-从远程服务器克隆一个一模一样的版本库到本地,复制的是整个版本库，叫做 clone 。（clone是将一个库复制到你的本地，是一个本地从无到有的过程。）
-从远程服务器拉取到一个branch分支的更新到本地，并更新本地库，叫做 pull 。
-git pull 是从远程获取最新版本并merge（合并）到本地，更安全一些。
-git pull 相当于 git fetch（拉取代码） + git merge /  git rebase (将提交应用到当前分支)。
+## git clone 的使用：
+`git clone`是一个用于复制（克隆）Git仓库的命令。它允许你从远程或本地仓库创建一个本地副本，这样你就可以在本地工作、编辑和提交代码，而不需要直接访问原始仓库。这对于协作开发和版本控制非常有用。<br>
 
+要使用`git clone`，请按照以下步骤进行：<br>
+
+1. 打开终端。
+
+2. 导航到你想要克隆仓库的目录：你可以使用`cd`命令来切换到目标目录。例如，如果你想将仓库克隆到你的主目录下，你可以运行以下命令：
+
+```bash
+cd ~
+```
+
+3. 使用`git clone`命令来克隆仓库。你需要提供仓库的URL。例如，如果你想克隆一个名为 "example-repo" 的仓库，它的URL是 `https://github.com/user/example-repo.git`，你可以运行以下命令：
+
+```bash
+git clone https://github.com/user/example-repo.git
+```
+
+如果你要克隆的是本地仓库，你可以提供本地路径，例如：<br>
+
+```bash
+git clone /path/to/local/repo
+```
+
+4. Git会开始克隆仓库。它将从远程仓库或本地仓库复制所有代码和历史记录到你的本地计算机。
+
+5. 克隆完成后，你可以进入新创建的目录，开始在本地仓库上工作：
+
+```bash
+cd example-repo
+```
+
+现在，你已经成功克隆了一个Git仓库，并可以在本地进行编辑和提交更改。使用`git pull`命令可以从远程仓库获取最新更新，使用`git push`命令将你的更改推送到远程仓库。<br>
+
+请注意，你需要安装Git并确保在终端中可用才能使用`git clone`命令。在Ubuntu上，你可以使用以下命令安装Git：<br>
+
+```bash
+sudo apt update
+sudo apt install git
+```
+
+然后，你就可以开始使用Git来管理代码仓库了。<br>
+
+### git clone 和 git pull 的区别：(含部分 git fetch讲解)
+从字面意思也可以理解，都是往下拉代码，`git clone`是克隆，`git pull` 是拉取，但两者有区别：<br>
+
+`git clone` 是从远程仓库克隆一个库到你的本地，是一个本地从无到有的过程。<br>
+
+`git pull` 是你本地已经有了一个远程仓库的克隆版，此时使用 `git pull` 会从远程仓库获取**当前分支**的所有内容，并merge（合并）到当前分支。<br>
+> `git pull` 相当于 `git fetch`（拉取代码） + `git merge`。
+
+<br>
 
 ## Git常见场景运用：
 ### 协同工作时，你当前所在的分支被其他人更新，你需要拉取最新的内容再接着自己的工作：
@@ -704,7 +750,7 @@ git merge new-branch      # 合并新分支到主分支
 git branch -d new-branch   # 删除新分支
 ```
 使用以上任意方法，你都可以回退到上一个版本，同时不丢失现在的更改。根据你的具体需求，选择最适合你的方法。<br>
-
+<br>
 
 ## 为什么你把要忽略的内容写入了gitignore，git push时还是把gitignore中的内容上传了？是有什么操作顺序吗？
 ### 原因：
