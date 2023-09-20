@@ -13,6 +13,7 @@
       - [分支a中的内容：](#分支a中的内容)
       - [分支b中的内容：](#分支b中的内容)
       - [将分支b的内容合并到分支a上：](#将分支b的内容合并到分支a上)
+    - [删除分支：](#删除分支)
   - [修改git仓库信息：](#修改git仓库信息)
     - [删除remote记录：](#删除remote记录)
     - [`git init`创建非master的分支名：](#git-init创建非master的分支名)
@@ -409,6 +410,8 @@ To push the current branch and set the remote as upstream, use
     git push --set-upstream origin branch_a
 ```
 
+这表示你当前分支在远程仓库没有对应的分支，表示你是第一次`git push`这个分支。<br>
+
 按照提示，终端执行以下指令就好：<br>
 ```bash
 git push --set-upstream origin branch_a
@@ -419,6 +422,7 @@ git push --set-upstream origin branch_a
 git checkout branch_b
 ```
 
+### 删除分支：
 通常，我们在执行完分支合并后，会将分支删除，如果此时你想要将 `branch_b` 分支删除，可以终端运行以下指令：<br>
 ```bash
 git branch -d branch_b
