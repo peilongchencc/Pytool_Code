@@ -5,9 +5,9 @@
 <br>
 
 ## 🧑‍💻个人配置：
-系统：Ubuntu 18.04<br>
-python 版本：Python 3.10.11<br>
-python包和环境管理器：Anaconda<br>
+系统版本|python版本|环境管理器|IDE
+---|---|---|---
+Ubuntu 18.04|Python 3.10.11|Anaconda|VsCode
 <br>
 
 ## 文件介绍：
