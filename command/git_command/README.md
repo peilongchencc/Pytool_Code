@@ -379,9 +379,13 @@ git merge branch_b
 //传入分支的代码
 >>>>>>> branch_b(传入的更改)
 ```
+
+你可以选择点击 `采用当前更改|采用传入的更改|保留双方更改|比较变更` 中的任意一项，也可以在当前界面找到 `在合并编辑器中解析` 进行操作。<br>
 ***
 
-的目录树结构如下：<br>
+例如，你可以看到`branch_a`的目录树变为如下结构：<br>
+> 多了 `segment/data.txt` 文件。
+
 ```log
 .
 ├── push.sh
@@ -390,40 +394,7 @@ git merge branch_b
     └── sanic_server.py
 ```
 
-`branch_a`中`push.sh`内容如下：<br>
-```bash
-git add .
-采用当前更改|采用传入的更改|保留双方更改|比较变更
-<<<<<<< HEAD
-git commit -m "更新分支a"
-=======
-git commit -m "更新分支b"
->>>>>>> branch_a_b
-git push
-```
-
-`branch_a`中`sanic_server.py`内容如下：<br>
-```python
-from sanic import Sanic
-from sanic.response import json
-import jieba
-
-app = Sanic("jieba-segment")
-
-
-@app.route("/seg_ment", methods=["POST"])
-async def seg_ment(request):
-    """分词API"""
-    text = request.form.get("user_input")    # postman 测试时字段的名称需要对应，此处写"user_input"，postman写"input"就会报错。
-    if not text:
-        return json({"error": "缺少 \"user_input\" parameter"}, status=400) # \ 用于转义
-    # 进行jieba分词处理
-    text_segment = jieba.lcut(text)
-    return json({"用户输入的分词结果为：": text_segment})
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
-```
+其他内容根据文件颜色解决冲突即可～<br>
 
 
 ## 修改git仓库信息：
