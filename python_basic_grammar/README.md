@@ -146,6 +146,7 @@
     - [readline():](#readline)
     - [readlines():](#readlines)
     - [join() 函数：](#join-函数)
+    - [min():](#min)
     - [isinstance():](#isinstance)
       - [检查对象是否是特定类型：](#检查对象是否是特定类型)
       - [检查对象是否是多个类型之一：](#检查对象是否是多个类型之一)
@@ -2398,6 +2399,52 @@ separator = '-'
 result = separator.join(map(str, information))
 print(result)   # O-l-d-:-1-8
 ```
+
+### min():
+`min()` 函数是 Python 中的一个内置函数，它用于找到一组值中的最小值。你可以将多个参数传递给 `min()` 函数，或者传递一个可迭代对象（如列表或元组），然后它会返回其中最小的元素。<br>
+
+以下是 `min()` 函数的用法示例：<br>
+
+1. 传递多个参数：
+
+```python
+a = 10
+b = 5
+c = 15
+
+# 找到最小的值
+min_value = min(a, b, c)
+
+print("最小值是:", min_value)  # 输出: 最小值是: 5
+```
+
+2. 传递可迭代对象：
+
+```python
+numbers = [10, 5, 15, 20, 3]
+
+# 找到列表中的最小值
+min_value = min(numbers)
+
+print("最小值是:", min_value)  # 输出: 最小值是: 3
+```
+
+`min()` 函数还可以接受一个可选的参数 `key`，它允许你指定一个函数来计算比较的键值。这在需要比较复杂对象时非常有用。例如：<br>
+
+```python
+students = [
+    {"name": "Alice", "score": 85},
+    {"name": "Bob", "score": 92},
+    {"name": "Charlie", "score": 78}
+]
+
+# 使用 key 参数找到分数最低的学生
+min_student = min(students, key=lambda student: student["score"])
+
+print("分数最低的学生是:", min_student["name"])  # 输出: 分数最低的学生是: Charlie
+```
+
+上述示例中，`key` 参数指定了一个 lambda 函数，以学生字典中的 "score" 键作为比较依据来找到分数最低的学生。<br>
 
 ### isinstance():
 `isinstance()` 函数是 Python 中用于检查一个对象是否是某个特定类型或特定类型之一的函数。其语法如下：<br>
