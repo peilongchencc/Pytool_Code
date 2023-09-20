@@ -291,10 +291,10 @@ git push
 ## 测试分支a和分支b合并的结果
 分支b的测试文本`hello,world`：<br>
 
-\`python
+```python
 print("hello,world")
-\`
 ```
+\```
 
 `branch_b`中`README.md`内容如下：<br>
 ```txt
