@@ -16,12 +16,14 @@
       - [分支b中的内容：](#分支b中的内容)
       - [将分支b的内容合并到分支a上：](#将分支b的内容合并到分支a上)
     - [删除分支：](#删除分支)
+  - [Git操作常见流程：](#git操作常见流程)
   - [修改git仓库信息：](#修改git仓库信息)
     - [删除remote记录：](#删除remote记录)
     - [`git init`创建非master的分支名：](#git-init创建非master的分支名)
   - [git 和 github、gitlab 的区别：](#git-和-githubgitlab-的区别)
   - [git clone 的使用：](#git-clone-的使用)
     - [git clone 和 git pull 的区别：(含部分 git fetch讲解)](#git-clone-和-git-pull-的区别含部分-git-fetch讲解)
+    - [git clone 拉取远程仓库指定分支：](#git-clone-拉取远程仓库指定分支)
   - [Git常见场景运用：](#git常见场景运用)
     - [协同工作时，你当前所在的分支被其他人更新，你需要拉取最新的内容再接着自己的工作：](#协同工作时你当前所在的分支被其他人更新你需要拉取最新的内容再接着自己的工作)
       - [git pull 让你选择分支合并方式：](#git-pull-让你选择分支合并方式)
@@ -268,11 +270,33 @@ git branch -a
 🥷🥷🥷<br>
 其中星号 (*) 开头的分支为我们当前所在分支， `remotes/` 开头的部分为远程仓库分支，你可能已经注意到了 `remotes/` 开头部分并没有 `branch_b` 的内容，那是因为 `branch_b` 是在本地创建的，还没有和远程仓库同步(即没有`git push`过)。<br>
 
+
 ### 切换分支：
-前面已经讲过 `git checkout` 的用法了，这里再补充一点，
-```bash
-git checkout main
+前面已经讲过 `git checkout` 的用法了，这里再补充一点:<br>
+
+🟡🟡🟡 `git checkout` 可以切换到远程仓库对应的分支，假设你使用 `git clone` 拉取了某个远程仓库的代码，由于 **`git clone` 默认拉取的是远程仓库主分支的内容** 。此时你本地`git branch -a`应该显示类似如下内容:<br>
+
+```log
+* master
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/test
+  remotes/origin/release
+  remotes/origin/master
 ```
+
+有人可能会问，"我本地是否能切换到远程仓库对应的release分支？"，答案是可以，和常规切换分支的操作是一样的，直接使用以下指令即可：<br>
+
+```bash
+git checkout release
+```
+
+特别提醒，一定要注意指令的正确使用，千万不要使用以下指令：<br>
+
+```bash
+git checkout -b release
+```
+
+这样只会创建一个与远程仓库`release`重名的分支，并不是同步了远程仓库的`release`分支内容，这样会引起大问题，一定要注意‼️‼️‼️<br>
 
 ### 修改分支名称：
 
@@ -448,11 +472,13 @@ To push the current branch and set the remote as upstream, use
 这表示你当前分支在远程仓库没有对应的分支，表示你是第一次`git push`这个分支。<br>
 
 按照提示，终端执行以下指令就好：<br>
+
 ```bash
 git push --set-upstream origin branch_a
 ```
 
 现在，我们已经完成了将 `branch_b` 的内容合并到 `branch_a` 上的全部过程。需要注意的是，将 `branch_b` 的内容合并到 `branch_a` 上，`branch_b` 的内容是不会变化的，你可以运行以下指令切换到 `branch_b` 查看，会发现 `branch_b` 并没有变化：<br>
+
 ```bash
 git checkout branch_b
 ```
@@ -466,6 +492,35 @@ git branch -d branch_b
 如果 "新拓展的分支" 还没有和 "其他分支 " 合并，此时若要删除，需要终端使用以下指令删除 "新拓展的分支":<br>
 ```bash
 git branch -D branch_b
+```
+
+<br>
+
+## Git操作常见流程：
+1. `git init`初始化或`git clone`一个git仓库。
+2. 编写自己的代码/文件。
+3. 依次运行以下指令：
+
+```bash
+# 运行本脚本，需要终端先执行以下指令：
+# chmod +x ./push_commit_to_git.sh
+git add .
+git commit -m "更新代码"
+git push
+```
+
+笔者通常是将上述内容写入一个`sh脚本`，假设`sh脚本`在当前路径下，且名为`push_commit_to_git.sh`，笔者编辑完代码后，会直接运行以下指令：<br>
+
+```bash
+./push_commit_to_git.sh
+```
+
+这样就可以一键提交到远程～非常便捷。<br>
+
+请记住，如果要运行上述`sh脚本`，首先要运行下列指令为`sh脚本`开启运行权限：<br>
+
+```bash
+chmod +x ./push_commit_to_git.sh
 ```
 
 <br>
@@ -535,6 +590,7 @@ cd ~
 ```
 
 3. 使用`git clone`命令来克隆仓库。你需要提供仓库的URL。例如，如果你想克隆一个名为 "example-repo" 的仓库，它的URL是 `https://github.com/user/example-repo.git`，你可以运行以下命令：
+> 🚨🚨🚨注意：git仓库中不能套着拉取一个git仓库。
 
 ```bash
 git clone https://github.com/user/example-repo.git
@@ -572,6 +628,20 @@ sudo apt install git
 
 `git pull` 是你本地已经有了一个远程仓库的克隆版，此时使用 `git pull` 会从远程仓库获取**当前分支**的所有内容，并merge（合并）到当前分支。<br>
 > `git pull` 相当于 `git fetch`（拉取代码） + `git merge`。
+
+### git clone 拉取远程仓库指定分支：
+`git clone` 默认拉取远程仓库的主分支(通常是main或master)，如果要拉取远程仓库某个指定分支，可以使用以下指令：<br>
+
+```bash
+git clone -b <branch_name> <remote_repository_url>
+```
+
+假设你要拉取 `git@github.com:peilongchencc/Pytool_Code.git` 仓库的 `release` 分支，可以使用以下指令：<br>
+```bash
+git clone -b release git@github.com:peilongchencc/Pytool_Code.git
+```
+
+🚨🚨🚨注意：git仓库中不能套着拉取一个git仓库。<br>
 
 <br>
 
@@ -759,14 +829,17 @@ git branch -d new-branch   # 删除新分支
 `.gitignore` 文件🥶🥶🥶**只对尚未被Git追踪的文件生效**🥶🥶🥶，对已经被Git追踪的文件无效。如果你已经将某些文件提交到了仓库中，然后再将这些文件添加到.gitignore文件中，Git仍然会追踪它们。<br>
 
 如果你已经将某个文件添加到了Git的缓冲区（即使用了"git add"命令），然后将其添加到 `.gitignore` 文件中，这个文件仍然会被Git追踪。<br>
+
 你需要使用"git rm --cached 文件名"命令将其从缓冲区移除。<br>
 ```shell
 git rm --cached 文件名
 ```
+
 如果你使用的是 `git add .` 操作，可以使用以下命令：<br>
 ```shell
 git rm --cached .
 ```
+
 ### 解决方案：
 假设你已经把某些要忽略的内容上传至 github ，现在的解决方案如下：<br>
 1. 进入自己的 `git` 项目目录下。
