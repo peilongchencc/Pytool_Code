@@ -394,8 +394,40 @@ git merge branch_b
     └── sanic_server.py
 ```
 
-其他内容根据文件颜色解决冲突即可～<br>
+其他内容根据文件颜色解决冲突，冲突解决后，运行以下指令提交到远程即可：<br>
+```bash
+git add .
+git commit -m "将branch_b合并到branch_a"
+git push
+```
 
+此时，可能会出现以下提示:<br>
+```log
+fatal: The current branch branch_a has no upstream branch.
+To push the current branch and set the remote as upstream, use
+
+    git push --set-upstream origin branch_a
+```
+
+按照提示，终端执行以下指令就好：<br>
+```bash
+git push --set-upstream origin branch_a
+```
+
+现在，我们已经完成了将 `branch_b` 的内容合并到 `branch_a` 上的全部过程。需要注意的是，将 `branch_b` 的内容合并到 `branch_a` 上，`branch_b` 的内容是不会变化的，你可以运行以下指令切换到 `branch_b` 查看，会发现 `branch_b` 并没有变化：<br>
+```bash
+git checkout branch_b
+```
+
+通常，我们在执行完分支合并后，会将分支删除，如果此时你想要将 `branch_b` 分支删除，可以终端运行以下指令：<br>
+```bash
+git branch -d branch_b
+```
+
+如果 "新拓展的分支" 还没有和 "其他分支 " 合并，此时若要删除，需要终端使用以下指令删除 "新拓展的分支":<br>
+```bash
+git branch -D branch_b
+```
 
 ## 修改git仓库信息：
 我们在使用git时，可能会由于各种情况需要修改git仓库的信息，这里就讲述下修改常见信息的方式：<br>
