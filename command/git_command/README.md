@@ -10,6 +10,8 @@
     - [分支创建：](#分支创建)
     - [修改分支名称：](#修改分支名称)
     - [合并分支：](#合并分支)
+- [Git分支合并测试](#git分支合并测试)
+  - [测试分支a和分支b合并的结果](#测试分支a和分支b合并的结果)
   - [修改git仓库信息：](#修改git仓库信息)
     - [删除remote记录：](#删除remote记录)
     - [`git init`创建非master的分支名：](#git-init创建非master的分支名)
@@ -285,7 +287,6 @@ git push
 ```
 
 `branch_b`中`README.md`内容如下：<br>
-```html
 <pre>
 # Git分支合并测试
 
@@ -296,7 +297,7 @@ git push
 print("hello,world")
 ```
 </pre>
-```
+
 
 `branch_b`中`data.txt`内容如下：<br>
 ```txt
