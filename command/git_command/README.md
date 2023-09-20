@@ -285,7 +285,8 @@ git push
 ```
 
 `branch_b`中`README.md`内容如下：<br>
-```markdown
+```html
+<pre>
 # Git分支合并测试
 
 ## 测试分支a和分支b合并的结果
@@ -294,9 +295,10 @@ git push
 ```python
 print("hello,world")
 ```
-\```
+</pre>
+```
 
-`branch_b`中`README.md`内容如下：<br>
+`branch_b`中`data.txt`内容如下：<br>
 ```txt
 牙疼吃什么药？
 肠胃炎属于神经性疾病吗？
