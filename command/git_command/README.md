@@ -10,8 +10,9 @@
     - [分支创建：](#分支创建)
     - [修改分支名称：](#修改分支名称)
     - [合并分支：](#合并分支)
-- [Git分支合并测试](#git分支合并测试)
-  - [测试分支a和分支b合并的结果](#测试分支a和分支b合并的结果)
+      - [分支a中的内容：](#分支a中的内容)
+      - [分支b中的内容：](#分支b中的内容)
+      - [将分支b的内容合并到分支a上：](#将分支b的内容合并到分支a上)
   - [修改git仓库信息：](#修改git仓库信息)
     - [删除remote记录：](#删除remote记录)
     - [`git init`创建非master的分支名：](#git-init创建非master的分支名)
@@ -266,14 +267,52 @@ git branch -a
 此时当前分支应该会显示为"test"，且会显示一个星号 (*) 在其旁边。<br>
 
 ### 合并分支：
-假设我们现在有2个分支，`branch_a`的目录树结构如下：<br>
+假设我们现在有2个分支，`branch_a`和`branch_b`。<br>
+
+#### 分支a中的内容：
+`branch_a`的目录树结构如下：<br>
+```log
+.
+├── push.sh
+└── segment
+    └── sanic_server.py
+```
+
+`branch_a`中`push.sh`内容如下：<br>
+```bash
+git add .
+git commit -m "更新分支a"
+git push
+```
+
+`branch_a`中`sanic_server.py`内容如下：<br>
+```python
+from sanic import Sanic
+from sanic.response import json
+import jieba
+
+app = Sanic("jieba-segment")
 
 
+@app.route("/seg_ment", methods=["POST"])
+async def seg_ment(request):
+    """分词API"""
+    text = request.form.get("user_input")    # postman 测试时字段的名称需要对应，此处写"user_input"，postman写"input"就会报错。
+    if not text:
+        return json({"error": "缺少 \"user_input\" parameter"}, status=400) # \ 用于转义
+    # 进行jieba分词处理
+    text_segment = jieba.lcut(text)
+    return json({"用户输入的分词结果为：": text_segment})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
+```
+
+#### 分支b中的内容：
 `branch_b`的目录树结构如下：<br>
 ```log
 .
 ├── push.sh
-├── README.md
 └── segment
     ├── data.txt
     └── sanic_server.py
@@ -286,23 +325,87 @@ git commit -m "更新分支b"
 git push
 ```
 
-`branch_b`中`README.md`内容如下：<br>
-<pre>
-# Git分支合并测试
-
-## 测试分支a和分支b合并的结果
-分支b的测试文本`hello,world`：<br>
-
-```python
-print("hello,world")
-```
-</pre>
-
-
 `branch_b`中`data.txt`内容如下：<br>
 ```txt
 牙疼吃什么药？
 肠胃炎属于神经性疾病吗？
+```
+
+`branch_b`中`sanic_server.py`内容如下：<br>
+```python
+from sanic import Sanic
+from sanic.response import json
+import jieba
+
+app = Sanic("jieba-segment")
+
+
+@app.route("/segment", methods=["POST"])
+async def segment(request):
+    """分词API"""
+    text = request.form.get("user_input")    # postman 测试时字段的名称需要对应，此处写"user_input"，postman写"input"就会报错。
+    if not text:
+        return json({"error": "缺少 \"user_input\" parameter"}, status=400) # \ 用于转义
+
+    text_segment = jieba.lcut(text)
+    return json({"用户输入的分词结果为：": text_segment})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
+```
+
+#### 将分支b的内容合并到分支a上：
+1. 终端输入以下指令，确保自己在要接受合并的分支上：<br>
+```bash
+git checkout branch_a
+```
+
+2. 运行以下指令将 `branch_b` 合并到 `branch_a` 上：<br>
+```bash
+git merge branch_b
+```
+
+现在，`branch_a`的目录树结构如下：<br>
+```log
+.
+├── push.sh
+└── segment
+    ├── data.txt
+    └── sanic_server.py
+```
+
+`branch_a`中`push.sh`内容如下：<br>
+```bash
+git add .
+<<<<<<< HEAD
+git commit -m "更新分支a"
+=======
+git commit -m "更新分支b"
+>>>>>>> branch_a_b
+git push
+```
+
+`branch_a`中`sanic_server.py`内容如下：<br>
+```python
+from sanic import Sanic
+from sanic.response import json
+import jieba
+
+app = Sanic("jieba-segment")
+
+
+@app.route("/seg_ment", methods=["POST"])
+async def seg_ment(request):
+    """分词API"""
+    text = request.form.get("user_input")    # postman 测试时字段的名称需要对应，此处写"user_input"，postman写"input"就会报错。
+    if not text:
+        return json({"error": "缺少 \"user_input\" parameter"}, status=400) # \ 用于转义
+    # 进行jieba分词处理
+    text_segment = jieba.lcut(text)
+    return json({"用户输入的分词结果为：": text_segment})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
 ```
 
 
