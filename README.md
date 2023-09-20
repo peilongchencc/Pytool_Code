@@ -17,7 +17,10 @@ command | 常见指令汇总 | 已更新：Linux、Markdown、Git指令
 connect_remote_server | vscode连接阿里云服务器经验记录 | 
 crontab | 介绍定时任务操作方式 | 已更新：crontab 基础教程和常用的定时任务指令
 database | 数据库安装/操作汇总 | 已更新：MySQL、Redis、Neo4j
-natural_language_processing | nlp常见任务相关代码 | 
 doccano | 开源的文本标注工具 | 支持文本分类、序列标注和序列到序列任务的标注
+monocloud | 科学上网 | 懂的都懂
+natural_language_processing | nlp常见任务相关代码 | 
+nginx | 介绍nginx反向代理的使用 | 用于端口转移，例如7711->8082
 python_basic_grammar | python基础 | python 基本语法、常见函数、常用库
+snowflake_id | 雪花ID的生成与解析 | 
 vscode_skill | vscode使用的问题和解决方案 | 
