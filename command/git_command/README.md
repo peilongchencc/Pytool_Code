@@ -274,7 +274,8 @@ git branch -a
 ### 切换分支：
 前面已经讲过 `git checkout` 的用法了，这里再补充一点:<br>
 
-🟡🟡🟡 `git checkout` 可以切换到远程仓库对应的分支，假设你使用 `git clone` 拉取了某个远程仓库的代码，由于 **`git clone` 默认拉取的是远程仓库主分支的内容** 。此时你本地`git branch -a`应该显示类似如下内容:<br>
+`git checkout` 可以切换到远程仓库对应的分支，假设你使用 `git clone` 拉取了某个远程仓库的代码，由于 **`git clone` 默认拉取的是远程仓库主分支的内容** 。此时你本地`git branch -a`应该显示类似如下内容:<br>
+> `git clone`操作，后面的内容会讲～
 
 ```log
 * master
@@ -284,7 +285,7 @@ git branch -a
   remotes/origin/master
 ```
 
-有人可能会问，"我本地是否能切换到远程仓库对应的release分支？"，答案是可以，和常规切换分支的操作是一样的，直接使用以下指令即可：<br>
+😵‍💫😵‍💫😵‍💫有人可能会问，"我本地是否能切换到远程仓库对应的release分支？"，答案是可以，和常规切换分支的操作是一样的，直接使用以下指令即可：<br>
 
 ```bash
 git checkout release
@@ -497,7 +498,7 @@ git branch -D branch_b
 <br>
 
 ## Git操作常见流程：
-1. `git init`初始化或`git clone`一个git仓库。
+1. `git init`初始化或`git clone`一个git仓库。(`git clone`操作，后面的内容会讲～)
 2. 编写自己的代码/文件。
 3. 依次运行以下指令：
 
