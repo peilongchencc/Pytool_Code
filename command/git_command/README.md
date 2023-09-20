@@ -5,9 +5,11 @@
     - [将空文件夹变成Git仓库：](#将空文件夹变成git仓库)
     - [将非空文件夹变成Git仓库:](#将非空文件夹变成git仓库)
     - [将git仓库变为普通文件夹：](#将git仓库变为普通文件夹)
-  - [设置git仓库信息：](#设置git仓库信息)
+  - [设置git仓库信息(个人、远程仓库)：](#设置git仓库信息个人远程仓库)
   - [git分支：](#git分支)
     - [分支创建：](#分支创建)
+    - [查看分支：](#查看分支)
+    - [切换分支：](#切换分支)
     - [修改分支名称：](#修改分支名称)
     - [合并分支：](#合并分支)
       - [分支a中的内容：](#分支a中的内容)
@@ -17,21 +19,20 @@
   - [修改git仓库信息：](#修改git仓库信息)
     - [删除remote记录：](#删除remote记录)
     - [`git init`创建非master的分支名：](#git-init创建非master的分支名)
-  - [协同工作时可能出现的问题及解决方案：](#协同工作时可能出现的问题及解决方案)
-    - [你当前所在的分支被其他人更新，你需要拉取最新的内容再接着自己的工作：](#你当前所在的分支被其他人更新你需要拉取最新的内容再接着自己的工作)
-    - [你在git分支C上工作，但领导突然让你解决分支B的bug，解决完bug，提交分支B后，再完成分支C的工作：](#你在git分支c上工作但领导突然让你解决分支b的bug解决完bug提交分支b后再完成分支c的工作)
   - [git 和 github、gitlab 的区别：](#git-和-githubgitlab-的区别)
   - [git clone 和 git pull 的区别：(含部分 git fetch讲解)](#git-clone-和-git-pull-的区别含部分-git-fetch讲解)
-  - [查看当前文件夹对应的远程仓库链接:](#查看当前文件夹对应的远程仓库链接)
-  - [查看分支：](#查看分支)
-  - [git如何放弃当前分支上一次提交到现在的所有修改，自上一次提交到现在，我还没有commit过。](#git如何放弃当前分支上一次提交到现在的所有修改自上一次提交到现在我还没有commit过)
-  - [我想在当前git仓库回退到上一个版本，且不丢失现在的更改，应该怎么做呢？](#我想在当前git仓库回退到上一个版本且不丢失现在的更改应该怎么做呢)
-    - [使用git stash：](#使用git-stash)
-    - [使用新的分支:](#使用新的分支)
+  - [Git常见场景运用：](#git常见场景运用)
+    - [协同工作时，你当前所在的分支被其他人更新，你需要拉取最新的内容再接着自己的工作：](#协同工作时你当前所在的分支被其他人更新你需要拉取最新的内容再接着自己的工作)
+      - [git pull 让你选择分支合并方式：](#git-pull-让你选择分支合并方式)
+      - [git pull 让你输入合并提交信息：](#git-pull-让你输入合并提交信息)
+    - [协同工作时，你在git分支C上工作，但领导突然让你解决分支B的bug，解决完bug，提交分支B后，再完成分支C的工作：](#协同工作时你在git分支c上工作但领导突然让你解决分支b的bug解决完bug提交分支b后再完成分支c的工作)
+    - [git如何放弃当前分支上一次提交到现在的所有修改，自上一次提交到现在，你还没有commit过。](#git如何放弃当前分支上一次提交到现在的所有修改自上一次提交到现在你还没有commit过)
+    - [你想在当前git仓库回退到上一个版本，且不丢失现在的更改，应该怎么做呢？](#你想在当前git仓库回退到上一个版本且不丢失现在的更改应该怎么做呢)
+      - [使用git stash：](#使用git-stash)
+      - [使用新的分支:](#使用新的分支)
   - [为什么我把要忽略的内容写入了gitignore，git push时还是把gitignore中的内容上传了？是有什么操作顺序吗？](#为什么我把要忽略的内容写入了gitignoregit-push时还是把gitignore中的内容上传了是有什么操作顺序吗)
     - [原因：](#原因)
     - [解决方案：](#解决方案)
-  - [git pull 提示以下信息该怎么做：](#git-pull-提示以下信息该怎么做)
 
 ## git安装/更新：
 要使用git指令，首先要确保Ubuntu上安装了Git。你可以在终端中运行以下命令检查是否已安装Git：<br>
@@ -141,7 +142,7 @@ Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
 请注意，执行这些步骤后，你将失去Git版本控制的所有优势，包括历史记录和版本管理。🔥🔥🔥确保你已经备份了任何重要的文件或历史记录，以防需要在将来恢复它们。🔥🔥🔥<br>
 
 
-## 设置git仓库信息：
+## 设置git仓库信息(个人、远程仓库)：
 1. 获取github或gitlab的仓库信息。
 > 笔者以当前仓库为例，读者注意修改为自己的仓库信息。
 
@@ -238,6 +239,38 @@ git switch -c branch_new
 git branch -a
 ```
 
+### 查看分支：
+如果你使用的最新版Git版本，可以使用以下指令查看当前所在分支：<br>
+> 终端会直接输出当前所在分支名称。
+
+```bash
+git branch --show-current
+```
+
+因为笔者使用的是ubuntu 18.04系统，Git版本是2.17.1，所以笔者经常用的指令为：<br>
+> 查看分支的指令有很多，只有以下指令会显示 **包括git远程仓库分支的所有分支**(强烈推荐这种查看git分支的方式)
+
+```shell
+git branch -a
+```
+
+终端将输出类似如下内容:<br>
+```log
+* branch_a
+  branch_b
+  main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/branch_a
+```
+
+🥷🥷🥷<br>
+其中星号 (*) 开头的分支为我们当前所在分支， `remotes/` 开头的部分为远程仓库分支，你可能已经注意到了 `remotes/` 开头部分并没有 `branch_b` 的内容，那是因为 `branch_b` 是在本地创建的，还没有和远程仓库同步(即没有`git push`过)。<br>
+
+### 切换分支：
+前面已经讲过 `git checkout` 的用法了，这里再补充一点，
+```bash
+git checkout main
+```
 
 ### 修改分支名称：
 
@@ -433,11 +466,23 @@ git branch -d branch_b
 git branch -D branch_b
 ```
 
+
 ## 修改git仓库信息：
 我们在使用git时，可能会由于各种情况需要修改git仓库的信息，这里就讲述下修改常见信息的方式：<br>
 
 ### 删除remote记录：
 git仓库允许一个仓库配置多个远程链接，方便在`git push`的时候同时推送到多个远程仓库。<br>
+
+你可以通过以下指令，查看自己定义的远程仓库名称：<br>
+```bash
+git remote -v
+```
+
+终端将显示类似如下信息：<br>
+```log
+origin  git@github.com:peilongchencc/Pytool_Code.git (fetch)
+origin  git@github.com:peilongchencc/Pytool_Code.git (push)
+```
 
 回想一下，我在介绍设置remote的时候提到过，`origin`是远程仓库名称，我们通过远程仓库名称删除remote记录。假设我们要删除名为`origin`的远程仓库:<br>
 ```log
@@ -449,10 +494,12 @@ git remote remove origin
 git remote remove master
 ```
 
-如果你忘记了自己定义的远程仓库名称，可以通过以下指令查看：<br>
+如果想要关联一个新的远程库，重新使用 `git remote add` 添加即可：<br>
 ```bash
-git remote -v
+git remote add origin git@github.com:peilongchencc/Pytool_Code.git
 ```
+
+记得 `origin` 是远程仓库名称，可以自定义修改～🐳🐳🐳<br>
 
 ### `git init`创建非master的分支名：
 Git 2.28.0版本前，使用 `git init` 创建git仓库时，默认生成的分支名为"master"。Git 2.28.0版本引入了一个新的默认分支名称，称为"main"。<br>
@@ -469,8 +516,21 @@ git init --initial-branch=yourbranchname
 
 
 
-## 协同工作时可能出现的问题及解决方案：
-### 你当前所在的分支被其他人更新，你需要拉取最新的内容再接着自己的工作：
+
+## git 和 github、gitlab 的区别：
+git 是一个版本控制软件，github 是一个代码托管平台。github 或 gitlab 可以使用 git 进行代码的版本控制，可以执行修改代码、切换分支、查看不同代码版本、分享代码、提交bug等操作。
+
+## git clone 和 git pull 的区别：(含部分 git fetch讲解)
+从字面意思也可以理解，都是往下拉代码，git clone是克隆，git pull 是拉取。
+但是，也有区别：
+从远程服务器克隆一个一模一样的版本库到本地,复制的是整个版本库，叫做 clone 。（clone是将一个库复制到你的本地，是一个本地从无到有的过程。）
+从远程服务器拉取到一个branch分支的更新到本地，并更新本地库，叫做 pull 。
+git pull 是从远程获取最新版本并merge（合并）到本地，更安全一些。
+git pull 相当于 git fetch（拉取代码） + git merge /  git rebase (将提交应用到当前分支)。
+
+
+## Git常见场景运用：
+### 协同工作时，你当前所在的分支被其他人更新，你需要拉取最新的内容再接着自己的工作：
 问题描述：<br>
 "人物A" 正在分支"release"上工作，工作正做了一半。"同事B"告诉"人物A"，他修改了"release"分支的内容，让"人物A"在修改后的基础上操作，"人物A"现在应该怎么做？<br>
 
@@ -491,6 +551,7 @@ git commit -m "你的提交消息"
 git pull
 ```
 
+#### git pull 让你选择分支合并方式：
 `git pull`将会从远程仓库拉取当前分支("release")的最新内容。如果你是第一次这样操作，会提示你以下内容：<br>
 ```log
 提示：您有偏离的分支，需要指定如何调和它们。您可以在执行下一次
@@ -513,6 +574,40 @@ git config --global pull.rebase false
 
 通常大家都是使用的`仅快进`模式，其他模式了解较少，可以自行百度了解。<br>
 
+#### git pull 让你输入合并提交信息：
+`git pull`时，也有可能会进入以下界面：<br>
+```txt
+  GNU nano 2.9.3                                                               /data/Pytool_Code/.git/MERGE_MSG                                                                         
+
+Merge branch 'main' of github.com:peilongchencc/Pytool_Code into main
+
+# Please enter a commit message to explain why this merge is necessary,
+# especially if it merges an updated upstream into a topic branch.
+#
+# Lines starting with '#' will be ignored, and an empty message aborts
+# the commit.
+
+                                                                                    [ Read 7 lines ]
+^G Get Help     ^O Write Out    ^W Where Is     ^K Cut Text     ^J Justify      ^C Cur Pos      M-U Undo        M-A Mark Text   M-] To Bracket  M-▲ Previous    ^B Back
+^X Exit         ^R Read File    ^\ Replace      ^U Uncut Text   ^T To Spell     ^_ Go To Line   M-E Redo        M-6 Copy Text   M-W WhereIs NextM-▼ Next        ^F Forward
+```
+🫠🫠🫠这表明你正处于一个合并冲突的状态，并且Git已经打开了一个文本编辑器（在这里是`nano`）让你输入合并提交的信息。<br>
+
+以下是你可以采取的步骤：<br>
+```txt
+1. 在该编辑器中，你可以修改提交信息或者使用默认的提交信息。
+2. 如果你想使用默认的提交信息，只需确保不删除任何内容，直接保存并退出即可。
+3. 保存并退出`nano`的方法是按下`^O` (这意味着同时按下“Control”和“O”键)。这会询问你是否要写入更改，按“Enter”键确认。
+4. 然后按下`^X` (这意味着同时按下“Control”和“X”键)来退出`nano`。
+```
+完成上述步骤后，你的合并提交就会完成。但是，如果在`git pull`时出现了冲突，你可能需要解决这些冲突才能继续。要检查是否有冲突，可以运行：<br>
+
+```shell
+git status
+```
+
+如果看到有冲突的文件，需要手动编辑这些文件来解决冲突，然后继续提交。<br>
+
 
 3. **解决冲突（如果有）：** 如果你和你的同事都在相同的文件或部分进行了更改，可能会发生冲突。Git 会在拉取过程中提示你解决冲突。你需要手动解决这些冲突，并在文件中选择你想要保留的更改。一旦冲突解决完毕，你可以使用以下命令将更改标记为已解决：
 
@@ -523,7 +618,7 @@ git add 冲突文件名
 现在，已经同步了"同事B"的操作，也解决了冲突，接下来继续自己的工作，工作完成后正常`commit`和`push`就行。<br>
 
 
-### 你在git分支C上工作，但领导突然让你解决分支B的bug，解决完bug，提交分支B后，再完成分支C的工作：
+### 协同工作时，你在git分支C上工作，但领导突然让你解决分支B的bug，解决完bug，提交分支B后，再完成分支C的工作：
 你可以先提交分支C的更改，然后切换到分支B解决bug，再推送分支B，最后切换回分支C继续工作。<br>
 
 以下是你可以执行的步骤：<br>
@@ -567,41 +662,7 @@ git checkout 分支C的名称
 这种方法允许你在解决分支B上的bug之前保存分支C的更改，并确保你的工作不会丢失。然而，请确保在推送分支B之前，与其他团队成员协调，以避免不必要的冲突和问题。<br>
 
 
-
-
-## git 和 github、gitlab 的区别：
-git 是一个版本控制软件，github 是一个代码托管平台。github 或 gitlab 可以使用 git 进行代码的版本控制，可以执行修改代码、切换分支、查看不同代码版本、分享代码、提交bug等操作。
-
-## git clone 和 git pull 的区别：(含部分 git fetch讲解)
-从字面意思也可以理解，都是往下拉代码，git clone是克隆，git pull 是拉取。
-但是，也有区别：
-从远程服务器克隆一个一模一样的版本库到本地,复制的是整个版本库，叫做 clone 。（clone是将一个库复制到你的本地，是一个本地从无到有的过程。）
-从远程服务器拉取到一个branch分支的更新到本地，并更新本地库，叫做 pull 。
-git pull 是从远程获取最新版本并merge（合并）到本地，更安全一些。
-git pull 相当于 git fetch（拉取代码） + git merge /  git rebase (将提交应用到当前分支)。
-
-
-## 查看当前文件夹对应的远程仓库链接:
-```shell
-git remote -v
-```
-
-## 查看分支：
-查看当前所在分支：<br>
-> 终端会直接输出当前所在分支名称。
-
-```bash
-git branch --show-current
-```
-
-查看自己所在的分支与所有分支(包含git远程仓库的分支)？
-
-查看分支的指令有很多，只有以下指令会显示 **包括git远程仓库分支的所有分支：**<br>
-```shell
-git branch -a
-```
-
-## git如何放弃当前分支上一次提交到现在的所有修改，自上一次提交到现在，我还没有commit过。
+### git如何放弃当前分支上一次提交到现在的所有修改，自上一次提交到现在，你还没有commit过。
 要放弃当前分支上自上次提交到现在的所有修改，首先需要使用 stash 保存修改：<br>
 ```shell
 git stash
@@ -619,10 +680,10 @@ git stash drop
 
 此时已经将 stash 中保存的内容删除了，再切换回原分支就能看到上一次提交到现在的所有修改已经消失了。<br>
 
-## 我想在当前git仓库回退到上一个版本，且不丢失现在的更改，应该怎么做呢？
+### 你想在当前git仓库回退到上一个版本，且不丢失现在的更改，应该怎么做呢？
 如果你想在当前git仓库回退到上一个版本，但同时不丢失现在的更改，你可以使用以下的方法：<br>
 
-### 使用git stash：
+#### 使用git stash：
 这是一个常用的方法，它允许你暂时保存当前的更改，并在需要时重新应用它们。<br>
 ```shell
 git stash              # 暂存当前更改
@@ -630,7 +691,7 @@ git reset --hard HEAD^ # 回退到上一个版本
 git stash pop          # 重新应用暂存的更改
 ```
 
-### 使用新的分支:
+#### 使用新的分支:
 你可以创建一个新的分支来保存当前的更改，然后在主分支上回退到上一个版本。<br>
 ```bash
 git branch new-branch     # 创建一个新的分支保存当前的更改
@@ -643,6 +704,7 @@ git merge new-branch      # 合并新分支到主分支
 git branch -d new-branch   # 删除新分支
 ```
 使用以上任意方法，你都可以回退到上一个版本，同时不丢失现在的更改。根据你的具体需求，选择最适合你的方法。<br>
+
 
 ## 为什么我把要忽略的内容写入了gitignore，git push时还是把gitignore中的内容上传了？是有什么操作顺序吗？
 ### 原因：
@@ -669,35 +731,5 @@ git rm --cached .
 6. 执行 `git add .`,`git commit -m "xxx"`,`git push`操作，现在远程仓库中你不想上传的内容已经删除了。
 7. 本地，将刚刚备份的内容移回本仓库；此时你再执行`git add .`,`git commit -m "xxx"`,`git push`操作将不会把对应的内容上传至 github 远程仓库。
 
-## git pull 提示以下信息该怎么做：
-```txt
-  GNU nano 2.9.3                                                               /data/Pytool_Code/.git/MERGE_MSG                                                                         
 
-Merge branch 'main' of github.com:peilongchencc/Pytool_Code into main
 
-# Please enter a commit message to explain why this merge is necessary,
-# especially if it merges an updated upstream into a topic branch.
-#
-# Lines starting with '#' will be ignored, and an empty message aborts
-# the commit.
-
-                                                                                    [ Read 7 lines ]
-^G Get Help     ^O Write Out    ^W Where Is     ^K Cut Text     ^J Justify      ^C Cur Pos      M-U Undo        M-A Mark Text   M-] To Bracket  M-▲ Previous    ^B Back
-^X Exit         ^R Read File    ^\ Replace      ^U Uncut Text   ^T To Spell     ^_ Go To Line   M-E Redo        M-6 Copy Text   M-W WhereIs NextM-▼ Next        ^F Forward
-```
-你正处于一个合并冲突的状态，并且Git已经打开了一个文本编辑器（在这里是`nano`）让你输入合并提交的信息。<br>
-
-以下是你可以采取的步骤：<br>
-```txt
-1. 在该编辑器中，你可以修改提交信息或者使用默认的提交信息。
-2. 如果你想使用默认的提交信息，只需确保不删除任何内容，直接保存并退出即可。
-3. 保存并退出`nano`的方法是按下`^O` (这意味着同时按下“Control”和“O”键)。这会询问你是否要写入更改，按“Enter”键确认。
-4. 然后按下`^X` (这意味着同时按下“Control”和“X”键)来退出`nano`。
-```
-完成上述步骤后，你的合并提交就会完成。但是，如果在`git pull`时出现了冲突，你可能需要解决这些冲突才能继续。要检查是否有冲突，可以运行：<br>
-
-```shell
-git status
-```
-
-如果看到有冲突的文件，需要手动编辑这些文件来解决冲突，然后继续提交。<br>
