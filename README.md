@@ -12,7 +12,7 @@ python包和环境管理器：Anaconda<br>
 
 ## 文件介绍：
 文件夹名称|简介|备注
----|---|---|---
+---|---|---
 command | 常见指令汇总 | 已更新：Linux、Markdown、Git指令
 connect_remote_server | vscode连接阿里云服务器经验记录 | 
 crontab | 介绍定时任务操作方式 | 已更新：crontab 基础教程和常用的定时任务指令
