@@ -265,23 +265,41 @@ git branch -a
 
 ### 合并分支：
 假设我们现在有2个分支，`branch_a`的目录树结构如下：<br>
+
+
+`branch_b`的目录树结构如下：<br>
 ```log
 .
 ├── push.sh
-└── README.md
+├── README.md
+└── segment
+    ├── data.txt
+    └── sanic_server.py
 ```
 
-`branch_a`中`push.sh`内容如下：<br>
+`branch_b`中`push.sh`内容如下：<br>
 ```bash
-# push.sh
 git add .
-git commit -m "测试"
+git commit -m "更新分支b"
 git push
 ```
 
-`branch_a`中`README.md`内容如下：<br>
+`branch_b`中`README.md`内容如下：<br>
 ```markdown
+# Git分支合并测试
 
+## 测试分支a和分支b合并的结果
+分支b的测试文本`hello,world`：<br>
+
+\```python
+print("hello,world")
+\```
+```
+
+`branch_b`中`README.md`内容如下：<br>
+```txt
+牙疼吃什么药？
+肠胃炎属于神经性疾病吗？
 ```
 
 
