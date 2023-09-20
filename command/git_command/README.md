@@ -216,6 +216,7 @@ Git分支是Git版本控制系统中的一个重要概念，Git分支是树🌲�
 1. 打开终端，并进入Git仓库所在的目录。
 
 2. 使用以下指令查看当前Git仓库有哪些分支： 
+
 ```bash
 git branch -a
 ```
@@ -223,12 +224,14 @@ git branch -a
 🔥🔥🔥该指令会列出当前Git仓库的所有分支，本地分支+远程分支，你当前所在的分支前面会显示一个星号 (*) 。<br>
 
 3. 切换到基底分支：
+
 再次提醒，一定要想清楚分支从哪个分支延伸出来的🚨 假设你现在位于`release`分支，你想要在`main`分支基础上创建新分支，那就执行以下指令：<br>
 ```bash
 git checkout main
 ```
 
 4. 此时已切换到main分支，可以使用以下命令来创建并切换到新分支，其中`branch_new`是创建的新分支的名称：
+
 ```shell
 git checkout -b branch_new
 ```
@@ -239,11 +242,13 @@ git switch -c branch_new
 ```
 
 5. 现在，你已经在名为`branch_new`的新分支上，可以通过以下指令确认：
+
 ```bash
 git branch -a
 ```
 
 ### 查看分支：
+
 如果你使用的最新版Git版本，可以使用以下指令查看当前所在分支：<br>
 > 终端会直接输出当前所在分支名称。
 
@@ -259,6 +264,7 @@ git branch -a
 ```
 
 终端将输出类似如下内容:<br>
+
 ```log
 * branch_a
   branch_b
@@ -306,25 +312,30 @@ git checkout -b release
 假设你要将分支的名称从 "master" 更改为 "test"，你可以按照以下步骤进行操作：<br>
 
 1. 确定当前所处分支，你可以使用以下命令来查看当前所在的分支：：
+
 ```bash
 git branch -a
 ```
 如果 "master" 分支是当前分支，会显示一个星号 (*) 在其旁边。
 
 2. 如果你不在 "master" 分支上，需要切换到 "master" 分支：
+
 ```bash
 git checkout master
 ```
 
 3. 现在，你可以将 "master" 分支重命名为 "test" 分支。你可以使用以下命令：
+
 ```bash
 git branch -m master test
 ```
 
 4. 再次查看下当前所在的分支名：
+
 ```bash
 git branch -a
 ```
+
 此时当前分支应该会显示为"test"，且会显示一个星号 (*) 在其旁边。<br>
 
 ### 合并分支：
