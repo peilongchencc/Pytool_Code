@@ -61,14 +61,19 @@
 
 ## vscode关闭预览模式：
 vscode默认单击文件是"预览"(会覆盖原界面显示的文件)，双击文件才会在旁边打开文件；<br>
+
 解决方式如下：<br>
+
 第一步：点击右下角人物头像，然后点击设置：<br>
+
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/f28d9ddc-e63d-4c7a-a4c8-8bbeccc4ee11)
 
 第二步：搜索框输入以下内容：<br>
+
 ```txt
 workbench.editor.enablePrevie
 ```
+
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/5b929a41-8379-4239-a95d-1fe1ba71f7f6)
 
 
@@ -77,34 +82,43 @@ workbench.editor.enablePrevie
 
 ## vscode光标移动--进出函数特别有用：
 移动到上一个位置：control - ，注意不是cmd。<br>
+
 上面那部操作的撤销，cmd u ，这时候使用cmd。<br>
 <br>
 
 ## vscode跳转到当前文件的指定行：
 ctrl + g，然后输入想要跳转的行数并回车。
+
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/943de8c1-512b-4694-b09a-c0c780817703)
 
 <br>
 
 ## VScode相对路径无法使用问题：
 问题描述：data.txt 明明就在当前文件夹下，但使用相对路径读取就会报错。<br>
+
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/3e0dc40a-8968-4066-a796-b94e7342d8c0" alt="image" width="50%" height="50%">
 
 解决方式如下：<br>
+
 第一步：进入<拓展>，找到python解释器，选择python解释器的设置；<br>
+
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/ca68d830-912f-494e-a509-fa7ce5fecea3" alt="image" width="50%" height="50%">
 
 第二步：勾选如下选项(默认是不勾选的)<br>
+
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/15cad1df-0c0e-45bd-87ea-09764e05f7af)
 
 重新执行read_file.py查看效果：<br>
+
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/fa24bc98-b915-4c55-aa59-5504b92e4695)
 
 运行成功！<br>
+
 原因解析：因为vscode对工作区特别敏感，点击右上角的 <运行python文件> 定位其实是工作区，不是当前路径。<br>
 
 ### 相对路径设置后可能引发的根目录问题：
 相对路径设置后会有根目录识别问题，例如，假设你当前目录生成的目录树如下：<br>
+
 ```log
 .
 ├── answer
@@ -121,7 +135,9 @@ ctrl + g，然后输入想要跳转的行数并回车。
 ├── requirements.txt
 └── main.py
 ```
+
 `all_data_output.py`中部分代码如下：<br>
+
 ```python
 from data_output.data_makers.dimension_data_maker import DimensionDataMaker
 from answer.eneities.answer_stem import AnswerStem
@@ -131,11 +147,13 @@ from answer.eneities.answer_stem import AnswerStem
 ```
 
 当你直接在当前目录运行 `all_data_output.py` 时，会被提示以下内容：<br>
+
 ```log
 ModuleNotFoundError: No module named 'data_output'
 ```
 
 这是因为vscode将执行文件的父目录当作了根目录，检查方法也很简单，在 `import` 前加入以下代码，然后执行文件就行：<br>
+
 ```python
 import os
 
@@ -149,12 +167,14 @@ print("当前文件的根目录是:", root_directory)
 ```
 
 终端显示：<br>
+
 ```log
 当前文件的根目录是:/data/nlp/data_output/
 ModuleNotFoundError: No module named 'data_output'
 ```
 
 现在清楚了吧，当根目录处于 `/data/nlp/data_output/` 又怎么能使用 `from data_output...` 这种导入方式呢。解决方法也很简单，在代码上方添加以下代码，为文件指明根目录即可：<br>
+
 ```python
 import sys 
 sys.path.append("/data/nlp/")
@@ -169,12 +189,15 @@ sys.path.append("/data/nlp/")
 <br>
 
 ## Github中MarkDown文档中所用的目录生成方式：
+
 **起因**：Markdown可以使用`[TOC]`自动生成Markdown文件的标题目录，比如在typora等编辑器，但是Github却不支持`[TOC]`标签，所以在Github上使用`[TOC]`无法正确显示目录，所以需要借助vscode的插件实现目录生成。<br>
 1. vscode拓展中搜索 `Markdown All in One`； 
 2. 点击安装；
 3. 在vscode打开需要生成目录的MarkDown文件，然后将光标定位到要生成目录的地方；
 4. 使用快捷键 command+shift+P（windows用户ctrl+shift+P），输入以下内容并回车；
+
 ```txt
 "Markdown All in One: Create Table of Contents"；
 ```
+
 Ps:由于github无法自动同步目录，需要在本地 `git pull` 拉取代码，然后 `cmd + s` 保存下代码，此时目录会自动更新。然后 `git push` 上传代码即可。<br>
