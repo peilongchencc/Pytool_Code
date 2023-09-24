@@ -15,6 +15,7 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
       - [查看表中部分内容：](#查看表中部分内容)
       - [查看表中某一列的部分内容：](#查看表中某一列的部分内容)
       - [根据表中某个字段排序，查看表中部分内容：](#根据表中某个字段排序查看表中部分内容)
+      - [LIKE运算符结合通配符执行模糊搜索：](#like运算符结合通配符执行模糊搜索)
     - [向表中写入内容：](#向表中写入内容)
     - [更新表中的内容：](#更新表中的内容)
     - [删除表中的内容：](#删除表中的内容)
@@ -236,7 +237,54 @@ SQL语句解释：<br>
 `"ORDER BY task_execution_time DESC"`: 这表示使用 `"task_execution_time"` 字段对结果进行降序排序。DESC关键字指定降序排序，如果不写，默认为升序（ASC）排序。`ORDER` 表示顺序、排序，`DESCENDING` 表示降序，`ASCENDING` 表示升序，这个命令应该很好理解。<br>
 `"LIMIT 3"`: 这表示只返回前3行结果。你可以更改数字来返回所需数量的行数。<br>
 综上所述，这个SQL语句的结果将返回 `"task_monitor"` 表中前3个根据 `"task_execution_time"`字段降序排列的记录。<br>
-<br>
+
+#### LIKE运算符结合通配符执行模糊搜索：
+`LIKE` 是 SQL 中用于执行模糊搜索的关键字。它通常与通配符结合使用，以在文本数据中查找包含特定模式或字符串的行。以下是 `LIKE` 的基本用法：<br>
+
+1. **百分号通配符 `%`：** `%` 是 `LIKE` 中最常用的通配符，表示匹配零个或多个字符。例如，`'%apple%'` 将匹配包含 "apple" 子字符串的任何字符串。
+
+2. **下划线通配符 `_`：** 下划线通配符 `_` 用于匹配单个字符。例如，`'c_t'` 可以匹配 "cat"、"cut"、"cot" 等字符串。
+
+3. **不区分大小写匹配：** 默认情况下，`LIKE` 是不区分大小写的。要进行大小写敏感的匹配，可以使用适当的函数，如 `COLLATE`。
+
+下面是一些示例用法：<br>
+
+查找qa_template表中question字段含有"直播"的数据:<br>
+
+```sql
+SELECT * FROM qa_template WHERE question LIKE '%直播%';
+```
+
+查找以 "apple" 开头的字符串：<br>
+
+```sql
+SELECT * FROM fruits WHERE name LIKE 'apple%';
+```
+
+查找包含 "fruit" 的任何字符串：<br>
+
+```sql
+SELECT * FROM text_data WHERE content LIKE '%fruit%';
+```
+
+查找以 "a" 结尾的三个字符的字符串：<br>
+
+```sql
+SELECT * FROM words WHERE word LIKE '__a';
+```
+
+查找包含 "cat"、"cut" 或 "cot" 的字符串：<br>
+
+```sql
+SELECT * FROM animals WHERE name LIKE 'c_t';
+```
+
+大小写敏感匹配示例：<br>
+```sql
+SELECT * FROM sensitive_data WHERE phrase COLLATE utf8_bin LIKE 'Search';
+```
+
+请注意，虽然 `LIKE` 是执行模糊搜索的一种方式，但对于大型数据集，它可能会导致性能问题‼️‼️‼️，因为它需要在文本列上执行全表扫描。在需要高效搜索大量数据时，可能需要考虑使用全文搜索引擎或索引技术。<br>
 
 ### 向表中写入内容：
 要向MySQL某个表写入内容主要使用 `INSERT INTO` 和 `VALUES` 关键字。<br>
