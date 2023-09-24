@@ -19,6 +19,36 @@
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/59d8ec1a-89c4-482b-b894-102686493c14" alt="image" width="50%" height="50%">
 
 `<继续>` 的作用是跳到下一个断点。<br>
+
+断点调试时还有一个要注意的点，那就是 `launch.json` 的配置，尤其是其中的 `"justMyCode"` 的取值。<br>
+
+`launch.json` 打开方式如下：<br>
+
+`launch.json` 具体内容如下：<br>
+
+```json
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: 当前文件",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
+```
+
+"justMyCode" 的作用是控制调试器是否仅停在你自己编写的代码中，当 `"justMyCode": true` 时，调试器会尽量只在你自己编写的代码中停止，而忽略第三方库或框架的代码。这使得调试过程更加集中在你自己的应用程序逻辑上，而不会在不必要的地方停下来。<br>
+
+与之相对的，如果你想要进入第三方库的内部查看细节，需要设置 `"justMyCode": false` 。<br>
+
 <br>
 
 ## vscode关闭预览模式：
