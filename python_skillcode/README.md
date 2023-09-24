@@ -1,6 +1,10 @@
 # Python Skillcode
 python 在各种场景下的应用型代码，方便个人在工作中调用，避免重复编写。<br>
 
+文件夹名称|简介|备注
+---|---|---
+create_synonym_dict.py| 中文同义词替换字典示例 |
+
 **chinese_2_unicode.py:** 将data中的中文转义为 Unicode 序列，中文将被转义为 Unicode 转义序列（即类似于 \uXXXX 的形式）<br>
 这样做的目的是为了确保输出的 JSON 数据可以跨平台和跨系统地使用，因为 Unicode 转义序列在不同的编程语言和操作系统中都能正确地解析和显示。
 
