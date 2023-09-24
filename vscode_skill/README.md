@@ -23,6 +23,8 @@
 断点调试时还有一个要注意的点，那就是 `launch.json` 的配置，尤其是其中的 `"justMyCode"` 的取值。<br>
 
 `launch.json` 打开方式如下：<br>
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/f61ca852-8cb5-499c-a099-91b0a7640130)
+
 
 `launch.json` 具体内容如下：<br>
 
