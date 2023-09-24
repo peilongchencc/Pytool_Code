@@ -141,6 +141,7 @@
       - [不定位置参数 (\*args)：](#不定位置参数-args)
       - [不定关键字参数 (\*\*kwargs)：](#不定关键字参数-kwargs)
     - [函数中定义函数：](#函数中定义函数)
+  - [lambda函数：](#lambda函数)
   - [python常用内建函数：](#python常用内建函数)
     - [open() 函数：](#open-函数)
     - [read():](#read)
@@ -2317,6 +2318,24 @@ outer_function()
 
 # 尝试在外部函数之外调用内部函数，将引发 NameError: name 'inner_function' is not defined. 
 inner_function()
+```
+
+## lambda函数：
+```python
+tmp_qa_score_dict = {'C': 30, 'A': 50, 'B': 40}
+
+sorted_items = sorted(tmp_qa_score_dict.items(), key=lambda d: d[1], reverse=True)
+"""
+lambda 表达式定义了一个函数，它接受一个元组 `d`（表示键值对），例如('C', 30)
+`d[0]` 表示返回其中索引为0的元素，也就是字典中的键。
+`d[1]` 表示返回其中索引为1的元素，也就是字典中的值。
+`reverse=True`: 这部分是一个可选参数，如果设置为 `True`，则表示按降序排序；如果设置为 `False` 或省略，就是按升序排序。
+"""
+print(sorted_items)
+"""
+终端输出：
+[('A', 50), ('B', 40), ('C', 30)]
+"""
 ```
 
 ## python常用内建函数：
