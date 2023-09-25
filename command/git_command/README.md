@@ -517,6 +517,7 @@ git branch -D branch_b
 ```bash
 git push origin --delete branch_b
 ```
+> 在任何分支都可以执行上述操作～🐳🐳🐳
 
 这个命令会告诉远程仓库删除名为`branch_b`的分支。<br>
 
