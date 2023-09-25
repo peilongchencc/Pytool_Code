@@ -863,8 +863,15 @@ git branch -d new-branch   # 删除新分支
 如果你已经将某个文件添加到了Git的缓冲区（即使用了"git add"命令），然后将其添加到 `.gitignore` 文件中，这个文件仍然会被Git追踪。<br>
 
 你需要使用"git rm --cached 文件名"命令将其从缓冲区移除。<br>
+
 ```shell
 git rm --cached 文件名
+```
+
+如果你要删除的是文件夹，需要加上 `-r` 参数：<br>
+
+```shell
+git rm --cached -r 文件名
 ```
 
 如果你使用的是 `git add .` 操作，可以使用以下命令：<br>
