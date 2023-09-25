@@ -226,7 +226,7 @@ PS：Anaconda安装完成以后出现 "英文提示" 解读<br>
 翻译过来就是：关闭当前命令行，并重新打开，刚刚安装和初始化Anaconda设置才可以生效，重新打开一个命令行后直接就进入了conda的base环境。<br>
 
 2️⃣If you'd prefer that conda's base environment not be activated on startup, set the auto_activate_base parameter to false:<br>
-翻译过来就是：如果您希望 conda 的基础环境在启动时不被激活，请将 auto_activate_base 参数设置为 false，命令如下：<br>
+翻译过来就是：如果你希望 conda 的基础环境在启动时不被激活，请将 auto_activate_base 参数设置为 false，命令如下：<br>
 ```shell
 conda config --set auto_activate_base false
 ```
@@ -1206,6 +1206,40 @@ print(my_dict)
 {'key1': 'value1', 'key2': 'value2', 'key3': 'value3'}
 ```
 
+如果你的函数定义在另一个文件中，你可以按照以下方法传递字典并在函数内部进行修改：<br>
+
+假设你有两个文件：`main.py` 和 `my_module.py`，其中 `my_module.py` 包含了你的函数定义，你可以这样操作：<br>
+
+在 `my_module.py` 中定义函数并导入必要的模块：<br>
+
+```python
+# my_module.py
+
+def update_dict(input_dict, key, value):
+    input_dict[key] = value
+```
+
+然后，在 `main.py` 中导入 `my_module` 并使用该函数：<br>
+
+```python
+# main.py
+
+# 导入您的模块
+from my_module import update_dict
+
+# 定义一个字典
+my_dict = {'key1': 'value1', 'key2': 'value2'}
+
+# 调用函数以更新字典
+update_dict(my_dict, 'key3', 'value3')
+
+# 现在my_dict已经包含了新的键值对
+print(my_dict)
+```
+
+这样，你可以在不同的文件中定义函数和使用字典，并且函数可以更新字典的内容。确保 `main.py` 和 `my_module.py` 位于同一目录中或在Python路径中能够找到。<br>
+
+
 ### 删除键值对：
 
 #### 使用del语句：
@@ -1752,7 +1786,7 @@ class Segment:
     
     def split_words(self,text):
         result = jieba.lcut(text)
-        return f'{self.date}：用户{self.id}，{self.name}先生/女士您好，您的分词结果是：{result}'
+        return f'{self.date}：用户{self.id}，{self.name}先生/女士你好，你的分词结果是：{result}'
 
 print('This is the end of tools.py')
 ```
@@ -1777,7 +1811,7 @@ Building prefix dict from the default dictionary ...
 Loading model from cache /tmp/jieba.cache
 Loading model cost 0.706 seconds.
 Prefix dict has been built successfully.
-2023-07-28 17:01:32：用户007，peilongchencc先生/女士您好，您的分词结果是：['长江', '市市', '长江大桥', '。']
+2023-07-28 17:01:32：用户007，peilongchencc先生/女士你好，你的分词结果是：['长江', '市市', '长江大桥', '。']
 ```
 从输出可以看出，`from tools import Segment` 会将导入文件的所有内容都执行一遍，`函数、类`是因为没有调用所以没有执行。当运行到 `personal_information.split_words(text)` 才真正执行了类 `Segment` 中的函数。<br>
 
@@ -1912,12 +1946,12 @@ Python中的特殊方法（也称为魔术方法或双下划线方法）是具�
 11. `__lt__(self, other)`: 用于比较两个对象是否小于，通过`obj < other`调用。
 12. `__gt__(self, other)`: 用于比较两个对象是否大于，通过`obj > other`调用。
 
-这些特殊方法允许您自定义类的行为，使其与Python的内置功能（如运算符、迭代和容器）交互。通过重写这些方法，您可以为自己的类添加自定义行为，使其更加灵活和强大。<br>
+这些特殊方法允许你自定义类的行为，使其与Python的内置功能（如运算符、迭代和容器）交互。通过重写这些方法，你可以为自己的类添加自定义行为，使其更加灵活和强大。<br>
 
 接下来，我会讲解工作中经常用到的几个特殊方法：<br>
 
 ### `__init__()` 方法：
-- 作用：用于对象的初始化。它在创建类的实例时自动调用，允许您为对象的属性设置初始值。
+- 作用：用于对象的初始化。它在创建类的实例时自动调用，允许你为对象的属性设置初始值。
 - 示例：
 
 ```python
@@ -2020,7 +2054,7 @@ del obj  # 在这里对象被销毁
 ```
 
 ### `__call__()` 方法：
-- 作用：使对象可以像函数一样被调用。通过定义`__call__()`方法，您可以使对象的实例成为可调用的。
+- 作用：使对象可以像函数一样被调用。通过定义`__call__()`方法，你可以使对象的实例成为可调用的。
 - 示例：
 
 ```python
@@ -2034,7 +2068,7 @@ print(result)  # 输出：5
 ```
 
 ### `__eq__()` 方法：
-- 作用：用于定义对象的相等性。它在比较两个对象是否相等时自动调用。默认情况下，它比较对象的身份（内存地址），但您可以重写它以根据对象的属性来定义相等性。
+- 作用：用于定义对象的相等性。它在比较两个对象是否相等时自动调用。默认情况下，它比较对象的身份（内存地址），但你可以重写它以根据对象的属性来定义相等性。
 - 示例：
 
 ```python
@@ -2612,7 +2646,7 @@ if isinstance(x, (int, float, str)):
     print("x 是整数、浮点数或字符串")
 ```
 
-`isinstance()` 函数在编写具有灵活性的代码时非常有用，因为它允许您在不确定对象类型的情况下进行类型检查，从而避免出现类型错误。<br>
+`isinstance()` 函数在编写具有灵活性的代码时非常有用，因为它允许你在不确定对象类型的情况下进行类型检查，从而避免出现类型错误。<br>
 
 
 ## 常见库解释：
