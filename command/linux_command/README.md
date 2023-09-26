@@ -378,13 +378,23 @@ rm -r !(config|nlp_models|simple)
 
 
 ## 压缩文件、解压文件：
-Linux安装 `zip` 和 `unzip` 模块：<br>
+Linux安装 `zip` 和 `unzip` 模块的指令如下：<br>
+
 ```shell
 sudo apt-get install zip
 ```
+
 ```shell
-apt-get install unzip
+sudo apt-get install unzip
 ```
+
+如果你不是`root`用户，可以使用以下指令切换到`root`用户:<br>
+
+```bash
+sudo su -
+```
+> 如果有密码，会提示你输入密码～
+
 <br>
 
 zip压缩指令：
