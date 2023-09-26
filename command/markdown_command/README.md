@@ -147,12 +147,22 @@ cp technical_proposal.png /your_path/images
 <br>
 
 ## 控制图片大小：
-有时粘贴入Markdown的图片会显示太大或太小，此时可以使用 `HTML` 语言的方式控制图片大小，将 `![image](https://github.com/peilongchencc/Pytool_Code/......)` 形式改为下列形式即可。<br>
-> Markdown本身就是为了简化操作的一种设计，所以这里不介绍太细节的操作，例如控制图片长、宽等操作，只介绍以百分比形式放大或缩小图片。<br>
+有时粘贴入Markdown的图片会显示太大或太小，此时可以使用 `HTML` 语言的方式控制图片大小，例如：<br>
+
+修改前：<br>
+
+```log
+![image](https://github.com/peilongchencc/Pytool_Code/......)
+```
+
+修改后：<br>
 
 ```shell
 <img src="https://github.com/peilongchencc/Pytool_Code/......" alt="image" width="50%" height="50%">
 ```
+
+Markdown本身就是为了简化操作的一种设计，所以这里不介绍太细节的操作，例如控制图片长、宽等操作，只介绍以百分比形式放大或缩小图片。<br>
+<br>
 
 ## 插入分隔符：
 在Markdown中，你可以使用分隔符来创建水平分隔线或分隔段落。水平分隔线通常用于将不同部分或主题分隔开，以增加文档的可读性。<br>
