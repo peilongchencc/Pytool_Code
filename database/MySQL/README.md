@@ -15,6 +15,10 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
     - [根据表中某个字段排序，查看表中部分内容(ORDER BY-DESC)：](#根据表中某个字段排序查看表中部分内容order-by-desc)
     - [WHERE关键词执行条件检索：](#where关键词执行条件检索)
     - [LIKE运算符结合通配符执行模糊搜索：](#like运算符结合通配符执行模糊搜索)
+    - [COUNT函数统计满足特定条件的行数:](#count函数统计满足特定条件的行数)
+      - [示例 1：统计表中的所有行数](#示例-1统计表中的所有行数)
+      - [示例 2：统计满足条件的行数](#示例-2统计满足条件的行数)
+      - [示例 3：统计特定列的非NULL值数量](#示例-3统计特定列的非null值数量)
     - [向表中写入内容(INSERT INTO)：](#向表中写入内容insert-into)
     - [更新表中的内容(UPDATE)：](#更新表中的内容update)
     - [删除表中的内容(DELETE)：](#删除表中的内容delete)
@@ -356,6 +360,52 @@ SELECT * FROM sensitive_data WHERE phrase COLLATE utf8_bin LIKE 'Search';
 ```
 
 请注意，虽然 `LIKE` 是执行模糊搜索的一种方式，但对于大型数据集，它可能会导致性能问题‼️‼️‼️，因为它需要在文本列上执行全表扫描。在需要高效搜索大量数据时，可能需要考虑使用全文搜索引擎或索引技术。<br>
+
+### COUNT函数统计满足特定条件的行数:
+
+SQL中的COUNT函数用于统计满足特定条件的行数，通常用于聚合查询中。下面是COUNT函数的基本语法和示例：<br>
+
+基本语法：<br>
+
+```sql
+SELECT COUNT(column_name) FROM table_name WHERE condition;
+```
+
+- `COUNT(column_name)`: 要统计的列名或表达式。通常使用`*`来统计所有行，或者指定列名来统计特定列的非NULL值。
+- `table_name`: 要查询的表名。
+- `condition`（可选）：用于过滤要计数的行的条件。
+
+#### 示例 1：统计表中的所有行数
+
+假设有一个名为"orders"的表，我们要统计其中的所有行数：<br>
+
+```sql
+SELECT COUNT(*) FROM orders;
+```
+
+这将返回表中的总行数。<br>
+
+#### 示例 2：统计满足条件的行数
+
+假设我们要统计"orders"表中"status"字段为"已完成"的订单数量：<br>
+
+```sql
+SELECT COUNT(*) FROM orders WHERE status = '已完成';
+```
+
+这将返回满足条件的订单数量。<br>
+
+#### 示例 3：统计特定列的非NULL值数量
+
+如果要统计某一列的非NULL值数量，可以指定列名作为COUNT的参数。例如，统计"customers"表中"email"列的非NULL值数量：<br>
+
+```sql
+SELECT COUNT(email) FROM customers;
+```
+
+这将返回"customers"表中"email"列的非NULL值数量。<br>
+
+总之，COUNT函数是SQL中用于统计行数的强大工具，可以根据需要统计所有行或满足特定条件的行。<br>
 
 ### 向表中写入内容(INSERT INTO)：
 要向MySQL某个表写入内容主要使用 `INSERT INTO` 和 `VALUES` 关键字。<br>
