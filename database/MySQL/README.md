@@ -10,16 +10,15 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
   - [本地使用 Navicat 远程连接 MySQL ：](#本地使用-navicat-远程连接-mysql-)
   - [常用SQL语句：](#常用sql语句)
     - [创建表：](#创建表)
-    - [查看表中所有内容：](#查看表中所有内容)
-    - [查看表中部分内容：](#查看表中部分内容)
-    - [查看表中某一列的部分内容：](#查看表中某一列的部分内容)
-    - [根据表中某个字段排序，查看表中部分内容：](#根据表中某个字段排序查看表中部分内容)
+    - [查看表中所有内容(SELECT-FROM)：](#查看表中所有内容select-from)
+    - [查看表中部分内容(LIMIT),所有字段或部分字段内容：](#查看表中部分内容limit所有字段或部分字段内容)
+    - [根据表中某个字段排序，查看表中部分内容(ORDER BY-DESC)：](#根据表中某个字段排序查看表中部分内容order-by-desc)
     - [WHERE关键词执行条件检索：](#where关键词执行条件检索)
     - [LIKE运算符结合通配符执行模糊搜索：](#like运算符结合通配符执行模糊搜索)
-    - [向表中写入内容：](#向表中写入内容)
-    - [更新表中的内容：](#更新表中的内容)
-    - [删除表中的内容：](#删除表中的内容)
-  - [删除表：](#删除表)
+    - [向表中写入内容(INSERT INTO)：](#向表中写入内容insert-into)
+    - [更新表中的内容(UPDATE)：](#更新表中的内容update)
+    - [删除表中的内容(DELETE)：](#删除表中的内容delete)
+  - [删除表(DROP TABLE)：](#删除表drop-table)
   - [Python与MySQL：](#python与mysql)
     - [使用pymysql测试连接MySQL：](#使用pymysql测试连接mysql)
     - [pymysql操作数据库的关键：](#pymysql操作数据库的关键)
@@ -204,7 +203,7 @@ CREATE TABLE task_monitor (
 <br>
 
 
-### 查看表中所有内容：
+### 查看表中所有内容(SELECT-FROM)：
 要查看某个表中的内容主要使用 `SELECT` 和 `FROM` 关键字。<br>
 
 假设我们要从名为 `task_monitor` 的数据库表中检索所有的列和行:<br>
@@ -213,23 +212,26 @@ SELECT * FROM task_monitor;
 ```
 SQL语句解释：关键字 `"SELECT"` 用于指定要检索的数据，而 `"*"` 表示所有的列。关键字 `"FROM"` 用于指定要从哪个表中检索数据，这里是 `task_monitor` 表。因此，该语句将返回 `task_monitor` 表中的所有数据。<br>
 
-### 查看表中部分内容：
+### 查看表中部分内容(LIMIT),所有字段或部分字段内容：
 假设我们要从名为 `task_monitor` 的数据库表中检索所有的列和行，然后将前3行内容返回:<br>
+
 ```sql
 SELECT * FROM task_monitor LIMIT 3;
 ```
 
-### 查看表中某一列的部分内容：
 假设我们要从名为 `task_monitor` 的数据库表中检索 `task_command` 列，然后将前3行内容返回:<br>
+
 ```sql
 SELECT task_command FROM task_monitor LIMIT 3;
 ```
 
-### 根据表中某个字段排序，查看表中部分内容：
+### 根据表中某个字段排序，查看表中部分内容(ORDER BY-DESC)：
 如果我们要从名为 `"task_monitor"` 的表中检索数据，并按照 `"task_execution_time"` 字段的降序排列，并只显示前3行：<br>
+
 ```sql
 SELECT * FROM task_monitor ORDER BY task_execution_time DESC LIMIT 3;
 ```
+
 SQL语句解释：<br>
 
 `"SELECT "`: 这表示从表中选择所有的列。如果你想选择特定的列，可以将星号 `*` 替换为列名。<br>
@@ -243,8 +245,10 @@ SQL语句解释：<br>
 `"LIMIT 3"`: 这表示只返回前3行结果。你可以更改数字来返回所需数量的行数。<br>
 
 综上所述，这个SQL语句的结果将返回 `"task_monitor"` 表中前3个根据 `"task_execution_time"`字段降序排列的记录。<br>
+<br>
 
 ### WHERE关键词执行条件检索：
+
 SQL语句中的**WHERE子句用于筛选从数据库表中检索出的数据，以便只返回符合特定条件的行。它允许你指定一个或多个条件，只有满足这些条件的行才会包含在查询结果中。**<br>
 
 WHERE子句通常与SELECT、UPDATE、DELETE等SQL语句一起使用，以过滤数据。<br>
@@ -349,7 +353,7 @@ SELECT * FROM sensitive_data WHERE phrase COLLATE utf8_bin LIKE 'Search';
 
 请注意，虽然 `LIKE` 是执行模糊搜索的一种方式，但对于大型数据集，它可能会导致性能问题‼️‼️‼️，因为它需要在文本列上执行全表扫描。在需要高效搜索大量数据时，可能需要考虑使用全文搜索引擎或索引技术。<br>
 
-### 向表中写入内容：
+### 向表中写入内容(INSERT INTO)：
 要向MySQL某个表写入内容主要使用 `INSERT INTO` 和 `VALUES` 关键字。<br>
 假设我们要向名为 `task_monitor` 的表中写入数据：<br>
 ```sql
@@ -358,17 +362,20 @@ VALUES (1, '任务1', '命令1', '成功', '2022-01-01 12:00:00', '/logs/task1.l
 ```
 <br>
 
-### 更新表中的内容：
+### 更新表中的内容(UPDATE)：
 更新MySQL某个表的内容，主要使用 `UPDATE` 、`SET` 和 `WHERE` 关键字。<br>
+
 ```sql
 UPDATE task_monitor SET task_status = '失败', 
 task_execution_time = '2022-01-02 10:00:00' WHERE task_id = 1;
 ```
-SQL语句解释：这个示例将更新 `task_monitor` 表中 `task_id` 为 `1` 的记录的任务状态为 `'失败'`，以及任务执行时间为 `'2022-01-02 10:00:00'`。你可以根据需要更新其他字段的值，并使用 `WHERE` 子句来指定要更新的记录的条件。
+SQL语句解释：这个示例将更新 `task_monitor` 表中 `task_id` 为 `1` 的记录的任务状态为 `'失败'`，以及任务执行时间为 `'2022-01-02 10:00:00'`。你可以根据需要更新其他字段的值，并使用 `WHERE` 子句来指定要更新的记录的条件。<br>
+
 🚨🚨🚨注意字段字段之间要用逗号隔开，如：`SET task_status = '失败', task_execution_time = '2022-01-02 10:00:00'` ‼️‼️‼️<br>
 <br>
 
 再来个例子，假设只想更新这个表中 `'task_command'` 列所有为 `python app.py` 的数据呢？<br>
+
 ```sql
 UPDATE task_monitor SET task_status = '失败', task_execution_time = '2022-01-02 10:00:00' 
 WHERE task_command = 'python app.py';
@@ -378,24 +385,31 @@ WHERE task_command = 'python app.py';
 SQL语句解释：这个示例将更新 `task_monitor` 表中 `'task_command'` 列为 `'python app.py'` 的记录的任务状态为 `'失败'`，以及任务执行时间为 `'2022-01-02 10:00:00'`。只有满足 `WHERE` 子句条件的记录会被更新。你可以根据需要更新其他字段的值。<br>
 <br>
 
-### 删除表中的内容：
+### 删除表中的内容(DELETE)：
 更新MySQL某个表的内容，主要使用 `DELETE` 和 `WHERE` 关键字。请谨慎使用，因为删除操作是不可逆的🚨🚨🚨<br>
+
 ```sql
 DELETE FROM task_monitor WHERE task_id = 1;
 ```
+
 SQL语句解释：这个示例将删除 `task_monitor` 表中 `task_id` 为 `1` 的记录。你可以根据需要使用不同的条件来删除符合条件的记录。<br>
 
 如果你想删除整个表中的内容，而不是其中的特定记录，可以使用以下语句：<br>
+
 ```sql
 DELETE FROM task_monitor;
 ```
+
 这会从数据库中永久删除 `task_monitor` 表中的所有记录。<br>
 
-## 删除表：
+## 删除表(DROP TABLE)：
+
 要删除某个表，需要使用 `DROP TABLE` 关键字。假设删除 `task_monitor` 表：<br>
+
 ```sql
 DROP TABLE task_monitor;
 ```
+
 SQL语句解释：这个示例将从数据库中永久删除 task_monitor 表及其所有数据。请谨慎使用，因为删除操作是不可逆的。在执行此操作之前，确保你没有需要保留的数据。<br>
 <br>
 
