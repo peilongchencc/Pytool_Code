@@ -99,8 +99,11 @@ Markdown文档直接图片从粘贴板复制，复制后图片的格式大致如
 如果你想要将文档分享给其他人，图片最好不要直接上传本地图片，需要上传到云端，让Markdown查询云端链接。云端的图库有很多，但就笔者个人而言，最方便的方式依旧是：<br>
 
 1. 截图要写入Markdown的内容；
+
 2. 打开github网页端，找到Markdown文档中要插入的位置；
+
 3. `Command+v` 执行粘贴操作，github会自动将你的图片转为云端，也就是我上面所示的 `https://github.com/peilongchencc/Pytool_Code/......` 部分；
+
 4. `commit`后，刷新网页查看效果；
 
 现在你就可以看到Markdown中已经插入了图片了，Markdown中图片默认是**左对齐**的。🌿🌿🌿🌿🌿<br>
