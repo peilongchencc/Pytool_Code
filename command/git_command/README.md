@@ -18,6 +18,7 @@
     - [删除分支：](#删除分支)
       - [删除本地分支:](#删除本地分支)
       - [删除远程分支:](#删除远程分支)
+  - [文件忽略".gitignore"](#文件忽略gitignore)
   - [Git操作常见流程：](#git操作常见流程)
   - [修改git仓库信息：](#修改git仓库信息)
     - [删除remote记录：](#删除remote记录)
@@ -527,6 +528,95 @@ git push origin --delete branch_b
 最终，通过执行上述步骤，你将删除本地分支和远程分支中的`branch_b`分支。请谨慎操作，因为删除分支可能会导致数据丢失。<br>
 <br>
 
+
+## 文件忽略".gitignore"
+`.gitignore` 文件用于告诉Git版本控制系统哪些文件或目录应该被忽略，执行 `git push` 时不被推送到远程仓库。<br>
+
+下面是一些关于如何使用`.gitignore` 文件的示例以及一些常见的用例：
+
+1. 忽略特定文件：
+
+```bash
+# 忽略一个特定文件
+filename.txt
+```
+
+2. 忽略特定目录：
+
+```bash
+# 忽略一个特定目录
+/myfolder/
+```
+
+3. 使用通配符：
+
+```bash
+# 忽略所有 .log 文件
+*.log
+
+# 忽略所有 .txt 文件
+*.txt
+
+# 忽略所有 .pdf 文件
+*.pdf
+```
+
+4. 忽略所有文件夹下的特定文件或目录：
+
+```bash
+# 忽略所有目录下的 .DS_Store 文件（通常在 macOS 上生成）
+**/.DS_Store
+
+# 忽略所有目录下的 node_modules 目录
+**/node_modules/
+```
+
+5. 使用注释：
+
+```bash
+# 这是一条注释，不会影响 .gitignore 的规则
+
+# 忽略所有日志文件
+*.log
+```
+
+6. 强制包括某些文件或目录：
+
+```bash
+# 忽略所有 .log 文件，但包括 error.log 文件
+*.log
+!error.log
+```
+
+7. 使用多个`.gitignore` 文件：
+
+你可以选择在根目录使用一个`.gitignore` 文件，也可以选择在不同的子目录中使用多个`.gitignore` 文件，每个文件针对特定目录或子项目进行规则设置。<br>
+
+示例中的规则会告诉Git在提交和跟踪更改时要忽略指定的文件或目录。当你在项目目录中创建或编辑`.gitignore` 文件后，Git将自动遵循这些规则。确保将`.gitignore` 文件包含在版本控制中，以便与团队共享。<br>
+
+总之，`.gitignore` 文件是一个非常有用的工具，可以帮助你维护干净和有序的版本控制仓库，同时排除不必要的文件和目录。<br>
+
+
+‼️‼️‼️请注意，如果你已经将要忽略的文件夹(假设为`.vscode`文件夹)提交到远程仓库，你现在想要去除`.vscode`文件夹的追踪，你可以使用以下命令来执行这些操作：<br>
+
+在 `.gitignore` 文件中，添加以下行来指定忽略 `.vscode` 文件夹：<br>
+
+```bash
+# 去除 .vscode 文件夹的追踪
+.vscode/
+```
+
+终端执行以下指令，去除 `.vscode` 文件夹的追踪:<br>
+
+```bash
+git checkout your_git_branch
+git rm -r --cached .vscode/
+git commit -m "去除 .vscode 文件夹的追踪"
+git push
+```
+
+这将删除远程仓库中的 `.vscode` 文件夹，并确保以后不再跟踪它。注意将 `your_git_branch` 替换为你的分支名。<br>
+<br>
 
 ## Git操作常见流程：
 1. `git init`初始化或`git clone`一个git仓库。(`git clone`操作，后面的内容会讲～)
