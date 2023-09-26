@@ -6,6 +6,7 @@
   - [文本代码化：](#文本代码化)
   - [插入表格：](#插入表格)
   - [插入图片：](#插入图片)
+    - [无法使用外网链接的情况-公司内部GitLab:](#无法使用外网链接的情况-公司内部gitlab)
   - [控制图片大小：](#控制图片大小)
   - [插入分隔符：](#插入分隔符)
 
@@ -75,23 +76,72 @@ print('hello,world.')
 
 **Markdown表格定义规则**：<br>
 1. `|` 和 `|` 之间形成单元格。
+
 2. 第一行为表头，内容默认加粗居中。
+
 3. 第二行为 `-` 、 `:`和 `|` 的组合，`---|---` 表示居中对齐，如果想改变对齐的方式，可用 `:` 标记某一列单元格对齐方式。<br>
+
 例如 `:---|---:|---` 表示第一列左对齐，第二列右对齐，第三列居中对齐。<br>
+
 🚨🚨🚨注意：第二行不可省略，否则语法不完整；<br>
+
 4. 其余行是普通单元格。
 
+
 ## 插入图片：
+
 Markdown文档直接图片从粘贴板复制，复制后图片的格式大致如下图：<br>
-```shell
+
+```bash
 ![image](https://github.com/peilongchencc/Pytool_Code/......)
 ```
+
 如果你想要将文档分享给其他人，图片最好不要直接上传本地图片，需要上传到云端，让Markdown查询云端链接。云端的图库有很多，但就笔者个人而言，最方便的方式依旧是：<br>
-1.截图要写入Markdown的内容；<br>
-2.打开github网页端，找到Markdown文档中要插入的位置；<br>
-3.`Command+v` 执行粘贴操作，github会自动将你的图片转为云端，也就是我上面所示的 `https://github.com/peilongchencc/Pytool_Code/......` 部分；<br>
-4.commit后，刷新网页查看效果；
+
+1. 截图要写入Markdown的内容；
+2. 打开github网页端，找到Markdown文档中要插入的位置；
+3. `Command+v` 执行粘贴操作，github会自动将你的图片转为云端，也就是我上面所示的 `https://github.com/peilongchencc/Pytool_Code/......` 部分；
+4. `commit`后，刷新网页查看效果；
+
 现在你就可以看到Markdown中已经插入了图片了，Markdown中图片默认是**左对齐**的。🌿🌿🌿🌿🌿<br>
+
+### 无法使用外网链接的情况-公司内部GitLab:
+
+工作中，你可能会遇到存放Markdown文件的位置(仓库)无法访问外网的情况(例如公司的GitLab)，这时候你在Markdown中以URL形式插入的图片是无法正常显示的。<br>
+
+要在公司GitLab仓库的`README.md`文件中插入图片，可以参考以下步骤：<br>
+
+1. 先创建一个存储图片的文件夹，假设你位于git仓库的根目录：
+
+```bash
+mkdir images
+```
+
+2. 将图片复制/移动到images文件夹：
+
+```bash
+cp technical_proposal.png /your_path/images
+```
+
+注意将 `your_path` 替换为真实路径。<br>
+
+3. 确定图片的相对路径：
+
+在 `README.md` 文件中，你需要使用图片的相对路径来引用它。<br>
+
+🌿🌿🌿**相对路径是相对于README.md文件的位置来定义的**🌿🌿🌿<br>
+
+如果你的图片位于与 `README.md` 相同的目录下，你只需提供图片文件的名称。如果图片位于子目录中，你需要包括子目录的路径。<br>
+
+4. 使用Markdown语法在`README.md`中插入图片：
+
+以在`README.md`中插入`images/technical_proposal.png`文件为例:<br>
+
+```markdown
+![技术方案](images/technical_proposal.png)
+```
+
+<br>
 
 ## 控制图片大小：
 有时粘贴入Markdown的图片会显示太大或太小，此时可以使用 `HTML` 语言的方式控制图片大小，将 `![image](https://github.com/peilongchencc/Pytool_Code/......)` 形式改为下列形式即可。<br>
