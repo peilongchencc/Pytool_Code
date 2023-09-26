@@ -9,7 +9,7 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
   - [MySQL密码设置：(root账号)](#mysql密码设置root账号)
   - [本地使用 Navicat 远程连接 MySQL ：](#本地使用-navicat-远程连接-mysql-)
   - [常用SQL语句：](#常用sql语句)
-    - [创建表：](#创建表)
+    - [创建表(CREATE TABLE)：](#创建表create-table)
     - [查看表中所有内容(SELECT-FROM)：](#查看表中所有内容select-from)
     - [查看表中部分内容(LIMIT),所有字段或部分字段内容：](#查看表中部分内容limit所有字段或部分字段内容)
     - [根据表中某个字段排序，查看表中部分内容(ORDER BY-DESC)：](#根据表中某个字段排序查看表中部分内容order-by-desc)
@@ -22,7 +22,7 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
   - [Python与MySQL：](#python与mysql)
     - [使用pymysql测试连接MySQL：](#使用pymysql测试连接mysql)
     - [pymysql操作数据库的关键：](#pymysql操作数据库的关键)
-    - [创建表：](#创建表-1)
+    - [创建表：](#创建表)
     - [获取表中的内容：](#获取表中的内容)
 ## 服务器安装MySQL数据库：
 MySQL数据库的安装非常简单～<br>
@@ -159,8 +159,10 @@ netstat -ntlp
 成功连接！现在就可以利用 Navicat 操作 MySQL 数据库了。<br>
 
 ## 常用SQL语句：
-### 创建表：
+
+### 创建表(CREATE TABLE)：
 要创建一个MySQL数据库中的表格，需要使用 `CREATE TABLE` 语句。以下是一个示例代码来创建一个名为 `"task_monitor"` 的表格，其中包括 `"task_id"`、`"task_description"`、 `"task_command"` 、`task_status`、 `task_status`、 `task_execution_time`、 `log_path` 这六个列：<br>
+
 ```sql
 CREATE TABLE task_monitor (
     task_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '任务的唯一ID',
@@ -171,7 +173,9 @@ CREATE TABLE task_monitor (
     log_path VARCHAR(255) COMMENT '日志文件的路径'
 );
 ```
+
 如果要在 Navicat 中使用，先点击查询，然后点击 `"+"` 号，新建查询，选择对应的数据库即可。<br>
+
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/6943e85a-8fbd-42b9-9196-bfef558c780a" alt="image" width="70%" height="70%">
 
 相信大家已经注意到了，对于不同的列，我使用了不同的数据类型，这是因为MySQL支持多种数据类型，可以根据具体需要选择适合的数据类型。以下是常见的MySQL数据类型：<br>
