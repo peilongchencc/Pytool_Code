@@ -35,6 +35,7 @@
     - [你想在当前git仓库回退到上一个版本，且不丢失现在的更改，应该怎么做呢？](#你想在当前git仓库回退到上一个版本且不丢失现在的更改应该怎么做呢)
       - [使用git stash：](#使用git-stash)
       - [使用新的分支:](#使用新的分支)
+    - [将git仓库下某个文件夹复制到其他目录，修改好后提交到远程仓库的操作流程：](#将git仓库下某个文件夹复制到其他目录修改好后提交到远程仓库的操作流程)
   - [为什么你把要忽略的内容写入了`.gitignore`，git push时还是把`.gitignore`中的内容上传了？是有什么操作顺序吗？](#为什么你把要忽略的内容写入了gitignoregit-push时还是把gitignore中的内容上传了是有什么操作顺序吗)
     - [原因：](#原因)
     - [解决方案：](#解决方案)
@@ -852,7 +853,52 @@ git merge new-branch      # 合并新分支到主分支
 git branch -d new-branch   # 删除新分支
 ```
 使用以上任意方法，你都可以回退到上一个版本，同时不丢失现在的更改。根据你的具体需求，选择最适合你的方法。<br>
+
+### 将git仓库下某个文件夹复制到其他目录，修改好后提交到远程仓库的操作流程：
+
+假设你github中名为 `nlp_deploy` 仓库中的文件特别多，出于某种原因，你想要将其中名为 `nlp_server` 的文件夹复制到其他目录，操作完成后再替换原 `nlp_deploy` 仓库下的 `nlp_server` 文件夹，你所属的git分支名为`modify_nlp_server_peilongchencc`。<br>
+
+经过了漫长的时间...现在，你已经将 `nlp_server` 修改完毕，但你迷惑了，不知道具体该怎么操作，那么就可以参考以下流程：<br>
+
+1. 确保 `nudge_new` 中的git分支为 `modify_nlp_server_peilongchencc`：
+
+```bash
+git checkout modify_nlp_server_peilongchencc
+```
+
+2. 在本地项目根目录中，使用命令行删除旧的 `nlp_server` 文件夹。确保你已经备份了任何重要的数据，因为删除后将无法恢复旧文件夹。
+
+```bash
+rm -rf nlp_server/
+```
+
+🚨🚨🚨`nlp_server/` 是相对于项目根目录 `nlp_deploy` 的路径。<br>
+
+3. 将你修改后的 `nlp_server` 文件夹从其他目录复制/移动到 `nlp_deploy` 文件夹下 `nlp_server` 的原位置。
+
+4. 接下来，使用以下命令来将新的 `nlp_server` 文件夹添加到 Git 暂存区：
+
+```bash
+git add nlp_server/
+```
+
+5. 然后提交你的更改：
+
+```bash
+git commit -m "更新 nlp_server 文件夹的内容"
+```
+
+6. 最后，将更改推送到 GitHub 远程仓库中的 `modify_nlp_server_peilongchencc` 分支：
+
+```bash
+git push
+```
+
+因为你当前正处于 `modify_nlp_server_peilongchencc` 分支，所以直接运行 `git push` 指令即可。<br>
+
+现在，你已经将包含修改好的 `nlp_server` 文件夹的 `nlp_deploy` 项目推送到远程仓库。🚀🚀🚀<br>
 <br>
+
 
 ## 为什么你把要忽略的内容写入了`.gitignore`，git push时还是把`.gitignore`中的内容上传了？是有什么操作顺序吗？
 ### 原因：
@@ -880,15 +926,19 @@ git rm --cached .
 ```
 
 ### 解决方案：
+
 假设你已经把某些要忽略的内容上传至 github ，现在的解决方案如下：<br>
 
 1. 进入自己的 `git` 项目目录下。
+
 2. 执行 `git pull` 拉取最新代码，如果你本地没有对应的项目，执行 `git clone` 拉取最新代码也是一样。
+
 3. 将你不想要上传至 github 的内容备份到本项目仓库之外；(可选，如果你本地也不想保留这部分内容，可以直接执行下一步。)
+
 4. 将你不想要上传至 github 的内容删除；
+
 5. 检查 `.gitignore` 中的内容是否正确；
+
 6. 执行 `git add .`,`git commit -m "xxx"`,`git push`操作，现在远程仓库中你不想上传的内容已经删除了。
+
 7. 本地，将刚刚备份的内容移回本仓库；此时你再执行`git add .`,`git commit -m "xxx"`,`git push`操作将不会把对应的内容上传至 github 远程仓库。
-
-
-
