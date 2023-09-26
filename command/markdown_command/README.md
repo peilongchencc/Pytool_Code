@@ -120,7 +120,7 @@ Markdown文档直接图片从粘贴板复制，复制后图片的格式大致如
 mkdir images
 ```
 
-2. 将图片复制/移动到images文件夹：
+2. **将图片复制/移动到images文件夹：**
 
 ```bash
 cp technical_proposal.png /your_path/images
@@ -128,7 +128,7 @@ cp technical_proposal.png /your_path/images
 
 注意将 `your_path` 替换为真实路径。<br>
 
-3. 确定图片的相对路径：
+3. **确定图片的相对路径：**
 
 在 `README.md` 文件中，你需要使用图片的相对路径来引用它。<br>
 
@@ -136,7 +136,7 @@ cp technical_proposal.png /your_path/images
 
 如果你的图片位于与 `README.md` 相同的目录下，你只需提供图片文件的名称。如果图片位于子目录中，你需要包括子目录的路径。<br>
 
-4. 使用Markdown语法在`README.md`中插入图片：
+4. **使用Markdown语法在`README.md`中插入图片：**
 
 以在`README.md`中插入`images/technical_proposal.png`文件为例:<br>
 
