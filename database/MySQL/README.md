@@ -15,6 +15,7 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
       - [查看表中部分内容：](#查看表中部分内容)
       - [查看表中某一列的部分内容：](#查看表中某一列的部分内容)
       - [根据表中某个字段排序，查看表中部分内容：](#根据表中某个字段排序查看表中部分内容)
+      - [WHERE关键词执行条件检索：](#where关键词执行条件检索)
       - [LIKE运算符结合通配符执行模糊搜索：](#like运算符结合通配符执行模糊搜索)
     - [向表中写入内容：](#向表中写入内容)
     - [更新表中的内容：](#更新表中的内容)
@@ -231,12 +232,75 @@ SELECT task_command FROM task_monitor LIMIT 3;
 SELECT * FROM task_monitor ORDER BY task_execution_time DESC LIMIT 3;
 ```
 SQL语句解释：<br>
+
 `"SELECT "`: 这表示从表中选择所有的列。如果你想选择特定的列，可以将星号 `*` 替换为列名。<br>
+
 `"FROM task_monitor"`: 这表示你从名为 `"task_monitor"` 的表中进行数据检索。`"task_monitor"` 是表的名称，你可以根据自己的表名进行相应替换。<br>
+
 `ORDER BY` 是一个SQL关键字，用于按照特定的列对查询结果进行排序。通过指定一个或多个列作为排序规则，可以控制结果行的顺序。<br>
+
 `"ORDER BY task_execution_time DESC"`: 这表示使用 `"task_execution_time"` 字段对结果进行降序排序。DESC关键字指定降序排序，如果不写，默认为升序（ASC）排序。`ORDER` 表示顺序、排序，`DESCENDING` 表示降序，`ASCENDING` 表示升序，这个命令应该很好理解。<br>
+
 `"LIMIT 3"`: 这表示只返回前3行结果。你可以更改数字来返回所需数量的行数。<br>
+
 综上所述，这个SQL语句的结果将返回 `"task_monitor"` 表中前3个根据 `"task_execution_time"`字段降序排列的记录。<br>
+
+#### WHERE关键词执行条件检索：
+SQL语句中的**WHERE子句用于筛选从数据库表中检索出的数据，以便只返回符合特定条件的行。它允许你指定一个或多个条件，只有满足这些条件的行才会包含在查询结果中。**<br>
+
+WHERE子句通常与SELECT、UPDATE、DELETE等SQL语句一起使用，以过滤数据。<br>
+
+以下是一些WHERE子句的示例：<br>
+
+1. 使用等于操作符（=）筛选特定值的行：
+
+```sql
+SELECT * FROM employees WHERE department = 'HR';
+```
+
+这个示例将返回所有在'HR'部门工作的员工的信息。<br>
+
+2. 使用比较操作符筛选行（例如，大于、小于、大于等于、小于等于）：
+
+```sql
+SELECT * FROM products WHERE price > 50;
+```
+
+这个示例将返回所有价格大于50的产品。<br>
+
+3. 使用逻辑运算符（AND、OR、NOT）组合多个条件：
+
+```sql
+SELECT * FROM orders WHERE order_date >= '2023-01-01' AND order_date <= '2023-12-31';
+```
+
+这个示例将返回在2023年内下的所有订单。<br>
+
+4. 使用通配符（LIKE）进行模糊搜索：
+
+```sql
+SELECT * FROM customers WHERE last_name LIKE 'Smith%';
+```
+
+这个示例将返回姓氏以"Smith"开头的所有客户。<br>
+
+5. 使用IN子句筛选多个值：
+
+```sql
+SELECT * FROM products WHERE category IN ('Electronics', 'Appliances');
+```
+
+这个示例将返回类别为'Electronics'或'Appliances'的产品。<br>
+
+6. 使用IS NULL或IS NOT NULL来筛选空值或非空值：
+
+```sql
+SELECT * FROM employees WHERE manager_id IS NULL;
+```
+
+这个示例将返回没有经理的员工。<br>
+
+这些示例演示了WHERE子句在SQL中的一些常见用法，但并不局限于此。根据你的需求，可以使用更复杂的条件组合来筛选数据。<br>
 
 #### LIKE运算符结合通配符执行模糊搜索：
 `LIKE` 是 SQL 中用于执行模糊搜索的关键字。它通常与通配符结合使用，以在文本数据中查找包含特定模式或字符串的行。以下是 `LIKE` 的基本用法：<br>
