@@ -126,7 +126,7 @@ if __name__ == '__main__':
 import requests
 import time
 
-# 读取问题数据
+# 读取数据
 with open("question_data.txt", "r") as file:
     questions = [line.strip() for line in file.readlines()]
 
