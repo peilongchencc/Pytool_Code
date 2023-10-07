@@ -163,7 +163,7 @@
 
 库名|作用|备注
 ---|---|---
-flask | Python Web应用程序框架 | 
+flask | Python Web应用程序框架 | 与sanic用处相同，但用户更多。
 counter | Python内置计数器 | 
 dataclass | 用于创建具有一些默认功能的类的装饰器 | 旨在简化创建用于存储数据的类，本质是装饰器(不常用，仅作为记录)
 enum | Python中用于创建和管理枚举类型的库 | 不常用，仅作为记录
