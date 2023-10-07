@@ -1,6 +1,7 @@
 # Python Basci Grammar
 介绍 python 基本语法、常见函数的使用与笔者常用的感觉非常方便的python库。<br>
 - [Python Basci Grammar](#python-basci-grammar)
+  - [python常用库：](#python常用库)
   - [Anaconda、pip 和 Python的关系：](#anacondapip-和-python的关系)
   - [Ubuntu 18.04.6 LTS安装anaconda：](#ubuntu-18046-lts安装anaconda)
     - [下载ubuntu脚本：](#下载ubuntu脚本)
@@ -155,7 +156,22 @@
       - [检查对象是否是多个类型之一：](#检查对象是否是多个类型之一)
       - [检查对象是否是某个类的实例-含避坑指南：](#检查对象是否是某个类的实例-含避坑指南)
       - [检查对象是否是某个基本数据类型：](#检查对象是否是某个基本数据类型)
-  - [python常用库：](#python常用库)
+
+## python常用库：
+
+本内容亦为当前目录下个文件夹目录，如果你还没有一个很好的python基础，请优先阅读其他章节。<br>
+
+库名|作用|备注
+---|---|---
+flask | Python Web应用程序框架 | 
+counter | Python内置计数器 | 
+dataclass | 用于创建具有一些默认功能的类的装饰器 | 旨在简化创建用于存储数据的类，本质是装饰器(不常用，仅作为记录)
+enum | Python中用于创建和管理枚举类型的库 | 不常用，仅作为记录
+loguru | 日志库 | 比python内置的logging方便
+request | 发送接口数据 | 用于从代码端测试接口情况
+time | 时间处理 | 工作中超级常用
+typing | 类型提示和类型注解 | 不常用，仅作为记录
+
 
 ## Anaconda、pip 和 Python的关系：
 Anaconda、pip 和 Python 是与 Python 编程语言相关的三个工具或概念，它们之间有一定的关系，但它们的作用和功能有所不同。<br>
@@ -2645,17 +2661,3 @@ if isinstance(x, (int, float, str)):
 ```
 
 `isinstance()` 函数在编写具有灵活性的代码时非常有用，因为它允许你在不确定对象类型的情况下进行类型检查，从而避免出现类型错误。<br>
-
-
-## python常用库：
-
-库名|作用|备注
----|---|---
-flask | Python Web应用程序框架 | 
-counter | Python内置计数器 | 
-dataclass | 用于创建具有一些默认功能的类的装饰器 | 旨在简化创建用于存储数据的类，本质是装饰器(不常用，仅作为记录)
-enum | Python中用于创建和管理枚举类型的库 | 不常用，仅作为记录
-loguru | 日志库 | 比python内置的logging方便
-request | 发送接口数据 | 用于从代码端测试接口情况
-time | 时间处理 | 工作中超级常用
-typing | 类型提示和类型注解 | 不常用，仅作为记录
