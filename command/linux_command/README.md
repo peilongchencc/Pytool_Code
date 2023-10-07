@@ -2,6 +2,7 @@
 Linux指令都是通过终端或shell脚本操作的，所以下文笔者不会备注在哪里操作。<br>
 Ps:本文所有指令为 Linux 版本，Windows 或 MacOS 指令请自行从网络寻找。<br>
 - [Linux Command](#linux-command)
+  - [Linux 中的重要目录：](#linux-中的重要目录)
   - [权限指令：](#权限指令)
     - [sudo su - 和 su root 指令的区别是什么？](#sudo-su---和-su-root-指令的区别是什么)
   - [系统信息指令：](#系统信息指令)
@@ -26,6 +27,83 @@ Ps:本文所有指令为 Linux 版本，Windows 或 MacOS 指令请自行从网�
       - [设置屏蔽项:](#设置屏蔽项)
       - [同时屏蔽文件夹和文件：](#同时屏蔽文件夹和文件)
     - [find+tree，限制树的深度，同时屏蔽某些文件或文件夹：](#findtree限制树的深度同时屏蔽某些文件或文件夹)
+
+## Linux 中的重要目录：
+
+主目录：<br>
+
+```bash
+/root
+/home/username
+```
+
+```bash
+
+```
+
+
+用户可执行文件：<br>
+
+```bash
+/bin
+/usr/bin
+/usr/local/bin
+```
+
+系统可执行文件：<br>
+
+```bash
+/sbin
+/usr/sbin
+/usr/local/sbin
+```
+
+其他挂载点：<br>
+
+```bash
+/media
+/mnt
+```
+
+配置：<br>
+
+```bash
+/etc
+```
+
+临时文件：<br>
+
+```bash
+/tmp
+```
+
+内核和Bootloader：
+
+```bash
+/boot
+```
+
+服务器数据：<br>
+
+```bash
+/var
+/srv
+```
+
+系统信息：<br>
+
+```bash
+/proc
+/sys
+```
+
+共享库：<br>
+
+```bash
+/lib
+/usr/lib
+/usr/local/lib
+```
 
 ## 权限指令：
 查看自己是何种类型的用户，root或普通用户：<br>
