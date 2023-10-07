@@ -18,6 +18,9 @@ time库是Python标准库中的一个模块，它提供了处理时间的功能�
     - [跨文件导入：](#跨文件导入)
     - [timing\_decorator与staticmethod联合使用：](#timing_decorator与staticmethod联合使用)
   - [异步函数与时间装饰器：](#异步函数与时间装饰器)
+    - [错误示例一：](#错误示例一)
+    - [错误示例二：](#错误示例二)
+    - [正确示例：](#正确示例)
 
 ## 获取当前时间的时间戳：
 ```python
@@ -354,13 +357,125 @@ class MyClass:
 
 ## 异步函数与时间装饰器：
 
+前面看了那么多例子，你一定有种在需要的位置都用 `time()` 函数计算耗时的冲动。这是好事，可以让你更好把握程序响应时间，但如果你想计算异步函数的耗时，可能和你想的方式有点不一样。<br>
 
-下面依次讲解这两种计算函数执行时间方式：<br>
+### 错误示例一：
 
-第一种是在装饰器中计时，另一种是在`segment`函数内部计时。这两种方式计算的时间不一致的原因是异步处理的影响。<br>
+看了上面的介绍，如果你直接采用类似以下的方式计算异步函数耗时，那就错了：<br>
 
-代码中`segment`函数使用`async def`定义，因此是异步函数。在异步函数内部使用`time.time()`来计算执行时间时，可能会受到事件循环的影响。**异步函数的执行时间不会等待所有异步任务完成，而是会立即返回，**因此计时可能会不准确。<br>
+```python
+from sanic import Sanic
+from sanic.response import json
+import jieba
+import time
 
-而在装饰器中计时的方式是在函数开始和结束时分别记录时间，不受异步处理的影响，因此更准确。这就是为什么这两种方式计算的时间不一致的原因。
+app = Sanic("SEGMENT-API")
 
-如果你想要获取更准确的函数执行时间，建议使用装饰器中的计时方式。这种方式更适合异步函数的计时需求。如果你想要包括请求处理和函数内部的执行时间，可以在装饰器中计时整个请求处理的过程。
+@app.route("/segment", methods=["POST"])
+async def segment(request):
+    start_time = time.time()  # 记录开始
+    text = request.form.get("user_input")
+    if not text:
+        return json({"Error": "Missing 'user_input' parameter"}, status=400)
+
+    segment_text = jieba.lcut(text)
+    end_time = time.time()    # 记录结束时间
+    elapsed_time = end_time - start_time  # 计算耗时
+    print(f"Function segment took {elapsed_time:.6f} seconds to execute.")
+    return json({"程序的分词结果为：": segment_text})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8848)
+```
+
+### 错误示例二：
+
+```python
+from sanic import Sanic
+from sanic.response import json
+import jieba
+import time
+
+import time
+
+# 定义timing_decorator装饰器
+def timing_decorator(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()              # 起始时间
+        result = func(*args, **kwargs)        # 函数执行，函数有多个返回值依旧可以执行
+        end_time = time.time()                # 结束时间
+        elapsed_time = end_time - start_time  # 计算耗时
+        
+        # 根据不同情况获取名称
+        # 对于函数来说，使用 `func.__name__` 可以获得函数名称；但对于类的实例，需要使用 `func.__class__.__name__` 来获得实例对应的类的名称。
+        func_name = getattr(func, "__name__", None) or func.__class__.__name__
+        
+        print(f"Function {func_name} took {elapsed_time:.6f} seconds to execute.")
+        return result
+    return wrapper
+
+app = Sanic("SEGMENT-API")
+
+@app.route("/segment", methods=["POST"])
+@timing_decorator
+async def segment(request):
+    text = request.form.get("user_input")
+    if not text:
+        return json({"Error": "Missing 'user_input' parameter"}, status=400)
+
+    segment_text = jieba.lcut(text)
+    return json({"程序的分词结果为：": segment_text})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8848)
+```
+
+### 正确示例：
+
+‼️‼️‼️上面的两种写法都是典型的错误写法，代码中`segment`函数使用`async def`定义，因此是异步函数。<br>
+
+在异步函数内部使用`time.time()`来计算执行时间时，可能会受到事件循环的影响。**异步函数的执行时间不会等待所有异步任务完成，而是会立即返回，**因此计时会不准确。<br>
+
+即使使用了装饰器写法，但如果没有对异步函数进行特殊处理，依旧计时会不准确。<br>
+
+正确写法是：利用`await`关键字等待异步任务完成，将异步任务包含其中。代码示例如下：<br>
+
+```python
+from sanic import Sanic
+from sanic.response import json
+import jieba
+import time
+
+# 定义timing_decorator装饰器
+def timing_decorator(func):
+    async def wrapper(request, *args, **kwargs):
+        start_time = time.time()  # 记录函数开始执行的时间
+        result = await func(request, *args, **kwargs)  # 执行被装饰的函数(异步函数)
+        end_time = time.time()  # 记录函数执行结束的时间
+        elapsed_time = end_time - start_time  # 计算函数执行的总时间
+
+        # 获取函数的名称，如果无法获取名称，则使用类的名称
+        func_name = getattr(func, "__name__", None) or func.__class__.__name__
+
+        # 输出函数名称和执行时间
+        print(f"Function {func_name} took {elapsed_time:.6f} seconds to execute.")
+
+        return result  # 返回被装饰函数的结果
+
+    return wrapper  # 返回包装函数，用于替代原始函数
+
+app = Sanic("SEGMENT-API")
+
+@app.route("/segment", methods=["POST"])
+@timing_decorator
+async def segment(request):
+    text = request.form.get("user_input")
+    if not text:
+        return json({"Error": "Missing 'user_input' parameter"}, status=400)
+
+    segment_text = jieba.lcut(text)
+    return json({"程序的分词结果为：": segment_text})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8848)
+```
