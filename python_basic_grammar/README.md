@@ -168,7 +168,7 @@ counter | Python内置计数器 |
 dataclass | 用于创建具有一些默认功能的类的装饰器 | 旨在简化创建用于存储数据的类，本质是装饰器(不常用，仅作为记录)
 enum | Python中用于创建和管理枚举类型的库 | 不常用，仅作为记录
 loguru | 日志库 | 比python内置的logging方便
-request | 发送接口数据 | 用于从代码端测试接口情况
+request | 用于发送HTTP请求的强大工具 | 允许你轻松地与Web服务交互，包括获取网页内容、发送POST请求、处理Cookies和Headers等
 time | 时间处理 | 工作中超级常用
 typing | 类型提示和类型注解 | 不常用，仅作为记录
 
