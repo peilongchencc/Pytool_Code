@@ -101,6 +101,7 @@
       - [清空字典--`clear()`:](#清空字典--clear)
     - [字典的嵌套:](#字典的嵌套)
     - [以数字作为字典的key:](#以数字作为字典的key)
+    - [字典中\*\*的使用：](#字典中的使用)
   - [python集合：](#python集合)
     - [创建集合并添加元素：](#创建集合并添加元素)
     - [删除集合中的元素：](#删除集合中的元素)
@@ -1360,6 +1361,104 @@ print(my_dict[1])    # 调用的时候也以数字的方式调用，如果写为
 print(my_dict[2])
 ```
 <br>
+
+### 字典中**的使用：
+
+在Python中，`**` 运算符的作用有三个：<br>
+
+1. 进行幂运算；
+2. 用于在函数调用时将一个字典中的键值对作为关键字参数传递给函数；
+3. 用于将一个字典中的键值对合并到另一个字典中。
+
+**1. 幂运算:**
+
+```python
+base = 2
+exponent = 3    # exponent n. 指数，幂
+result = base ** exponent
+print(result)   # 8
+```
+
+**2. 将字典中的键值对作为关键字参数传递给函数：**
+
+假设你有一个函数 `print_person_info` 接受多个关键字参数，如下所示：<br>
+
+```python
+def print_person_info(name, age, city):
+    print(f"User_Name: {name}")
+    print(f"User_Age: {age}")
+    print(f"User_City: {city}")
+```
+
+现在，你有一个包含个人信息的字典：<br>
+
+```python
+person_info = {
+    'name': 'Alice',
+    'age': 30,
+    'city': 'New York'
+}
+```
+
+你可以使用 `**` 运算符将字典中的键值对传递给函数：<br>
+
+```python
+print_person_info(**person_info)
+```
+
+这将打印出：<br>
+
+```txt
+User_Name: Alice
+User_Age: 30
+User_City: New York
+```
+
+通过 `**` 运算符，字典中的键值对被解包并传递给函数作为关键字参数，这种操作通常用于简化函数调用。<br>
+
+**3. 合并字典：**
+
+你可以使用 `**` 运算符将一个字典中的键值对合并到另一个字典中。例如：<br>
+
+```python
+dict1 = {'a': 1, 'b': 2}
+dict2 = {'b': 3, 'd': 4}
+
+merged_dict = {**dict1, **dict2}
+print(merged_dict)
+```
+
+这将创建一个新的字典 `merged_dict` 包含两个字典中的所有键值对：<br>
+
+```txt
+{'a': 1, 'b': 3, 'd': 4}
+```
+
+🚨🚨🚨请注意，**如果字典之间有重复的键，后面的字典中的值将覆盖前面的字典中的值**。这是因为字典是无序的，所以合并的顺序是不确定的。<br>
+
+总之，`**` 运算符在Python中用于在字典中的两个主要用途是将字典解包并传递给函数作为关键字参数，以及合并字典。<br>
+
+**3. 合并字典和键值对：**
+
+合并字典的一个变体就是合并字典和键值对，使用方法类似：<br>
+
+```python
+my_data = {
+    'intentTags': '',
+    'advisorId': 1,
+    'labelIds': ''
+}
+question = "定投"
+
+data = {**my_data, 'question': question}
+print(data)
+```
+
+终端效果：<br>
+
+```txt
+{'intentTags': '', 'advisorId': 1, 'labelIds': '', 'question': '定投'}
+```
 
 ## python集合：
 Python中的集合是一种**无序且不重复**的数据结构。你可以使用 `set` 关键字创建集合，也可以使用大括号 `{}` 来表示。集合中只能包含唯一的元素，重复的元素会被自动去重。你可以向集合添加、删除元素，还可以执行交集、并集、差集等操作。需要注意的是，集合中的元素必须是不可变的，例如数字、字符串、元组等。<br>
