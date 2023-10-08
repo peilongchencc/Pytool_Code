@@ -136,21 +136,29 @@ dbms.connector.http.listen_address=0.0.0.0:7474
 
 ### 更改默认密码：
 在Neo4j中，💢💢💢不能直接更改默认用户名（默认为neo4j），但可以更改默认用户的密码。使用如下命令更改密码：<br>
+
 首先确保路径正确：<br>
+
 ```shell
 cd /opt/neo4j_1/bin
 ```
+
 路径正确后输入如下指令：<br>
+
 ```shell
 neo4j-admin set-initial-password new_password
 ```
+
 将 `new_password` 改为你的密码即可，笔者设置如下：<br>
+
 ```shell
 neo4j-admin set-initial-password Flameaway3.
 ```
+
 回车后，会看到终端提示 `Changed password for user 'neo4j'.`。👏👏👏<br>
 
 如果设置新密码出现问题，命令前加上 `sudo` 再试下:<br>
+
 ```shell
 sudo neo4j-admin set-initial-password Flameaway3.
 ```
