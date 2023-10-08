@@ -6,6 +6,7 @@ Ps:本文所有指令为 Linux 版本，Windows 或 MacOS 指令请自行从网�
   - [权限指令：](#权限指令)
     - [sudo su - 和 su root 指令的区别是什么？](#sudo-su---和-su-root-指令的区别是什么)
     - [查看环境变量：](#查看环境变量)
+    - [Linux系统环境变量常见位置：](#linux系统环境变量常见位置)
     - [shell解释器查看与类型更改：](#shell解释器查看与类型更改)
   - [系统信息指令：](#系统信息指令)
   - [CPU 和 GPU 相关：](#cpu-和-gpu-相关)
@@ -165,6 +166,15 @@ echo $JAVA_HOME
 ```
 
 如果已经设置了JAVA_HOME环境变量，这个命令会显示JAVA_HOME的值。如果它为空、环境变量文件中注释或未定义，将不会显示任何输出。<br>
+
+### Linux系统环境变量常见位置：
+
+```bash
+~/.bashrc
+~/.zshrc
+~/.profile
+/etc/environment
+```
 
 ### shell解释器查看与类型更改：
 
