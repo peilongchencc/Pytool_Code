@@ -372,6 +372,12 @@ find / -name "*文件名"：
 
 😀😀😀可以记住这种查找方式，当你找不到某些配置文件时，这个命令非常有用。<br>
 
+如果你要查找的路径下，有一些目录你想要排除，可以参考以下指令：<br>
+
+```bash
+grep -r "jdk1.8.0_221" --exclude-dir=/home/deployer/Project/ --exclude-dir=/home/deployer/TestProject/ --exclude-dir=/home/deployer/peilongchencc /home/deployer/ 
+```
+
 查看当前所在的目录：<br>
 ```shell
 pwd
