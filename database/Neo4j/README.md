@@ -155,6 +155,12 @@ neo4j-admin set-initial-password Flameaway3.
 sudo neo4j-admin set-initial-password Flameaway3.
 ```
 
+如果提示`-su: neo4j-admin: command not found`，改为以下方式即可：<br>
+
+```shell
+./neo4j-admin set-initial-password Flameaway3.
+```
+
 ### 修改环境变量:
 修改环境变量是为了简化neo4j的操作，如果不修改环境变量会导致终端使用类似 `neo4j start` 指令时会提示 "命令无法识别"。<br>
 > 如果你想在同一台服务器部署两个 Neo4j 数据库，最好的做法是两者都不设置全局环境变量。🚨🚨🚨
