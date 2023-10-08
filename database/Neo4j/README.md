@@ -194,17 +194,37 @@ source ~/.bashrc
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/af9f8f1c-44a9-4af6-ac24-73dce3609bcd)
 
 ### 启动/关闭 Neo4j 数据库：
-此时你就可以终端输入以下指令启动 Neo4j 数据库了：<br>
+
+现在，你可以选择以下任意一种方式，从终端启动 Neo4j 数据库了：<br>
+
+1. 常规方式启动：
+
 ```shell
 neo4j start
 ```
+
+2. 以终端输出日志的方式启动：
+
+```bash
+neo4j console
+```
+
+3. 以后台方式启动：
+
+```bash
+nohup sudo neo4j start &
+```
+
+🔥🔥🔥以`nohup`形式启动的服务，在当前终端关闭的情况下依旧会在后台运行。`nohup`指令可以和多种指令搭配，例如：`nohup sudo neo4j console &`或`nohup sudo neo4j restart &`~<br>
+
 你也可以输入以下指令查看端口情况：<br>
+
 ```shell
 netstat -tuln
 ```
-<br>
 
 如果你想要关闭 Neo4j 数据库，使用以下指令：<br>
+
 ```shell
 neo4j stop
 ```
@@ -374,28 +394,46 @@ netstat -tuln
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/39e1ceb7-198b-4d9e-81df-3a23a2e714d0" alt="image" width="70%" height="70%">
 
 ## 终端Neo4j常用指令：
+
 启动Neo4j数据库作为后台服务:<br>
-```shell
+
+```bash
 neo4j start
 ```
+
+以后台方式启动：<br>
+
+```bash
+nohup sudo neo4j start &
+```
+
 停止Neo4j数据库服务:<br>
-```shell
+
+```bash
 neo4j stop
 ```
+
 重新启动Neo4j数据库服务:<br>
-```shell
+
+```bash
 neo4j restart
 ```
+
 检查Neo4j数据库服务的状态:<br>
-```shell
+
+```bash
 neo4j status
 ```
+
 显示Neo4j的版本信息:<br>
-```shell
+
+```bash
 neo4j version
 ```
+
 以控制台模式查看 Neo4j 数据库基本信息:<br>
-```shell
+
+```bash
 neo4j console 
 ```
 
