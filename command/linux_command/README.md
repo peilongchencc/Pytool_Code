@@ -177,6 +177,12 @@ echo $JAVA_HOME
 /etc/environment
 ```
 
+或者有可能是`/etc/profile.d`下的任意文件(develop.sh文件是我瞎写的🫠)：<br>
+
+```bash
+/etc/profile.d/develop.sh
+```
+
 ### shell解释器查看与类型更改：
 
 查看当前终端正在使用的 shell 解释器类型：<br>

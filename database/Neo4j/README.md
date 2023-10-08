@@ -46,6 +46,8 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [测试python与Neo4j的连接状态：](#测试python与neo4j的连接状态)
     - [创建三元组：](#创建三元组)
     - [获取三元组的值：](#获取三元组的值)
+  - [Neo4j的卸载：](#neo4j的卸载)
+  - [卸载JDK：](#卸载jdk)
 
 ## Neo4j的安装：
 ### 更新系统软件包信息：
@@ -922,3 +924,53 @@ print(name_zh)        # 受事，类型为 str
 snowflake_id = relationship['snowflake_id']
 print(snowflake_id)        # 7104708589926234047，类型为 int
 ```
+
+## Neo4j的卸载：
+
+
+## 卸载JDK：
+
+假设你的系统中有多个jdk，你想要删除 `java-1.8.0-openjdk-amd64`，可以参考如下方式：<br>
+
+1. 终端输入以下指令查看jdk信息：<br>
+
+```bash
+update-java-alternatives --list
+```
+
+由下图可知，你的系统中同时存在jdk8和jdk11。<br>
+
+```log
+java-1.11.0-openjdk-amd64      1111       /usr/lib/jvm/java-1.11.0-openjdk-amd64
+java-1.8.0-openjdk-amd64       1081       /usr/lib/jvm/java-1.8.0-openjdk-amd64
+```
+
+2. 使用`apt-get`卸载Java 8的OpenJDK包。执行以下命令：
+
+```bash
+sudo apt-get purge openjdk-8-jre openjdk-8-jre-headless openjdk-8-jdk openjdk-8-jdk-headless
+```
+
+3. 删除任何相关的未使用的依赖包：
+
+```bash
+sudo apt-get autoremove
+```
+
+4. 更新软件包列表：
+
+```bash
+sudo apt-get update
+```
+
+5. 为了确保Java 8已完全从你的系统中删除，你可以检查`/usr/lib/jvm/`目录下的内容。执行以下命令：
+
+```bash
+ls /usr/lib/jvm/
+```
+
+确保`java-1.8.0-openjdk-amd64`目录不再存在。<br>
+
+6. 你还可以再次运行`update-java-alternatives --list`命令来确保Java 8不再列出。
+
+执行上述步骤后，Java 8的OpenJDK应该已从你的Ubuntu 18.04系统中完全删除。<br>
