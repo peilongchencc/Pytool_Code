@@ -214,6 +214,11 @@ https://user-images.githubusercontent.com/8587189/232783372-8f2a5f83-1e57-42f0-8
 ```
 
 
+<video controls>
+    <source src="./markdown_materials/intro_insert_video_to_markdown.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
 ## 插入分隔符：
 在Markdown中，你可以使用分隔符来创建水平分隔线或分隔段落。水平分隔线通常用于将不同部分或主题分隔开，以增加文档的可读性。<br>
 
