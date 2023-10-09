@@ -213,7 +213,7 @@ https://user-images.githubusercontent.com/8587189/232783372-8f2a5f83-1e57-42f0-8
 ![点击播放视频](https://user-images.githubusercontent.com/8587189/232783372-8f2a5f83-1e57-42f0-8740-4b7e5901b561.mp4)
 ```
 
-<iframe height=498 width=510 src="./markdown_materials/intro_insert_video_to_markdown.mp4">
+<iframe height=498 width=510 src="./markdown_materials/intro_insert_video_to_markdown.mp4" frameborder=0 allowfullscreen></iframe>
 
 
 为什么啥都不显示呢？<br>
