@@ -24,6 +24,7 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
     - [删除表中的内容(DELETE)：](#删除表中的内容delete)
   - [删除表(DROP TABLE)：](#删除表drop-table)
   - [Python与MySQL：](#python与mysql)
+    - [pymysql的安装：](#pymysql的安装)
     - [使用pymysql测试连接MySQL：](#使用pymysql测试连接mysql)
     - [pymysql操作数据库的关键：](#pymysql操作数据库的关键)
     - [创建表：](#创建表)
@@ -468,16 +469,27 @@ SQL语句解释：这个示例将从数据库中永久删除 task_monitor 表及
 <br>
 
 ## Python与MySQL：
-在应用程序中，获取用户输入等信息都是存入MySQL的，怎么存呢？肯定是代码配合SQL语句。笔者主用的python，就介绍一下python与SQL语句的联合使用。如果你只是在Navicat中操作，也可以从下列python代码中复制自己需要的SQL语句进行使用。<br>
+
+应用程序(app或网页)获取到的用户输入、用户个人信息等信息都是存入MySQL的，怎么存呢？<br>
+
+肯定是代码配合SQL语句，笔者主用python语言，就介绍一下python与SQL语句的联合使用。<br>
+
+如果你只是在Navicat中操作，也可以从下列python代码中复制自己需要的SQL语句进行使用。<br>
+
+### pymysql的安装：
 
 python连接MySQL的方式有很多，例如 `pymysql`、`mysqlclient`、`aiomysql`。笔者常用的为连接方式为 `pymysql`，以下内容全部以 `pymysql+python`的方式介绍。<br>
-pymysql的安装方式很简单：<br>
+
+pymysql的安装方式很简单，终端运行下列指令即可：<br>
+
 ```shell
 pip install pymysql
 ```
 
 ### 使用pymysql测试连接MySQL：
+
 首先要确保和MySQL数据库的正常连接才能进行更多的操作，将下列代码中 `host`、`user`、`password`、`database` 改为自己的信息即可。<br>
+
 ```python
 import pymysql.cursors
 
@@ -493,25 +505,33 @@ try:
 except:
     print('MySQL连接失败。')
 ```
+
 如果你是本地连接本地电脑搭建的MySQL数据库，`host` 不需要更改。如果你是本地连接远程服务器的MySQL，需要将 `host` 改为远程服务器对应的 `ip`，例如 `8.140.203.xxx`。
+
 ```python
 host = '8.140.203.xxx'
 ```
+
 如果你使用的是阿里云提供的MySQL数据库，那 `host` 改为阿里云提供给你的域名信息即可，类似于：`rdsxxxxxxxx.mysql.rds.aliyuncs.com`。<br>
+
 ```python
 host = 'rdsxxxxxxxx.mysql.rds.aliyuncs.com'
 ```
 
 ### pymysql操作数据库的关键：
+
 在python中使用pymysql连接MySQL时，`cursor` 是我们操作的基础，`cursor` 是用于执行SQL语句并处理查询结果的对象。<br>
+
 具体来说，`cursor` 对象提供了以下功能：<br>
+
 - 执行SQL语句: 可以使用 `execute()` 方法来执行SQL语句，可以是查询语句或非查询语句（如`INSERT` 、`UPDATE` 等）。
 - 处理查询结果：可以使用`fetchone()`、 `fetchall()` 等方法来获取查询结果。`fetchone()` 用于获取一条记录，而 `fetchall()` 用于获取所有记录。还可以使用 `fetchmany()` 来获取指定数量的记录，例如获取SQL语句执行结果中的2条数据，`fetchmany(2)`。
 - 控制事务：可以使用commit()方法提交事务或使用rollback()方法回滚事务。
 - 获取执行结果信息：可以通过rowcount属性获取受影响的行数。此外，description属性可以获得查询结果集中列的元数据信息。
 使用cursor可以灵活地执行SQL语句、处理结果集以及管理事务，进而实现对MySQL数据库的有效操作。<br>
 
-了解pymysql中 `cursor` 的作用后，我们看下 `cursor` 的使用位置：<br>
+💦💦💦了解pymysql中 `cursor` 的作用后，我们看下 `cursor` 的使用位置：<br>
+
 > 只需要简单看下结构，了解在上一步的基础上扩充了哪些内容即可～🚀 更具体的用法，之后的内容会讲。
 
 ```python
@@ -545,6 +565,7 @@ finally:
 ```
 
 ### 创建表：
+
 了解了代码结构后，我们看下如何创建表。毕竟数据都存在表中，没有表我们就没有可操作的数据。^_^<br>
 
 ```python
@@ -589,7 +610,9 @@ finally:
     # 关闭连接
     mysql_connection.close()
 ```
+
 执行上述代码就可以在 `MySQL` 中名 `irmdata` 的 `database` 下创建一个 `task_monitor` 表。<br>
+
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/940d72e3-e339-4d93-ad33-f0eea9aa4647)
 
 ### 获取表中的内容：
