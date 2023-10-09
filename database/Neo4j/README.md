@@ -832,7 +832,9 @@ MATCH (m) OPTIONAL MATCH (m)-[r]-() DELETE m, r
 
 ## Neo4j Desktop配合apoc插件进行Neo4j数据迁移：
 
-Apoc可以将Neo4j中的数据以`xxx.cypher`脚本的形式导出，具有方便、快速的优势。<br>
+Apoc可以将Neo4j中的数据以`xxx.cypher`脚本的形式导出，在导入时可以直接运行`xxx.cypher`脚本构建节点和关系，不需要自己额外写构建节点、关系的代码。<br>
+
+这种做法类似于Navicat将MySQL数据导出为`xxx.sql`脚本，既方便又快速，推荐大家使用。🫠🫠🫠<br>
 
 ### 安装对应版本的apoc:
 
