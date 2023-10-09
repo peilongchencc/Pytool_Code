@@ -124,7 +124,7 @@ redis-cli
 (error) NOAUTH Authentication required.
 ```
 
-仿照下列指令进行权限验证即可，假设你Redis的密码为`Flameaway3.`：<br>
+仿照下列指令进行权限验证即可，假设你Redis的密码为`Flameaway3.`，在 `127.0.0.1:6379>` 后输入：<br>
 
 ```bash
 AUTH Flameaway3.
