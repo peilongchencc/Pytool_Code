@@ -801,7 +801,9 @@ Neo4j效果如下：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/053bbba1-3a9a-4dcd-9336-b7ba5db3d243" alt="image" width="50%" height="50%">
 
 ### 删除指定关系：
+
 假设你现在想删除张三和李四之间的"前姐夫"关系，运行下列语句即可：(做法与 `更新Neo4j中实体间的关系` 那一节的语句相似)<br>
+
 ```sql
 MATCH (zhangsan:Person {true_name: '张三'})-[r:前姐夫]->(lisi:Person {true_name: '李斯'})
 DELETE r
@@ -820,10 +822,13 @@ RETURN m, n
 ```
 
 ### 删除Neo4j中所有节点和关系：
+
 删除操作无法撤回，尤其是删除所有‼️‼️‼️除非你打算删库跑路🥴🥴🥴<br>
+
 ```sql
 MATCH (m) OPTIONAL MATCH (m)-[r]-() DELETE m, r
 ```
+
 
 ## Neo4j Desktop配合apoc插件进行Neo4j数据迁移：
 
@@ -934,7 +939,7 @@ neo4j start
 
 打开`Neo4j Desktop`，输入如下指令，查看 apoc 版本号。若有版本号，则成功；<br>
 
-```bash
+```sql
 return apoc.version()
 ```
 
@@ -953,13 +958,13 @@ apoc.version()
 
 查询所有节点的数量(包含孤立节点的数量；)：<br>
 
-```bash
+```sql
 MATCH (n) RETURN count(n) AS nodeCount;
 ```
 
 查看孤立节点的数量(没有关系的孤立节点不要遗漏了～):<br>
 
-```bash
+```sql
 MATCH (n)
 WHERE NOT ()-[]-(n)
 RETURN count(n) AS isolatedNodeCount
@@ -970,7 +975,7 @@ RETURN count(n) AS isolatedNodeCount
 
 查询关系类型总体的数量，只返回一个值。<br>
 
-```bash
+```sql
 MATCH ()-[r]->()
 RETURN count(r) AS relationshipCount
 ```
@@ -985,13 +990,13 @@ RETURN count(r) AS relationshipCount
 
 孤立节点：没有构建关系，不代表没有用处，不要遗忘了～<br>
 
-```bash
+```sql
 CALL apoc.export.cypher.query('MATCH (n) WHERE NOT ()-[]-(n) RETURN n', 'single_nodes.cypher', {})
 ```
 
 #### 导出常规关系型节点、边：
 
-```bash
+```sql
 CALL apoc.export.cypher.query('MATCH (n)-[r]->(m) RETURN n, r, m ', "all_relation_data.cypher", {}) 
 ```
 
@@ -1030,7 +1035,7 @@ neo4j start
 
 4. 打开`Neo4j Desktop`，输入如下指令，查看 apoc 版本号。若有版本号，则成功；<br>
 
-```bash
+```sql
 return apoc.version()
 ```
 
@@ -1038,11 +1043,11 @@ return apoc.version()
 
 在`Neo4j Desktop`，输入如下指令，依次导入你放在import文件夹下的数据：<br>
 
-```bash
+```sql
 CALL apoc.cypher.runFile('file:///single_nodes.cypher');
 ```
 
-```bash
+```sql
 CALL apoc.cypher.runFile('file:///all_relation_data.cypher');
 ```
 
@@ -1058,33 +1063,37 @@ CALL apoc.cypher.runFile('file:///all_relation_data.cypher');
 
 查看25个节点和关系:<br>
 
-```bash
+```sql
 MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 25
 ```
 
 查看所有节点和关系:<br>
 
-```bash
+```sql
 MATCH (n)-[r]->(m) RETURN n, r, m
 ```
 
 查看所有关系:<br>
 
-```bash
+```sql
 MATCH ()-[r]->() RETURN r
 ```
 
 
 ## python与Neo4j：
+
 在 Neo4j Desktop 中输入 Cypher 语句执行查询等操作是我们工作中必须要掌握的本领，但更常见的是我们使用代码与Neo4j连接执行操作，笔者常用的语言为python，这里就介绍python连接Neo4j的常见操作。<br>
 
 笔者惯用 `py2neo` 库连接 Neo4j，安装方法非常简单：<br>
-```shell
+
+```bash
 pip install py2neo
 ```
 
 ### 测试python与Neo4j的连接状态：
+
 如果你是访问远程Neo4j数据库，可以按照类似下方代码的方式，修改自己的信息进行测试。如果你开了多个Neo4j数据库，注意端口是否正确。🚀🚀🚀<br>
+
 ```python
 from py2neo import Graph
 try:
@@ -1095,7 +1104,9 @@ try:
 except:
     print('Neo4j连接失败')
 ```
+
 如果你是在部署Neo4j的机器上操作，将 `ip` 改为 `localhost` 即可。<br>
+
 ```python
 from py2neo import Graph
 try:
@@ -1108,9 +1119,11 @@ except:
 ```
 
 ### 创建三元组：
+
 `py2neo` 支持很多类似Neo4j中Cypher的操作，比如 `create`、`Node` 等方法，但笔者用的最多的还是 `Graph` 对象和 `run` 方法，`Graph` 对象可以直接接受Cypher语句，然后使用 `run` 方法运行Cypher语句。<br>
 
 `Graph` 对象和 `run` 方法的使用的使用很简单，通过复用之前的代码，这里介绍下具体操作：<br>
+
 ```python
 from py2neo import Graph
 
@@ -1131,9 +1144,11 @@ result = graph.run(cypher_query)
 ```
 
 ### 获取三元组的值：
+
 获取三元组的值时需要采用 `graph.run().data()` 方法，这样才方便操作～🌿🌿🌿<br>
 
 假设我们构建三元组的代码如下：<br>
+
 ```python
 from py2neo import Graph
 
@@ -1148,7 +1163,9 @@ return m,r,n
 
 result = graph.run(cypher_query)
 ```
+
 我们如果想要利用 `py2neo` 获取详细的实体和关系信息，可以使用如下代码：<br>
+
 ```python
 from py2neo import Graph
 
