@@ -367,22 +367,29 @@ nohup ./my_script.sh > output.log 2>&1 &
 
 
 ## 常规文件操作：
+
 清空一个文件中的内容：<br>
+
 > 文件的内容将被清空，但文件本身仍然存在。
 
 在Linux中，如果要清空名为example.txt的文件的内容，可以运行以下命令：<br>
-```shell
+
+```bash
 > example.txt
 ```
+
 这将清空 `example.txt` 文件中的内容，也可以按照路径的方式去清理对应路径下的某个文件。<br>
 <br>
 
 终端运行自己的python程序时，如果python程序中有 `print` 或 `log` 项，可以通过以下指令将终端的输出写入`example.txt`文件：<br>
-```shell
+
+```bash
 python main.py > example.txt
 ```
+
 这种方式每次运行上述代码都会将 `example.txt` 清空，然后重新写入。如果想要采用追加的方式写入，可以采用以下指令：<br>
-```shell
+
+```bash
 python main.py >> example.txt
 ```
 <br>
