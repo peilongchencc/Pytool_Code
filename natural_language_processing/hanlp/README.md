@@ -68,11 +68,13 @@ print(res)
 再次运行代码，程序会帮你自动解压下载的文件。<br>
 
 ### 根据自定义词库分词：
+
 如果你想要加入自定义词库，可以通过 `dict_force = None` 参数进行控制，`dict_force = None` 会在统计模型的分词结果上执行**最长匹配**并合并匹配到的词条。<br>
 
 `dict_force = None` 的用法为：当将“美国总统”加入 `dict_combine` 后，会合并['美国', '总统']，而不会合并['美国', '总', '统筹部']为['美国总统', '筹部']。<br>
 
 具体代码示例如下：<br>
+
 ```python
 import hanlp
 Segment = hanlp.load(hanlp.pretrained.tok.FINE_ELECTRA_SMALL_ZH)
@@ -81,12 +83,15 @@ Segment.dict_combine = {'急性肠胃炎','盛剑环境'}
 res = Segment(['急性肠胃炎要如何治疗？','盛剑环境的股价太高了。'])
 print(res)
 ```
+
 终端效果：<br>
+
 ```python
 [['急性肠胃炎', '要', '如何', '治疗', '？'], ['盛剑环境', '的', '股价', '太', '高', '了', '。']]
 ```
 
 ## 语义文本相似度：
+
 ```python
 import hanlp
 # 语义文本相似度(Semantic text similarity)
@@ -111,6 +116,7 @@ print(doc)  # 结果为 list 类型
 ### 单个输入的语义依存分析：
 ```python
 import hanlp
+# 语义依存分析(Semantic Dependency Parsing)
 Segment = hanlp.load(hanlp.pretrained.tok.FINE_ELECTRA_SMALL_ZH)
 Segment.dict_force = None
 Segment.dict_combine = {'急性肠胃炎'}
@@ -122,7 +128,9 @@ graphs = HanLP(res)
 print(graphs)
 print(type(graphs))
 ```
+
 终端效果：<br>
+
 ```shell
 ['急性肠胃炎', '要', '如何', '治疗', '？']
 1       急性肠胃炎      _       _       _       _       _       _       4:Pat   _
@@ -132,11 +140,14 @@ print(type(graphs))
 5       ？      _       _       _       _       _       _       4:mPunc _
 <class 'hanlp_common.conll.CoNLLSentence'>
 ```
+
 相信你已经注意到了，我打印出了 `graphs` 的类型，类型为 `hanlp_common.conll.CoNLLSentence` 类，如果你需要提取需要的内容组成三元组，可以参考 `"分词+语义依存分析的pipeline构建"` 那一节中的内容。<br>
 
 ### 多个输入的语义依存分析：
+
 ```python
 import hanlp
+# 语义依存分析(Semantic Dependency Parsing)
 Segment = hanlp.load(hanlp.pretrained.tok.FINE_ELECTRA_SMALL_ZH)
 Segment.dict_force = None
 Segment.dict_combine = {'急性肠胃炎','盛剑环境'}
@@ -149,7 +160,9 @@ print(graphs)
 print(type(graphs))
 print("____________")
 ```
+
 终端效果：<br>
+
 ```shell
 [['急性肠胃炎', '要', '如何', '治疗', '？'], ['盛剑环境', '的', '股价', '太', '高', '了', '。']]
 [[{'id': 1, 'form': '急性肠胃炎', 'upos': None, 'xpos': None, 'head': None, 'deprel': None, 'lemma': None, 'feats': None, 'deps': [(4, 'Pat')], 'misc': None}, {'id': 2, 'form': '要', 'upos': None, 'xpos': None, 'head': None, 'deprel': None, 'lemma': None, 'feats': None, 'deps': [(4, 'mMod')], 'misc': None}, {'id': 3, 'form': '如何', 'upos': None, 'xpos': None, 'head': None, 'deprel': None, 'lemma': None, 'feats': None, 'deps': [(4, 'Mann')], 'misc': None}, {'id': 4, 'form': '治疗', 'upos': None, 'xpos': None, 'head': None, 'deprel': None, 'lemma': None, 'feats': None, 'deps': [(0, 'Root')], 'misc': None}, {'id': 5, 'form': '？', 'upos': None, 'xpos': None, 'head': None, 'deprel': None, 'lemma': None, 'feats': None, 'deps': [(4, 'mPunc')], 'misc': None}], [{'id': 1, 'form': '盛剑环境', 'upos': None, 'xpos': None, 'head': None, 'deprel': None, 'lemma': None, 'feats': None, 'deps': [(3, 'Desc')], 'misc': None}, {'id': 2, 'form': '的', 'upos': None, 'xpos': None, 'head': None, 'deprel': None, 'lemma': None, 'feats': None, 'deps': [(1, 'mAux')], 'misc': None}, {'id': 3, 'form': '股价', 'upos': None, 'xpos': None, 'head': None, 'deprel': None, 'lemma': None, 'feats': None, 'deps': [(5, 'Exp')], 'misc': None}, {'id': 4, 'form': '太', 'upos': None, 'xpos': None, 'head': None, 'deprel': None, 'lemma': None, 'feats': None, 'deps': [(5, 'mDegr')], 'misc': None}, {'id': 5, 'form': '高', 'upos': None, 'xpos': None, 'head': None, 'deprel': None, 'lemma': None, 'feats': None, 'deps': [(0, 'Root')], 'misc': None}, {'id': 6, 'form': '了', 'upos': None, 'xpos': None, 'head': None, 'deprel': None, 'lemma': None, 'feats': None, 'deps': [(5, 'mTone')], 'misc': None}, {'id': 7, 'form': '。', 'upos': None, 'xpos': None, 'head': None, 'deprel': None, 'lemma': None, 'feats': None, 'deps': [(5, 'mPunc')], 'misc': None}]]
@@ -157,17 +170,20 @@ print("____________")
 ```
 
 ## 多任务模型：
+
 直接使用多任务模型，一次运行就可以完成多个任务。需要注意的是‼️‼️‼️：多任务学习的优势在于速度和显存，然而精度往往不如单任务模型。所以，更好的方式是使用HanLP的流水线模式(pipeline)将多个单任务模型组装起来。<br>
 
-
 多任务模型的调用方式如下：<br>
+
 ```python
 import hanlp
 HanLP = hanlp.load(hanlp.pretrained.mtl.CLOSE_TOK_POS_NER_SRL_DEP_SDP_CON_ELECTRA_SMALL_ZH) # 世界最大中文语料库
 res = HanLP(['急性肠胃炎要如何治疗？','盛剑环境的股价太高了。'])
 print(res)
 ```
+
 终端效果：<br>
+
 ```txt
 {                 
   "tok/fine": [
@@ -222,10 +238,13 @@ print(res)
 ```
 
 ## 流水线模式--pipeline：
+
 `pipeline` 模式如果没有指定 `input_key` ，默认将上一步的输出作为输入。参数的传递依靠 `input_key` 和 `ouput_key`，`input_key` 和 `ouput_key` 的变量名可以根据自己的喜好定义。<br>
 
 ### 分句型pipeline:
+
 如果你的输入是一个超长的字符串，而你又不知道怎样便捷分句，可以执行以下代码。<br>
+
 ```python
 import hanlp
 
@@ -246,7 +265,9 @@ print(doc)
 # 打印pipeline中间某一步的输出
 # print(doc["tok"])
 ```
+
 终端效果：<br>
+
 ```python
 {                 
   "sentences": [
@@ -277,6 +298,7 @@ print(doc)
 ```
 
 ### 分句函数的具体代码：
+
 ```python
 import re
 
@@ -320,7 +342,9 @@ def split_sentence(text, best=True):
 
 
 ### 列表形式输入：
+
 上一节模型输入的限制主要由分句函数决定，分句函数的输入需要是字符串，如果我们去除分句函数，那么可以按照列表的形式传入我们的输入。<br>
+
 ```python
 import hanlp
 
@@ -341,7 +365,9 @@ print(doc)
 ```
 
 ### 修改pipeline中插入的hanlp内置函数：
+
 以分词为例，在工作中我们经常需要在分词的时候加入自定义词库。如果只使用一个分词模型，加入自定义词库很容易，但如何在pipeline的分词模型中加入自定义词库呢？可以参考以下代码：<br>
+
 > 当你在管道中使用自定义函数时，你只需要将关键字参数(`seg_dict`)传递给它，位置参数（如 `input_list`）会自动由管道进行传递。
 
 
@@ -372,7 +398,9 @@ print(doc)
 ```
 
 ### 在pipeline插入自定义函数：
+
 加入自定义函数需要注意变量的传递，提取出正确的输入。<br>
+
 ```python
 import hanlp
 segment_dict = {'急性肠胃炎', '盛剑环境'}
@@ -407,7 +435,9 @@ doc = HanLP(['急性肠胃炎要如何治疗？', '盛剑环境的股价太高�
 print(doc)
 print(doc["custom_function_result"]["my_project_name"])
 ```
+
 终端效果：<br>
+
 ```txt
 {                 
   "custom_function_result": {
@@ -439,6 +469,7 @@ print(doc["custom_function_result"]["my_project_name"])
 ```
 
 ### 分词+语义依存分析的pipeline构建：
+
 ```python
 import hanlp
 segment_dict = {'急性肠胃炎','盛剑环境'}
@@ -517,7 +548,9 @@ print(semantic_triples)
 for x in semantic_triples:
     print(x)
 ```
+
 终端效果：<br>
+
 ```log
 1       急性肠胃炎      _       _       _       _       _       _       4:Pat   _
 2       要      _       _       _       _       _       _       4:mMod  _
