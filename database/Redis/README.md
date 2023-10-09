@@ -139,7 +139,7 @@ INFO SERVER
 显示的内容为 Redis 服务器的信息，包括版本号。<br>
 <br>
 
-退出操作很多，包括输入 `exit`、`quit` 或按 `Ctrl+c`。<br>
+退出Redis命令行界面的操作很多，包括输入 `exit`、`quit` 或按 `Ctrl+c`。<br>
 <br>
 
 ### 查看存入 Redis 中的数据：
