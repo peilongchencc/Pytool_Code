@@ -38,7 +38,7 @@ Mac如果直接使用 `pip install hanlp[full] -U` 指令安装HanLP报错，可
 pip install 'hanlp[full]' -U
 ```
 
-推测原因为zsh对方括号进行了拓展，所以需要利用单引号或双引号将`hanlp[full]`包裹。<br>
+推测原因为zsh对**方括号**进行了拓展，所以需要利用单引号或双引号将`hanlp[full]`包裹。<br>
 
 ## 分词：
 标准分词方式参考如下代码，：<br>
