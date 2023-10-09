@@ -46,7 +46,7 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [安装对应版本的apoc:](#安装对应版本的apoc)
     - [apoc 文件选择与下载：](#apoc-文件选择与下载)
     - [将apoc文件移动到Neo4j的插件目录：](#将apoc文件移动到neo4j的插件目录)
-    - [配置neo4j.conf中apoc设置：](#配置neo4jconf中apoc设置)
+    - [修改neo4j.conf中apoc设置：](#修改neo4jconf中apoc设置)
     - [启动或重新启动Neo4j数据库：](#启动或重新启动neo4j数据库)
     - [验证apoc插件是否成功安装：](#验证apoc插件是否成功安装)
     - [查看Neo4j数据库中的节点情况：](#查看neo4j数据库中的节点情况)
@@ -904,7 +904,7 @@ dbms.directories.plugins=/var/lib/neo4j/plugins
 find / -name "neo4j.conf"
 ```
 
-### 配置neo4j.conf中apoc设置：
+### 修改neo4j.conf中apoc设置：
 
 首先找到自己的 `neo4j.conf` 文件，我的`neo4j.conf`文件在以下路径中：<br>
 
