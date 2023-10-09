@@ -208,6 +208,7 @@ r.set("my_str", data)
 
 #### redis设置过期时间：
 redis通过`expire`设置过期时间，该参数以秒为单位：<br>
+
 ```python
 import redis
 
@@ -222,6 +223,7 @@ r.expire("my_str", 7*24*60*60)    # 设置存储时间为7天；
 ```
 
 #### 使用 get 从 Redis 取出 字符串 数据：
+
 ```python
 import redis
 
@@ -235,7 +237,9 @@ print(decoded_result)                           # Hello, world!
 ```
 
 ### Redis设置默认返回值：
+
 当使用 `get` 从redis获取数据时，如果你的数据过期🥶🥶🥶，或者你查询的 `key` 输入错误🙈🙈🙈，此时会返回 `None`，有可能对后续代码产生影响，所以当从redis获取内容时，设置一个默认值是非常有必要的一件事。<br>
+
 ```python
 import redis
 
