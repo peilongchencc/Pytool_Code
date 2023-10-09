@@ -1009,6 +1009,8 @@ CALL apoc.export.cypher.query('MATCH (n)-[r]->(m) RETURN n, r, m ', "all_relatio
 
 ### 将cypher文件移至新的neo4j数据库的import文件夹下：
 
+cypher文件需要放在Neo4j数据库的import文件夹下才能被导入，所以需要将你上一步生成的`xxx.cypher`文件放入待接收数据的Neo4j的import文件夹下。<br>
+
 假设你是要将数据从本地Neo4j迁移至阿里云服务器部署的neo4j数据库中，你在阿里云服务器部署的neo4j数据库也是按照笔者的教程安装的，那么Neo4j的import文件夹路径为：<br>
 
 ```bash
