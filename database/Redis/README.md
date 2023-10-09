@@ -55,53 +55,98 @@ Redis具有快速、可靠、灵活、可扩展的特点，支持多种数据结
   - [文件介绍：](#文件介绍)
 
 ## Ubuntu 18.04 安装 Redis 步骤：
-1.更新软件包列表：
-```shell
+
+1. 更新软件包列表：
+
+```bash
 sudo apt update
 ```
 
-2.安装Redis服务器：
-```shell
+2. 安装Redis服务器：
+
+```bash
 sudo apt install redis-server
 ```
+
 安装完成后，Redis服务器将自动启动，此时终端即可使用 redis-cli 指令。（ Redis 的安装真的很简单🤭）<br>
 <br>
 
 ## 终端Redis常用指令：
+
 ### 开启/关闭 Redis 服务:
-```shell
-redis-server          # 开启 Redis 服务；
-redis-cli shutdown    # 关闭 Redis 服务；
+
+如果你想要启动Redis数据库，请使用下列指令：<br>
+
+```bash
+redis-server
 ```
 
+如果你想要关闭Redis数据库，请使用下列指令：<br>
+
+```bash
+redis-cli shutdown
+```
+
+⚠️注意：因Redis数据为缓存型数据，重新启动Redis数据库会导致Redis中的数据清空。<br>
+
 ### 查看 Redis 版本：
+
 可通过下列2种方法中的任何一种方法查看 Redis 版本：<br>
+
 #### 终端查看：
 
 终端输入下列指令即可查看到 Redis 版本信息：<br>
-```shell
+
+```bash
 redis-server --version
 ```
+
 注意⚠️：Ubuntu 18.04 只提供Redis 4.0.9版本的安装。<br>
 <br>
 
 #### 进入 Redis 数据库内部查看：
-1.打开终端并输入以下指令:
-```shell
+
+1. 打开终端并输入以下指令:
+
+```bash
 redis-cli
 ```
+
 此时会显示 `127.0.0.1:6379>` ，这表示你已经进入了 Redis 数据库。<br>
 
-2.在 `127.0.0.1:6379>` 后输入： 
-```shell
+2. 账号验证：
+
+如果你的Redis没有设置密码，可以跳过这一节内容。<br>
+
+如果你的Redis设置了密码，输入Redis指令会遇到下列提示：<br>
+
+```log
+(error) NOAUTH Authentication required.
+```
+
+仿照下列指令进行权限验证即可，假设你Redis的密码为`Flameaway3.`：<br>
+
+```bash
+AUTH Flameaway3.
+```
+
+3. 在 `127.0.0.1:6379>` 后输入： 
+
+```bash
 INFO SERVER
 ```
-显示的内容为 Redis 服务器的信息，包括版本号。退出操作很多，包括输入 `exit`、`quit` 或 按 `Ctrl+c`。<br>
+
+显示的内容为 Redis 服务器的信息，包括版本号。<br>
+<br>
+
+退出操作很多，包括输入 `exit`、`quit` 或按 `Ctrl+c`。<br>
 <br>
 
 ### 查看存入 Redis 中的数据：
+
 注意⚠️：如果数据是以 byte(字节) 存入的 Redis，使用GET指令无法看到真实数据；<br>
-```shell
+
+```bash
 redis-cli          # 终端连接到 Redis；
 KEYS *             # 返回当前数据库中所有的键列表;
 GET "my_object"    # 获取键对应的值;
