@@ -898,7 +898,7 @@ dbms.directories.plugins=/var/lib/neo4j/plugins
 
 如果是这种情况，将`apoc-4.1.0.12-all.jar`文件放入`/var/lib/neo4j/plugins`路径下即可。<br>
 
-如果你连`neo4j.conf`都不知道在哪里，可以终端输入下列指令进行全局搜索：<br>
+如果你连`neo4j.conf`都不知道在哪里，可以终端输入下列指令全局搜索`neo4j.conf`所在路径：<br>
 
 ```bash
 find / -name "neo4j.conf"
