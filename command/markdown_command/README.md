@@ -205,7 +205,9 @@ https://user-images.githubusercontent.com/8587189/232783372-8f2a5f83-1e57-42f0-8
 文本2，巴拉巴拉~
 ```
 
-相信你已经注意到了，不需要任何修饰，直接插入文件即可。(网址笔者随便在网上找的，与所讲内容无关，重点是理解如何在README.md中将视频和文字结合。)<br>
+相信你已经注意到了，不需要任何修饰，直接插入视频链接即可。(网址笔者随便在网上找的，与所讲内容无关，重点是理解如何在README.md中将视频和文字结合。)<br>
+
+使用这种方式需要先将你的视频上传至视频托管平台，例如：youtube、bilibili。<br>
 
 🌿🌿🌿请注意：如果你采用下列方式插入视频，**只是对"点击播放视频"这几个字创建了超链接**，并不是视频和文字同框。<br>
 
@@ -213,10 +215,11 @@ https://user-images.githubusercontent.com/8587189/232783372-8f2a5f83-1e57-42f0-8
 ![点击播放视频](https://user-images.githubusercontent.com/8587189/232783372-8f2a5f83-1e57-42f0-8740-4b7e5901b561.mp4)
 ```
 
-<iframe height=498 width=510 src="./markdown_materials/intro_insert_video_to_markdown.mp4" frameborder=0 allowfullscreen></iframe>
+🥹🥹🥹提醒一点：由于GitHub使用的是一种较为有限的Markdown渲染器，主要用于文本渲染和代码展示，而不是用于嵌入富媒体内容。所以，GitHub的Markdown解析器不支持嵌入 `<iframe>` 标签或类似的HTML代码块来插入视频。例如下列方式插入视频在Github中是行不通的：<br>
 
-
-为什么啥都不显示呢？<br>
+```html
+<iframe height=498 width=510 src="./markdown_materials/intro_insert_video_to_markdown.mp4">
+```
 
 
 ## 插入分隔符：
