@@ -207,7 +207,7 @@ r.set("my_str", data)
 ```
 
 #### redis设置过期时间：
-redis通过`expire`设置过期时间：<br>
+redis通过`expire`设置过期时间，该参数以秒为单位：<br>
 ```python
 import redis
 
