@@ -215,7 +215,9 @@ https://user-images.githubusercontent.com/8587189/232783372-8f2a5f83-1e57-42f0-8
 ![点击播放视频](https://user-images.githubusercontent.com/8587189/232783372-8f2a5f83-1e57-42f0-8740-4b7e5901b561.mp4)
 ```
 
-🥹🥹🥹提醒一点：由于GitHub使用的是一种较为有限的Markdown渲染器，主要用于文本渲染和代码展示，而不是用于嵌入富媒体内容。所以，GitHub的Markdown解析器不支持嵌入 `<iframe>` 标签或类似的HTML代码块来插入视频。例如下列方式插入视频在Github中是行不通的：<br>
+🥹🥹🥹提醒一点：由于GitHub使用的是一种较为有限的Markdown渲染器，主要用于文本渲染和代码展示，而不是用于嵌入富媒体内容。所以，GitHub的Markdown解析器不支持嵌入 `<iframe>` 标签或类似的HTML代码块来插入视频。<br>
+
+例如，使用下列方式在GitHub中插入视频是行不通的：<br>
 
 ```html
 <iframe height=498 width=510 src="./markdown_materials/intro_insert_video_to_markdown.mp4">
