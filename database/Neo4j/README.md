@@ -849,7 +849,9 @@ https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/tag/4.1.0.12
 进入链接后，下拉进度条至Assets模块，就是我们需要的文件。其中有很多文件，接下来笔者逐个解释一下：<br>
 
 - apoc-4.1.0.12-all.jar：这是apoc库的主要JAR文件，包含了所有功能和函数。这是必需的文件，用于安装apoc库的核心功能。❤️
+
 另外，其他的apoc-*-dependencies-4.1.0.12.jar文件是用于支持特定功能的依赖库。根据你的需求，你可以选择安装这些依赖库文件。<br>
+
 - apoc-couchbase-dependencies-4.1.0.12.jar：用于支持与Couchbase NoSQL数据库的集成。
 - apoc-email-dependencies-4.1.0.12.jar：用于支持发送电子邮件的功能。
 - apoc-mongodb-dependencies-4.1.0.12.jar：用于支持与MongoDB NoSQL数据库的集成。
