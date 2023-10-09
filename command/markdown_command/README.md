@@ -213,6 +213,7 @@ https://user-images.githubusercontent.com/8587189/232783372-8f2a5f83-1e57-42f0-8
 ![点击播放视频](https://user-images.githubusercontent.com/8587189/232783372-8f2a5f83-1e57-42f0-8740-4b7e5901b561.mp4)
 ```
 
+<source src="./markdown_materials/intro_insert_video_to_markdown.mp4" type="video/mp4">
 
 <video controls>
     <source src="./markdown_materials/intro_insert_video_to_markdown.mp4" type="video/mp4">
