@@ -346,6 +346,12 @@ python  46386 deployer   47u  IPv4 142357123      0t0  TCP *:7711 (LISTEN)
 kill -9 pid
 ```
 
+如果是关闭我上方的例子，就运行下列指令：<br>
+
+```bash
+kill -9 46386
+```
+
 ### nohup指令启动服务：
 
 nohup是一个在Unix和类Unix系统（比如Linux）中使用的命令行工具，用于运行命令，使其在终端被关闭或用户注销后仍然继续运行。<br>
