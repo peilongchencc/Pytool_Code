@@ -8,6 +8,7 @@ Ps:本文所有指令为 Linux 版本，Windows 或 MacOS 指令请自行从网�
     - [查看环境变量：](#查看环境变量)
     - [Linux系统环境变量常见位置：](#linux系统环境变量常见位置)
     - [shell解释器查看与类型更改：](#shell解释器查看与类型更改)
+    - [linux更改文件夹下所有内容的权限，例如从root改为deployer用户：](#linux更改文件夹下所有内容的权限例如从root改为deployer用户)
   - [系统信息指令：](#系统信息指令)
   - [CPU 和 GPU 相关：](#cpu-和-gpu-相关)
   - [服务相关：](#服务相关)
@@ -224,6 +225,43 @@ shell 指的是一类程序，能按照用户要求去调用操作系统接口�
 ```bash
 sudo apt update
 ```
+
+### linux更改文件夹下所有内容的权限，例如从root改为deployer用户：
+
+更改前，终端运行`ll`指令效果如下：<br>
+
+```log
+-rw-r--r--  1 root     root          538 Oct 11 22:42  set_metadata_py_from_redis.py
+-rw-r--r--  1 root     root          979 Oct 11 22:42  set_metadata_py_to_redis.py
+```
+
+此时，如果你是其他用户(例如deployer)，你无法写入内容，如果你想要实现写入，**假设要更改一个文件夹下所有内容的权限，包括子文件夹和文件**，以将其所有权从root用户更改为deployer用户，你可以使用`chown`命令。在终端中执行以下命令：<br>
+
+```bash
+sudo chown -R deployer:deployer /path/to/your/folder
+```
+
+在这个命令中：<br>
+
+- `sudo`用于以超级用户权限执行命令，因为更改文件夹权限通常需要管理员权限。
+- `chown`是更改文件夹或文件所有权的命令。
+- `-R`选项表示递归地更改所有子文件夹和文件的权限。
+- `deployer:deployer`表示要将所有权更改为deployer用户和deployer用户组。您可以根据需要更改为其他用户和用户组。
+
+最后，将`/path/to/your/folder`替换为你要更改权限的实际文件夹路径。执行此命令后，文件夹下的所有内容都将更改为deployer用户的所有权。<br>
+
+🚨🚨🚨请小心使用`chown`命令，确保你知道你在做什么，以免意外更改了文件和文件夹的权限。<br>
+
+💦💦💦如果你只想更改一个特定文件的权限，而不是整个文件夹，你可以使用`chown`命令，并指定要更改权限的文件的路径。以下是如何执行此操作的示例：<br>
+
+```bash
+sudo chown deployer:deployer /path/to/your/file
+```
+
+在这个示例中，我使用了`chown`命令来将文件的所有权更改为deployer用户和deployer用户组。请确保将`/path/to/your/file`替换为你要更改权限的实际文件的路径。<br>
+
+🚨🚨🚨同样，请谨慎使用`chown`命令，确保你知道你在做什么，以免不小心更改了文件的权限。<br>
+
 
 ## 系统信息指令：
 Linux查看自己是什么系统的方式：<br>
