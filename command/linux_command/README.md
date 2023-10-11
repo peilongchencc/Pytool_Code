@@ -250,6 +250,13 @@ sudo chown -R deployer:deployer /path/to/your/folder
 
 最后，将`/path/to/your/folder`替换为你要更改权限的实际文件夹路径。执行此命令后，文件夹下的所有内容都将更改为deployer用户的所有权。<br>
 
+此时，终端输入`ll`的效果如下：<br>
+
+```log
+-rw-r--r--  1 deployer deployer      538 Oct 11 22:42  set_metadata_py_from_redis.py
+-rw-r--r--  1 deployer deployer      979 Oct 11 22:42  set_metadata_py_to_redis.py
+```
+
 🚨🚨🚨请小心使用`chown`命令，确保你知道你在做什么，以免意外更改了文件和文件夹的权限。<br>
 
 💦💦💦如果你只想更改一个特定文件的权限，而不是整个文件夹，你可以使用`chown`命令，并指定要更改权限的文件的路径。以下是如何执行此操作的示例：<br>
