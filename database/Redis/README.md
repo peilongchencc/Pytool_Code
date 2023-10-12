@@ -177,7 +177,7 @@ pip install redis
 import redis
 
 # 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 ```
 
 ### 使用python代码清空 Redis 中的数据：
@@ -185,9 +185,9 @@ r = redis.Redis(host='localhost', port=6379)
 import redis
 
 # 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 # 清空redis
-r.flushall()
+redis_conn.flushall()
 ```
 
 ### 字符串存入 Redis 与提取：
@@ -198,12 +198,12 @@ r.flushall()
 import redis
 
 # 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 
 data = "Hello, world!"
 
 # 使用set命令将字符串存储
-r.set("my_str", data)
+redis_conn.set("my_str", data)
 ```
 
 #### redis设置过期时间：
@@ -213,13 +213,13 @@ redis通过`expire`设置过期时间，该参数以秒为单位：<br>
 import redis
 
 # 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 
 data = "Hello, world!"
 
 # 使用set命令将字符串存储
-r.set("my_str", data)
-r.expire("my_str", 7*24*60*60)    # 设置存储时间为7天；
+redis_conn.set("my_str", data)
+redis_conn.expire("my_str", 7*24*60*60)    # 设置存储时间为7天；
 ```
 
 #### 使用 get 从 Redis 取出 字符串 数据：
@@ -228,10 +228,10 @@ r.expire("my_str", 7*24*60*60)    # 设置存储时间为7天；
 import redis
 
 # 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 
 # 获取存储在Redis中的字符串
-result = r.get("my_str")                        # b'Hello, world!'
+result = redis_conn.get("my_str")                        # b'Hello, world!'
 decoded_result = result.decode()                # 等同于 result.decode("utf-8")；
 print(decoded_result)                           # Hello, world!
 ```
@@ -244,15 +244,15 @@ print(decoded_result)                           # Hello, world!
 import redis
 
 # 创建一个Redis连接
-r = redis.Redis(host='localhost', port=6379, db=0)
+redis_conn = redis.Redis(host='localhost', port=6379, db=0)
 # 清空redis
-# r.flushall()
+# redis_conn.flushall()
 
 # 指定键名
 key = 'my_key'
 
 # 尝试从Redis中获取数据，如果不存在则返回默认值
-data = r.get(key) or 'default_value'
+data = redis_conn.get(key) or 'default_value'
 
 print(data)
 ```
@@ -274,16 +274,16 @@ print(data)
 import redis
 
 # 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 # 存入Redis
-r.set("number",123)
+redis_conn.set("number",123)
 
 # 从Redis取出数据
-res = int(r.get("number"))
+res = int(redis_conn.get("number"))
 print(res)          # 123
 print(type(res))    # <class 'int'>
 ```
-从Redis取出数据要注意数据类型的转化，以上述代码举例，`r.get("number")` 获取的结果为：`b'123'`，类型为：`<class 'bytes'>`。<br>
+从Redis取出数据要注意数据类型的转化，以上述代码举例，`redis_conn.get("number")` 获取的结果为：`b'123'`，类型为：`<class 'bytes'>`。<br>
 
 #### 浮点数：
 ```python
@@ -291,16 +291,16 @@ import pickle
 import redis
 
 # 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 # 存入Redis
-r.set("number",123.4)
+redis_conn.set("number",123.4)
 
 # 从Redis取出数据
-res = float(r.get("number"))
+res = float(redis_conn.get("number"))
 print(res)          # 123.4
 print(type(res))    # <class 'float'>
 ```
-与从Redis取出整数相同，要注意数据类型的转化，以上述代码举例，`r.get("number")` 获取的结果为：`b'123.4'`，类型为：`<class 'bytes'>`。<br>
+与从Redis取出整数相同，要注意数据类型的转化，以上述代码举例，`redis_conn.get("number")` 获取的结果为：`b'123.4'`，类型为：`<class 'bytes'>`。<br>
 
 ### List 存入 Redis 与取出：
 Redis 提供的将 List 数据存入 Redis 的方法有2种:<br>
@@ -311,13 +311,13 @@ Redis 提供的将 List 数据存入 Redis 的方法有2种:<br>
 ```python
 import redis
 
-r = redis.Redis(host='localhost', port=6379, db=0)
+redis_conn = redis.Redis(host='localhost', port=6379, db=0)
 key = 'my_list'
 values = ['apple', 1, 'orange']
-r.lpush(key, *values)
+redis_conn.lpush(key, *values)
 
 # 或者可以使用 rpush 方法
-# r.rpush(key, *values)
+# redis_conn.rpush(key, *values)
 ```
 🔆🔆🔆从左侧插入可能不符合大部分人的习惯，改为 `rpush` 即可。
 
@@ -325,23 +325,23 @@ r.lpush(key, *values)
 ```python
 import redis
 
-r = redis.Redis(host='localhost', port=6379, db=0)
+redis_conn = redis.Redis(host='localhost', port=6379, db=0)
 key = 'my_list'
 values = ['apple', 1, 'orange']
 for i in values:
-    r.lpush(key, i)
+    redis_conn.lpush(key, i)
 
 # 或者可以使用 rpush 方法
-# r.rpush(key, *values)
+# redis_conn.rpush(key, *values)
 ```
 #### 使用 lrange 依靠索引将list从Redis取出：
 ```python
 import redis
 
-r = redis.Redis(host='localhost', port=6379, db=0)
+redis_conn = redis.Redis(host='localhost', port=6379, db=0)
 key = 'my_list'
 # 按索引取出所需内容，lrange方法的索引是必填项
-res = r.lrange(key,0,-1)        
+res = redis_conn.lrange(key,0,-1)        
 print(type(res))                # <class 'list'>
 print(res)                      # [b'orange', b'1', b'apple']
 
@@ -363,14 +363,14 @@ Redis 使用 `hmset` 存储含多个键值对的字典，‼️‼️注意 `hms
 import redis
 
 # 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 
 data = {"key1": "value1",
         "key2": "value2",
         "key3": "value3"}
 
 # 使用hmset命令将字典存储为一个哈希
-r.hmset("my_dict", data)
+redis_conn.hmset("my_dict", data)
 ```
 
 #### 使用 hgetall 从 Redis 取出 dict 数据：
@@ -378,10 +378,10 @@ r.hmset("my_dict", data)
 import redis
 
 # 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 
 # 获取存储在哈希中的全部键值对
-result = r.hgetall("my_dict")       
+result = redis_conn.hgetall("my_dict")       
 print(result)                           # {b'key1': b'value1', b'key2': b'value2', b'key3': b'value3'}
 print('直接从 Redis 获取的数据：')
 print(result[b'key1'])                  # b'value1'，不加b会报错；
@@ -422,7 +422,7 @@ import redis
 import pickle
 
 # 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 
 data = {"key1": "value1",
         "key2": "value2",
@@ -431,7 +431,7 @@ data = {"key1": "value1",
 # 将data序列化为字节流(bytes)
 data = pickle.dumps(data)
 # 使用set命令将data存入redis
-r.set("my_dict", data)
+redis_conn.set("my_dict", data)
 ```
 
 #### 使用 pickle.loads 配合 get 从 Redis 取出 dict 数据：
@@ -440,10 +440,10 @@ import redis
 import pickle
 
 # 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 
 # 获取存储在哈希中的全部键值对
-result = r.get("my_dict")
+result = redis_conn.get("my_dict")
 result = pickle.loads(result)
 print(result)   # {'key1': 'value1', 'key2': 'value2', 'key3': 'value3'}
 ```
@@ -463,16 +463,16 @@ class MyClass:
         self.value = value
 
 # 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 
 # 将对象存入Redis
 my_object = MyClass(42)
 my_object_bytes = pickle.dumps(my_object)
-r.set('my_object', my_object_bytes)
+redis_conn.set('my_object', my_object_bytes)
 ```
 
 #### 使用 pickle.loads 配合 get 将 class 从 Redis 取出：
-将 class 从 Redis 取出时必须确保在调用 `r.get('xxx')` 时已经导入了相关类的定义。如果存入的数据很复杂，比如 `类套类套类`，需要将对应类的定义都导入。可以采用在文件中写入类的完整定义，也可以采用 `from xxx import classA, classB, classC` 的形式。【可参考 classOfclass 文件中的内容】<br>
+将 class 从 Redis 取出时必须确保在调用 `redis_conn.get('xxx')` 时已经导入了相关类的定义。如果存入的数据很复杂，比如 `类套类套类`，需要将对应类的定义都导入。可以采用在文件中写入类的完整定义，也可以采用 `from xxx import classA, classB, classC` 的形式。【可参考 classOfclass 文件中的内容】<br>
 ```python
 import redis
 import pickle
@@ -482,10 +482,10 @@ class MyClass:
         self.value = value
 
 # 创建Redis客户端连接
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 
 # 从Redis中提取对象
-my_object_bytes = r.get('my_object')
+my_object_bytes = redis_conn.get('my_object')
 my_object = pickle.loads(my_object_bytes)
 
 # 打印提取到的对象的值
@@ -526,13 +526,13 @@ financial_list_6<br>
 import redis
 
 # 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 
 # 生成键名列表
 keys = ['financial_list_'+str(i) for i in range(100)]
 
 # 一次性获取多个键的值
-values = r.mget(keys)
+values = redis_conn.mget(keys)
 
 # 将获取的值组成一个list
 result = list(values)
@@ -543,10 +543,10 @@ result = list(values)
 import redis
 
 # 连接到Redis
-r = redis.Redis(host='localhost', port=6379)
+redis_conn = redis.Redis(host='localhost', port=6379)
 
 # 构建 pipeline 方法
-pipeline = r.pipeline()
+pipeline = redis_conn.pipeline()
 
 # 将需要获取的内容存储到 pipeline 中
 for i in range(100):
@@ -563,10 +563,10 @@ results = pipeline.execute()
 import redis
 
 # 建立到Redis服务器的连接
-r = redis.Redis(host='localhost', port=6379, db=0)
+redis_conn = redis.Redis(host='localhost', port=6379, db=0)
 
 # 创建一个Pipeline对象
-pipeline = r.pipeline()
+pipeline = redis_conn.pipeline()
 
 # 在Pipeline中添加多个SET命令
 pipeline.set('key1', 'value1')
@@ -581,10 +581,10 @@ pipeline.execute()
 import redis
 
 # 建立到Redis服务器的连接
-r = redis.Redis(host='localhost', port=6379, db=0)
+redis_conn = redis.Redis(host='localhost', port=6379, db=0)
 
 # 创建一个Pipeline对象
-pipeline = r.pipeline()
+pipeline = redis_conn.pipeline()
 
 # 在Pipeline中添加多个SET命令
 pipeline.get('key1')
@@ -622,10 +622,10 @@ value3
 import redis
 
 # 建立到 Redis 服务器的连接
-r = redis.Redis(host='localhost', port=6379, db=0)
+redis_conn = redis.Redis(host='localhost', port=6379, db=0)
 
 # 创建一个 Pipeline 对象
-pipe = r.pipeline()
+pipe = redis_conn.pipeline()
 
 # 在 Pipeline 中添加多个 GET 命令
 pipe.get('key1')
