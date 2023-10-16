@@ -10,6 +10,7 @@ Sanic 是一个用于构建异步（asynchronous）Web应用的Python框架，�
     - [GET 方法进阶：](#get-方法进阶)
     - [POST 方法：](#post-方法)
     - [POST 方法路由的测试：](#post-方法路由的测试)
+    - [postman中body下的几个选项分别是什么？如何选择？](#postman中body下的几个选项分别是什么如何选择)
   - [request 对象：](#request-对象)
   - [response 对象：](#response-对象)
 
@@ -256,7 +257,7 @@ if __name__ == "__main__":
 
 4. 选择HTTP方法为"POST"。
 
-5. 对于"/segment"路由，切换到"Body"选项卡，选择"raw"，然后在文本框中输入JSON数据，如下所示：
+5. 对于"/segment"路由，切换到"Body"选项卡，选择"raw"，然后在文本框中输入JSON数据(**"raw"选项的最后一位带箭头位置选JSON**)，如下所示：
 
 ```json
 {
@@ -275,6 +276,24 @@ usr_input: 这是一段用户数据，需要进行分词。
 8. 点击发送按钮，你将获得用户数据分词结果的JSON响应。
 
 这样，你可以使用Postman测试这两个不同的路由并查看它们的不同功能。一个路由期望JSON数据，而另一个期望表单数据。<br>
+
+### postman中body下的几个选项分别是什么？如何选择？
+在Postman中，Body选项用于指定请求的消息体（payload）内容。以下是在Body选项中常见的几个选项及其含义：<br>
+1. **none:** 这表示请求不包含消息体。选择此选项时，请求通常是GET或DELETE等不需要发送数据的HTTP方法。
+
+2. **form-Data:** 当使用该选项时，请求的消息体将被格式化为multipart/form-data格式。这通常用于上传文件或通过表单提交数据。
+
+3. **x-www-form-urlencoded:** 选择此选项将以URL编码形式发送请求的数据。🔥🔥🔥🔥🔥🔥这种格式通常用于HTML表单提交🔥🔥🔥🔥🔥🔥。
+
+4. **raw:** 当选择此选项时，你可以手动编辑请求的消息体内容。你可以选择不同的格式，例如文本（纯文本）、JSON（应用/JSON）、XML（application/xml）等。
+
+5. **binary:** 选择此选项以上传二进制文件。你可以选择将文件直接从磁盘上载，或者使用代码或其他方式生成二进制数据。
+
+6. **graphQL:** 如果你正在使用GraphQL API，则可以选择此选项，并在请求的消息体中编写GraphQL查询。
+
+7. **file:** 这个选项允许你将文件直接作为请求的消息体。你可以选择从磁盘上载文件，或者从已发送的请求中选择文件。
+
+选择哪个选项取决于你要发送的数据类型和请求的要求。如果你要发送表单数据，你可以选择Form-Data或x-www-form-urlencoded。如果你要发送JSON数据，可以选择Raw并将Content-Type设置为application/json。如果你要上传文件，你可以选择Form-Data或Binary，具体取决于你的需求。<br>
 
 ## request 对象：
 
