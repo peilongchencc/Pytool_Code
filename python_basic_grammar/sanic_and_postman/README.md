@@ -696,8 +696,8 @@ bp = Blueprint('my_blueprint', url_prefix='/my_blueprint')
 ```python
 app = Sanic(__name__)
 # 定义蓝图
-bp1 = Blueprint('blueprint1', url_prefix='/bp1')
-bp2 = Blueprint('blueprint2', url_prefix='/bp2')  
+bp1 = Blueprint('my_blueprint1', url_prefix='/my_blueprint1')
+bp2 = Blueprint('my_blueprint2', url_prefix='/my_blueprint2')  
 ```
 
 3. 在对应的 Blueprint 中定义路由和视图函数：
@@ -741,17 +741,17 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8848)
 ```
 
-前面，我们讲过，**如果我们的应用程序不添加蓝图**，用户可以通过"http://8.140.203.xxx:8848/answer/"访问我们的服务。现在我们添加了蓝图，只需要在url的端口后添加url_prefix的部分即可，例如：<br>
+前面，我们讲过，**如果我们的应用程序不添加蓝图**，用户可以通过"http://8.140.203.xxx:8848/ans/"访问我们的服务。现在我们添加了蓝图，只需要在url的端口后添加url_prefix的部分即可，例如：<br>
 
 ```log
-http://8.140.203.xxx:8848/my_blueprint/answer/
+http://8.140.203.xxx:8848/my_blueprint/ans/
 ```
 
 🤭🤭🤭不必担心url的部分重复，因为前缀不一样，所以对应的网址也不一样。<br>
 
 ```log
-http://8.140.203.xxx:8848/bp1/answer/
-http://8.140.203.xxx:8848/bp2/answer/
+http://8.140.203.xxx:8848/my_blueprint1/ans/
+http://8.140.203.xxx:8848/my_blueprint2/ans/
 ```
 
 
