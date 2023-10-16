@@ -18,6 +18,15 @@ Sanic 是一个用于构建异步（asynchronous）Web应用的Python框架，�
     - [附属文件中定义用户输出的处理流程：](#附属文件中定义用户输出的处理流程)
     - [工具型函数中定义文本处理、变量更新细节：](#工具型函数中定义文本处理变量更新细节)
     - [运行方式：](#运行方式)
+  - [使用Postman+global动态更新Sanic服务中的数据：](#使用postmanglobal动态更新sanic服务中的数据)
+    - [任务目标：](#任务目标)
+    - [主文件：](#主文件)
+    - [工具文件：](#工具文件)
+    - [数据存入redis的文件：](#数据存入redis的文件)
+    - [清空Redis数据(可选)：](#清空redis数据可选)
+    - [文件运行顺序：](#文件运行顺序)
+    - [代码解释：](#代码解释)
+  - [Sanic使用公共前缀(Blueprint):](#sanic使用公共前缀blueprint)
 
 ## Sanic的安装
 
@@ -498,3 +507,215 @@ usr_input | 黄金板块收益如何？ | Value中的内容可为任意字符串
 数据再次更新，动态更新效果完成🪴🪴🪴<br>
 
 🥴🥴🥴此时，直到你下次调用"/refresh"接口，程序的"Dimension_analy"中"dimension_data"数据将保持不变。<br>
+
+## 使用Postman+global动态更新Sanic服务中的数据：
+
+### 任务目标：
+
+1. 确保程序正常启动；
+2. 将数据存入 Redis 后，个人执行一次解析操作，获取对应数据；
+3. 用户每次调用笔者的接口使用该数据，不必重新从 Redis 获取数据，直接从缓存中获取数据。
+
+### 主文件：
+
+```python
+# main.py
+from sanic import Sanic
+from sanic import response
+from code_utils import my_function
+import redis
+import pickle
+
+app = Sanic("my_app")
+
+# 连接到Redis
+redis_conn = redis.Redis(host='localhost', port=6379)
+
+# 全局变量用于存储metadata
+metadata = None
+
+@app.route("/ans", methods=["POST"])
+async def test(request):
+    # 获取用户数据
+    text = request.form.get("usr_input")
+    if metadata is not None:
+        processed_data = my_function(metadata)
+        res_dict = {"用户数据":text,
+                    "redis中数据": processed_data}
+    else:
+        res_dict = {"用户数据":text,
+                    "redis中数据": metadata}
+    return response.json(res_dict)
+
+@app.route("/refresh")
+async def refresh_metadata(request):
+    if redis_conn.get('my_data') is not None:
+        global metadata
+        metadata = pickle.loads(redis_conn.get('my_data'))
+        return response.json({"message": "Metadata 已刷新!"})
+    else:
+        return response.json({"message": "Metadata 还未写入redis，请先运行'/data_to_redis'接口。"})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8848)
+```
+
+### 工具文件：
+
+```python
+# code_utils.py
+def my_function(data):
+    for idx, item in enumerate(data,1):
+        item["函数添加内容"] = f"内容{idx}"
+    return data
+```
+
+### 数据存入redis的文件：
+
+```python
+# metadata_to_redis.py
+import redis
+import pickle
+
+# 连接到Redis
+redis_conn = redis.Redis(host='localhost', port=6379)
+
+# 可改为其他数据，此处只是为了模拟数据写入。
+data = [{'info_1':{'name': '麦克', 'age': 30, 'man': 'true'}}, 
+        {'info_2':{'name': 'Juddy', 'age': 27, 'man': 'false'}}]
+
+# 将数据存入Redis
+redis_conn.set('my_data', pickle.dumps(data))
+```
+
+### 清空Redis数据(可选)：
+
+如果你在代码测试过程中想要清空Redis，可以使用下列代码：<br>
+
+```python
+# empty_redis.py
+import redis
+
+# 连接到Redis
+redis_conn = redis.Redis(host='localhost', port=6379)
+# 清空redis
+redis_conn.flushall()
+```
+
+### 文件运行顺序：
+
+1. 运行`metadata_to_redis.py`文件；
+
+2. 调用`/refresh`接口；
+
+3. 用户此时就可向`ans`接口传参，获取数据；
+
+### 代码解释：
+
+该代码为用户提供两个接口："/ans"、"/refresh"，和一个数据写入Redis的文件。<br>
+
+以下是每个接口/文件的作用：<br>
+
+1. `metadata_to_redis.py`： 将数据存入Redis。
+
+2. `/refresh`：从Redis中读取数据，并保存在全局变量`metadata`中。
+
+3. `/ans`：返回包含用户提供数据和`metadata`中的数据的响应。在此接口中，它还调用`my_function`来处理`metadata`数据。
+
+
+当运行`metadata_to_redis.py`后，数据被存入Redis。之后运行`/refresh`接口，数据从Redis中读取并存储到全局变量`metadata`中。此时，对于后续的`/ans`接口调用，程序直接从全局变量`metadata`中读取数据，而不是从Redis中。<br>
+
+用户每次调用`ans`接口不会再有从Redis获取数据并pickle的时间，因为数据已经被存储在全局变量`metadata`中，接口直接从这个变量获取数据。<br>
+
+## Sanic使用公共前缀(Blueprint):
+
+通常，我们创建的Sanic服务代码如下：<br>
+
+```python
+from sanic import Sanic
+
+app = Sanic("HanLP-API")
+
+@app.route("/segment", methods=["POST"])
+async def function(request):
+    pass
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
+```
+
+但在路由命名过程中，可能出现多个目录下命名重复的情况，例如：<br>
+
+```log
+.
+├── 耐克
+│   ├── 男装
+│   └── 女装
+└── 阿迪达斯
+    └── 男装
+    └── 女装
+```
+
+此时，我们为了区分"耐克"和"阿迪达斯"旗下的"男装"和"女装"，需要对命名空间进行隔离，我们应该怎么做呢？<br>
+
+正确答案是使用Sanic提供的蓝图(Blueprint)功能，下面是如何使用 Sanic Blueprint 功能的一些关键概念和步骤：：<br>
+
+1. 导入 Sanic 和 Blueprint：
+
+```python
+from sanic import Sanic
+from sanic import Blueprint
+```
+
+2. 创建一个 Sanic 应用程序和一个或多个 Blueprint：
+
+```python
+app = Sanic(__name__)
+bp = Blueprint('my_blueprint', url_prefix='/my_blueprint')
+```
+
+3. 在 Blueprint 中定义路由和视图函数：
+
+> `async def index()`部分被称为视图函数。
+
+```python
+@bp.route('/')
+async def index(request):
+    return sanic.response.text('This is the index page of my_blueprint.')
+
+@bp.route('/about')
+async def about(request):
+    return sanic.response.text('This is the about page of my_blueprint.')
+```
+
+4. 将 Blueprint 注册到应用程序中：
+
+```python
+app.blueprint(bp)
+```
+
+5. 添加运行脚本：
+
+```python
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8848)
+```
+
+使用 Blueprint 的主要好处是，它允许你将应用程序拆分为多个模块，每个模块都有自己的路由和视图函数，这有助于提高代码的可维护性和可扩展性。你可以创建多个 Blueprint，并根据需要将它们注册到应用程序中，从而轻松地管理大型应用程序的路由和视图。
+
+总之，Sanic 的 Blueprint 功能是一种组织和管理路由、中间件和视图的强大工具，使得构建异步 web 应用程序更加灵活和可维护。
+
+Sanic通过使用蓝图(Blueprint)通过**公共前缀**对路由进行命名空间隔离:<br>
+
+bp1 = Blueprint('blueprint1', url_prefix='/bp1')    &nbsp;&nbsp;# url_prefix 表示该蓝图的公共前缀；<br>
+bp2 = Blueprint('blueprint2', url_prefix='/bp2')  
+
+即支持下面这种写法：  
+@bp1.route("/segment", methods=["POST"])  
+@bp2.route("/segment", methods=["POST"])  
+  
+不必担心url的部分重复，因为前缀不一样，所以对应的网址也不一样。<br>
+```python
+http://localhost:8000/bp1/segment
+http://localhost:8000/bp2/segment  
+```
