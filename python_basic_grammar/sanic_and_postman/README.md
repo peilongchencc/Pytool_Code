@@ -26,7 +26,9 @@ Sanic 是一个用于构建异步（asynchronous）Web应用的Python框架，�
     - [清空Redis数据(可选)：](#清空redis数据可选)
     - [文件运行顺序：](#文件运行顺序)
     - [代码解释：](#代码解释)
-  - [Sanic使用公共前缀(Blueprint):](#sanic使用公共前缀blueprint)
+  - [Sanic Blueprint:](#sanic-blueprint)
+    - [完整代码--单个蓝图：](#完整代码--单个蓝图)
+    - [完整代码--多个蓝图：](#完整代码--多个蓝图)
 
 ## Sanic的安装
 
@@ -51,9 +53,11 @@ from sanic import response
 app = Sanic(__name__)
 ```
 
-2. 添加路由和处理函数:
+2. 添加路由和视图函数:
 
-在你的应用中，你可以定义不同的路由，并为每个路由定义处理函数。例如：<br>
+在你的应用中，你可以定义不同的路由，并为每个路由定义视图函数。例如：<br>
+
+> `async def index()`部分被称为视图函数。
 
 ```python
 @app.route("/")
@@ -67,7 +71,7 @@ async def greet_user(request, name):
 
 这里，`@app.route` 装饰器用于指定路由，接受 HTTP 请求，并调用相应的处理函数。<br>
 
-3. 启动 Sanic 应用:
+1. 启动 Sanic 应用:
 
 在应用的最后，添加以下代码以运行 Sanic 服务器：<br>
 
@@ -230,7 +234,7 @@ async def segment(request):
     return response.json({"分词结果为：": result})
 
 @app.route("/ans", methods=["POST"])
-async def test(request):
+async def answer(request):
     # 获取用户数据
     text = request.form.get("usr_input")
     if not text:
@@ -535,7 +539,7 @@ redis_conn = redis.Redis(host='localhost', port=6379)
 metadata = None
 
 @app.route("/ans", methods=["POST"])
-async def test(request):
+async def answer(request):
     # 获取用户数据
     text = request.form.get("usr_input")
     if metadata is not None:
@@ -627,21 +631,29 @@ redis_conn.flushall()
 
 用户每次调用`ans`接口不会再有从Redis获取数据并pickle的时间，因为数据已经被存储在全局变量`metadata`中，接口直接从这个变量获取数据。<br>
 
-## Sanic使用公共前缀(Blueprint):
+## Sanic Blueprint:
 
 通常，我们创建的Sanic服务代码如下：<br>
 
 ```python
 from sanic import Sanic
+from sanic import response
+import jieba
 
-app = Sanic("HanLP-API")
+app = Sanic(__name__)
 
-@app.route("/segment", methods=["POST"])
-async def function(request):
-    pass
+@app.route("/ans", methods=["POST"])
+async def answer(request):
+    # 获取用户数据
+    text = request.form.get("usr_input")
+    if not text:
+        return response.json({"error": "Missing 'usr_input' parameter"}, status=400)
+
+    result = jieba.lcut(text)
+    return response.json({"用户数据分词结果为：": result})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=8848)
 ```
 
 但在路由命名过程中，可能出现多个目录下命名重复的情况，例如：<br>
@@ -658,40 +670,68 @@ if __name__ == "__main__":
 
 此时，我们为了区分"耐克"和"阿迪达斯"旗下的"男装"和"女装"，需要对命名空间进行隔离，我们应该怎么做呢？<br>
 
-正确答案是使用Sanic提供的蓝图(Blueprint)功能，下面是如何使用 Sanic Blueprint 功能的一些关键概念和步骤：：<br>
+🫠🫠🫠正确答案是使用Sanic提供的蓝图(Blueprint)功能，**蓝图(Blueprint)中的 `url_prefix` 参数表示该蓝图的公共前缀**🐳🐳🐳，下面是如何使用 Sanic Blueprint 功能的一些关键概念和步骤：：<br>
 
-1. 导入 Sanic 和 Blueprint：
+1. 导入 Sanic 、response 和 Blueprint：
 
 ```python
 from sanic import Sanic
+from sanic import response
 from sanic import Blueprint
+import jieba    # 自己根据情况判断是否导入jieba
 ```
 
 2. 创建一个 Sanic 应用程序和一个或多个 Blueprint：
 
+如果你创建一个 Blueprint，可以参考下列写法：<br>
+
 ```python
 app = Sanic(__name__)
+# 定义蓝图
 bp = Blueprint('my_blueprint', url_prefix='/my_blueprint')
 ```
 
-3. 在 Blueprint 中定义路由和视图函数：
-
-> `async def index()`部分被称为视图函数。
+如果你创建多个 Blueprint，可以参考下列写法：<br>
 
 ```python
-@bp.route('/')
-async def index(request):
-    return sanic.response.text('This is the index page of my_blueprint.')
+app = Sanic(__name__)
+# 定义蓝图
+bp1 = Blueprint('blueprint1', url_prefix='/bp1')
+bp2 = Blueprint('blueprint2', url_prefix='/bp2')  
+```
 
-@bp.route('/about')
-async def about(request):
-    return sanic.response.text('This is the about page of my_blueprint.')
+3. 在对应的 Blueprint 中定义路由和视图函数：
+
+> `async def index()`部分被称为视图函数。
+> 将`@app.route`替换为`@bp.route`。
+
+```python
+@bp.route("/ans", methods=["POST"])
+async def answer(request):
+    # 获取用户数据
+    text = request.form.get("usr_input")
+    if not text:
+        return response.json({"error": "Missing 'usr_input' parameter"}, status=400)
+
+    result = jieba.lcut(text)
+    return response.json({"用户数据分词结果为：": result})
 ```
 
 4. 将 Blueprint 注册到应用程序中：
 
+如果你创建一个 Blueprint，可以参考下列写法：<br>
+
 ```python
+# 将蓝图注册到应用程序
 app.blueprint(bp)
+```
+
+如果你创建多个 Blueprint，可以参考下列写法：<br>
+
+```python
+# 将蓝图注册到应用程序
+app.blueprint(bp1)
+app.blueprint(bp2)
 ```
 
 5. 添加运行脚本：
@@ -701,21 +741,97 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8848)
 ```
 
-使用 Blueprint 的主要好处是，它允许你将应用程序拆分为多个模块，每个模块都有自己的路由和视图函数，这有助于提高代码的可维护性和可扩展性。你可以创建多个 Blueprint，并根据需要将它们注册到应用程序中，从而轻松地管理大型应用程序的路由和视图。
+前面，我们讲过，**如果我们的应用程序不添加蓝图**，用户可以通过"http://8.140.203.xxx:8848/answer/"访问我们的服务。现在我们添加了蓝图，只需要在url的端口后添加url_prefix的部分即可，例如：<br>
 
-总之，Sanic 的 Blueprint 功能是一种组织和管理路由、中间件和视图的强大工具，使得构建异步 web 应用程序更加灵活和可维护。
-
-Sanic通过使用蓝图(Blueprint)通过**公共前缀**对路由进行命名空间隔离:<br>
-
-bp1 = Blueprint('blueprint1', url_prefix='/bp1')    &nbsp;&nbsp;# url_prefix 表示该蓝图的公共前缀；<br>
-bp2 = Blueprint('blueprint2', url_prefix='/bp2')  
-
-即支持下面这种写法：  
-@bp1.route("/segment", methods=["POST"])  
-@bp2.route("/segment", methods=["POST"])  
-  
-不必担心url的部分重复，因为前缀不一样，所以对应的网址也不一样。<br>
-```python
-http://localhost:8000/bp1/segment
-http://localhost:8000/bp2/segment  
+```log
+http://8.140.203.xxx:8848/my_blueprint/answer/
 ```
+
+🤭🤭🤭不必担心url的部分重复，因为前缀不一样，所以对应的网址也不一样。<br>
+
+```log
+http://8.140.203.xxx:8848/bp1/answer/
+http://8.140.203.xxx:8848/bp2/answer/
+```
+
+
+使用 Blueprint 的主要好处是，它允许你将应用程序拆分为多个模块，每个模块都有自己的路由和视图函数，这有助于提高代码的可维护性和可扩展性。你可以创建多个 Blueprint，并根据需要将它们注册到应用程序中，从而轻松地管理大型应用程序的路由和视图。<br>
+
+### 完整代码--单个蓝图：
+
+```python
+from sanic import Sanic
+from sanic import response
+from sanic import Blueprint
+import jieba    # 自己根据情况判断是否导入jieba
+
+app = Sanic(__name__)
+# 定义蓝图
+bp = Blueprint('my_blueprint', url_prefix='/my_blueprint')
+
+@bp.route("/ans", methods=["POST"])
+async def answer(request):
+    # 获取用户数据
+    text = request.form.get("usr_input")
+    if not text:
+        return response.json({"error": "Missing 'usr_input' parameter"}, status=400)
+
+    result = jieba.lcut(text)
+    return response.json({"用户数据分词结果为：": result})
+
+# 将蓝图注册到应用程序
+app.blueprint(bp)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8848)
+```
+
+### 完整代码--多个蓝图：
+
+假设你创建了两个蓝图，你想让两个蓝图都调用"/ans"接口，可以参考以下代码示例：<br>
+
+```python
+from sanic import Sanic
+from sanic import response
+from sanic import Blueprint
+import jieba    # 自己根据情况判断是否导入jieba
+
+app = Sanic(__name__)
+# 定义第一个蓝图
+bp1 = Blueprint('my_blueprint1', url_prefix='/my_blueprint1')
+
+@bp1.route("/ans", methods=["POST"])
+async def answer1(request):
+    # 获取用户数据
+    text = request.form.get("usr_input")
+    if not text:
+        return response.json({"error": "Missing 'usr_input' parameter"}, status=400)
+
+    result = jieba.lcut(text)
+    return response.json({"answer1接口下，用户数据分词结果为：": result})
+
+# 定义第二个蓝图
+bp2 = Blueprint('my_blueprint2', url_prefix='/my_blueprint2')
+
+@bp2.route("/ans", methods=["POST"])
+async def answer2(request):
+    # 获取用户数据
+    text = request.form.get("usr_input")
+    if not text:
+        return response.json({"error": "Missing 'usr_input' parameter"}, status=400)
+
+    # 在第二个蓝图中处理与"/ans"接口相同的逻辑
+    result = jieba.lcut(text)
+    return response.json({"answer2接口下，用户数据分词结果为：": result})
+
+# 将两个蓝图都注册到应用程序
+app.blueprint(bp1)
+app.blueprint(bp2)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8848)
+```
+
+现在，你的应用程序将同时支持两个蓝图的"/ans"接口，分别由`answer1`和`answer2`处理。这两个蓝图可以分别在不同的URL前缀下访问。<br>
+
+🚨🚨🚨注意：虽然两个蓝图"/ans"接口的处理相同，但由于我们定义的是2个视图函数，不能都使用`async def answer(request)`写法，要进行区分。<br>
