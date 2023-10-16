@@ -90,6 +90,7 @@
     - [修改字典中的值：](#修改字典中的值)
     - [添加新键值对：](#添加新键值对)
     - [利用函数修改或添加内容到字典中：](#利用函数修改或添加内容到字典中)
+    - [利用函数修改或添加内容到字典中(文件版)：](#利用函数修改或添加内容到字典中文件版)
     - [删除键值对：](#删除键值对)
       - [使用del语句：](#使用del语句)
       - [使用pop()方法：](#使用pop方法)
@@ -1200,6 +1201,7 @@ my_dict['country'] = 'USA'  # 添加新的键值对'country': 'USA'
 ```
 
 ### 利用函数修改或添加内容到字典中：
+
 要在函数内部更新字典或向字典添加内容，你可以将字典作为参数传递给函数，并在函数内部进行修改。在Python中，字典是可变对象，所以你可以在函数内部直接修改它，而不需要返回新的字典。以下是一个示例：<br>
 
 ```python
@@ -1223,27 +1225,28 @@ print(my_dict)
 {'key1': 'value1', 'key2': 'value2', 'key3': 'value3'}
 ```
 
-<br>
-🚨🚨🚨如果你的函数定义在另一个文件中，你可以按照以下方法传递字典并在函数内部进行修改：<br>
+### 利用函数修改或添加内容到字典中(文件版)：
 
-假设你有两个文件：`main.py` 和 `my_module.py`，其中 `my_module.py` 包含了你的函数定义，你可以这样操作：<br>
+🚨🚨🚨如果你的字典更新函数定义在另一个文件中，你可以按照以下方法传递字典并在函数内部进行修改：<br>
 
-在 `my_module.py` 中定义函数并导入必要的模块：<br>
+假设你有两个文件：`main.py` 和 `utils.py`，其中 `utils.py` 包含了你的字典更新函数，你可以这样操作：<br>
+
+在 `utils.py` 中定义函数并导入必要的模块：<br>
 
 ```python
-# my_module.py
+# utils.py
 
 def update_dict(input_dict, key, value):
     input_dict[key] = value
 ```
 
-然后，在 `main.py` 中导入 `my_module` 并使用该函数：<br>
+然后，在 `main.py` 中导入 `utils.py` 并使用该函数：<br>
 
 ```python
 # main.py
 
-# 导入您的模块
-from my_module import update_dict
+# 导入你的模块
+from utils import update_dict
 
 # 定义一个字典
 my_dict = {'key1': 'value1', 'key2': 'value2'}
@@ -1255,7 +1258,7 @@ update_dict(my_dict, 'key3', 'value3')
 print(my_dict)
 ```
 
-这样，你可以在不同的文件中定义函数和使用字典，并且函数可以更新字典的内容。确保 `main.py` 和 `my_module.py` 位于同一目录中或在Python路径中能够找到。<br>
+这样，你可以在不同的文件中定义函数和使用字典，并且函数可以更新字典的内容。确保 `main.py` 和 `utils.py` 位于同一目录中或在Python路径中能够找到。<br>
 
 
 ### 删除键值对：
