@@ -5,7 +5,7 @@ Sanic 是一个用于构建异步（asynchronous）Web应用的Python框架，�
 - [Sanic and Postman](#sanic-and-postman)
   - [Sanic的安装](#sanic的安装)
   - [简单sanic应用示例：](#简单sanic应用示例)
-  - [使用postman测试sanic启动的服务：](#使用postman测试sanic启动的服务)
+  - [使用Postman测试Sanic启动的服务：](#使用postman测试sanic启动的服务)
   - [GET和POST方法：](#get和post方法)
     - [GET 方法进阶：](#get-方法进阶)
     - [POST 方法：](#post-方法)
@@ -92,7 +92,7 @@ python sanic_server.py
 
 这只是 Sanic 的基本用法，它还提供了许多其他功能，如中间件支持、异步请求处理、WebSocket 支持等等，以满足不同类型的 Web 应用需求。你可以查阅官方文档以深入了解更多信息：https://sanicframework.org/<br>
 
-## 使用postman测试sanic启动的服务：
+## 使用Postman测试Sanic启动的服务：
 
 Postman 是一种流行的应用程序，用于测试和调试网络 API（应用程序编程接口）。它提供了一个用户友好的界面，允许开发人员轻松地创建、发送和接收 HTTP 请求，以测试 API 的各种端点和功能。Postman 还允许你组织请求、保存和分享测试集合，以及自动化 API 测试工作流程。它可用于多种用途，包括单元测试、端到端测试、性能测试和文档编制等。<br>
 
