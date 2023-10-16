@@ -13,6 +13,11 @@ Sanic 是一个用于构建异步（asynchronous）Web应用的Python框架，�
     - [Postman 中 Body 选项的含义与选择：](#postman-中-body-选项的含义与选择)
   - [request 对象：](#request-对象)
   - [response 对象：](#response-对象)
+  - [使用 Postman 动态更新Sanic服务中类属性：](#使用-postman-动态更新sanic服务中类属性)
+    - [在主文件中定义路由：](#在主文件中定义路由)
+    - [附属文件中定义用户输出的处理流程：](#附属文件中定义用户输出的处理流程)
+    - [工具型函数中定义文本处理、变量更新细节：](#工具型函数中定义文本处理变量更新细节)
+    - [运行方式：](#运行方式)
 
 ## Sanic的安装
 
@@ -363,3 +368,133 @@ async def html_example(request):
 这将返回一个包含指定 HTML 内容的响应。<br>
 
 总之，`response` 模块提供了一些方便的函数，用于构建不同类型的 HTTP 响应，包括 JSON、文本、HTML 等。你可以根据你的需求使用这些函数来构建和返回适当类型的响应给客户端。<br>
+
+## 使用 Postman 动态更新Sanic服务中类属性：
+
+工作中，你可能会遇到需要在程序启动后动态更新某些变量的情况，接下来我将给你具体的例子：<br>
+
+### 在主文件中定义路由：
+
+```python
+# main.py
+from sanic import Sanic
+from sanic import response
+from nlp_entry import create_pipelene
+from code_utils import Dimension_analy
+
+app = Sanic("my_app")
+
+@app.route("/ans", methods=["POST"])
+async def answer(request):
+    # 获取用户数据
+    text = request.form.get("usr_input")
+    processed_data = create_pipelene(text)
+    return response.json(processed_data)
+
+@app.route("/refresh")
+async def refresh_metadata(request):
+    Dimension_analy.modify_class_variable()
+    return response.json({"message":"Dimension_analy的类属性更新成功"})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8848)
+```
+
+### 附属文件中定义用户输出的处理流程：
+
+```python
+# nlp_entry.py
+
+from code_utils import Dimension_analy
+
+def create_pipelene(usr_input):
+    tmp_dimension = Dimension_analy()
+    res_dim = tmp_dimension.handle(usr_input)
+    return res_dim
+```
+
+### 工具型函数中定义文本处理、变量更新细节：
+
+```python
+# code_utils
+class Dimension_analy:
+    """进行维度分析
+    """
+    # 定义类属性
+    dimension_data = 0
+
+    def __init__(self):
+        pass
+
+    def handle(self, usr_input):
+        """测试类属性是否变化，是否支持动态更新
+        """
+        res_dict = {"用户数据":usr_input,
+                    "维度数据为:": self.dimension_data} # 调用类属性
+        return res_dict
+
+    @classmethod
+    def modify_class_variable(cls):
+        """每次调用更新一次类属性
+        """
+        cls.dimension_data += 1
+```
+
+### 运行方式：
+
+1. 启动`main.py`文件；
+
+2. Postman选择POST方法，url输入http://8.140.203.xxx:8848/ans；
+
+3. "Body"的"x-www-form-urlencoded"选项中输入以下内容：
+
+Key|Value|Description
+---|---|---
+usr_input | 黄金板块收益如何？ | Value中的内容可为任意字符串
+
+4. 点击Send，你将获得如下JSON响应：
+
+```json
+{
+    "用户数据": "黄金板块收益如何？",
+    "维度数据为:": 0
+}
+```
+
+由于没有更新"Dimension_analy"中"dimension_data"，所以此处显示的是原始值 "dimension_data = 0"。<br>
+
+现在，我们尝试通过接口 "/refresh" 更新 "dimension_data" 测试下效果：<br>
+
+5. Postman选择GET方法，url输入http://8.140.203.xxx:8848/refresh；(不需要输入其他参数)
+
+6. 点击Send，你将获得如下JSON响应：
+
+```json
+{
+    "message": "Dimension_analy的类属性更新成功"
+}
+```
+
+7. 转回http://8.140.203.xxx:8848/ans接口界面，点击Send，你将获得如下JSON响应：
+
+```json
+{
+    "用户数据": "黄金板块收益如何？",
+    "维度数据为:": 1
+}
+```
+
+数据动态更新了，在程序运行过程中更新了~~~~<br>
+
+8. 我们再次运行http://8.140.203.xxx:8848/refresh接口，看下"/ans"接口的效果:
+
+```json
+{
+    "用户数据": "黄金板块收益如何？",
+    "维度数据为:": 2
+}
+```
+
+数据再次更新，动态更新效果完成🪴🪴🪴<br>
+
+🥴🥴🥴此时，直到你下次调用"/refresh"接口，程序的"Dimension_analy"中"dimension_data"数据将保持不变。<br>
