@@ -10,7 +10,7 @@ Sanic 是一个用于构建异步（asynchronous）Web应用的Python框架，�
     - [GET 方法进阶：](#get-方法进阶)
     - [POST 方法：](#post-方法)
     - [POST 方法路由的测试：](#post-方法路由的测试)
-    - [postman中body下的几个选项分别是什么？如何选择？](#postman中body下的几个选项分别是什么如何选择)
+    - [Postman 中 Body 选项的含义与选择：](#postman-中-body-选项的含义与选择)
   - [request 对象：](#request-对象)
   - [response 对象：](#response-对象)
 
@@ -231,19 +231,23 @@ if __name__ == "__main__":
 
 🚀🚀🚀接下来，我讲解下上述代码中路由"/segment"和"/ans"的不同，以及应该如何用postman测试：<br>
 
-"/segment"和"/ans"两个路由有以下不同点：<br>
-
 1. **路由路径**：
-   - "/segment"路由用于处理POST请求，其路径为"/segment"。
-   - "/ans"路由也用于处理POST请求，其路径为"/ans"。
+
+- "/segment"路由用于处理POST请求，其路径为"/segment"。
+
+- "/ans"路由也用于处理POST请求，其路径为"/ans"。
 
 2. **请求参数的获取方式**：
-   - "/segment"路由使用`request.json.get("text")`来获取请求中的**JSON数据**，并期望数据包含一个名为"text"的字段。
-   - "/ans"路由使用`request.form.get("usr_input")`来获取**表单数据**，并期望数据包含一个名为"usr_input"的字段。
+
+- "/segment"路由使用`request.json.get("text")`来获取请求中的**JSON数据**，并期望数据包含一个名为"text"的字段。
+
+- "/ans"路由使用`request.form.get("usr_input")`来获取**表单数据**，并期望数据包含一个名为"usr_input"的字段。
 
 3. **响应**：
-   - "/segment"路由返回一个JSON响应，其中包含分词的结果。
-   - "/ans"路由也返回一个JSON响应，其中包含分词的结果。
+
+- "/segment"路由返回一个JSON响应，其中包含分词的结果。
+
+- "/ans"路由也返回一个JSON响应，其中包含分词的结果。
 
 ### POST 方法路由的测试：
 
@@ -277,8 +281,9 @@ usr_input: 这是一段用户数据，需要进行分词。
 
 这样，你可以使用Postman测试这两个不同的路由并查看它们的不同功能。一个路由期望JSON数据，而另一个期望表单数据。<br>
 
-### postman中body下的几个选项分别是什么？如何选择？
+### Postman 中 Body 选项的含义与选择：
 在Postman中，Body选项用于指定请求的消息体（payload）内容。以下是在Body选项中常见的几个选项及其含义：<br>
+
 1. **none:** 这表示请求不包含消息体。选择此选项时，请求通常是GET或DELETE等不需要发送数据的HTTP方法。
 
 2. **form-Data:** 当使用该选项时，请求的消息体将被格式化为multipart/form-data格式。这通常用于上传文件或通过表单提交数据。
