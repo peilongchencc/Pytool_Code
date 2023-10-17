@@ -1,5 +1,5 @@
-# Mac Skill
-- [Mac Skill](#mac-skill)
+# Mac Command
+- [Mac Command](#mac-command)
   - [Mac的dmg格式是什么意思：](#mac的dmg格式是什么意思)
   - [Mac通过终端路径打开窗口的方式--open：](#mac通过终端路径打开窗口的方式--open)
   - [Mac打开开发者工具的方式--相当于 win 的 F12：](#mac打开开发者工具的方式--相当于-win-的-f12)
