@@ -147,7 +147,7 @@ print(f"数据已写入{result_output_file_path}文件")
 
 运行上述代码，将默认在当前目录下创建一个`output.xlsx`文件。如果你用WPS或office打开将显示如下内容：<br>
 
-<img src="./openpyxl_输出的xlsx示例.jpg" alt="image" width="70%" height="70%">
+<img src="./openpyxl_输出的xlsx示例.jpg" alt="image" width="100%" height="100%">
 
 
 ### 创建新的工作表并添加数据的示例代码如下：
