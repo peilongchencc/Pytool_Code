@@ -468,6 +468,14 @@ print(doc["custom_function_result"]["my_project_name"])
 项目的名称为：hanlp的pipeline使用测试
 ```
 
+🚨🚨🚨**注意，HanLP的pipeline在构建时，多个参数或输出的写法如下：**<br>
+
+```python
+HanLP = hanlp.pipeline() \
+    .append(function_1, output_key=('result_1', 'result_2'), input_key=('arg_1', 'arg_2'), seg_dict=segment_dict)
+```
+
+
 ### 分词+语义依存分析的pipeline构建：
 
 ```python
