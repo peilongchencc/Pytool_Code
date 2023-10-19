@@ -2,6 +2,7 @@
 记录Github的一些常见操作。<br>
 - [Github Operate](#github-operate)
   - [将GitHub仓库从公开（public）更改为私人（private）:](#将github仓库从公开public更改为私人private)
+  - [链接下划线去除：](#链接下划线去除)
 
 
 ## 将GitHub仓库从公开（public）更改为私人（private）:
@@ -23,3 +24,17 @@
 7. 在“Change repository visibility”页面上，你需要验证你的GitHub密码以确认你有权限进行此更改。
 
 8. 输入你的GitHub密码并点击“Confirm password”（确认密码）按钮。(如果你使用的google，可以直接用google保存的密码。)
+
+## 链接下划线去除：
+
+默认情况下，GitHub对文本中的链接是标注下划线的，但可通过以下方式去除：<br>
+
+1. 点击右上角头像；
+
+2. 点击"Settings"；
+
+3. 左侧菜单栏点击"Accessibility"；
+
+4. 下拉进度条至"Content"模块；
+
+5. 勾选"Hide link underlines"；
