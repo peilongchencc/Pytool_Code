@@ -75,11 +75,11 @@ import time
 
 class SnowflakeID:
     def __init__(self):
-        # Adjusting the shifts
-        self.relation_shift = 57   # 14(A) + 14(B) + 7(relation) + 29(timestamp) = 64
-        self.entity_b_shift = 43   # 14(B) + 7(relation) + 29(timestamp) = 50
-        self.entity_a_shift = 29   # 7(relation) + 29(timestamp) = 36
-        self.timestamp_shift = 0   # Timestamp stays at the least significant position
+        self.relation_shift = 57   # relation的可能值为128种(2^7=128)，位数为7，57+7=64
+        self.entity_b_shift = 43   # 实体A的可能值为16384种(2^14=16384)，位数为14位，43+14=57
+        self.entity_a_shift = 29   # 实体A的可能值为16384种(2^14=16384)，位数为14位，29+14=43
+        self.timestamp_shift = 0   # 时间戳定义为0-29位，29位二进制数可以表示的不同值是2^29，这是因为每一位可以是0或1，所以总共有2的 29 次方个不同的组合。这个值等于 536,870,912。
+                                   # 由于时间戳的单位是秒，故支持约17年时间转换。由于时间戳的起始是1970年，所以最新时间无法转换，需要添加时间基线。
 
         self.relation = {}
         self.entity_a = {}
