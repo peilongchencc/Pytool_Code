@@ -162,6 +162,9 @@
       - [检查对象是否是某个类的实例-含避坑指南：](#检查对象是否是某个类的实例-含避坑指南)
       - [检查对象是否是某个基本数据类型：](#检查对象是否是某个基本数据类型)
   - [if __name__ == '__main__':的使用：](#if-name--main的使用)
+  - [文件读取：](#文件读取)
+    - [读取txt文件示例：](#读取txt文件示例)
+    - [读取json文件示例：](#读取json文件示例)
 
 ## python常用库：
 
@@ -2928,3 +2931,79 @@ import 示例脚本
 当你运行 `python 另一个脚本.py` 时，只会执行 `some_function()`，而不会执行示例脚本的主代码块。<br>
 
 这个结构对于编写可重用的模块和测试代码非常有用，因为它允许你将代码分成可执行部分和库部分，并确保库部分不会在导入时执行。这有助于维护代码的可读性和可维护性。<br>
+
+## 文件读取：
+
+### 读取txt文件示例：
+
+假设你的txt文件格式如下:<br>
+
+```txt
+上心
+续约
+切换
+并入
+拯救
+联盟
+```
+
+你可以参考一下代码读取你的文件，如果你想要将加载的数据存为list，可以设置`data = list()`:<br>
+
+```python
+# 构建分词库：
+segment_words_file_path = './特殊词.txt'
+# 打开文件并读取内容
+with open(segment_words_file_path, 'r', encoding='utf-8') as file:
+    # 使用set()构建一个空集合
+    segment_dict = set()
+
+    # 逐行读取文件并添加到集合中
+    for line in file:
+        # 使用strip()方法去除每行的换行符和空白字符
+        word = line.strip()
+        segment_dict.add(word)
+    # 现在，segment_dict 包含了文件中的所有唯一单词
+```
+
+### 读取json文件示例：
+
+假设你的json文件格式如下:<br>
+
+```json
+{
+    "SBV": {
+        "mean_zh": "主谓",
+        "subject_role": "主谓主体",
+        "object_role": "主谓客体",
+        "relation_id": 7001,
+        "subject_role_id": 2001,
+        "object_role_id": 2002
+    },
+    "VOB": {
+        "mean_zh": "动宾",
+        "subject_role": "动宾主体",
+        "object_role": "动宾客体",
+        "relation_id": 7002,
+        "subject_role_id": 2003,
+        "object_role_id": 2004
+    }
+}
+```
+
+你可以使用Python的json模块来读取这个JSON文件。以下是一个示例代码，可以帮助你读取该JSON文件：<br>
+
+```python
+import json
+
+# 读取JSON文件
+with open('your_file.json', 'r', encoding='utf-8') as file:
+    data = json.load(file)
+
+# 访问JSON数据中的值
+SBV_mean_zh = data["SBV"]["mean_zh"]
+VOB_relation_id = data["VOB"]["relation_id"]
+
+# 打印结果
+print("SBV mean_zh:", SBV_mean_zh)
+print("VOB relation_id:", VOB_relation_id)
+```
