@@ -103,6 +103,7 @@
     - [字典的嵌套:](#字典的嵌套)
     - [以数字作为字典的key:](#以数字作为字典的key)
     - [字典中\*\*的使用：](#字典中的使用)
+    - [文本形式字典转dict：](#文本形式字典转dict)
   - [python集合：](#python集合)
     - [创建集合并添加元素：](#创建集合并添加元素)
     - [删除集合中的元素：](#删除集合中的元素)
@@ -1469,6 +1470,48 @@ print(data)
 ```txt
 {'intentTags': '', 'advisorId': 1, 'labelIds': '', 'question': '定投'}
 ```
+
+### 文本形式字典转dict：
+
+要将字符串形式的字典转换为字典形式，并且可以使用键值对进行查找数据，可以使用Python的`json`模块来处理这个字符串。<br>
+
+以下是如何将给定的字符串`x`转换为字典，并进行查找的示例代码：<br>
+
+```python
+import json
+
+# 给定的字符串形式的字典
+x = '{ "name": "John", "age": 30, "address": "123 Main St" }'
+
+# 使用json.loads()方法将字符串转换为字典
+data = json.loads(x)
+
+print(f"转换后的数据类型为：{type(data)}")
+
+# 现在可以使用键来访问数据
+name = data["name"]
+age = data["age"]
+address = data["address"]
+
+# 打印结果
+print("Name:", name)
+print("Age:", age)
+print("Address:", address)
+```
+
+终端输出：<br>
+
+```log
+转换后的数据类型为：<class 'dict'>
+Name: John
+Age: 30
+Address: 123 Main St
+```
+
+通过这种方式，你可以将字符串形式的字典转换为字典，并且可以使用键来访问其中的数据。<br>
+
+🚨🚨🚨请注意，要确保输入的字符串是有效的JSON格式，否则会引发`json.loads()`方法的异常。<br>
+
 
 ## python集合：
 Python中的集合是一种**无序且不重复**的数据结构。你可以使用 `set` 关键字创建集合，也可以使用大括号 `{}` 来表示。集合中只能包含唯一的元素，重复的元素会被自动去重。你可以向集合添加、删除元素，还可以执行交集、并集、差集等操作。需要注意的是，集合中的元素必须是不可变的，例如数字、字符串、元组等。<br>
