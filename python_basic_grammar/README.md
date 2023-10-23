@@ -112,7 +112,10 @@
     - [获取集合中的值：](#获取集合中的值)
     - [集合的遍历：](#集合的遍历)
     - [将txt文件中的内容读取，存储为集合元素：](#将txt文件中的内容读取存储为集合元素)
-  - [None条件的判断：](#none条件的判断)
+  - [None条件/为空条件的判断：](#none条件为空条件的判断)
+    - [if None示例代码如下：](#if-none示例代码如下)
+    - [if not示例代码如下：](#if-not示例代码如下)
+    - [区别：](#区别)
   - [python类：](#python类)
     - [python类简单示例：](#python类简单示例)
     - [查看python类的"类属性/方法"和"实例属性"：](#查看python类的类属性方法和实例属性)
@@ -1660,11 +1663,11 @@ with open('words.txt', 'r', encoding='utf-8') as file:
 print(word_set)
 ```
 
-## None条件的判断：
+## None条件/为空条件的判断：
 
-🚨🚨🚨注意：空的字符串`my_string = ""`，空的列表`my_list = []`，空的集合或字典`my_dict = {}`在进行if条件判断时，并不会被视为None。<br>
+🚨🚨🚨注意：空的字符串`my_string = ""`，空的列表`my_list = []`，空的集合或字典`my_dict = {}`在进行if条件判断时，并不会被视为None，需要用`if not ...`进行判断。<br>
 
-示例代码如下：<br>
+### if None示例代码如下：
 
 ```python
 my_list = []
@@ -1680,6 +1683,38 @@ else:
 ```log
 my_list有值
 ```
+
+### if not示例代码如下：
+
+```python
+my_list = []
+
+if not my_list:
+    print("my_list为空")
+else:
+    print("my_list有值")
+```
+
+终端输出：<br>
+
+```log
+my_list为空
+```
+
+### 区别：
+
+1. `if my_list is None:`:
+
+- 这个条件判断语句检查变量 `my_list` 是否被赋值为 `None`。如果是，那么条件为True，表示变量是一个空值。
+
+- 这个方式只能判断变量是否为 `None`，而不能判断变量是否为空字典（没有任何键值对），因为一个非空的字典也不是 `None`。
+
+2. `if not my_list:`:
+
+- 这个条件判断语句用于检查变量 `my_list` 是否为空（没有任何键值对）。如果字典为空，条件为True，否则为False。
+
+- 这个方式用于检查字典是否为空，而不关心它是否为 `None`。但如果`my_list`为`None`，也会返回False，空包含`None`。
+
 
 ## python类：
 在Python中，类是一种用来创建对象的蓝图或模板。它们允许定义对象的属性和方法，从而可以创建多个相似的对象。python类在工作中用处非常多，学习时需要多多注意‼️‼️‼️<br>
