@@ -28,7 +28,12 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
   - [Neo4j Desktop 中常用Cypher语句：](#neo4j-desktop-中常用cypher语句)
     - [CREATE创建有向关系示例：](#create创建有向关系示例)
     - [查询创建的节点和关系：](#查询创建的节点和关系)
-    - [常用查询语句：](#常用查询语句)
+    - [查看节点--限制返回25条数据：](#查看节点--限制返回25条数据)
+    - [查看所有节点和关系：](#查看所有节点和关系)
+    - [查看所有节点：](#查看所有节点)
+    - [查看所有关系：](#查看所有关系)
+    - [查看某种关系的所有节点：](#查看某种关系的所有节点)
+    - [查询Neo4j中是否有某种关系类型：](#查询neo4j中是否有某种关系类型)
     - [精确查找和模糊查找：](#精确查找和模糊查找)
     - [CREATE创建中文三元组：](#create创建中文三元组)
     - [MERGE创建三元组：](#merge创建三元组)
@@ -511,34 +516,49 @@ RETURN m,r,n
 ```
 总之，虽然在创建时必须指定关系的方向，但在查询时你可以选择视其为无向关系。<br>
 
-### 常用查询语句：
+
+### 查看节点--限制返回25条数据：
+
 从Neo4j数据库中匹配所有的节点`n`、关系`r`和节点`m`的组合，并返回这些结果，但限制返回的记录数为25。<br>
+
 > 默认情况下，当你不指定排序或其他筛选条件时，Neo4j可能会基于内部存储和处理的顺序返回结果🌿🌿🌿，这可能会看起来像是随机的，尤其是在大型数据集中。
+
 ```sql
 MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 25
 ```
 
+### 查看所有节点和关系：
+
 如果你想要查看Neo4j中所有节点和关系，可以使用：<br>
+
 ```sql
 MATCH (n)-[r]->(m) RETURN n, r, m
 ```
 
+### 查看所有节点：
+
 如果你只想要查看所有节点，可以使用：<br>
+
 ```sql
 MATCH (n) RETURN n
 ```
 
+### 查看所有关系：
+
 如果你只是想要查看所有关系，可以使用：<br>
+
 ```sql
 MATCH ()-[r]->() RETURN r
 ```
 
+### 查看某种关系的所有节点：
+
 如果你想要查看含有 `catch` 关系的所有节点，可以使用：
+
 ```sql
 MATCH (m)-[r:catch]->(n)
 RETURN m,n,r
 ```
-
 
 如果你想按节点`n`的`name`属性排序，你可以这样写：<br>
 ```sql
@@ -548,11 +568,46 @@ ORDER BY n.name
 LIMIT 25
 ```
 
+### 查询Neo4j中是否有某种关系类型：
+
+假设你想要查询Neo4j中是否有关系`SEMANTIC_RECOGNITION`存在，可以使用如下代码：<br>
+
+```sql
+OPTIONAL MATCH (startNode)-[r:SEMANTIC_RECOGNITION]->(endNode)
+WITH r
+RETURN r IS NOT NULL AS relationshipExists
+```
+
+这个Cypher查询是用于在Neo4j图数据库中检查是否存在某种关系的存在，并返回一个布尔值来指示这种关系是否存在。让我逐步解释这个Cypher查询：<br>
+
+1. `OPTIONAL MATCH (startNode)-[r:SEMANTIC_RECOGNITION]->(endNode)`:
+
+- `OPTIONAL MATCH` 是Cypher中的关键字，用于匹配模式，但不会中断查询，**即使模式没有匹配项也会继续执行查询**。这里，它用于匹配以`startNode`为起始节点、以`endNode`为结束节点，且关系类型为`SEMANTIC_RECOGNITION`的关系。如果没有匹配的关系，`r`将会是null。
+
+2. `WITH r`:
+
+- `WITH` 子句用于将之前匹配到的关系`r`传递到后续的操作。这里它只是将关系`r`传递到下一步的操作。
+
+3. `RETURN r IS NOT NULL AS relationshipExists`:
+
+- `RETURN` 子句用于返回查询的结果。
+
+- `r IS NOT NULL` 是一个条件表达式，它检查关系`r`是否不为空（即存在）。如果`r`不为空，这个条件将返回true，否则返回false。
+
+- `AS relationshipExists` 是为查询结果创建了一个别名，将其命名为`relationshipExists`，这个别名是一个布尔值，表示关系是否存在。
+
+❤️❤️❤️**没有明确指定节点的类型，因此查询将匹配任何类型的节点。**最终的查询结果将包含一个名为`relationshipExists`的布尔值，它指示了是否存在起始节点和结束节点之间的`SEMANTIC_RECOGNITION`关系。如果关系存在，则`relationshipExists`为true；如果关系不存在，则`relationshipExists`为false。<br>
+
+这个查询非常适用于在图数据库中检查某种关系是否存在的情况。<br>
+
 ### 精确查找和模糊查找：
+
 讲精确查找和模糊查找前，首先要明确一个关键点：Neo4j 中查找时遵循的是匹配节点标签(类型)和属性，要查找到你想要寻找的节点，知道其一才能快速匹配。如果这2者你都不知道，那就需要进行模糊匹配查找了。<br>
+
 然而，这种查询可能会在大型数据库中变得很慢，因为它需要遍历所有节点和属性。这只是一种尝试，如果可能的话，还是建议在设计数据库时为节点名称使用明确的属性或给所有节点配一个统一的属性，例如 `name`，以便更有效地进行查询。🚨🚨🚨<br>
 
 举个例子，假设其他人根据下列语句创建了一个三元组信息。<br>
+
 ```sql
 // 创建节点信息
 CREATE (m:Charactor {name:'Tom'})-[r:catch]->(n:Charactor {name:'Jerry'}) RETURN m,n,r
