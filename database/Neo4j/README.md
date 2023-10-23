@@ -27,6 +27,7 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
   - [终端Neo4j常用指令：](#终端neo4j常用指令)
   - [Neo4j Desktop 中常用Cypher语句：](#neo4j-desktop-中常用cypher语句)
     - [CREATE创建有向关系示例：](#create创建有向关系示例)
+  - [查询：](#查询)
     - [查询创建的节点和关系：](#查询创建的节点和关系)
     - [查看节点--限制返回25条数据：](#查看节点--限制返回25条数据)
     - [查看所有节点和关系：](#查看所有节点和关系)
@@ -35,6 +36,7 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [查看某种关系的所有节点：](#查看某种关系的所有节点)
     - [查询Neo4j中是否有某种关系类型：](#查询neo4j中是否有某种关系类型)
     - [精确查找和模糊查找：](#精确查找和模糊查找)
+    - [根据关系查询并返回多层节点：](#根据关系查询并返回多层节点)
     - [CREATE创建中文三元组：](#create创建中文三元组)
     - [MERGE创建三元组：](#merge创建三元组)
     - [CREATE的必要性：](#create的必要性)
@@ -503,19 +505,25 @@ Neo4j中效果如下：<br>
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/45fb1c3d-8e82-4cb8-8c2f-80f267787e7f" alt="image" width="50%" height="50%">
 <br>
 
+## 查询：
+
 ### 查询创建的节点和关系：
+
 虽然物理存储的关系是有向的，但你可以通过查询时的方式来看待它们为无向关系。查询时可以选择忽略关系方向，视为无向关系：<br>
+
 ```sql
 MATCH (m:Leading_role {name: 'Tom'})-[r:catch]-(n:supporting_role {name: 'Jerry'})
 RETURN m,r,n
 ```
+
 当然，你也可以把方向带上：<br>
+
 ```sql
 MATCH (m:Leading_role {name: 'Tom'})-[r:catch]->(n:supporting_role {name: 'Jerry'})
 RETURN m,r,n
 ```
-总之，虽然在创建时必须指定关系的方向，但在查询时你可以选择视其为无向关系。<br>
 
+总之，虽然在创建时必须指定关系的方向，但在查询时你可以选择视其为无向关系。<br>
 
 ### 查看节点--限制返回25条数据：
 
@@ -641,6 +649,65 @@ RETURN n.name, n.age, r
 MATCH (n {name: 'Tom'})-[r:catch]->()
 RETURN n, r, keys(n) as node_properties
 ```
+
+### 根据关系查询并返回多层节点：
+
+假设你在Neo4j中创建节点的语句如下：<br>
+
+```sql
+// 检查重复并创建节点
+MERGE (A:Node {name: 'A'})
+MERGE (B:Node {name: 'B'})
+MERGE (C:Node {name: 'C'})
+MERGE (D:Node {name: 'D'})
+MERGE (E:Node {name: 'E'})
+MERGE (F:Node {name: 'F'})
+MERGE (G:Node {name: 'G'})
+MERGE (H:Node {name: 'H'})
+MERGE (J:Node {name: 'J'})
+MERGE (K:Node {name: 'K'})
+MERGE (I:Node {name: 'I'})
+MERGE (L:Node {name: 'L'})
+
+// 创建关系
+MERGE (A)-[:同义词]->(B)
+MERGE (A)-[:同义词]->(C)
+MERGE (A)-[:同义词]->(D)
+
+MERGE (B)-[:同义词]->(E)
+MERGE (B)-[:同义词]->(F)
+
+MERGE (C)-[:同义词]->(G)
+MERGE (C)-[:同义词]->(H)
+
+MERGE (D)-[:同义词]->(J)
+
+MERGE (E)-[:同义词]->(I)
+MERGE (E)-[:同义词]->(L)
+
+MERGE (H)-[:同义词]->(K)
+```
+
+Neo4j中显示效果如下：<br>
+
+
+
+```sql
+MATCH (a {name: 'A'})-[:同义词*1..2]->(synonym)
+RETURN DISTINCT synonym.name
+```
+
+这个语句是用于查询一个图数据库中的数据，通常使用Cypher查询语言，用于与Neo4j等图数据库交互。下面是对这个Cypher查询语句的详细解释：
+
+1. `MATCH (a {name: 'A'})`: 这是一个MATCH子句，用于匹配图数据库中的节点。它指定了一个变量a，该节点具有一个名为'name'且值为'A'的属性。这意味着我们正在查找所有具有这个属性的节点，其中'name'属性等于'A'的节点。
+
+2. `-[:同义词*1..2]->`: 这是一个关系模式，用于指定与节点a连接的关系模式。它表示我们要查找与节点a之间的关系，这些关系的类型是"同义词"，并且可以有1到2跳。这意味着我们将查找直接与节点a连接的同义词节点，以及通过一个同义词节点间接连接的同义词节点。
+
+3. `(synonym)`: 这是一个变量，用于表示与节点a连接的同义词节点。它将在查询中用于引用这些节点。
+
+4. `RETURN DISTINCT synonym.name`: 这是一个RETURN子句，用于指定我们要从匹配的节点中返回的属性。在这里，我们想要返回同义词节点的'name'属性，并使用DISTINCT关键字确保返回的结果是唯一的，避免重复。
+
+综合起来，这个Cypher查询的作用是查找与名为'A'的节点通过"同义词"关系连接的所有同义词节点，并返回这些同义词节点的名称属性。如果有多个路径连接到同一个同义词节点，由于使用了DISTINCT关键字，结果集将包含每个同义词节点的唯一名称。这种查询可用于查找具有类似含义的节点或词汇的网络。
 
 ### CREATE创建中文三元组：
 Neo4j中的关系类型、节点标签以及属性的键和值都支持中文字符。你可以使用中文字符来定义关系类型或属性名称:<br>
