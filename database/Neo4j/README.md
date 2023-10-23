@@ -39,6 +39,8 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [查看所有节点：](#查看所有节点)
     - [查看所有关系：](#查看所有关系)
     - [查看某种关系的所有节点：](#查看某种关系的所有节点)
+    - [根据关系查看节点的指向：](#根据关系查看节点的指向)
+    - [将查询节点按照某个属性排序：](#将查询节点按照某个属性排序)
     - [查询Neo4j中是否有某种关系类型：](#查询neo4j中是否有某种关系类型)
     - [精确查找和模糊查找：](#精确查找和模糊查找)
     - [根据关系查询并返回多层节点：](#根据关系查询并返回多层节点)
@@ -719,7 +721,56 @@ MATCH (m)-[r:catch]->(n)
 RETURN m,n,r
 ```
 
+### 根据关系查看节点的指向：
+
+如果你想要根据关系查看节点的指向，可以参考以下代码：<br>
+
+节点、关系创建语句:<br>
+
+```sql
+// 首先确保张三和李四的节点存在
+MERGE (zhangsan:Person {name: '张三'})
+MERGE (lisi:Person {name: '李四'})
+MERGE (wangwu:Person {name: '王五'})
+
+// 创建“同事”关系
+MERGE (zhangsan)-[:同事]->(lisi)
+
+// 创建“姐夫”关系
+MERGE (zhangsan)-[:姐夫]->(lisi)
+
+// 创建“领导”关系
+MERGE (lisi)-[:领导]->(zhangsan)
+
+// 创建“同事”关系
+MERGE (wangwu)-[:同事]->(lisi)
+```
+
+Neo4j中效果：<br>
+
+
+
+```sql
+from py2neo import Graph
+
+# 连接到Neo4j数据库
+graph = Graph('neo4j://localhost:7687', auth=("neo4j", "Flameaway3."))
+
+# 使用MATCH来查找节点和关系信息
+cypher_query = """
+MATCH (m:Person {name: '李四'})-[r]-(n)
+RETURN r
+"""
+
+result = graph.run(cypher_query).data()
+print(f"从neo4j获取的结果为：")
+print(result)
+```
+
+### 将查询节点按照某个属性排序：
+
 如果你想按节点`n`的`name`属性排序，你可以这样写：<br>
+
 ```sql
 MATCH (n)-[r]->(m)
 RETURN n, r, m
