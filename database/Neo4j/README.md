@@ -852,13 +852,34 @@ RETURN DISTINCT synonym.name
 
 1. `MATCH (a {name: 'A'})`: 这是一个MATCH子句，用于匹配图数据库中的节点。它指定了一个变量a，该节点具有一个名为'name'且值为'A'的属性。这意味着我们正在查找所有具有这个属性的节点，其中'name'属性等于'A'的节点。
 
-2. `-[:同义词*1..2]->`: 这是一个关系模式，用于指定与节点a连接的关系模式。它表示我们要查找与节点a之间的关系，这些关系的类型是"同义词"，并且可以有1到2跳。这意味着我们将查找直接与节点a连接的同义词节点，以及通过一个同义词节点间接连接的同义词节点。
+2. `-[:同义词*1..2]->`: 这是一个关系模式，`[:SYNONYM*1..2]`表示查询关系`SYNONYM`的1到2次，也就是向下查询两层。
 
 3. `(synonym)`: 这是一个变量，用于表示与节点a连接的同义词节点。它将在查询中用于引用这些节点。
 
 4. `RETURN DISTINCT synonym.name`: 这是一个RETURN子句，用于指定我们要从匹配的节点中返回的属性。在这里，我们想要返回同义词节点的'name'属性，并使用DISTINCT关键字确保返回的结果是唯一的，避免重复。
 
 综合起来，这个Cypher查询的作用是查找与名为'A'的节点通过"同义词"关系连接的所有同义词节点，并返回这些同义词节点的名称属性。如果有多个路径连接到同一个同义词节点，由于使用了DISTINCT关键字，结果集将包含每个同义词节点的唯一名称。这种查询可用于查找具有类似含义的节点或词汇的网络。<br>
+
+✅✅✅在py2neo中，你可以这样使用：<br>
+
+```python
+from py2neo import Graph, Node, Relationship
+
+graph = Graph("bolt://localhost:7687", auth=("neo4j", "your_password"))
+
+query = """
+MATCH (a {name: 'A'})-[:SYNONYM*1..2]->(synonym)
+RETURN DISTINCT synonym.name
+"""
+
+results = graph.run(query)
+synonyms = [record["synonym.name"] for record in results]
+
+print(synonyms)
+```
+
+这将返回A的所有同义词，包括它的直接同义词以及这些同义词的同义词。如果你只想要查询特定层级的同义词，可以相应地调整`*1..2`中的数字。<br>
+
 
 ### 更新Neo4j中实体的属性的值：
 假设现在李四觉得自己的名字不好听，改名了，改成了 `李斯`，你可以运行下列语句更新数据：<br>
