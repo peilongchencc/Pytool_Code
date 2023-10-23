@@ -748,6 +748,7 @@ MERGE (wangwu)-[:同事]->(lisi)
 
 Neo4j中效果：<br>
 
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/9d17e6e0-5969-4d84-82bf-4513ec328fce)
 
 
 ```sql
