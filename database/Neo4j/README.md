@@ -25,8 +25,13 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [启动/关闭 neo4j\_2 数据库：](#启动关闭-neo4j_2-数据库)
     - [Neo4j Desktop 连接远程neo4j\_2数据库：](#neo4j-desktop-连接远程neo4j_2数据库)
   - [终端Neo4j常用指令：](#终端neo4j常用指令)
-  - [Neo4j Desktop 中常用Cypher语句：](#neo4j-desktop-中常用cypher语句)
+  - [Neo4j Desktop 中常用创建节点的Cypher语句：](#neo4j-desktop-中常用创建节点的cypher语句)
     - [CREATE创建有向关系示例：](#create创建有向关系示例)
+    - [CREATE创建中文三元组：](#create创建中文三元组)
+    - [MERGE创建三元组：](#merge创建三元组)
+    - [CREATE的必要性：](#create的必要性)
+    - [为2个节点创建多个关系：](#为2个节点创建多个关系)
+    - [更新Neo4j中实体间的关系：](#更新neo4j中实体间的关系)
   - [查询：](#查询)
     - [查询创建的节点和关系：](#查询创建的节点和关系)
     - [查看节点--限制返回25条数据：](#查看节点--限制返回25条数据)
@@ -37,11 +42,6 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [查询Neo4j中是否有某种关系类型：](#查询neo4j中是否有某种关系类型)
     - [精确查找和模糊查找：](#精确查找和模糊查找)
     - [根据关系查询并返回多层节点：](#根据关系查询并返回多层节点)
-    - [CREATE创建中文三元组：](#create创建中文三元组)
-    - [MERGE创建三元组：](#merge创建三元组)
-    - [CREATE的必要性：](#create的必要性)
-    - [为2个节点创建多个关系：](#为2个节点创建多个关系)
-    - [更新Neo4j中实体间的关系：](#更新neo4j中实体间的关系)
     - [更新Neo4j中实体的属性的值：](#更新neo4j中实体的属性的值)
     - [为实体添加新的属性：](#为实体添加新的属性)
     - [更新Neo4j中实体的属性的名称：](#更新neo4j中实体的属性的名称)
@@ -462,19 +462,24 @@ neo4j version
 neo4j console 
 ```
 
-## Neo4j Desktop 中常用Cypher语句：
+## Neo4j Desktop 中常用创建节点的Cypher语句：
+
 在Neo4j中，关系是有向的‼️‼️‼️。这意味着当你创建一个关系时，你必须指定它的方向🥶🥶🥶。然而，当查询这些关系时，你可以选择忽略方向🥴🥴🥴。<br>
 
 ### CREATE创建有向关系示例：
+
 假设你想创建一个描述 `汤姆抓杰瑞` 的三元组信息，你可以使用以下指令：<br>
+
 ```sql
 // Neo4j支持以 "//" 作为注释
 CREATE (m:Leading_role {name: 'Tom'})-[r:catch]->(n:supporting_role {name: 'Jerry'})
 RETURN m,r,n
 ```
+
 > 注意变量名不能以空格为间隔，`Leading role` 会报错，需要使用 `Leading_role` 或 `LeadingRole` 形式。
 
 这里详细解释下上述语句：<br>
+
 `CREATE`: 这是一个Cypher命令，用于创建节点或关系。<br>
 `(m:Leading_role {name: 'Tom'})`: <br>
 - 此处创建了一个名为`Tom`的`Leading_role`类型节点。<br>
@@ -498,12 +503,156 @@ RETURN m,r,n
 
 所以，这条Cypher语句的大致意思是：“创建一个名为`Tom`的`Leading_role`类型节点，一个名为`Jerry`的`supporting_role`类型节点，并在它们之间创建一个类型为`catch`的关系，之后返回创建的实体与关系。”<br>
 <br>
+
 Neo4j中效果如下：<br>
+
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/e78e22cd-fe02-4115-a0ba-df5529bbf9a2" alt="image" width="30%" height="30%">
 
 🚀🚀🚀节点颜色、节点大小、关系颜色、对外显示的属性都可以通过点击对应图标设置：<br>
+
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/45fb1c3d-8e82-4cb8-8c2f-80f267787e7f" alt="image" width="50%" height="50%">
-<br>
+
+
+### CREATE创建中文三元组：
+
+Neo4j中的关系类型、节点标签以及属性的键和值都支持中文字符。你可以使用中文字符来定义关系类型或属性名称:<br>
+
+```sql
+CREATE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '李四'})
+RETURN m,r,n
+```
+
+Neo4j中效果如下：<br>
+
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/ec50592e-1b2a-4e6c-ba9b-a596ab00dce2" alt="image" width="30%" height="30%">
+
+### MERGE创建三元组：
+
+`CREATE` 和 `MERGE` 都是用于在Neo4j中创建数据的命令，`CREATE` 更关注于直接创建，`MERGE` 更关注于检查Neo4j中是否有重复数据。<br>
+举例来说，当你依次运行下面两个语句时，会在Neo4j中创建2个名为 `张三` 的节点，而不是关联了2组关系。<br>
+
+```sql
+// 语句1
+CREATE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '李四'})
+RETURN m,r,n
+```
+
+``sql
+// 语句2
+CREATE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '王五'})
+RETURN m,r,n
+```
+
+Neo4j效果：<br>
+
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/db837467-b0cd-4d20-8511-863641efa6a1" alt="image" width="30%" height="30%">
+
+
+如果你想将2组关系关联起来，需要使用关键字 `MERGE` ：<br>
+
+```sql
+// 首先检查张三的节点是否存在，如果不存在，会创建一个名为张三的节点
+MERGE (m:Person {name: '张三'})
+
+// 然后检查张三与李四之间的知道关系是否存在，如果不存在，会创建张三与李四之间的知道关系
+MERGE (m)-[r1:知道]->(n1:Person {name: '李四'})
+
+// 最后检查张三与王五之间的知道关系是否存在，如果不存在，会创建张三与王五之间的知道关系
+MERGE (m)-[r2:知道]->(n2:Person {name: '王五'})
+
+RETURN m, r1, n1, r2, n2
+```
+
+Neo4j效果：<br>
+
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/742ff813-972f-4e18-b277-460ae5a4be56" alt="image" width="30%" height="30%">
+
+
+‼️‼️‼️注意：`MERGE` 的使用一定要正确，必须按照上述语句中的逻辑。举个例子，假设你依次运行了下面2个语句，猜猜会发生什么~🥴🥴🥴<br>
+
+```sql
+// 语句1
+MERGE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '李四'})
+RETURN m,r,n
+```
+
+```sql
+// 语句2
+MERGE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '王五'})
+RETURN m,r,n
+```
+
+Bingo! 答案是和使用 `CREATE` 效果相同，会在Neo4j中创建2个张三节点，而不是关联了2组关系。🥹🥹🥹<br>
+
+Neo4j效果：<br>
+
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/db837467-b0cd-4d20-8511-863641efa6a1" alt="image" width="30%" height="30%">
+
+
+### CREATE的必要性：
+
+讲了 `MERGE` 后，可能有人会想: 既然 `MERGE` 这么好用，为什么还要有 `CREATE` 呢❓❓❓ 这里就需要讲一下使用 `CREATE` 的一些必要性和场景了：<br>
+
+**明确性**：当你知道要创建的节点或关系绝对不在数据库中时，使用 `CREATE` 可以明确地表示这一点。这在语义上为读代码的人提供了清晰性。<br>
+**性能**：在某些情况下，`CREATE` 可能比 `MERGE` 更快，因为它不需要先检查节点或关系是否已存在。<br>
+**数据导入**：当从没有重复数据的来源导入数据时，使用 `CREATE` 是有意义的。<br>
+**临时或测试数据**：当需要插入临时或测试数据并且不担心数据重复时，`CREATE` 是一个好选择。<br>
+**特定的模型设计**：在某些图形模型设计中，可能需要允许具有相同属性的多个节点存在。在这种情况下，`CREATE` 可以确保总是创建一个新节点，而不是复用现有节点。<br>
+
+总的来说，尽管 `MERGE` 提供了确保数据唯一性的功能，但 `CREATE` 仍然在很多场景下是有必要的。选择使用哪一个取决于你的具体需求和上下文。<br>
+
+### 为2个节点创建多个关系：
+
+工作中，你可能会遇到需要为2个节点创建多个关系的情况，例如张三和李四既是同事，张三又是李四的姐夫，张三还是李四的领导。下面介绍一下这种创建方式：<br>
+
+```sql
+// 首先确保张三和李四的节点存在
+MERGE (zhangsan:Person {name: '张三'})
+MERGE (lisi:Person {name: '李四'})
+
+// 创建“同事”关系
+MERGE (zhangsan)-[:同事]->(lisi)
+
+// 创建“姐夫”关系
+MERGE (zhangsan)-[:姐夫]->(lisi)
+
+// 创建“领导”关系
+MERGE (zhangsan)-[:领导]->(lisi)
+
+RETURN zhangsan, lisi
+```
+
+Neo4j效果：<br>
+
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/26e4c2f1-f5eb-4ec5-b66c-d3a55cf70ffe" alt="image" width="30%" height="30%">
+
+你可能注意到了，我这里使用的变量名为 `zhangsan`、`lisi`，不是前面经常使用的 `m,n,r`，这是因为在Cypher中，变量名的选择完全取决于开发者的个人习惯和上下文。🤣🤣🤣<br>
+
+为了避免遗忘，这里我们再回顾一下查询，假设你要查询含有 `领导` 关系的所有节点，你只需要输入以下语句即可：<br>
+
+```sql
+MATCH (m)-[r:领导]->(n)
+RETURN m,n,r
+```
+
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/cc3083d9-4c93-4924-8695-4b440c7bce6b" alt="image" width="40%" height="40%">
+
+别被 `Graph` 吓到了，从 `Text` 选项我们可以看到，返回的内容是正确的～🌿🌿🌿🤭🤭🤭<br>
+
+### 更新Neo4j中实体间的关系：
+
+假如现在张三和李四的姐姐离婚了，你要将张三和李四的 `姐夫` 关系改为 `前姐夫`，运行下列语句即可：<br>
+
+```sql
+MATCH (zhangsan:Person {name: '张三'})-[rel:姐夫]->(lisi:Person {name: '李四'})
+DELETE rel
+CREATE (zhangsan)-[:前姐夫]->(lisi)
+```
+
+‼️‼️注意，Neo4j不支持直接重命名关系类型，所以这里的方法是删除旧的关系并创建一个新的关系。<br>
+
+<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/4e9f6183-a2bc-4f2d-9e37-a238c021cbba" alt="image" width="30%" height="30%">
+
 
 ## 查询：
 
@@ -692,6 +841,7 @@ Neo4j中显示效果如下：<br>
 
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/4a4f71c9-845e-4938-b1e2-592e4fba53e4)
 
+此时，你想要查询节点A的同义词的同义词，限定查询深度为2层，可以使用以下语句：<br>
 
 ```sql
 MATCH (a {name: 'A'})-[:同义词*1..2]->(synonym)
@@ -708,120 +858,7 @@ RETURN DISTINCT synonym.name
 
 4. `RETURN DISTINCT synonym.name`: 这是一个RETURN子句，用于指定我们要从匹配的节点中返回的属性。在这里，我们想要返回同义词节点的'name'属性，并使用DISTINCT关键字确保返回的结果是唯一的，避免重复。
 
-综合起来，这个Cypher查询的作用是查找与名为'A'的节点通过"同义词"关系连接的所有同义词节点，并返回这些同义词节点的名称属性。如果有多个路径连接到同一个同义词节点，由于使用了DISTINCT关键字，结果集将包含每个同义词节点的唯一名称。这种查询可用于查找具有类似含义的节点或词汇的网络。
-
-### CREATE创建中文三元组：
-Neo4j中的关系类型、节点标签以及属性的键和值都支持中文字符。你可以使用中文字符来定义关系类型或属性名称:<br>
-```sql
-CREATE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '李四'})
-RETURN m,r,n
-```
-Neo4j中效果如下：<br>
-<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/ec50592e-1b2a-4e6c-ba9b-a596ab00dce2" alt="image" width="30%" height="30%">
-
-### MERGE创建三元组：
-`CREATE` 和 `MERGE` 都是用于在Neo4j中创建数据的命令，`CREATE` 更关注于直接创建，`MERGE` 更关注于检查Neo4j中是否有重复数据。<br>
-举例来说，当你依次运行下面两个语句时，会在Neo4j中创建2个名为 `张三` 的节点，而不是关联了2组关系。<br>
-```sql
-// 语句1
-CREATE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '李四'})
-RETURN m,r,n
-```
-```sql
-// 语句2
-CREATE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '王五'})
-RETURN m,r,n
-```
-Neo4j效果：<br>
-<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/db837467-b0cd-4d20-8511-863641efa6a1" alt="image" width="30%" height="30%">
-
-
-如果你想将2组关系关联起来，需要使用关键字 `MERGE` ：<br>
-```sql
-// 首先检查张三的节点是否存在，如果不存在，会创建一个名为张三的节点
-MERGE (m:Person {name: '张三'})
-
-// 然后检查张三与李四之间的知道关系是否存在，如果不存在，会创建张三与李四之间的知道关系
-MERGE (m)-[r1:知道]->(n1:Person {name: '李四'})
-
-// 最后检查张三与王五之间的知道关系是否存在，如果不存在，会创建张三与王五之间的知道关系
-MERGE (m)-[r2:知道]->(n2:Person {name: '王五'})
-
-RETURN m, r1, n1, r2, n2
-```
-Neo4j效果：<br>
-<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/742ff813-972f-4e18-b277-460ae5a4be56" alt="image" width="30%" height="30%">
-
-‼️‼️‼️注意：`MERGE` 的使用一定要正确，必须按照上述语句中的逻辑。举个例子，假设你依次运行了下面2个语句，猜猜会发生什么~🥴🥴🥴<br>
-```sql
-// 语句1
-MERGE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '李四'})
-RETURN m,r,n
-```
-```sql
-// 语句2
-MERGE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '王五'})
-RETURN m,r,n
-```
-Bingo! 答案是和使用 `CREATE` 效果相同，会在Neo4j中创建2个张三节点，而不是关联了2组关系。🥹🥹🥹<br>
-Neo4j效果：<br>
-<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/db837467-b0cd-4d20-8511-863641efa6a1" alt="image" width="30%" height="30%">
-
-
-### CREATE的必要性：
-讲了 `MERGE` 后，可能有人会想: 既然 `MERGE` 这么好用，为什么还要有 `CREATE` 呢❓❓❓ 这里就需要讲一下使用 `CREATE` 的一些必要性和场景了：<br>
-
-**明确性**：当你知道要创建的节点或关系绝对不在数据库中时，使用 `CREATE` 可以明确地表示这一点。这在语义上为读代码的人提供了清晰性。<br>
-**性能**：在某些情况下，`CREATE` 可能比 `MERGE` 更快，因为它不需要先检查节点或关系是否已存在。<br>
-**数据导入**：当从没有重复数据的来源导入数据时，使用 `CREATE` 是有意义的。<br>
-**临时或测试数据**：当需要插入临时或测试数据并且不担心数据重复时，`CREATE` 是一个好选择。<br>
-**特定的模型设计**：在某些图形模型设计中，可能需要允许具有相同属性的多个节点存在。在这种情况下，`CREATE` 可以确保总是创建一个新节点，而不是复用现有节点。<br>
-
-总的来说，尽管 `MERGE` 提供了确保数据唯一性的功能，但 `CREATE` 仍然在很多场景下是有必要的。选择使用哪一个取决于你的具体需求和上下文。<br>
-
-### 为2个节点创建多个关系：
-工作中，你可能会遇到需要为2个节点创建多个关系的情况，例如张三和李四既是同事，张三又是李四的姐夫，张三还是李四的领导。下面介绍一下这种创建方式：<br>
-```sql
-// 首先确保张三和李四的节点存在
-MERGE (zhangsan:Person {name: '张三'})
-MERGE (lisi:Person {name: '李四'})
-
-// 创建“同事”关系
-MERGE (zhangsan)-[:同事]->(lisi)
-
-// 创建“姐夫”关系
-MERGE (zhangsan)-[:姐夫]->(lisi)
-
-// 创建“领导”关系
-MERGE (zhangsan)-[:领导]->(lisi)
-
-RETURN zhangsan, lisi
-```
-Neo4j效果：<br>
-<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/26e4c2f1-f5eb-4ec5-b66c-d3a55cf70ffe" alt="image" width="30%" height="30%">
-
-你可能注意到了，我这里使用的变量名为 `zhangsan`、`lisi`，不是前面经常使用的 `m,n,r`，这是因为在Cypher中，变量名的选择完全取决于开发者的个人习惯和上下文。🤣🤣🤣<br>
-
-为了避免遗忘，这里我们再回顾一下查询，假设你要查询含有 `领导` 关系的所有节点，你只需要输入以下语句即可：<br>
-```sql
-MATCH (m)-[r:领导]->(n)
-RETURN m,n,r
-```
-
-<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/cc3083d9-4c93-4924-8695-4b440c7bce6b" alt="image" width="40%" height="40%">
-
-别被 `Graph` 吓到了，从 `Text` 选项我们可以看到，返回的内容是正确的～🌿🌿🌿🤭🤭🤭<br>
-
-### 更新Neo4j中实体间的关系：
-假如现在张三和李四的姐姐离婚了，你要将张三和李四的 `姐夫` 关系改为 `前姐夫`，运行下列语句即可：<br>
-```sql
-MATCH (zhangsan:Person {name: '张三'})-[rel:姐夫]->(lisi:Person {name: '李四'})
-DELETE rel
-CREATE (zhangsan)-[:前姐夫]->(lisi)
-```
-‼️‼️注意，Neo4j不支持直接重命名关系类型，所以这里的方法是删除旧的关系并创建一个新的关系。<br>
-<img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/4e9f6183-a2bc-4f2d-9e37-a238c021cbba" alt="image" width="30%" height="30%">
-<br>
+综合起来，这个Cypher查询的作用是查找与名为'A'的节点通过"同义词"关系连接的所有同义词节点，并返回这些同义词节点的名称属性。如果有多个路径连接到同一个同义词节点，由于使用了DISTINCT关键字，结果集将包含每个同义词节点的唯一名称。这种查询可用于查找具有类似含义的节点或词汇的网络。<br>
 
 ### 更新Neo4j中实体的属性的值：
 假设现在李四觉得自己的名字不好听，改名了，改成了 `李斯`，你可以运行下列语句更新数据：<br>
