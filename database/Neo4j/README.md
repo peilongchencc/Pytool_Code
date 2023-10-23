@@ -750,8 +750,9 @@ Neo4j中效果：<br>
 
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/9d17e6e0-5969-4d84-82bf-4513ec328fce)
 
+python代码：<br>
 
-```sql
+```python
 from py2neo import Graph
 
 # 连接到Neo4j数据库
@@ -764,8 +765,27 @@ RETURN r
 """
 
 result = graph.run(cypher_query).data()
-print(f"从neo4j获取的结果为：")
-print(result)
+
+for item in result:
+    relation = item['r']
+    node_a = relation.start_node['name']
+    node_b = relation.end_node['name']
+    relationship_type = type(relation).__name__
+    print(f"节点指向为:{relation}，关系的数据类型为:{type(relation)}。")
+    print(f"起始节点为:{node_a},终止节点为:{node_b},关系类型为:{relationship_type}")
+```
+
+终端效果：<br>
+
+```log
+节点指向为:(李四)-[:领导 {}]->(张三)，关系的数据类型为:<class 'py2neo.data.领导'>。
+起始节点为:李四,终止节点为:张三,关系类型为:领导
+节点指向为:(张三)-[:姐夫 {}]->(李四)，关系的数据类型为:<class 'py2neo.data.姐夫'>。
+起始节点为:张三,终止节点为:李四,关系类型为:姐夫
+节点指向为:(张三)-[:同事 {}]->(李四)，关系的数据类型为:<class 'py2neo.data.同事'>。
+起始节点为:张三,终止节点为:李四,关系类型为:同事
+节点指向为:(王五)-[:同事 {}]->(李四)，关系的数据类型为:<class 'py2neo.data.同事'>。
+起始节点为:王五,终止节点为:李四,关系类型为:同事
 ```
 
 ### 将查询节点按照某个属性排序：
