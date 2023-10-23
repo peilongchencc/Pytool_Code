@@ -690,6 +690,7 @@ MERGE (H)-[:同义词]->(K)
 
 Neo4j中显示效果如下：<br>
 
+![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/4a4f71c9-845e-4938-b1e2-592e4fba53e4)
 
 
 ```sql
