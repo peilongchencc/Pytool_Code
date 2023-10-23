@@ -768,10 +768,10 @@ result = graph.run(cypher_query).data()
 
 for item in result:
     relation = item['r']
+    print(f"节点指向为:{relation}，关系的数据类型为:{type(relation)}。")
     node_a = relation.start_node['name']
     node_b = relation.end_node['name']
     relationship_type = type(relation).__name__
-    print(f"节点指向为:{relation}，关系的数据类型为:{type(relation)}。")
     print(f"起始节点为:{node_a},终止节点为:{node_b},关系类型为:{relationship_type}")
 ```
 
