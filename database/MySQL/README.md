@@ -776,3 +776,5 @@ Mean_en: Lini, Subject Role: 谓语, Object Role: 空间源点
 if __name__ == "__main__":
     execute_sql_sentence(drop_semantic_relation_table)
 ```
+
+🚨🚨🚨请注意:这条语句将删除名为`semantic_relation`的表格及其所有数据和结构。请确保在执行此操作之前备份重要的数据，以防不必要的数据丢失。<br>
