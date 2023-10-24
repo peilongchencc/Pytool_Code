@@ -44,7 +44,10 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [查询Neo4j中是否有某种关系类型：](#查询neo4j中是否有某种关系类型)
     - [精确查找和模糊查找：](#精确查找和模糊查找)
     - [根据关系查询并返回多层节点：](#根据关系查询并返回多层节点)
-  - [Neo4j中的更新操作：](#neo4j中的更新操作)
+  - [Neo4j属性的数据格式：](#neo4j属性的数据格式)
+    - [正确写法示例:](#正确写法示例)
+    - [错误写法示例:](#错误写法示例)
+  - [Neo4j中的设置/更新操作：](#neo4j中的设置更新操作)
     - [更新Neo4j中实体的属性的值：](#更新neo4j中实体的属性的值)
     - [为实体添加新的属性：](#为实体添加新的属性)
     - [更新Neo4j中实体的属性的名称：](#更新neo4j中实体的属性的名称)
@@ -954,7 +957,72 @@ print(synonyms)
 
 这将返回A的所有同义词，包括它的直接同义词以及这些同义词的同义词。如果你只想要查询特定层级的同义词，可以相应地调整`*1..2`中的数字。<br>
 
-## Neo4j中的更新操作：
+## Neo4j属性的数据格式：
+
+Neo4j是一个图数据库，其中节点和关系可以有属性。这些属性可以是各种数据类型。以下是Neo4j支持的基本数据类型：<br>
+
+1. **数值**:
+
+类型|解释
+---|---
+整数 | int
+浮点数 | float
+
+2. **字符串** (`string`)
+
+3. **布尔值** (`boolean`)
+
+4. **列表**：这些列表可以是以上提到的任何基本数据类型的列表。例如你可以有一个整数列表或字符串列表。
+
+5. **时间和日期相关类型**：
+
+类型|解释
+---|---
+Date | 日期
+Time | 时间
+LocalTime ｜ 本地时间
+DateTime ｜ 日期时间
+LocalDateTime ｜ 本地日期时间
+Duration ｜ 持续时间
+
+6. **空值** (`null`)
+
+但是，要注意的是，**Neo4j不直接支持像"字典"或"映射"这样的复杂数据结构作为属性值**🚨🚨🚨。<br>
+
+⚠️⚠️⚠️不过，如果你需要存储这样的数据，可以考虑将其序列化为字符串格式（例如JSON字符串），然后存储为字符串属性。但这样做的话，你将失去对那些内部键值对的直接查询能力❌❌❌。<br>
+
+### 正确写法示例:
+
+```sql
+MERGE (entity_a:Entity {name: '买'})
+MERGE (entity_b:Entity {name: '基金'})
+MERGE (entity_a)-[rel:semantic_information]->(entity_b)
+SET rel.Pat = ["WJT-12", "WJT-14"]
+SET rel.Exp = ["WJT-5", "WJT-104"]
+```
+
+### 错误写法示例:
+
+```sql
+MERGE (entity_a:Entity {name: '买'})
+MERGE (entity_b:Entity {name: '基金'})
+MERGE (entity_a)-[rel:semantic_information]->(entity_b)
+SET rel.semantic_relation = [
+  {'Pat': ["WJT-12", "WJT-14"], 'Exp': ["WJT-5", "WJT-104"]}
+]
+```
+
+运行错误示例的代码后，会显示以下错误提示:<br>
+
+```log
+ERROR Neo.ClientError.Statement.SyntaxError
+Invalid input ''': expected whitespace, an identifier, UnsignedDecimalInteger, a property key name or '}' (line 5, column 4 (offset: 162))
+"  {'Pat': ["WJT-12", "WJT-14"], 'Exp': ["WJT-5", "WJT-104"]}"
+    ^
+```
+
+
+## Neo4j中的设置/更新操作：
 
 ### 更新Neo4j中实体的属性的值：
 假设现在李四觉得自己的名字不好听，改名了，改成了 `李斯`，你可以运行下列语句更新数据：<br>
