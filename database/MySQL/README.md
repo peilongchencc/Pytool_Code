@@ -29,6 +29,7 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
     - [pymysql操作数据库的关键：](#pymysql操作数据库的关键)
     - [创建表：](#创建表)
     - [获取表中的内容：](#获取表中的内容)
+  - [pymysql示例：](#pymysql示例)
 ## 服务器安装MySQL数据库：
 MySQL数据库的安装非常简单～<br>
 1. 更新系统软件包信息：
@@ -616,3 +617,104 @@ finally:
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/940d72e3-e339-4d93-ad33-f0eea9aa4647)
 
 ### 获取表中的内容：
+
+
+## pymysql示例：
+
+```python
+from mysql_config import Mysql_Server_Config
+import pymysql.cursors
+
+# SQL语句:创建语义关系表
+# 通过在`mean_en`字段上添加UNIQUE约束，确保了该字段的值在表中不会重复。如果尝试插入一个已经存在的`mean_en`值，将会引发唯一性约束违反的错误。
+create_semantic_relation_table = """
+CREATE TABLE semantic_relation (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    mean_en VARCHAR(255) NOT NULL UNIQUE COMMENT '语义关系_英文',
+    mean_zh VARCHAR(255) NOT NULL COMMENT '语义关系_中文',
+    subject_role VARCHAR(255) NOT NULL COMMENT '语义角色主体',
+    object_role VARCHAR(255) NOT NULL COMMENT '语义角色客体',
+    relation_id INT NOT NULL COMMENT '语义关系的ID',
+    subject_role_id INT NOT NULL COMMENT '语义角色主体的ID',
+    object_role_id INT NOT NULL COMMENT '语义角色客体的ID'
+);
+"""
+
+# SQL语句:获取语义关系表所有数据
+fetch_semantic_relation_all_data = """SELECT * FROM semantic_relation"""
+
+def connect_to_mysql():
+    """连接mysql
+    """
+    return pymysql.connect(host=Mysql_Server_Config['host'],
+                           user=Mysql_Server_Config['user'],
+                           password=Mysql_Server_Config['password'],
+                           database=Mysql_Server_Config['database'],
+                           port=3306,
+                           cursorclass=pymysql.cursors.DictCursor)
+
+def execute_sql_sentence(sql_sentence):
+    """执行sql语句
+    Args:
+        sql_sentence:sql语句,格式如下:(\用于转义)
+            \"\"\"SELECT * FROM funds_o_industry_vie LIMIT 3;\"\"\"
+    """
+    # 连接mysql
+    mysql_conn = connect_to_mysql()
+    # 创建一个新的cursor对象
+    cursor = mysql_conn.cursor()
+    # 执行SQL命令
+    sql = sql_sentence 
+    cursor.execute(sql)          # execute()方法用于执行SQL语句；
+    # 提交更改
+    mysql_conn.commit()
+    # 关闭连接
+    mysql_conn.close()
+
+def insert_data_into_semantic_relation_table(data):
+    """将数据插入<语义关系表>
+    Args:
+        data:待插入数据,数据格式如下:
+        {
+            "Pat": {
+                "mean_zh": "受事",
+                "subject_role": "谓语",
+                "object_role": "受事",
+                "relation_id": 6001,
+                "subject_role_id": 1001,
+                "object_role_id": 1002
+            }
+        }
+    """
+    # 连接mysql
+    mysql_conn = connect_to_mysql()
+    # 创建一个新的cursor对象
+    cursor = mysql_conn.cursor()
+
+    for key, value in data.items():
+        cursor.execute(
+            "INSERT INTO semantic_relation (mean_en, mean_zh, subject_role, object_role, relation_id, subject_role_id, object_role_id) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s)",
+            (key, value["mean_zh"], value["subject_role"], value["object_role"], value["relation_id"], value["subject_role_id"], value["object_role_id"])
+        )
+    # 提交更改
+    mysql_conn.commit()
+    # 关闭连接
+    mysql_conn.close()
+
+if __name__ == "__main__":
+    import json
+
+    # 读取JSON文件
+    with open('semantic_relation.json', 'r', encoding='utf-8') as file:
+        semantic_data = json.load(file)
+    # 向mysql的semantic_relation插入数据
+    insert_data_into_semantic_relation_table(semantic_data)
+```
+
+如果你想要创建表，请修改`if __name__ == "__main__":`为以下形式:<br>
+
+```python
+if __name__ == "__main__":
+    execute_sql_sentence(create_semantic_relation_table)
+```
