@@ -743,14 +743,14 @@ if __name__ == "__main__":
     insert_data_into_semantic_relation_table(semantic_data)
 ```
 
-如果你想要创建表，请修改`if __name__ == "__main__":`为以下形式:<br>
+如果你想要**创建semantic_relation表**，请修改`if __name__ == "__main__":`为以下形式:<br>
 
 ```python
 if __name__ == "__main__":
     execute_sql_sentence(create_semantic_relation_table)
 ```
 
-如果你想要从数据库中获取 'mean_en' 对应的 'subject_role' 和 'object_role'，请修改`if __name__ == "__main__":`为以下形式:<br>
+如果你想要从数据库中**获取** 'mean_en' 对应的 'subject_role' 和 'object_role'，请修改`if __name__ == "__main__":`为以下形式:<br>
 
 ```python
 if __name__ == "__main__":
@@ -770,7 +770,7 @@ if __name__ == "__main__":
 Mean_en: Lini, Subject Role: 谓语, Object Role: 空间源点
 ```
 
-如果你想要删除semantic_relation表，请修改`if __name__ == "__main__":`为以下形式:<br>
+如果你想要**删除semantic_relation表**，请修改`if __name__ == "__main__":`为以下形式:<br>
 
 ```python
 if __name__ == "__main__":
