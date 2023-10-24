@@ -77,6 +77,7 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [测试python与Neo4j的连接状态：](#测试python与neo4j的连接状态)
     - [创建三元组：](#创建三元组)
     - [获取三元组的值：](#获取三元组的值)
+  - [py2neo代码示例:](#py2neo代码示例)
   - [卸载Neo4j：](#卸载neo4j)
   - [为不同用户设置不同JDK：](#为不同用户设置不同jdk)
   - [卸载JDK：](#卸载jdk)
@@ -1570,6 +1571,52 @@ print(name_zh)        # 受事，类型为 str
 snowflake_id = relationship['snowflake_id']
 print(snowflake_id)        # 7104708589926234047，类型为 int
 ```
+
+
+## py2neo代码示例:
+
+```python
+from config import Neo4J_Server_Config
+from py2neo import Graph
+
+# Cypher语句:创建语义关系并在关系中添加属性
+create_semantic_info = """
+MERGE (entity_a:Entity {name: '买'})
+MERGE (entity_b:Entity {name: '基金'})
+MERGE (entity_a)-[rel:semantic_information]->(entity_b)
+SET rel.Pat = ['WJT-12', 'WJT-14']
+SET rel.Exp = ['WJT-5', 'WJT-104']
+SET rel.synonym_words = ['WJT-1', 'WJT-24']
+SET rel.near_synonym_words = ['WJT-43', 'WJT-10']
+SET rel.snow_id = 288247969436697000
+"""
+
+# Cypher语句:删除neo4j中所有数据
+delete_all_neo4j_data = "MATCH (m) OPTIONAL MATCH (m)-[r]-() DELETE m, r"
+
+def connect_to_neo4j():
+    """连接neo4j数据库
+    """
+    neo4j_host = Neo4J_Server_Config['host']
+    neo4j_port = Neo4J_Server_Config['port']
+    neo4j_user = Neo4J_Server_Config['user']
+    neo4j_password = Neo4J_Server_Config['password']
+    return Graph(f'neo4j://{neo4j_host}:{neo4j_port}', auth=(neo4j_user, neo4j_password))
+
+def execute_cypher_sentence(cypher_sentence):
+    """执行cypher语句
+    Args:
+        cypher_sentence:cypher语句。
+    """
+    # 连接neo4j
+    neo4j_conn = connect_to_neo4j()
+    # 使用Graph执行cypher语句
+    neo4j_conn.run(cypher_sentence)
+    
+if __name__ == "__main__":
+    execute_cypher_sentence(create_semantic_info)
+```
+
 
 ## 卸载Neo4j：
 
