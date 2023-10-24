@@ -45,8 +45,10 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [精确查找和模糊查找：](#精确查找和模糊查找)
     - [根据关系查询并返回多层节点：](#根据关系查询并返回多层节点)
   - [Neo4j属性的数据格式：](#neo4j属性的数据格式)
-    - [正确写法示例:](#正确写法示例)
-    - [错误写法示例:](#错误写法示例)
+    - [正确写法示例1:](#正确写法示例1)
+    - [正确写法示例2:](#正确写法示例2)
+    - [错误示例1:](#错误示例1)
+    - [错误写法示例2:](#错误写法示例2)
   - [Neo4j中的设置/更新操作：](#neo4j中的设置更新操作)
     - [更新Neo4j中实体的属性的值：](#更新neo4j中实体的属性的值)
     - [为实体添加新的属性：](#为实体添加新的属性)
@@ -991,24 +993,52 @@ Duration | 持续时间
 
 ⚠️⚠️⚠️不过，如果你需要存储这样的数据，可以考虑将其序列化为字符串格式（例如JSON字符串），然后存储为字符串属性。但这样做的话，你将失去对那些内部键值对的直接查询能力❌❌❌。<br>
 
-### 正确写法示例:
+### 正确写法示例1:
 
 ```sql
 MERGE (entity_a:Entity {name: '买'})
 MERGE (entity_b:Entity {name: '基金'})
 MERGE (entity_a)-[rel:semantic_information]->(entity_b)
-SET rel.Pat = ["WJT-12", "WJT-14"]
-SET rel.Exp = ["WJT-5", "WJT-104"]
+SET rel.Pat = ['WJT-12', 'WJT-14']
+SET rel.Exp = ['WJT-5', 'WJT-104']
 ```
 
-### 错误写法示例:
+### 正确写法示例2:
+
+```sql
+MERGE (entity_a:Entity {name: '买'})
+MERGE (entity_b:Entity {name: '基金'})
+MERGE (entity_a)-[rel:semantic_information]->(entity_b)
+SET rel.semantic_relation = "{'Pat': ['WJT-12', 'WJT-14'], 'Exp': ['WJT-5', 'WJT-104']}"
+```
+
+⛔️⛔️⛔️如果你采用这种写法，semantic_relation属性对应的内容为字符串格式。<br>
+
+### 错误示例1:
+
+```sql
+MERGE (entity_a:Entity {name: '买'})
+MERGE (entity_b:Entity {name: '基金'})
+MERGE (entity_a)-[rel:semantic_information]->(entity_b)
+SET rel.semantic_relation = {'Pat': ['WJT-12', 'WJT-14'], 'Exp': ['WJT-5', 'WJT-104']}
+```
+运行错误示例的代码后，会显示以下错误提示:<br>
+
+```log
+ERROR Neo.ClientError.Statement.SyntaxError
+Invalid input ''': expected whitespace, an identifier, UnsignedDecimalInteger, a property key name or '}' (line 4, column 30 (offset: 158))
+"SET rel.semantic_relation = {'Pat': ['WJT-12', 'WJT-14'], 'Exp': ['WJT-5', 'WJT-104']}
+                              ^
+```
+
+### 错误写法示例2:
 
 ```sql
 MERGE (entity_a:Entity {name: '买'})
 MERGE (entity_b:Entity {name: '基金'})
 MERGE (entity_a)-[rel:semantic_information]->(entity_b)
 SET rel.semantic_relation = [
-  {'Pat': ["WJT-12", "WJT-14"], 'Exp': ["WJT-5", "WJT-104"]}
+  {'Pat': ['WJT-12', 'WJT-14'], 'Exp': ['WJT-5', 'WJT-104']}
 ]
 ```
 
@@ -1017,9 +1047,10 @@ SET rel.semantic_relation = [
 ```log
 ERROR Neo.ClientError.Statement.SyntaxError
 Invalid input ''': expected whitespace, an identifier, UnsignedDecimalInteger, a property key name or '}' (line 5, column 4 (offset: 162))
-"  {'Pat': ["WJT-12", "WJT-14"], 'Exp': ["WJT-5", "WJT-104"]}"
+"  {'Pat': ['WJT-12', 'WJT-14'], 'Exp': ['WJT-5', 'WJT-104']}"
     ^
 ```
+
 
 
 ## Neo4j中的设置/更新操作：
