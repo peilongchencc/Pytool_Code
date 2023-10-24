@@ -643,6 +643,9 @@ CREATE TABLE semantic_relation (
 # SQL语句:获取语义关系表所有数据
 fetch_semantic_relation_all_data = """SELECT * FROM semantic_relation"""
 
+# SQL语句:删除语义关系表所有数据
+drop_semantic_relation_table = """DROP TABLE semantic_relation;"""
+
 def connect_to_mysql():
     """连接mysql
     """
@@ -765,4 +768,11 @@ if __name__ == "__main__":
 
 ```log
 Mean_en: Lini, Subject Role: 谓语, Object Role: 空间源点
+```
+
+如果你想要删除semantic_relation表，请修改`if __name__ == "__main__":`为以下形式:<br>
+
+```python
+if __name__ == "__main__":
+    execute_sql_sentence(drop_semantic_relation_table)
 ```
