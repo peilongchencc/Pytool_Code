@@ -78,6 +78,7 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [创建三元组：](#创建三元组)
     - [获取三元组的值：](#获取三元组的值)
   - [py2neo代码示例:](#py2neo代码示例)
+    - [根据某个条件遍历属性:](#根据某个条件遍历属性)
   - [卸载Neo4j：](#卸载neo4j)
   - [为不同用户设置不同JDK：](#为不同用户设置不同jdk)
   - [卸载JDK：](#卸载jdk)
@@ -1594,6 +1595,14 @@ SET rel.snow_id = 288247969436697000
 # Cypher语句:删除neo4j中所有数据
 delete_all_neo4j_data = "MATCH (m) OPTIONAL MATCH (m)-[r]-() DELETE m, r"
 
+# Cypher语句:根据标准问句id(例如:WJT-1)查询neo4j中semantic_information关系
+according_wjt_fetch_data = """
+MATCH (a:Entity)-[r:semantic_information]->(b:Entity)
+WITH a, b, [attr IN keys(r) WHERE "WJT-1" IN coalesce(r[attr], [])] AS attrs
+WHERE size(attrs) > 0
+RETURN a.name AS entity_a, b.name AS entity_b, attrs AS attribute_names
+"""
+
 def connect_to_neo4j():
     """连接neo4j数据库
     """
@@ -1611,10 +1620,25 @@ def execute_cypher_sentence(cypher_sentence):
     # 连接neo4j
     neo4j_conn = connect_to_neo4j()
     # 使用Graph执行cypher语句
-    neo4j_conn.run(cypher_sentence)
+    result = neo4j_conn.run(cypher_sentence)
+    return result
     
 if __name__ == "__main__":
-    execute_cypher_sentence(create_semantic_info)
+    res = execute_cypher_sentence(according_wjt_fetch_data)
+    for item in res:
+        entity_a = item['entity_a']
+        entity_b = item['entity_b']
+        attribute_names = item['attribute_names']
+        print(f"实体A为:{entity_a},实体B为:{entity_b},属性为:{attribute_names}")
+```
+
+### 根据某个条件遍历属性:
+
+```sql
+MATCH (a:Entity)-[r:semantic_information]->(b:Entity)
+WITH a, b, [attr IN keys(r) WHERE "WJT-1" IN coalesce(r[attr], [])] AS attrs
+WHERE size(attrs) > 0
+RETURN a.name AS entity_a, b.name AS entity_b, attrs AS attribute_names
 ```
 
 
