@@ -664,12 +664,40 @@ def execute_sql_sentence(sql_sentence):
     # 创建一个新的cursor对象
     cursor = mysql_conn.cursor()
     # 执行SQL命令
-    sql = sql_sentence 
-    cursor.execute(sql)          # execute()方法用于执行SQL语句；
+    cursor.execute(sql_sentence)          # execute()方法用于执行SQL语句；
     # 提交更改
     mysql_conn.commit()
     # 关闭连接
     mysql_conn.close()
+
+def fetch_semantic_data(mean_en):
+    """根据语义关系中的mean_en获取subject_role和object_role的值。
+    Args:
+        mean_en:语义关系_英文,例如"Pat"。
+    Return:
+        subject_role:语义角色主体。
+        object_role:语义角色主体。
+    """
+    # 连接mysql
+    mysql_conn = connect_to_mysql()
+    # 创建一个新的cursor对象
+    cursor = mysql_conn.cursor()
+    try:
+        # 执行SQL命令,如果也想获取mean_en，添加到sql语句即可，例如"SELECT mean_en, subject_role..."
+        cursor.execute("SELECT subject_role, object_role FROM semantic_relation WHERE mean_en = %s", (mean_en,))
+        
+        # 获取查询结果
+        result = cursor.fetchone()
+
+        if result:
+            subject_role = result['subject_role']
+            object_role = result['object_role']
+            return subject_role, object_role
+        else:
+            return None, None
+    finally:
+        # 关闭连接
+        mysql_conn.close()
 
 def insert_data_into_semantic_relation_table(data):
     """将数据插入<语义关系表>
@@ -717,4 +745,24 @@ if __name__ == "__main__":
 ```python
 if __name__ == "__main__":
     execute_sql_sentence(create_semantic_relation_table)
+```
+
+如果你想要从数据库中获取 'mean_en' 对应的 'subject_role' 和 'object_role'，请修改`if __name__ == "__main__":`为以下形式:<br>
+
+```python
+if __name__ == "__main__":
+    # 从数据库中获取 'mean_en' 对应的 'subject_role' 和 'object_role'
+    mean_en_value = "Lini"
+    subject_role, object_role = fetch_semantic_data(mean_en_value)
+
+    if subject_role is not None:
+        print(f"Mean_en: {mean_en_value}, Subject Role: {subject_role}, Object Role: {object_role}")
+    else:
+        print(f"Mean_en: {mean_en_value} not found in the database.")
+```
+
+终端输出如下:<br>
+
+```log
+Mean_en: Lini, Subject Role: 谓语, Object Role: 空间源点
 ```
