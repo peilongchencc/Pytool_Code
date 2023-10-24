@@ -980,12 +980,12 @@ Neo4j是一个图数据库，其中节点和关系可以有属性。这些属性
 ---|---
 Date | 日期
 Time | 时间
-LocalTime ｜ 本地时间
-DateTime ｜ 日期时间
-LocalDateTime ｜ 本地日期时间
-Duration ｜ 持续时间
+LocalTime | 本地时间
+DateTime | 日期时间
+LocalDateTime | 本地日期时间
+Duration | 持续时间
 
-6. **空值** (`null`)
+1. **空值** (`null`)
 
 但是，要注意的是，**Neo4j不直接支持像"字典"或"映射"这样的复杂数据结构作为属性值**🚨🚨🚨。<br>
 
