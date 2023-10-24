@@ -622,7 +622,7 @@ finally:
 ## pymysql示例：
 
 ```python
-from mysql_config import Mysql_Server_Config
+from config import Mysql_Server_Config
 import pymysql.cursors
 
 # SQL语句:创建语义关系表
@@ -641,7 +641,9 @@ CREATE TABLE semantic_relation (
 """
 
 # SQL语句:获取语义关系表所有数据
-fetch_semantic_relation_all_data = """SELECT * FROM semantic_relation"""
+fetch_semantic_relation_all_data = """SELECT mean_en FROM semantic_relation"""
+
+# fetch_semantic_relation_info = "SELECT subject_role, object_role FROM semantic_relation WHERE mean_en = %s", (mean_en,)
 
 # SQL语句:删除语义关系表所有数据
 drop_semantic_relation_table = """DROP TABLE semantic_relation;"""
@@ -673,13 +675,13 @@ def execute_sql_sentence(sql_sentence):
     # 关闭连接
     mysql_conn.close()
 
-def fetch_semantic_data(mean_en):
+def fetch_semantic_data(sql_sentence):
     """根据语义关系中的mean_en获取subject_role和object_role的值。
     Args:
-        mean_en:语义关系_英文,例如"Pat"。
+        sql_sentence:sql语句,格式如下:(\用于转义)
+            \"\"\"SELECT * FROM funds_o_industry_vie LIMIT 3;\"\"\"
     Return:
-        subject_role:语义角色主体。
-        object_role:语义角色主体。
+        result:查询结果。
     """
     # 连接mysql
     mysql_conn = connect_to_mysql()
@@ -687,17 +689,11 @@ def fetch_semantic_data(mean_en):
     cursor = mysql_conn.cursor()
     try:
         # 执行SQL命令,如果也想获取mean_en，添加到sql语句即可，例如"SELECT mean_en, subject_role..."
-        cursor.execute("SELECT subject_role, object_role FROM semantic_relation WHERE mean_en = %s", (mean_en,))
+        cursor.execute(sql_sentence)
         
         # 获取查询结果
-        result = cursor.fetchone()
-
-        if result:
-            subject_role = result['subject_role']
-            object_role = result['object_role']
-            return subject_role, object_role
-        else:
-            return None, None
+        result = cursor.fetchall()
+        return result
     finally:
         # 关闭连接
         mysql_conn.close()
@@ -750,24 +746,21 @@ if __name__ == "__main__":
     execute_sql_sentence(create_semantic_relation_table)
 ```
 
-如果你想要从数据库中**获取** 'mean_en' 对应的 'subject_role' 和 'object_role'，请修改`if __name__ == "__main__":`为以下形式:<br>
+如果你想要从数据库中**获取** 'mean_en'的信息，请修改`if __name__ == "__main__":`为以下形式:<br>
 
 ```python
 if __name__ == "__main__":
-    # 从数据库中获取 'mean_en' 对应的 'subject_role' 和 'object_role'
-    mean_en_value = "Lini"
-    subject_role, object_role = fetch_semantic_data(mean_en_value)
-
-    if subject_role is not None:
-        print(f"Mean_en: {mean_en_value}, Subject Role: {subject_role}, Object Role: {object_role}")
-    else:
-        print(f"Mean_en: {mean_en_value} not found in the database.")
+    res = fetch_semantic_data(fetch_semantic_relation_all_data)
+    semantic_relation_list = []
+    for item in res:
+        semantic_relation_list.append(item['mean_en'])
+    print(semantic_relation_list)
 ```
 
 终端输出如下:<br>
 
 ```log
-Mean_en: Lini, Subject Role: 谓语, Object Role: 空间源点
+['Accd', 'Belg', 'Clas', 'Comp', 'Cons', 'Cont', 'dBelg', 'dClas', 'dCont', 'Desc', 'dExp', 'dPat', 'eCoo', 'eSelt', 'Exp', 'Freq', 'Host', 'Lfin', 'Lini', 'Loc', 'Mann', 'mDir', 'mNeg', 'mRange', 'mTime', 'Pat', 'Poss', 'Prod', 'Qp', 'Quan', 'rCont', 'Reas', 'rExp', 'rPat', 'rReas', 'Time', 'Tmod']
 ```
 
 如果你想要**删除semantic_relation表**，请修改`if __name__ == "__main__":`为以下形式:<br>
