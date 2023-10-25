@@ -1581,15 +1581,21 @@ from config import Neo4J_Server_Config
 from py2neo import Graph
 
 # Cypher语句:创建语义关系并在关系中添加属性
+# is_synonym为True表示是同义词，is_synonym为False表示近义词。虽然写的时候是小写"false"，但代码获取后是<class 'bool'>类型。
 create_semantic_info = """
-MERGE (entity_a:Entity {name: '买'})
-MERGE (entity_b:Entity {name: '基金'})
+MERGE (entity_a:Entity {name: '投资'})
+MERGE (entity_b:Entity {name: '盈米'})
 MERGE (entity_a)-[rel:semantic_information]->(entity_b)
-SET rel.Pat = ['WJT-12', 'WJT-14']
-SET rel.Exp = ['WJT-5', 'WJT-104']
-SET rel.synonym_words = ['WJT-1', 'WJT-24']
-SET rel.near_synonym_words = ['WJT-43', 'WJT-10']
+SET rel.Range = ['WJT-1', 'WJT-14']
+SET rel.Exp = ['WJT-51']
+SET rel.is_synonym = false
 SET rel.snow_id = 288247969436697000
+"""
+
+# 获取is_synonym的值
+fetch_is_synonym = """
+Match (entity_a:Entity {name: '投资'})-[r:semantic_information]->(entity_b:Entity {name: '盈米'})
+RETURN r.is_synonym  AS is_synonym
 """
 
 # Cypher语句:删除neo4j中所有数据
@@ -1623,6 +1629,25 @@ def execute_cypher_sentence(cypher_sentence):
     result = neo4j_conn.run(cypher_sentence)
     return result
     
+if __name__ == "__main__":
+    # 获取is_synonym的值，并查看is_synonym的数据类型
+    res = execute_cypher_sentence(fetch_is_synonym)
+    for record in res:
+        is_synonym = record['is_synonym']
+        print("is_synonym:", is_synonym)
+        print("is_synonym的数据类型为:", type(is_synonym))
+```
+
+终端显示:<br>
+
+```log
+is_synonym: False
+is_synonym的数据类型为: <class 'bool'>
+```
+
+如果你想要获取**节点和关系信息**，请修改`if __name__ == "__main__":`为以下形式:<br>
+
+```python
 if __name__ == "__main__":
     res = execute_cypher_sentence(according_wjt_fetch_data)
     for item in res:
