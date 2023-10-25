@@ -627,6 +627,7 @@ import pymysql.cursors
 
 # SQL语句:创建语义关系表
 # 通过在`mean_en`字段上添加UNIQUE约束，确保了该字段的值在表中不会重复。如果尝试插入一个已经存在的`mean_en`值，将会引发唯一性约束违反的错误。
+# 时间字段格式类似于:"2023-10-25 11:55:26"，如果某一行字段有修改，"modify_time"会自动修改。
 create_semantic_relation_table = """
 CREATE TABLE semantic_relation (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -636,7 +637,9 @@ CREATE TABLE semantic_relation (
     object_role VARCHAR(255) NOT NULL COMMENT '语义角色客体',
     relation_id INT NOT NULL COMMENT '语义关系的ID',
     subject_role_id INT NOT NULL COMMENT '语义角色主体的ID',
-    object_role_id INT NOT NULL COMMENT '语义角色客体的ID'
+    object_role_id INT NOT NULL COMMENT '语义角色客体的ID',
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    modify_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
 );
 """
 
