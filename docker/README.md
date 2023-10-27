@@ -47,6 +47,14 @@ sudo apt update
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose
 ```
 
+如果你只想要安装 Docker 而不想安装 Docker Compose，你可以从上述命令中移除`docker-compose`。以下是修改后的命令：<br>
+
+```bash
+sudo apt install -y docker-ce docker-ce-cli containerd.io
+```
+
+这条命令将只会为你安装 Docker 而不包括 Docker Compose。<br>
+
 ## Docker指令:
 
 现在Docker 和 Docker Compose已经安装好了，下面介绍一些工作中常用的Docker相关指令。<br>
