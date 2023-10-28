@@ -82,3 +82,11 @@ milvus-standalone   /tini -- milvus run standalone   Up             0.0.0.0:1953
 ```bash
 docker port milvus-standalone 19530/tcp
 ```
+
+终端显示信息:<br>
+
+```log
+(base) root@iZ2zea5v77oawjy2qz7cxxx:~# docker port milvus-standalone 19530/tcp
+0.0.0.0:19530
+[::]:19530
+```
