@@ -75,6 +75,7 @@ milvus-standalone   /tini -- milvus run standalone   Up             0.0.0.0:1953
 
 简而言之，`sudo docker compose ps` 命令用于查看当前目录下由 `docker-compose.yml` 定义的 Docker 服务的状态。<br>
 
+
 ## 连接Milvus:
 
 使用以下指令，验证 Milvus 服务器正在监听哪个本地端口。注意将容器名称替换为你自己的:
@@ -89,4 +90,34 @@ docker port milvus-standalone 19530/tcp
 (base) root@iZ2zea5v77oawjy2qz7cxxx:~# docker port milvus-standalone 19530/tcp
 0.0.0.0:19530
 [::]:19530
+```
+
+这表明，你的 Milvus 容器的 `19530` 端口映射到了宿主机的 `0.0.0.0:19530` 和 `[::]:19530`。<br>
+
+其中：<br>
+
+- `0.0.0.0:19530` 表示该端口在所有的 IPv4 地址上都是可访问的。
+
+- `[::]:19530` 表示该端口在所有的 IPv6 地址上都是可访问的。
+
+这意味着，只要你的服务器防火墙规则允许外部访问这个端口，并且没有其他的网络限制，那么你确实应该可以从外部访问这个 Milvus 实例。<br>
+
+但需要注意的是，对于任何服务，尤其是数据库类服务，直接暴露到外网有其风险。确保你已经设置了适当的安全措施，如防火墙规则、强密码、安全的连接方式等，以保护你的服务不被恶意访问。<br>
+
+
+## 为Milvus设置密码:
+
+
+## 关闭Milvus standalone:
+
+要关闭 `Milvus standalone`，请运行以下指令:<br>
+
+```bash
+sudo docker compose down
+```
+
+要在停止 Milvus 后删除数据，请运行以下指令:<br>
+
+```bash
+sudo rm -rf  volumes
 ```
