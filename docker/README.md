@@ -1,6 +1,8 @@
 # Docker
 - [Docker](#docker)
   - [Docker和Docker Compose 安装:](#docker和docker-compose-安装)
+  - [安装Docker Compose 1.25.1版本:](#安装docker-compose-1251版本)
+    - [docker-compose --version无法使用的解决方案:](#docker-compose---version无法使用的解决方案)
   - [Docker指令:](#docker指令)
     - [查看Docker版本:](#查看docker版本)
     - [查看Docker Compose版本的指令如下:](#查看docker-compose版本的指令如下)
@@ -47,13 +49,81 @@ sudo apt update
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose
 ```
 
-如果你只想要安装 Docker 而不想安装 Docker Compose，你可以从上述命令中移除`docker-compose`。以下是修改后的命令：<br>
+以笔者系统(Ubuntu 18.4)为例，运行上述代码后安装的docker版本为`Docker version 24.0.2, build cb74dfc`，安装的docker compose版本为`docker-compose version 1.17.1, build unknown`。<br>
+
+
+🚨🚨🚨如果你只想要安装 Docker 而不想安装 Docker Compose，你可以从上述命令中移除`docker-compose`。以下是修改后的命令：<br>
 
 ```bash
 sudo apt install -y docker-ce docker-ce-cli containerd.io
 ```
 
 这条命令将只会为你安装 Docker 而不包括 Docker Compose。<br>
+
+## 安装Docker Compose 1.25.1版本:
+
+在某些情况下，你可能想要安装不同版本的Docker Compose，此时你可以参考以下指令:<br>
+
+```bash
+sudo curl -L "https://github.com/docker/compose/releases/download/1.25.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+运行上述指令后，终端输入`docker-compose --version`将显示以下内容:<br>
+
+```bash
+docker-compose version 1.25.1, build a82fef07
+```
+
+### docker-compose --version无法使用的解决方案:
+
+如果你终端使用`docker-compose --version`显示如下内容:<br>
+
+```log
+(base) root@iZ2zea5v77oawjy2qz7cxxx:/usr/local/bin# docker-compose --version
+-bash: /usr/bin/docker-compose: No such file or directory
+```
+
+且`/usr/local/bin`目录下的内容有`docker-compose`文件:<br>
+
+```log
+(base) root@iZ2zea5v77oawjy2qz7cxxx:/usr/local/bin# ll
+total 16676
+drwxr-xr-x  2 root root     4096 Oct 27 17:41 ./
+drwxr-xr-x 12 root root     4096 Aug  9 10:22 ../
+-rwxr-xr-x  1 root root      399 May 15 17:06 cloud-id*
+-rwxr-xr-x  1 root root      403 May 15 17:06 cloud-init*
+-rwxr-xr-x  1 root root     2108 May 15 17:06 cloud-init-per*
+-rwxr-xr-x  1 root root 17032648 Oct 27 17:44 docker-compose*
+-rwxr-xr-x  1 root root     1003 May 15 17:06 jsondiff*
+-rwxr-xr-x  1 root root     3858 May 15 17:06 jsonpatch*
+-rwxr-xr-x  1 root root     1837 May 15 17:06 jsonpointer*
+-rwxr-xr-x  1 root root      397 May 15 17:06 jsonschema*
+-rwxr-xr-x  1 root root      424 May 15 17:06 normalizer*
+```
+
+需要首先检查环境变量是否配置:<br>
+
+```bash
+echo $PATH
+```
+
+如果没有，需要将`/usr/local/bin`添加至`~/.bashrc` 文件的末尾（对于bash用户）或 `~/.zshrc` （如果你使用zsh）。<br>
+
+> `/usr/local/bin`是按照笔者上方提供的指令安装docker compose的路径。
+
+如果环境变量显示已经有`/usr/local/bin`，那么你可以在终端运行以下指令，用来清除bash的内部命令查找缓存。<br>
+
+```bash
+hash -r
+docker-compose --version
+```
+
+现在大概率已经成功了，会出现这个问题是因为，你之前在不同的位置有 `docker-compose` 的版本，并且bash已经缓存了这个命令的位置。<br>
+
+使用 `hash -r` 来清除缓存是一个有用的技巧，特别是在安装、移动或更改可执行文件的路径时。<br>
+
 
 ## Docker指令:
 
