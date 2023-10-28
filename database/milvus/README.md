@@ -37,5 +37,5 @@ sudo docker compose ps
 
 终端显示:<br>
 
-<img src="./milvus_materials/milvus容器运行状态.jpg" alt="image" width="50%" height="50%">
+<img src="./milvus_materials/milvus容器运行状态.jpg" alt="image" width="100%" height="100%">
 
