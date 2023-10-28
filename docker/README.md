@@ -9,6 +9,7 @@
     - [检查 Docker 服务的状态(按q键退出检查状态):](#检查-docker-服务的状态按q键退出检查状态)
     - [启动 Docker 服务:](#启动-docker-服务)
     - [将 Docker 添加到启动项，以确保在系统重新启动时 Docker 会自动启动：](#将-docker-添加到启动项以确保在系统重新启动时-docker-会自动启动)
+  - [卸载Docker Compose:](#卸载docker-compose)
 
 
 ## Docker和Docker Compose 安装:
@@ -203,4 +204,10 @@ sudo systemctl enable docker
 ```log
 Synchronizing state of docker.service with SysV service script with /lib/systemd/systemd-sysv-install.
 Executing: /lib/systemd/systemd-sysv-install enable docker
+```
+
+## 卸载Docker Compose:
+
+```bash
+sudo apt remove docker-compose
 ```
