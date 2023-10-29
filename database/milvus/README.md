@@ -1,4 +1,12 @@
 # Milvus
+- [Milvus](#milvus)
+  - [Milvus安装:](#milvus安装)
+  - [查看Milvus是否运行:](#查看milvus是否运行)
+  - [连接Milvus:](#连接milvus)
+  - [为Milvus设置密码:](#为milvus设置密码)
+  - [关闭Milvus standalone:](#关闭milvus-standalone)
+  - [安装Milvus Python SDK:](#安装milvus-python-sdk)
+    - [补充说明Install Milvus Python SDK是什么意思？其中的SDK表示什么:](#补充说明install-milvus-python-sdk是什么意思其中的sdk表示什么)
 
 ## Milvus安装:
 
@@ -75,6 +83,72 @@ milvus-standalone   /tini -- milvus run standalone   Up             0.0.0.0:1953
 
 简而言之，`sudo docker compose ps` 命令用于查看当前目录下由 `docker-compose.yml` 定义的 Docker 服务的状态。<br>
 
+## 查看Milvus是否运行:
+
+要查看你的 Milvus 是否正在 Ubuntu 18.04 上运行，你可以采用以下几种方法：<br>
+
+1. **使用`docker ps`命令**:
+   
+如果你是通过 Docker 安装和运行 Milvus 的，你可以使用 `docker ps` 来查看正在运行的容器。例如:<br>
+
+```bash
+docker ps
+```
+
+在输出的列表中，找是否有 Milvus 的容器正在运行。<br>
+
+2. **使用`ps`命令和`grep`工具**:
+   
+你可以使用 `ps` 命令结合 `grep` 工具来查看是否有与 Milvus 相关的进程正在运行：<br>
+
+```bash
+ps aux | grep milvus
+```
+
+如果 Milvus 在运行，你应该能看到与 Milvus 相关的进程信息。<br>
+
+3. **使用`netstat`命令查看端口**:
+   
+通常，Milvus 默认在 `19530` 端口上监听。你可以使用 `netstat` 来查看此端口是否已经被占用：<br>
+
+```bash
+netstat -tuln | grep 19530
+```
+
+如果你看到有进程监听在这个端口上，那很可能 Milvus 是在运行的。<br>
+
+或者直接使用`netstat -tuln`查看是否有属于Milvus的端口。<br>
+
+4. **查看 Milvus 的日志**:
+   
+如果你有访问 Milvus 日志的权限，那么你可以直接查看它的日志来判断其是否在正常运行。<br>
+
+不论你采用哪种方法，记得根据实际情况调整命令和参数。如果你有其他关于 Milvus 或 Ubuntu 的问题，请随时提问。<br>
+
+**如果你是使用 Docker 运行的 Milvus**，Milvus 的日志位置通常在容器内部。你可以使用以下命令来查看 Milvus 容器的日志：<br>
+
+```bash
+docker logs [CONTAINER_ID_OR_NAME]
+```
+
+其中 `[CONTAINER_ID_OR_NAME]` 是你的 Milvus 容器的 ID 或名称。<br>
+
+如果你是按照笔者的方式安装的Milvus，想查看 Milvus 的日志，可以使用以下命令：<br>
+
+```bash
+docker logs milvus-standalone
+```
+
+此命令会输出 `milvus-standalone` 容器的日志。<br>
+
+如果需要查看 MinIO 或 etcd 的日志，只需将 `milvus-standalone` 替换为相应的容器名称即可。例如，查看 MinIO 的日志：<br>
+
+```bash
+docker logs milvus-minio
+```
+
+以上信息应该可以帮助你了解当前 Milvus 的运行状态和查看其日志。<br>
+
 
 ## 连接Milvus:
 
@@ -121,3 +195,29 @@ sudo docker compose down
 ```bash
 sudo rm -rf  volumes
 ```
+
+## 安装Milvus Python SDK:
+
+切换到你需要安装`pymilvus`的虚拟环境，然后运行以下指令:<br>
+
+```bash
+python3 -m pip install pymilvus==2.3.2
+```
+
+现在终端运行以下指令，验证下`pymilvus`是否已经正确安装。如果`pymilvus`的安装没有问题，则终端运行以下命令时不会引发异常:<br>
+
+```bash
+python3 -c "from pymilvus import Collection"
+```
+
+### 补充说明Install Milvus Python SDK是什么意思？其中的SDK表示什么:
+
+"Install Milvus Python SDK" 的意思是安装 Milvus 的 Python 软件开发工具包。<br>
+
+其中的 "SDK" 是 "Software Development Kit" 的缩写，翻译成中文是“软件开发工具包”。<br>
+
+SDK 通常包括一组软件开发工具，这些工具允许开发者为特定的软件包、软件框架、硬件平台、计算机系统、操作系统或平台创建应用程序。<br>
+
+对于 "Milvus Python SDK"，这意味着**这是一个为 Python 语言提供的工具集，允许开发者更容易地与 Milvus 进行交互和开发。**🫠🫠🫠Milvus 是一个开源的向量搜索引擎，它使得大规模向量数据的相似性搜索变得简单高效。<br>
+
+简而言之，如果你想使用 Python 来开发和 Milvus 相关的应用，你就需要安装 Milvus Python SDK。<br>
