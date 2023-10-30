@@ -4,6 +4,7 @@
   - [文本向量化：](#文本向量化)
     - [自定义jieba词库示例:](#自定义jieba词库示例)
     - [句向量示例:](#句向量示例)
+    - ["hfl/chinese-electra-180g-base-discriminator"模型简介:](#hflchinese-electra-180g-base-discriminator模型简介)
 
 ## dataset：
 如果数据集较小，会放在项目文件中。如果数据集较大，会放在 dataset 文件夹下。如果遇到项目文件中缺少数据集，请在 dataset 文件夹下寻找对应网盘链接下载。<br>
@@ -133,3 +134,25 @@ print(vectors)
 ```
 
 上面的代码首先加载了预训练的Electra模型和对应的tokenizer，然后为给定的文本列表提取了向量。每个文本的向量是其所有token的向量的平均值。<br>
+
+### "hfl/chinese-electra-180g-base-discriminator"模型简介:
+
+`"hfl/chinese-electra-180g-base-discriminator"` 是 Hugging Face Model Hub 上的一个模型。HFL（Hugging Face Lab）的这个模型基于 ELECTRA 架构并专门针对中文进行了预训练。<br>
+
+> 笔者暂时了解到hanlp的相似度模型就是使用"hfl/chinese-electra-180g-base-discriminator"做的文本向量化。
+
+首先，我们来简单介绍一下 ELECTRA：<br>
+
+ELECTRA（Efficiently Learning an Encoder that Classifies Token Replacements Accurately）是一种与BERT相似但更高效的预训练语言模型方法。与BERT的Masked Language Model目标不同，ELECTRA的训练目标是Discriminator，它试图区分"真实"的token和一个生成模型所替代的"假"token。<br>
+
+关于 `"hfl/chinese-electra-180g-base-discriminator"` 的特点：<br>
+
+1. **语言**: 这个模型是专门为中文设计的。这意味着它在各种中文数据集上进行了预训练，包括简体、繁体以及混合的中文文本。
+   
+2. **模型大小**: "180g" 暗示这是一个相对较小的模型，但它已经足够强大，可以处理大多数NLP任务。较小的模型在推理时速度更快，也更易于部署。
+
+3. **Discriminator**: 这个模型是 ELECTRA 的 Discriminator 版本，意味着它被训练来识别由一个生成模型产生的假token。
+
+4. **来源**: HFL 是 Hugging Face 团队的一个子项目，他们专门致力于各种语言的模型研发。这意味着该模型背后有一定的研究和开发力量，确保其性能和可靠性。
+
+在实际应用中，ELECTRA 通常能够在许多NLP任务上提供与BERT相似或更好的性能，但以更低的计算成本。因此，使用这种中文版本的ELECTRA模型可能会为中文NLP应用带来很好的效果。<br>
