@@ -7,6 +7,7 @@
   - [关闭Milvus standalone:](#关闭milvus-standalone)
   - [安装Milvus Python SDK:](#安装milvus-python-sdk)
     - [补充说明Install Milvus Python SDK是什么意思？其中的SDK表示什么:](#补充说明install-milvus-python-sdk是什么意思其中的sdk表示什么)
+  - [pymilvus示例代码:](#pymilvus示例代码)
 
 ## Milvus安装:
 
@@ -221,3 +222,186 @@ SDK 通常包括一组软件开发工具，这些工具允许开发者为特定�
 对于 "Milvus Python SDK"，这意味着**这是一个为 Python 语言提供的工具集，允许开发者更容易地与 Milvus 进行交互和开发。**🫠🫠🫠Milvus 是一个开源的向量搜索引擎，它使得大规模向量数据的相似性搜索变得简单高效。<br>
 
 简而言之，如果你想使用 Python 来开发和 Milvus 相关的应用，你就需要安装 Milvus Python SDK。<br>
+
+## pymilvus示例代码:
+
+```python
+# hello_milvus.py 展示了 PyMilvus 的基本操作，PyMilvus 是 Milvus 的 Python SDK。
+# 1. 连接到 Milvus
+# 2. 创建集合
+# 3. 插入数据
+# 4. 创建索引
+# 5. 在实体上进行搜索、查询和混合搜索
+# 6. 通过 PK 删除实体
+# 7. 删除集合
+import time
+
+import numpy as np
+from pymilvus import (
+    connections,
+    utility,
+    FieldSchema, CollectionSchema, DataType,
+    Collection,
+)
+
+fmt = "\n=== {:30} ===\n"
+search_latency_fmt = "搜索延迟 = {:.4f}s"
+num_entities, dim = 3000, 8
+
+#################################################################################
+# 1. 连接到 Milvus
+# 为位于 `localhost:19530` 的 Milvus 服务器添加一个新的连接别名 `default`
+# 实际上 "default" 别名在 PyMilvus 中是内置的。
+# 如果 Milvus 的地址与 `localhost:19530` 相同，你可以省略所有
+# 参数并调用该方法，例如：`connections.connect()`。
+#
+# 注意: 以下方法的 `using` 参数默认为 "default"。
+print(fmt.format("开始连接到 Milvus"))
+connections.connect("default", host="localhost", port="19530")
+
+has = utility.has_collection("hello_milvus")
+print(f"Milvus 中是否存在 hello_milvus 集合: {has}")
+
+#################################################################################
+# 2. 创建集合
+# 我们将创建一个包含 3 个字段的集合。
+# +-+------------+------------+------------------+------------------------------+
+# | | 字段名称   | 字段类型   | 其他属性         |       字段描述                |
+# +-+------------+------------+------------------+------------------------------+
+# |1|    "pk"    |   VarChar  |  is_primary=True |      "主键字段"               |
+# | |            |            |   auto_id=False  |                              |
+# +-+------------+------------+------------------+------------------------------+
+# |2|  "random"  |    Double  |                  |      "一个 double 字段"       |
+# +-+------------+------------+------------------+------------------------------+
+# |3|"embeddings"| FloatVector|     dim=8        |  "维度为 8 的 float 向量"     |
+# +-+------------+------------+------------------+------------------------------+
+fields = [
+    FieldSchema(name="pk", dtype=DataType.VARCHAR, is_primary=True, auto_id=False, max_length=100),
+    FieldSchema(name="random", dtype=DataType.DOUBLE),
+    FieldSchema(name="embeddings", dtype=DataType.FLOAT_VECTOR, dim=dim)
+]
+
+schema = CollectionSchema(fields, "hello_milvus 是一个简单的演示，用于介绍 APIs")
+
+print(fmt.format("创建集合 `hello_milvus`"))
+hello_milvus = Collection("hello_milvus", schema, consistency_level="Strong")
+
+################################################################################
+# 3. 插入数据
+# 我们将在 `hello_milvus` 中插入 3000 行数据
+# 待插入的数据必须按字段组织。
+#
+# insert() 方法返回：
+# - 如果 schema 中的 auto_id=True，则由 Milvus 自动生成的主键；
+# - 如果 schema 中的 auto_id=False，则返回实体中已有的主键字段。
+
+print(fmt.format("开始插入实体"))
+rng = np.random.default_rng(seed=19530)
+entities = [
+    # 提供 pk 字段，因为 `auto_id` 设置为 False
+    [str(i) for i in range(num_entities)],
+    rng.random(num_entities).tolist(),  # 字段 random，只支持 list
+    rng.random((num_entities, dim)),    # 字段 embeddings，支持 numpy.ndarray 和 list
+]
+
+insert_result = hello_milvus.insert(entities)
+
+hello_milvus.flush()
+print(f"Milvus 中的实体数量: {hello_milvus.num_entities}")  # 检查 num_entities
+
+################################################################################
+# 4. 创建索引
+# 我们将为 hello_milvus 集合创建一个 IVF_FLAT 索引。
+# create_index() 只能应用于 `FloatVector` 和 `BinaryVector` 字段。
+print(fmt.format("开始创建 IVF_FLAT 索引"))
+index = {
+    "index_type": "IVF_FLAT",
+    "metric_type": "L2",
+    "params": {"nlist": 128},
+}
+
+hello_milvus.create_index("embeddings", index)
+
+################################################################################
+# 5. 搜索、查询和混合搜索
+# 数据被插入到 Milvus 并进行索引后，你可以执行：
+# - 基于向量相似性的搜索
+# - 基于标量筛选（布尔值、整数等）的查询
+# - 基于向量相似性和标量筛选的混合搜索。
+#
+
+# 在进行搜索或查询之前，你需要将 `hello_milvus` 中的数据加载到内存中。
+print(fmt.format("开始加载数据"))
+hello_milvus.load()
+
+# -----------------------------------------------------------------------------
+# 基于向量相似性的搜索
+print(fmt.format("开始基于向量相似性的搜索"))
+vectors_to_search = entities[-1][-2:]
+search_params = {
+    "metric_type": "L2",
+    "params": {"nprobe": 10},
+}
+
+start_time = time.time()
+result = hello_milvus.search(vectors_to_search, "embeddings", search_params, limit=3, output_fields=["random"])
+end_time = time.time()
+
+for hits in result:
+    for hit in hits:
+        print(f"命中: {hit}, random 字段: {hit.entity.get('random')}")
+print(search_latency_fmt.format(end_time - start_time))
+
+# -----------------------------------------------------------------------------
+# 基于标量筛选（布尔值、整数等）的查询
+print(fmt.format("开始使用 `random > 0.5` 进行查询"))
+
+start_time = time.time()
+result = hello_milvus.query(expr="random > 0.5", output_fields=["random", "embeddings"])
+end_time = time.time()
+
+print(f"查询结果:\n-{result[0]}")
+print(search_latency_fmt.format(end_time - start_time))
+
+# -----------------------------------------------------------------------------
+# 分页
+r1 = hello_milvus.query(expr="random > 0.5", limit=4, output_fields=["random"])
+r2 = hello_milvus.query(expr="random > 0.5", offset=1, limit=3, output_fields=["random"])
+print(f"查询分页(limit=4):\n\t{r1}")
+print(f"查询分页(offset=1, limit=3):\n\t{r2}")
+
+# -----------------------------------------------------------------------------
+# 混合搜索
+print(fmt.format("开始使用 `random > 0.5` 进行混合搜索"))
+
+start_time = time.time()
+result = hello_milvus.search(vectors_to_search, "embeddings", search_params, limit=3, expr="random > 0.5", output_fields=["random"])
+end_time = time.time()
+
+for hits in result:
+    for hit in hits:
+        print(f"命中: {hit}, random 字段: {hit.entity.get('random')}")
+print(search_latency_fmt.format(end_time - start_time))
+
+###############################################################################
+# 6. 通过 PK 删除实体
+# 你可以使用布尔表达式通过它们的 PK 值删除实体。
+ids = insert_result.primary_keys
+
+expr = f'pk in ["{ids[0]}" , "{ids[1]}"]'
+print(fmt.format(f"开始使用表达式 `{expr}` 进行删除"))
+
+result = hello_milvus.query(expr=expr, output_fields=["random", "embeddings"])
+print(f"使用表达式=`{expr}` 查询删除前的结果 -> 结果: \n-{result[0]}\n-{result[1]}\n")
+
+hello_milvus.delete(expr)
+
+result = hello_milvus.query(expr=expr, output_fields=["random", "embeddings"])
+print(f"使用表达式=`{expr}` 查询删除后的结果 -> 结果: {result}\n")
+
+###############################################################################
+# 7. 删除集合
+# 最后，删除 hello_milvus 集合
+print(fmt.format("删除集合 `hello_milvus`"))
+utility.drop_collection("hello_milvus")
+```
