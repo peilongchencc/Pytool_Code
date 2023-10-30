@@ -8,6 +8,27 @@
   - [安装Milvus Python SDK:](#安装milvus-python-sdk)
     - [补充说明Install Milvus Python SDK是什么意思？其中的SDK表示什么:](#补充说明install-milvus-python-sdk是什么意思其中的sdk表示什么)
   - [pymilvus示例代码:](#pymilvus示例代码)
+    - [导入模块和库:](#导入模块和库)
+    - [定义格式变量:](#定义格式变量)
+    - [定义实体数量和向量维度:](#定义实体数量和向量维度)
+    - [连接到Milvus服务器:](#连接到milvus服务器)
+    - [检查集合是否存在:](#检查集合是否存在)
+    - [定义字段列表:](#定义字段列表)
+    - [定义集合的结构:](#定义集合的结构)
+    - [创建新的集合:](#创建新的集合)
+    - [插入实体:](#插入实体)
+    - [创建索引:](#创建索引)
+    - [加载集合:](#加载集合)
+    - [基于向量相似性的搜索:](#基于向量相似性的搜索)
+    - [基于标量过滤的查询:](#基于标量过滤的查询)
+    - [分页查询:](#分页查询)
+    - [混合搜索:](#混合搜索)
+    - [获取插入实体的主键:](#获取插入实体的主键)
+    - [构建删除表达式:](#构建删除表达式)
+    - [查询并打印删除前的实体:](#查询并打印删除前的实体)
+    - [删除实体:](#删除实体)
+    - [查询并打印删除后的实体:](#查询并打印删除后的实体)
+    - [删除集合:](#删除集合)
 
 ## Milvus安装:
 
@@ -405,3 +426,327 @@ print(f"使用表达式=`{expr}` 查询删除后的结果 -> 结果: {result}\n"
 print(fmt.format("删除集合 `hello_milvus`"))
 utility.drop_collection("hello_milvus")
 ```
+
+接下来详细解释上述代码各部分的作用：<br>
+
+### 导入模块和库:
+
+```python
+import time
+import numpy as np
+from pymilvus import (
+      connections,
+      utility,
+      FieldSchema, CollectionSchema, DataType,
+      Collection,
+)
+```
+
+- `time`: Python的标准库，用于处理时间。
+
+- `numpy as np`: 一个用于大量数据计算的Python库。
+
+- `pymilvus`: Milvus的Python客户端，用于与Milvus服务器进行交互。
+
+### 定义格式变量:
+
+```python
+fmt = "\n=== {:30} ===\n"
+search_latency_fmt = "search latency = {:.4f}s"
+```
+
+- `fmt`和`search_latency_fmt`是字符串格式模板，用于后面的输出。
+
+### 定义实体数量和向量维度:
+
+```python
+num_entities, dim = 3000, 8
+```
+
+- `num_entities`：代表实体的数量，这里设置为3000。
+
+- `dim`：代表向量的维度，这里设置为8。
+
+### 连接到Milvus服务器:
+
+```python
+print(fmt.format("start connecting to Milvus"))
+connections.connect("default", host="localhost", port="19530")
+```
+
+- 使用`fmt.format("start connecting to Milvus")`格式化并打印连接开始信息。
+
+- `connections.connect()`用于连接到Milvus服务器，参数`"default"`是连接的别名，`host="localhost"`指定了服务器地址，`port="19530"`指定了服务器端口。
+
+### 检查集合是否存在:
+
+```python
+has = utility.has_collection("hello_milvus")
+print(f"Does collection hello_milvus exist in Milvus: {has}")
+```
+
+- `utility.has_collection("hello_milvus")`：检查名为"hello_milvus"的集合是否在Milvus中存在。
+
+- 使用f-string打印查询结果。
+
+**通过这段代码，可以学到如何使用pymilvus库连接到Milvus服务器并简单地检查一个集合是否存在。**<br>
+
+### 定义字段列表:
+
+```python
+fields = [
+      FieldSchema(name="pk", dtype=DataType.VARCHAR, is_primary=True, auto_id=False, max_length=100),
+      FieldSchema(name="random", dtype=DataType.DOUBLE),
+      FieldSchema(name="embeddings", dtype=DataType.FLOAT_VECTOR, dim=dim)
+]
+```
+
+这里定义了三个字段：<br>
+
+- `pk`：一个VARCHAR类型的字段，作为主键（`is_primary=True`）。该字段不会自动生成ID（`auto_id=False`），并且最大长度为100（`max_length=100`）。
+
+- `random`：一个DOUBLE类型的字段，用于存储浮点数。
+
+- `embeddings`：一个FLOAT_VECTOR类型的字段，用于存储浮点数向量。向量的维度由之前的代码中定义的`dim`变量决定。
+
+### 定义集合的结构:
+
+```python
+schema = CollectionSchema(fields, "hello_milvus is the simplest demo to introduce the APIs")
+```
+
+`CollectionSchema`函数用于定义一个集合的结构，它接受两个参数：<br>
+
+- `fields`：一个字段列表，定义了集合中的数据结构。
+
+- 描述：一个描述该集合的字符串。
+
+### 创建新的集合:
+
+```python
+print(fmt.format("Create collection `hello_milvus`"))
+hello_milvus = Collection("hello_milvus", schema, consistency_level="Strong")
+```
+
+- 使用`fmt.format("Create collection `hello_milvus`")`格式化并打印创建集合的开始信息。
+
+- `Collection`函数用于在Milvus中创建新的集合。它接受三个参数：
+
+    - 集合的名称，这里是`"hello_milvus"`。
+    
+    - 之前定义的`schema`，即集合的结构。
+    
+    - `consistency_level`参数，这里设置为`"Strong"`，这意味着Milvus会确保写操作的一致性。
+
+**经过这段代码，我们可以学到如何使用`pymilvus`库定义集合的结构，并在Milvus中创建一个新的集合。**<br>
+
+
+
+### 插入实体:
+
+```python
+print(fmt.format("Start inserting entities"))
+rng = np.random.default_rng(seed=19530)
+entities = [
+      [str(i) for i in range(num_entities)],
+      rng.random(num_entities).tolist(),
+      rng.random((num_entities, dim)),
+]
+```
+
+- 使用`fmt.format("Start inserting entities")`格式化并打印插入实体的开始信息。
+
+- `rng = np.random.default_rng(seed=19530)`：创建一个随机数生成器。`seed=19530`确保每次运行时都可以得到相同的随机数。
+
+- `entities`是一个列表，其中包含三个子列表/数组，分别对应于之前定义的三个字段。
+
+    - 第一个列表：主键字段的值。因为`auto_id`之前设置为`False`，所以需要为每个实体提供一个唯一的主键。
+
+    - 第二个列表：`random`字段的值。使用随机数生成器为每个实体生成一个随机浮点数。
+      
+    - 第三个数组：`embeddings`字段的值。使用随机数生成器为每个实体生成一个随机浮点数向量。
+
+```python
+insert_result = hello_milvus.insert(entities)
+```
+
+- 使用`insert`方法将`entities`插入到`hello_milvus`集合中。
+
+```python
+hello_milvus.flush()
+print(f"Number of entities in Milvus: {hello_milvus.num_entities}")
+```
+
+- `hello_milvus.flush()`：确保所有的插入操作都已提交到Milvus。
+
+- 打印`hello_milvus`集合中的实体数量，以确认插入操作成功。
+
+### 创建索引:
+
+```python
+print(fmt.format("Start Creating index IVF_FLAT"))
+index = {
+      "index_type": "IVF_FLAT",
+      "metric_type": "L2",
+      "params": {"nlist": 128},
+}
+```
+
+- 使用`fmt.format("Start Creating index IVF_FLAT")`格式化并打印创建索引的开始信息。
+
+- 定义索引参数。这里选择了`IVF_FLAT`索引类型，它适用于浮点数向量。`metric_type`为`L2`，表示使用L2距离来测量向量之间的相似性。`params`指定了索引的额外参数，这里设置`nlist`为128。
+
+```python
+hello_milvus.create_index("embeddings", index)
+```
+
+- 使用`create_index`方法为`embeddings`字段创建索引。这使得向量搜索操作更快、更高效。
+
+总结，这段代码首先向Milvus的`hello_milvus`集合插入随机生成的实体，然后为`embeddings`字段创建一个`IVF_FLAT`索引，以加速向量搜索操作。<br>
+
+
+### 加载集合:
+
+```python
+print(fmt.format("Start loading"))
+hello_milvus.load()
+```
+
+在执行查询或搜索之前，需要先加载集合到内存中，使其准备好进行搜索。<br>
+
+### 基于向量相似性的搜索:
+
+```python
+print(fmt.format("Start searching based on vector similarity"))
+vectors_to_search = entities[-1][-2:]
+search_params = {
+      "metric_type": "L2",
+      "params": {"nprobe": 10},
+}
+```
+
+- 选择要搜索的向量。这里选择了之前插入的最后两个向量作为查询。
+
+- 定义搜索参数。`metric_type`为`L2`，表示使用L2距离。`params`字典中的`nprobe`参数决定了搜索时考虑的桶数量。
+
+```python
+start_time = time.time()
+result = hello_milvus.search(vectors_to_search, "embeddings", search_params, limit=3, output_fields=["random"])
+end_time = time.time()
+```
+
+- 记录搜索开始时间。
+
+- 使用`search`方法搜索最相似的向量。`limit=3`表示为每个查询向量返回3个最相似的结果。
+
+- 记录搜索结束时间。
+
+```python
+for hits in result:
+      for hit in hits:
+      print(f"hit: {hit}, random field: {hit.entity.get('random')}")
+print(search_latency_fmt.format(end_time - start_time))
+```
+
+- 输出搜索结果和每个结果的`random`字段的值。
+
+- 打印搜索所用的时间。
+
+### 基于标量过滤的查询:
+
+```python
+print(fmt.format("Start querying with `random > 0.5`"))
+start_time = time.time()
+result = hello_milvus.query(expr="random > 0.5", output_fields=["random", "embeddings"])
+end_time = time.time()
+```
+
+- 使用表达式`random > 0.5`进行查询，意味着查询`random`字段值大于0.5的所有实体。
+
+- 打印查询结果和查询所用的时间。
+
+### 分页查询:
+
+```python
+r1 = hello_milvus.query(expr="random > 0.5", limit=4, output_fields=["random"])
+r2 = hello_milvus.query(expr="random > 0.5", offset=1, limit=3, output_fields=["random"])
+```
+
+- 进行两次查询，第一次返回最多4个结果，第二次跳过第一个结果并返回最多3个结果。
+
+### 混合搜索:
+
+```python
+print(fmt.format("Start hybrid searching with `random > 0.5`"))
+start_time = time.time()
+result = hello_milvus.search(vectors_to_search, "embeddings", search_params, limit=3, expr="random > 0.5", output_fields=["random"])
+end_time = time.time()
+```
+
+- 同时考虑向量相似性和标量过滤条件进行搜索。
+
+- 打印搜索结果和搜索所用的时间。
+
+总结：这段代码展示了如何使用`pymilvus`库进行基于向量相似性的搜索、基于标量过滤的查询、分页查询和混合搜索。<br>
+
+### 获取插入实体的主键:
+
+```python
+ids = insert_result.primary_keys
+```
+
+- 从之前的插入操作中获取插入实体的主键。这些主键是唯一的，并用于标识插入的实体。
+
+### 构建删除表达式:
+
+```python
+expr = f'pk in ["{ids[0]}" , "{ids[1]}"]'
+print(fmt.format(f"Start deleting with expr `{expr}`"))
+```
+
+- 构建一个表达式，该表达式表示要删除的实体的主键。在这里，我们选择删除插入实体的前两个。
+
+- 打印开始删除的消息。
+
+### 查询并打印删除前的实体:
+
+```python
+result = hello_milvus.query(expr=expr, output_fields=["random", "embeddings"])
+print(f"query before delete by expr=`{expr}` -> result: \n-{result[0]}\n-{result[1]}\n")
+```
+
+- 使用上面构建的表达式查询这两个实体，以确认它们存在于集合中。
+
+- 打印这两个实体的详细信息。
+
+### 删除实体:
+
+```python
+hello_milvus.delete(expr)
+```
+
+- 调用`delete`方法删除匹配表达式的实体。
+
+### 查询并打印删除后的实体:
+
+```python
+result = hello_milvus.query(expr=expr, output_fields=["random", "embeddings"])
+print(f"query after delete by expr=`{expr}` -> result: {result}\n")
+```
+
+- 使用相同的表达式再次查询这两个实体，以确认它们已从集合中被删除。
+
+- 打印查询结果。由于实体已被删除，因此结果应该是空的。
+
+### 删除集合:
+
+```python
+print(fmt.format("Drop collection `hello_milvus`"))
+utility.drop_collection("hello_milvus")
+```
+
+- 打印开始删除集合的消息。
+
+- 调用`drop_collection`方法删除整个`hello_milvus`集合。
+
+总之，这段代码首先删除了`hello_milvus`集合中的两个实体，然后删除整个`hello_milvus`集合。<br>
