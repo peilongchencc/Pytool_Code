@@ -4,6 +4,7 @@
   - [查看Milvus是否运行:](#查看milvus是否运行)
   - [连接Milvus:](#连接milvus)
   - [为Milvus设置密码:](#为milvus设置密码)
+  - [更改milvus中数据的存储位置：](#更改milvus中数据的存储位置)
   - [关闭Milvus standalone:](#关闭milvus-standalone)
   - [安装Milvus Python SDK:](#安装milvus-python-sdk)
     - [补充说明Install Milvus Python SDK是什么意思？其中的SDK表示什么:](#补充说明install-milvus-python-sdk是什么意思其中的sdk表示什么)
@@ -34,13 +35,13 @@
 
 1. 下载 YAML 文件;
 
-> 注意创建一个文件夹存放，因为下载的文件名为`docker-compose.yml`，时间长后你自己都不知道这个文件是什么。
+创建一个文件夹存放`docker-compose.yml`，注意将文件夹名称定义为易识别形式，时间长后你自己都不知道这个文件是什么。笔者的路径为`/root/`。<br>
 
 ```bash
 wget https://github.com/milvus-io/milvus/releases/download/v2.3.2/milvus-standalone-docker-compose.yml -O docker-compose.yml
 ```
 
-2. 在与` docker-compose.yml` 文件相同的目录中，运行以下命令启动 Milvus:
+1. 在与` docker-compose.yml` 文件相同的目录中，运行以下命令启动 Milvus:
 
 ```bash
 sudo docker-compose up -d
@@ -202,6 +203,108 @@ docker port milvus-standalone 19530/tcp
 
 
 ## 为Milvus设置密码:
+
+
+## 更改milvus中数据的存储位置：
+
+更改milvus中数据的存储位置可有效避免因硬盘空间问题引起的Milvus自动关闭，具体操作如下：<br>
+
+1. 找到自己的`docker-compose.yml`文件所在目录，运行以下指令**停止 Milvus 服务**：
+
+```bash
+sudo docker-compose down
+```
+
+终端显示:<br>
+
+```log
+Stopping milvus-minio ... done
+Stopping milvus-etcd  ... done
+Removing milvus-standalone ... done
+Removing milvus-minio      ... done
+Removing milvus-etcd       ... done
+Removing network milvus
+```
+
+2. 查看Milvus中数据存储路径:
+
+打开`docker-compose.yml`文件，查看`standalone`模块对应的`volumes`路径，以笔者为例:<br>
+
+```yml
+standalone:
+  container_name: milvus-standalone
+  image: milvusdb/milvus:v2.3.2
+  command: ["milvus", "run", "standalone"]
+  security_opt:
+  - seccomp:unconfined
+  environment:
+    ETCD_ENDPOINTS: etcd:2379
+    MINIO_ADDRESS: minio:9000
+  volumes:
+    - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/milvus:/var/lib/milvus
+  healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+    interval: 30s
+    start_period: 90s
+    timeout: 20s
+    retries: 3
+  ports:
+    - "19530:19530"
+    - "9091:9091"
+  depends_on:
+    - "etcd"
+    - "minio"
+```
+
+`docker-compose.yml` 文件中的 `volume` 映射是由 `${DOCKER_VOLUME_DIRECTORY:-.}` 这个环境变量决定的。这意味着如果你没有设定 `DOCKER_VOLUME_DIRECTORY` 这个环境变量，它会默认使用当前目录（`.`）。<br>
+
+
+1. 迁移数据:
+
+如果 Milvus 已经有数据并且你希望保留，你需要迁移数据到新的目录下，假设要迁移到 `/data/milvus_data` 目录下：<br>
+
+```bash
+sudo mv ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/milvus /data/milvus_data
+```
+
+空的`/data/milvus_data`将显示以下结构:<br>
+
+```log
+(base) root@iZ2zea5v77oawjy2qz7cxxx:/data/milvus_data# tree
+.
+└── milvus
+    ├── rdb_data
+    └── rdb_data_meta_kv
+```
+
+4. 更新 docker-compose.yml 文件:
+
+在 `standalone` 服务的 `volumes` 部分中，更改映射目录到 `/data/milvus_data`。同时，也建议更改 `etcd` 和 `minio` 的存储路径，以避免未来可能出现的空间问题。<br>
+
+```yml
+...
+etcd:
+  ...
+  volumes:
+    - /data/etcd_data:/etcd
+
+minio:
+  ...
+  volumes:
+    - /data/minio_data:/minio_data
+
+standalone:
+  ...
+  volumes:
+    - /data/milvus_data:/var/lib/milvus
+...
+```
+
+5. 再次启动服务：
+
+```bash
+sudo docker-compose up -d
+```
 
 
 ## 关闭Milvus standalone:

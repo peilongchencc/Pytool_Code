@@ -10,6 +10,8 @@ Ps:本文所有指令为 Linux 版本，Windows 或 MacOS 指令请自行从网�
     - [shell解释器查看与类型更改：](#shell解释器查看与类型更改)
     - [linux更改文件夹下所有内容的权限，例如从root改为deployer用户：](#linux更改文件夹下所有内容的权限例如从root改为deployer用户)
   - [系统信息指令：](#系统信息指令)
+    - [查看自己电脑的硬盘空间:](#查看自己电脑的硬盘空间)
+    - [查看自己电脑的系统内存:](#查看自己电脑的系统内存)
   - [CPU 和 GPU 相关：](#cpu-和-gpu-相关)
   - [服务相关：](#服务相关)
     - [nohup指令启动服务：](#nohup指令启动服务)
@@ -18,6 +20,7 @@ Ps:本文所有指令为 Linux 版本，Windows 或 MacOS 指令请自行从网�
   - [创建、移动、查看、清空、复制、删除文件/文件夹：](#创建移动查看清空复制删除文件文件夹)
     - [查看文件内容：](#查看文件内容)
     - [清空一个文件中的内容：](#清空一个文件中的内容)
+    - [清空文件夹下所有内容(不删除文件):](#清空文件夹下所有内容不删除文件)
   - [压缩文件、解压文件：](#压缩文件解压文件)
   - [文件或文件夹的上传与下载：](#文件或文件夹的上传与下载)
   - [目录树生成：](#目录树生成)
@@ -279,12 +282,46 @@ cat /etc/os-release
 ```
 
 Linux系统查看操作系统的位数是x86还是x64的方式：<br>
+
 ```shell
 getconf LONG_BIT
 ```
 <br>
 
-查看自己电脑的系统内存：
+### 查看自己电脑的硬盘空间:
+
+```bash
+df -h
+```
+
+终端显示:<br>
+
+```log
+Filesystem      Size  Used Avail Use% Mounted on
+udev            7.7G     0  7.7G   0% /dev
+tmpfs           1.6G  5.6M  1.6G   1% /run
+/dev/vda1        40G   36G  1.5G  97% /
+tmpfs           7.8G   60K  7.8G   1% /dev/shm
+tmpfs           5.0M     0  5.0M   0% /run/lock
+tmpfs           7.8G     0  7.8G   0% /sys/fs/cgroup
+/dev/vdb1        40G  876M   37G   3% /data
+tmpfs           1.6G     0  1.6G   0% /run/user/0
+overlay          40G   36G  1.5G  97% /var/lib/docker/overlay2/ff77fb7b64682ad3a6dd83f7cf7634ee815f66078bc1cc1f4ebe185fa6fdf12a/merged
+shm              64M     0   64M   0% /var/lib/docker/containers/7f3d70a2ab7f4e58e6609732c73146dd7b324449b7ff0d13032e64af95fccf81/mounts/shm
+overlay          40G   36G  1.5G  97% /var/lib/docker/overlay2/36be850d4ad711091fab1e30784376e610d63cad4587cb16609b7d50d9584fce/merged
+shm              64M     0   64M   0% /var/lib/docker/containers/1fe5aacddf2124aa0c1d769207856c960e5791b346e1957971492658eeb5c773/mounts/shm
+overlay          40G   36G  1.5G  97% /var/lib/docker/overlay2/eaf422348a6447ce175405d30c1128e3259faea4b015a6a4a41b9083d4c05391/merged
+shm              64M     0   64M   0% /var/lib/docker/containers/a4959f4ba78158d1a8564a882b6c9440547d46aad6c16c8b37afd4dcdf715088/mounts/shm
+```
+
+- `/dev/vda1`是"根分区"，这个分区挂载在文件系统的根目录`/`上。
+
+- `/dev/vdb1`是我挂载的云盘。
+
+- `overlay`是Docker使用的存储驱动程序之一，Docker的默认存储位置是在`/var/lib/docker`，而这个目录位于`/dev/vda1`上，即挂载在文件系统的根目录`/`上。这有可能会导致硬盘空间不足，以笔者举例，笔者为避免由于空间问题导致Docker无法启动/运行，将Docker(Milvus相关)的数据文件移到了挂载的云盘(`/data`)上了。
+
+### 查看自己电脑的系统内存:
+
 ```shell
 free -h
 ```
@@ -617,6 +654,29 @@ cat example.txt | tail -n 20
 
 这将清空 `example.txt` 文件中的内容，也可以按照路径的方式去清理对应路径下的某个文件。<br>
 <br>
+
+### 清空文件夹下所有内容(不删除文件):
+
+`/var/log/`路径下常记录各种日志文件，如果长时间不清理会占用大量硬盘空间，应该如何将`/var/log/`路径下的文件都清空，而不删除/var/log/路径下的文件呢？<br>
+
+如果你想要清空 `/var/log/` 路径下的文件内容而不删除文件本身，你可以使用 `truncate` 命令。以下是如何为 `/var/log/` 下的每个文件执行此操作：<br>
+
+```bash
+sudo find /var/log/ -type f -exec truncate -s 0 {} \;
+```
+
+这个命令的工作原理如下：<br>
+
+- `find /var/log/ -type f`：在 `/var/log/` 目录中查找所有的文件（不包括子目录）。
+
+- `-exec truncate -s 0 {} \;`：对于每个找到的文件 (`{}`)，使用 `truncate` 命令将其大小设置为 0，从而清空文件内容。
+
+此命令将清空 `/var/log/` 下所有文件的内容，但不会删除文件本身。 <br>
+
+注意：在执行此操作之前，请确保你真的想清空这些日志文件，并且知道这样做的后果。<br>
+
+<br>
+
 
 终端运行自己的python程序时，如果python程序中有 `print` 或 `log` 项，可以通过以下指令将终端的输出写入`example.txt`文件：<br>
 
