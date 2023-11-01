@@ -347,6 +347,26 @@ SDK 通常包括一组软件开发工具，这些工具允许开发者为特定�
 
 简而言之，如果你想使用 Python 来开发和 Milvus 相关的应用，你就需要安装 Milvus Python SDK。<br>
 
+### 查找 Milvus 集群中的所有现有数据库:
+
+```python
+from pymilvus import connections, db
+
+# 必须要连接Milvus后，才能查看有哪些数据库；
+conn = connections.connect(host='localhost', port='19530')
+
+# 查找 Milvus 集群中的所有现有数据库
+database_name = db.list_database()
+
+print(f"数据库有:{database_name}")
+```
+
+终端显示:<br>
+
+```log
+数据库有:['default']
+```
+
 ## pymilvus示例代码:
 
 ```python
