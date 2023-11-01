@@ -8,6 +8,12 @@
   - [关闭Milvus standalone:](#关闭milvus-standalone)
   - [安装Milvus Python SDK:](#安装milvus-python-sdk)
     - [补充说明Install Milvus Python SDK是什么意思？其中的SDK表示什么:](#补充说明install-milvus-python-sdk是什么意思其中的sdk表示什么)
+  - [利用pymilvus与Milvus数据库建立/断开连接:](#利用pymilvus与milvus数据库建立断开连接)
+  - [利用pymilvus管理数据库:](#利用pymilvus管理数据库)
+    - [创建数据库:](#创建数据库)
+    - [查找 Milvus 集群中的所有现有数据库:](#查找-milvus-集群中的所有现有数据库)
+    - [使用数据库:](#使用数据库)
+    - [删除数据库:](#删除数据库)
   - [pymilvus示例代码:](#pymilvus示例代码)
     - [导入模块和库:](#导入模块和库)
     - [定义格式变量:](#定义格式变量)
@@ -347,6 +353,54 @@ SDK 通常包括一组软件开发工具，这些工具允许开发者为特定�
 
 简而言之，如果你想使用 Python 来开发和 Milvus 相关的应用，你就需要安装 Milvus Python SDK。<br>
 
+
+## 利用pymilvus与Milvus数据库建立/断开连接:
+
+Milvus 支持两个端口，端口`19530`和端口`9091`，端口19530是用于gRPC的，是默认端口。端口9091是用于 RESTful API 的，当你用 HTTP 客户端连接到 Milvus 服务器时使用它。<br>
+
+pymilvus连接Milvus数据库示例:<br>
+
+```python
+from pymilvus import connections
+connections.connect(
+    alias="default",
+    user='username',
+    password='password',
+    host='localhost',
+    port='19530'
+)
+```
+
+`connections.connect()` 方法用于建立全局连接，可以在整个应用程序中共享。**它会自动创建连接池**，并在后续的操作中使用这个连接池来管理连接。<br>
+
+这意味着，一旦使用 `connections.connect()` 建立连接，后续的 Milvus 操作可以共享同一个连接池中的连接，从而提高了性能和资源利用率。<br>
+
+如果你没有对你的Milvus进行账户、密码等配置，可以使用下列写法:<br>
+
+```python
+from pymilvus import connections
+
+connections.connect(host='localhost', port='19530')
+```
+
+🚨🚨🚨注意: Milvus 支持的最大连接数是 65,536。这个数字指的是客户端与 Milvus 服务器之间的并发连接数量上限。
+
+在同一时间内，最多可以有 65,536 个与 Milvus 服务器的连接处于活动状态。这个连接数限制可以根据你的硬件资源和性能需求进行调整，但在默认配置下，最大连接数是 65,536。
+
+🫠🫠🫠Milvus使用结束后记得断开与Milvus的连接:<br>
+
+```python
+connections.disconnect("default")
+```
+
+
+
+
+```python
+
+```
+
+
 ## 利用pymilvus管理数据库:
 
 与传统的数据库引擎类似，你也可以在 Milvus 创建数据库，并为某些用户分配管理数据库的特权。然后，这些用户有权管理数据库中的集合。Milvus 集群最多支持64个数据库。<br>
@@ -396,6 +450,25 @@ Milvus 集群默认只有一个名为"default"的数据库。除非另有说明�
 from pymilvus import connections
 
 conn = connections.connect(host="localhost",port="19530",db_name="default")
+```
+
+或者依旧使用`db`进行操作:<br>
+
+```python
+db.using_database("book")
+```
+
+### 删除数据库:
+
+若要删除数据库，必须首先删除其所有集合。否则，删除操作将失败。<br>
+
+```python
+db.drop_database("book")
+
+db.list_database()
+
+# Output:
+# ['default']
 ```
 
 
