@@ -5,6 +5,7 @@
     - [自定义jieba词库示例:](#自定义jieba词库示例)
     - [句向量示例:](#句向量示例)
     - ["hfl/chinese-electra-180g-base-discriminator"模型简介:](#hflchinese-electra-180g-base-discriminator模型简介)
+  - [同义词替换构建新语句：](#同义词替换构建新语句)
 
 ## dataset：
 如果数据集较小，会放在项目文件中。如果数据集较大，会放在 dataset 文件夹下。如果遇到项目文件中缺少数据集，请在 dataset 文件夹下寻找对应网盘链接下载。<br>
@@ -156,3 +157,80 @@ ELECTRA（Efficiently Learning an Encoder that Classifies Token Replacements Acc
 4. **来源**: HFL 是 Hugging Face 团队的一个子项目，他们专门致力于各种语言的模型研发。这意味着该模型背后有一定的研究和开发力量，确保其性能和可靠性。
 
 在实际应用中，ELECTRA 通常能够在许多NLP任务上提供与BERT相似或更好的性能，但以更低的计算成本。因此，使用这种中文版本的ELECTRA模型可能会为中文NLP应用带来很好的效果。<br>
+
+## 同义词替换构建新语句：
+
+```python
+import hanlp
+import itertools
+
+# 分词
+Segment = hanlp.load(hanlp.pretrained.tok.FINE_ELECTRA_SMALL_ZH)
+Segment.dict_force = None
+Segment.dict_combine = {'货币三佳','年收益'}
+res = Segment(['卖出货币三佳收益如何？','雪球基金的年收益如何？'])
+
+# 同义词-词典
+synonym_dict = {'抛售':'卖出',
+                '售出':'卖出',
+                '三佳':'货币三佳',
+                '组合三佳':'货币三佳',
+                '基金三佳':'货币三佳',
+                '年收益率':'年收益',
+                '年化率':'年收益'}
+
+def get_synonyms(word):
+    # 获取给定词的所有同义词
+    synonyms = [word]
+    for key, value in synonym_dict.items():
+        if value == word:
+            synonyms.append(key)
+    return list(set(synonyms))
+
+def replace_with_synonyms(sentence):
+    # 将句子中的词替换为同义词，并返回所有可能的替换后的句子
+    word_lists = [get_synonyms(word) for word in sentence]
+    """
+    原句: '卖出货币三佳收益如何？'
+    分词结果: ['卖出', '货币三佳', '收益', '如何', '？']
+    word_lists: [['卖出', '抛售', '售出'], ['三佳', '基金三佳', '货币三佳', '组合三佳'], ['收益'], ['如何'], ['？']]
+    """
+    # 利用排列组合获取最终结果
+    combinations = list(itertools.product(*word_lists))
+    """
+    [('卖出', '三佳', '收益', '如何', '？'), 
+     ('卖出', '基金三佳', '收益', '如何', '？'), 
+     ('卖出', '货币三佳', '收益', '如何', '？'), 
+     ('卖出', '组合三佳', '收益', '如何', '？'), 
+     ('抛售', '三佳', '收益', '如何', '？'), 
+     ('抛售', '基金三佳', '收益', '如何', '？'), 
+     ('抛售', '货币三佳', '收益', '如何', '？'), 
+     ('抛售', '组合三佳', '收益', '如何', '？'), 
+     ('售出', '三佳', '收益', '如何', '？'), 
+     ('售出', '基金三佳', '收益', '如何', '？'), 
+     ('售出', '货币三佳', '收益', '如何', '？'), 
+     ('售出', '组合三佳', '收益', '如何', '？')]
+    """
+    # 将分词结果重新组成句子
+    replaced_sentences = [''.join(combination) for combination in combinations]
+    return replaced_sentences
+
+all_replaced_sentences = []
+for sentence in res:
+    # 针对每个输入的分词结果，根据同义词库生成多种可能的句子
+    all_replaced_sentences.extend(replace_with_synonyms(sentence))
+
+print(all_replaced_sentences)
+```
+
+该代码主要实现了以下功能：<br>
+
+1. 使用`hanlp`库对输入的句子进行分词。
+
+2. 根据预定义的同义词词典，对分词后的结果进行替换，生成多种可能的句子组合。
+
+终端显示:<br>
+
+```log
+['抛售基金三佳收益如何？', '抛售三佳收益如何？', '抛售组合三佳收益如何？', '抛售货币三佳收益如何？', '卖出基金三佳收益如何？', '卖出三佳收益如何？', '卖出组合三佳收益如何？', '卖出货币三佳收益如何？', '售出基金三佳收益如何？', '售出三佳收益如何？', '售出组合三佳收益如何？', '售出货币三佳收益如何？', '雪球基金的年收益率如何？', '雪球基金的年收益如何？', '雪球基金的年化率如何？']
+```
