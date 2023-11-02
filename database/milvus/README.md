@@ -1,6 +1,9 @@
 # Milvus
 - [Milvus](#milvus)
   - [Milvus安装:](#milvus安装)
+  - [查看Milvus版本:](#查看milvus版本)
+    - [利用yml文件查看:](#利用yml文件查看)
+    - [利用docker查看:](#利用docker查看)
   - [查看Milvus是否运行:](#查看milvus是否运行)
   - [连接Milvus:](#连接milvus)
   - [为Milvus设置密码:](#为milvus设置密码)
@@ -122,6 +125,43 @@ milvus-standalone   /tini -- milvus run standalone   Up             0.0.0.0:1953
 `docker compose` 是 Docker Compose 的一个新的命令结构，它在 Docker 20.10 之后的版本中被引入。在此之前，通常使用 `docker-compose`（带连字符）的命令格式。两种格式的功能基本相同，但命令结构略有不同。<br>
 
 简而言之，`sudo docker compose ps` 命令用于查看当前目录下由 `docker-compose.yml` 定义的 Docker 服务的状态。<br>
+
+## 查看Milvus版本:
+
+### 利用yml文件查看:
+
+找到你Milvus相关的`docker-compose.yml`文件，文件中会有如下Milvus版本信息:
+
+```yml
+  standalone:
+    container_name: milvus-standalone
+    image: milvusdb/milvus:v2.3.2
+```
+
+### 利用docker查看:
+
+终端输入`docker ps`指令后，终端显示(官方示例):<br>
+
+```log
+      Name                     Command                  State                            Ports
+--------------------------------------------------------------------------------------------------------------------
+milvus-etcd         etcd -advertise-client-url ...   Up             2379/tcp, 2380/tcp
+milvus-minio        /usr/bin/docker-entrypoint ...   Up (healthy)   9000/tcp
+milvus-standalone   /tini -- milvus run standalone   Up             0.0.0.0:19530->19530/tcp, 0.0.0.0:9091->9091/tcp
+```
+
+找到自己需要查看的容器名，然后仿照下列指令修改即可:<br>
+
+```bash
+docker inspect milvus-standalone | grep "Image" | cut -d '"' -f 4
+```
+
+终端显示:<br>
+
+```log
+sha256:4b6c62c2b5f8803ec635347be7b430d88a00d1d10226e0cfe6f9a6883ed84ff0
+milvusdb/milvus:v2.3.2
+```
 
 ## 查看Milvus是否运行:
 
