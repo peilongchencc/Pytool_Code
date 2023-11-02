@@ -14,6 +14,10 @@
     - [查找 Milvus 集群中的所有现有数据库:](#查找-milvus-集群中的所有现有数据库)
     - [使用数据库:](#使用数据库)
     - [删除数据库:](#删除数据库)
+  - [Milvus中CollectionSchema, FieldSchema, DataType三者关系:](#milvus中collectionschema-fieldschema-datatype三者关系)
+    - [FieldSchema:](#fieldschema)
+    - [DataType:](#datatype)
+    - [CollectionSchema:](#collectionschema)
   - [管理集合:](#管理集合)
     - [创建集合:](#创建集合)
   - [pymilvus示例代码:](#pymilvus示例代码)
@@ -465,7 +469,57 @@ db.list_database()
 # ['default']
 ```
 
+
+## Milvus中CollectionSchema, FieldSchema, DataType三者关系:
+
+```python
+from pymilvus import CollectionSchema, FieldSchema, DataType
+```
+
+在Milvus中，`CollectionSchema`、`FieldSchema`和`DataType`是创建一个集合(collection)的基本组件。Milvus是一个开源的向量数据库，用于存储和检索大量的向量数据。这三个组件定义了集合的结构和数据类型。<br>
+
+### FieldSchema:
+
+`FieldSchema`用于定义集合中的一个字段(field)的结构。一个字段相当于传统数据库中的一个列(column)。它包括字段的名字、字段的数据类型以及一些额外的参数，比如是否是主键、是否自动创建索引等等。<br>
+
+每个`FieldSchema`对象通常需要至少两个参数：<br>
+
+- 字段名称
+
+- 字段数据类型，这里使用的是`DataType`枚举
+
+示例:<br>
+
+```python
+id_field = FieldSchema(name="id", dtype=DataType.INT64, is_primary=True)
+vector_field = FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=128)
+```
+
+### DataType:
+
+`DataType`是一个枚举类，定义了Milvus中支持的不同数据类型。这些数据类型包括基本的数值类型、字符串和向量类型等。比如，`INT64`用于整数、`FLOAT_VECTOR`用于浮点数向量等。<br>
+
+示例中的`DataType.FLOAT_VECTOR`表示字段是浮点型的向量数据，`dim=128`指的是向量的维度是128。<br>
+
+### CollectionSchema:
+
+`CollectionSchema`定义了整个集合的结构。一个集合可以看作是一张表，其中包含了多个字段。当你创建一个`CollectionSchema`对象时，你需要定义集合中的所有字段，并且可以定义一些关于集合的额外属性，如描述等。<br>
+
+创建`CollectionSchema`对象时，需要将一系列`FieldSchema`对象作为参数传入。<br>
+
+示例:<br>
+
+```python
+schema = CollectionSchema(fields=[id_field, vector_field], description="Test collection")
+```
+
+这样，使用`CollectionSchema`和`FieldSchema`对象，你可以定义一个Milvus集合的完整结构，`DataType`用于指定字段的数据类型。这种结构化的方式使得Milvus可以灵活地处理不同类型的数据，并且可以对其进行有效的索引和搜索。<br>
+
+
 ## 管理集合:
+
+
+
 
 ### 创建集合:
 
