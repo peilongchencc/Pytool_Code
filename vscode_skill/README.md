@@ -4,6 +4,7 @@
 声明：本文所列快捷键为 MacOs 版，windows用于请自行百度对应快捷键。<br>
 - [Vscode Skill](#vscode-skill)
   - [断点调试：](#断点调试)
+    - ["Special Variables" 和 "Function Variables"作用解释:](#special-variables-和-function-variables作用解释)
     - [断点调试图标作用解释：](#断点调试图标作用解释)
     - [断点调试中justMyCode的设置：](#断点调试中justmycode的设置)
   - [vscode关闭预览模式：](#vscode关闭预览模式)
@@ -16,10 +17,19 @@
 
 ## 断点调试：
 
+### "Special Variables" 和 "Function Variables"作用解释:
+
+1. **Special Variables**: 这通常表示那些在当前上下文中具有特殊意义的变量。例如，如果你正在调试 Python 代码，这里可能会显示像 `__name__`, `__package__` 或者 `__file__` 这样的特殊变量。这些变量通常是由编程语言或环境预定义的，用来表示当前模块或执行环境的特定信息。
+
+2. **Function Variables**: 这些是当前在调试会话中执行的函数内部的局部变量。当你在调试时，如果你的断点在某个函数中，这一区域会显示该函数作用域内的所有变量。它们可能包括函数的参数、在函数内部定义的局部变量等。
+
 ### 断点调试图标作用解释：
 跳转到对应函数：command + 左键点击函数<br>
+
 返回上一级函数：control + "-"<br>
+
 如果代码嵌套的较深，自己无法找到想看的类，可以采用"跳转到对应函数"，在那个函数任意位置打上断点的方式查看。<br>
+
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/59d8ec1a-89c4-482b-b894-102686493c14" alt="image" width="50%" height="50%">
 
 `<继续>` 的作用是跳到下一个断点。<br>

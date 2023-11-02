@@ -728,6 +728,8 @@ schema = CollectionSchema(fields=[
 collection = Collection(name="book", schema=schema)
 ```
 
+检查默认数据库(`default`)中是否有"book"集合:<br>
+
 ```python
 from pymilvus import connections, utility
 
