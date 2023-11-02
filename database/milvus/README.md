@@ -23,6 +23,9 @@
     - [CollectionSchema:](#collectionschema)
     - [Collection(创建集合):](#collection创建集合)
   - [Partition(分区)和Collection(集合)的关系:](#partition分区和collection集合的关系)
+  - [将集合分区(partition):](#将集合分区partition)
+    - [查看某个集合的所有分区:](#查看某个集合的所有分区)
+    - [在某个集合下创建分区:](#在某个集合下创建分区)
   - [utility介绍:](#utility介绍)
     - [查看Milvus中所有集合](#查看milvus中所有集合)
     - [查看Milvus中是否有某个集合](#查看milvus中是否有某个集合)
@@ -632,6 +635,53 @@ Milvus 是一个开源的向量数据库，用于存储大规模的特征向量�
 
 这样的数据组织结构既可以保持数据的管理效率，又可以在执行搜索和其他操作时提高性能。通过合理的设计 Collection 和 Partition，可以在 Milvus 中高效地处理和检索大规模向量数据。<br>
 
+## 将集合分区(partition):
+
+Milvus可以将搜索和其他操作限制在一个分区上，以提高性能。<br>
+
+集合一般由一个或多个分区组成。在创建一个新集合时，Milvus 会自动创建一个默认分区 `_default`。Milvus 中一个集合最多有4096个分区。<br>
+
+### 查看某个集合的所有分区:
+
+```python
+from pymilvus import connections, Collection
+# 与default Milvus创建连接
+connections.connect(host='localhost', port='19530')
+# 选择集合
+collection = Collection("book")
+# 查看该集合的所有分区
+print(f"集合book的分区有:{collection.partitions}")
+```
+
+终端显示:<br>
+
+```log
+集合book的分区有:[{"name":"_default","collection_name":"book","description":""}]
+```
+
+### 在某个集合下创建分区:
+
+```python
+from pymilvus import connections, Collection
+# 与default Milvus创建连接
+connections.connect(host='localhost', port='19530')
+# 选择集合
+collection = Collection("book")
+# 在集合中建立分区
+collection.create_partition("novel")
+
+# 查看该集合的所有分区
+print(f"集合book的分区有:{collection.partitions}")
+```
+
+终端显示:<br>
+
+```log
+集合book的分区有:[{"name":"_default","collection_name":"book","description":""}, {"name":"novel","collection_name":"book","description":""}]
+```
+
+注意:Milvus的集合中，分区不允许重名，如果重复创建相同命名的分区，会引发`PartitionAlreadyExistException: (code=1, message=Partition already exist.)`错误。⛔️⛔️⛔️<br>
+
 ## utility介绍:
 
 `pymilvus`中的`utility`模块提供了一组辅助函数，这些函数主要用于执行一些常见的、不直接涉及数据操作的任务。例如，检查集合或分区的存在、重命名集合、获取集合的统计信息等。以下是一些`utility`模块中常用函数的说明和用法：<br>
@@ -767,6 +817,7 @@ collection.release("xxx")
 此时，如果你没有特殊需求，忽略`collection.load()` 和 `collection.release()`即可。<br>
 
 通常情况下，你不需要手动调用 `collection.load()` 和 `collection.release()`，Milvus 将自动管理集合的加载和释放。<br>
+
 
 
 ## 分批向Milvus插入数据:
