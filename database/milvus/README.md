@@ -14,10 +14,11 @@
     - [查找 Milvus 集群中的所有现有数据库:](#查找-milvus-集群中的所有现有数据库)
     - [使用数据库:](#使用数据库)
     - [删除数据库:](#删除数据库)
-  - [Milvus中CollectionSchema, FieldSchema, DataType三者关系:](#milvus中collectionschema-fieldschema-datatype三者关系)
+  - [Milvus中Schema介绍:](#milvus中schema介绍)
     - [FieldSchema:](#fieldschema)
     - [DataType:](#datatype)
     - [CollectionSchema:](#collectionschema)
+      - [Collection:](#collection)
   - [管理集合:](#管理集合)
     - [创建集合:](#创建集合)
   - [pymilvus示例代码:](#pymilvus示例代码)
@@ -470,10 +471,15 @@ db.list_database()
 ```
 
 
-## Milvus中CollectionSchema, FieldSchema, DataType三者关系:
+## Milvus中Schema介绍:
+
+Schema指结构，例如表结构、字段构成等。在我们介绍Milvus中Schema的定义方式前，先导入必要的方法，并连接到Milvus数据库:<br>
 
 ```python
-from pymilvus import CollectionSchema, FieldSchema, DataType
+from pymilvus import connections, FieldSchema, DataType, CollectionSchema, Collection
+
+# 连接Milvus
+connections.connect(host='localhost', port='19530')
 ```
 
 在Milvus中，`CollectionSchema`、`FieldSchema`和`DataType`是创建一个集合(collection)的基本组件。Milvus是一个开源的向量数据库，用于存储和检索大量的向量数据。这三个组件定义了集合的结构和数据类型。<br>
@@ -515,6 +521,44 @@ schema = CollectionSchema(fields=[id_field, vector_field], description="Test col
 
 这样，使用`CollectionSchema`和`FieldSchema`对象，你可以定义一个Milvus集合的完整结构，`DataType`用于指定字段的数据类型。这种结构化的方式使得Milvus可以灵活地处理不同类型的数据，并且可以对其进行有效的索引和搜索。<br>
 
+#### Collection:
+
+🚨🚨🚨`CollectionSchema`和`Collection`在Milvus中代表了两个相关但不同的概念：<br>
+
+1. **CollectionSchema**: 
+
+- 这个概念是关于结构定义的。`CollectionSchema`定义了一个集合的结构，包括它包含哪些字段以及这些字段的数据类型。它是创建新集合时的一个蓝图，用于告诉Milvus集合中应该有哪些字段和这些字段的属性（比如数据类型、是否为主键、是否有索引等）。
+
+- `CollectionSchema`不存储任何数据，它只是定义了数据将如何存储的规则。
+
+2. **Collection**:
+
+- `Collection`是基于`CollectionSchema`实际**创建的一个实例**🌿🌿🌿🌿🌿，它是数据存储和检索的容器。你可以向`Collection`中插入数据、对其进行查询和索引操作。一旦根据`CollectionSchema`创建了`Collection`，就可以对其进行这些操作。
+
+- `Collection`实际上存储了数据和索引，你可以认为它是Milvus数据库中的一个“表”。
+
+在实际应用中，首先会定义一个`CollectionSchema`，然后基于这个模式创建一个`Collection`。例如：<br>
+
+```python
+from pymilvus import connections, FieldSchema, DataType, CollectionSchema, Collection
+
+# 连接Milvus
+connections.connect(host='localhost', port='19530')
+
+# 定义字段
+id_field = FieldSchema(name="id", dtype=DataType.INT64, is_primary=True)
+vector_field = FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=128)
+
+# 创建集合模式
+schema = CollectionSchema(fields=[id_field, vector_field], description="Test collection")
+
+# 使用集合模式创建集合
+collection = Collection(name="test_collection", schema=schema)
+
+# 现在你可以向`collection`插入数据，查询数据等
+```
+
+在这个例子中，`schema`是一个`CollectionSchema`对象，定义了`collection`应有的结构。创建`collection`时，我们使用这个结构定义，并且给它命名为"test_collection"，这个名字在Milvus中唯一地标识了这个集合。然后，我们可以在这个`collection`上执行各种操作，如插入数据、搜索、更新和删除数据等。
 
 ## 管理集合:
 
