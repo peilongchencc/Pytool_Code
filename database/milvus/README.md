@@ -22,7 +22,7 @@
     - [DataType:](#datatype)
     - [CollectionSchema:](#collectionschema)
     - [Collection(创建集合):](#collection创建集合)
-    - [重命名集合:](#重命名集合)
+  - [Partition(分区)和Collection(集合)的关系:](#partition分区和collection集合的关系)
   - [utility介绍:](#utility介绍)
     - [查看Milvus中所有集合](#查看milvus中所有集合)
     - [查看Milvus中是否有某个集合](#查看milvus中是否有某个集合)
@@ -610,34 +610,23 @@ collection = Collection(name="test_collection", schema=schema)
 
 在这个例子中，`schema`是一个`CollectionSchema`对象，定义了`collection`应有的结构。创建`collection`时，我们使用这个结构定义，并且给它命名为"test_collection"，这个名字在Milvus中唯一地标识了这个集合。然后，我们可以在这个`collection`上执行各种操作，如插入数据、搜索、更新和删除数据等。<br>
 
-### 重命名集合:
+## Partition(分区)和Collection(集合)的关系:
 
-`pymilvus`中的`utility`模块提供了一组辅助函数，重命名集合就需要借助`utility`实现:<br>
+Milvus 是一个开源的向量数据库，用于存储大规模的特征向量，这些向量通常由机器学习模型生成，特别是在进行相似性搜索时。在 Milvus 中，“Collection”和“Partition”是两个核心概念，它们在组织数据时扮演着重要的角色。<br>
 
-```python
-from pymilvus import Collection, FieldSchema, CollectionSchema, DataType, connections, utility
+- **Collection（集合）**：在 Milvus 中，Collection 类似于传统关系型数据库中的“表（table）”。它是最顶层的数据组织单位，用于存储相同特征的数据。比如，一个 Collection 可以是“用户的脸部特征”，所有的用户脸部特征向量都存储在这个 Collection 中。
 
-# 连接Milvus
-connections.connect(host='localhost', port='19530')
+- **Partition（分区）**：Partition 是 Collection 下的一个子集💦💦💦，它可以帮助用户更细粒度地管理 Collection 中的数据。通过 Partition，用户可以根据某些特征将数据进一步细分，以优化查询效率。比如，在“用户的脸部特征”这个 Collection 中，我们可以根据地理位置、注册时间等属性为数据创建不同的 Partition。
 
-# 定义集合架构
-schema = CollectionSchema(fields=[
-    FieldSchema("int64", DataType.INT64, description="int64", is_primary=True),
-    FieldSchema("float_vector", DataType.FLOAT_VECTOR, is_primary=False, dim=128),
-])
+**举例说明**：<br>
 
-# 架构实例化为一个名为"old_collection"的集合
-collection = Collection(name="old_collection", schema=schema)
+想象一个电商网站的推荐系统，我们要为每个用户保存其浏览商品的特征向量，以便执行相似商品的推荐。<br>
 
-# 通过调用`utility.rename_collection`方法，将集合从`"old_collection"`重命名为`"new_collection"`。如果操作成功，这个方法将返回`True`。
-utility.rename_collection("old_collection", "new_collection") # Output: True
+- **Collection**：可以创建一个名为“用户商品浏览特征”的 Collection，所有用户浏览商品的特征向量都将存储在这里。
 
-# 删除刚刚重命名的集合`"new_collection"`。
-utility.drop_collection("new_collection")
+- **Partitions**：如果电商网站是全球性的，用户遍布世界各地，那么可以根据地区创建 Partition，如“北美区用户”，“欧洲区用户”，“亚洲区用户”等，这样在进行商品推荐时，可以只在用户所在地区的 Partition 中搜索，从而提高搜索效率。<br>
 
-# 检查名为`"new_collection"`的集合是否还存在
-utility.has_collection("new_collection") # Output: False
-```
+这样的数据组织结构既可以保持数据的管理效率，又可以在执行搜索和其他操作时提高性能。通过合理的设计 Collection 和 Partition，可以在 Milvus 中高效地处理和检索大规模向量数据。<br>
 
 ## utility介绍:
 
