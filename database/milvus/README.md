@@ -20,6 +20,7 @@
     - [CollectionSchema:](#collectionschema)
     - [Collection(创建集合):](#collection创建集合)
     - [重命名集合:](#重命名集合)
+    - [utility拓展:](#utility拓展)
   - [分批向Milvus插入数据:](#分批向milvus插入数据)
   - [pymilvus示例代码:](#pymilvus示例代码)
     - [导入模块和库:](#导入模块和库)
@@ -562,6 +563,8 @@ collection = Collection(name="test_collection", schema=schema)
 
 ### 重命名集合:
 
+`pymilvus`中的`utility`模块提供了一组辅助函数，重命名集合就需要借助`utility`实现:<br>
+
 ```python
 from pymilvus import Collection, FieldSchema, CollectionSchema, DataType, connections, utility
 
@@ -587,6 +590,120 @@ utility.drop_collection("new_collection")
 utility.has_collection("new_collection") # Output: False
 ```
 
+### utility拓展:
+
+`pymilvus`中的`utility`模块提供了一组辅助函数，这些函数主要用于执行一些常见的、不直接涉及数据操作的任务。例如，检查集合或分区的存在、重命名集合、获取集合的统计信息等。以下是一些`utility`模块中常用函数的说明和用法：
+
+1. `has_collection(name, using='default')`：
+
+- 检查给定名称的集合是否存在。
+
+- `name`：集合的名称。
+
+- `using`：连接的别名。
+
+用法示例：<br>
+
+```python
+exists = utility.has_collection("some_collection")
+print(exists)  # 如果集合存在，输出True；否则输出False。
+```
+
+2. `list_collections(using='default')`：
+
+- 列出数据库中所有集合的名称。
+
+- `using`：连接的别名。
+
+用法示例：<br>
+
+```python
+collections = utility.list_collections()
+print(collections)  # 输出所有集合的名称列表。
+```
+
+3. `drop_collection(name, using='default')`：
+
+- 删除指定名称的集合。
+
+- `name`：要删除的集合的名称。
+
+- `using`：连接的别名。
+
+用法示例：<br>
+
+```python
+utility.drop_collection("some_collection")
+```
+
+4. `rename_collection(old_name, new_name, timeout=None, using='default')`：
+
+- 重命名集合。
+
+- `old_name`：原始集合的名称。
+
+- `new_name`：新集合的名称。
+
+- `timeout`：超时时间（可选）。
+
+- `using`：连接的别名。
+
+用法示例：<br>
+
+```python
+utility.rename_collection("old_collection_name", "new_collection_name")
+```
+
+5. `get_connection_addr(alias='default')`：
+
+- 获取指定别名的连接地址。
+
+- `alias`：连接的别名。
+
+用法示例：<br>
+
+```python
+addr = utility.get_connection_addr()
+print(addr)  # 输出连接地址信息。
+```
+
+6. `calc_distance(vectors_left, vectors_right, params, timeout=None, using='default')`：
+
+- 计算两组向量之间的距离。
+
+- `vectors_left`和`vectors_right`：两组要计算距离的向量。
+
+- `params`：计算距离时使用的参数，例如距离度量方式。
+
+- `timeout`：超时时间（可选）。
+
+- `using`：连接的别名。
+
+用法示例：<br>
+
+```python
+distances = utility.calc_distance([[1, 2]], [[3, 4]], params={"metric": "L2"})
+print(distances)  # 输出向量间的距离。
+```
+
+7. `loading_progress(collection_name, partition_names=None, using='default')`：
+
+- 查询集合或分区加载进内存的进度。
+
+- `collection_name`：集合的名称。
+
+- `partition_names`：分区的名称列表（可选）。
+
+- `using`：连接的别名。
+
+用法示例：<br>
+
+```python
+progress = utility.loading_progress("some_collection")
+print(progress)  # 输出集合加载的进度信息。
+```
+
+这些辅助函数简化了对Milvus集合的一些常见管理任务的处理，让用户可以更容易地与Milvus集合进行交互。在使用这些函数时，通常需要确保已经通过`connections.connect`与Milvus数据库建立了连接。<br>
 
 ## 分批向Milvus插入数据:
 
