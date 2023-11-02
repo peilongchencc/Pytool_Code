@@ -25,6 +25,7 @@
     - [重命名集合:](#重命名集合)
     - [utility拓展:](#utility拓展)
     - [查看集合属性:](#查看集合属性)
+  - [加载/释放集合:](#加载释放集合)
   - [分批向Milvus插入数据:](#分批向milvus插入数据)
   - [设置集合的过期时间:](#设置集合的过期时间)
     - [Milvus能否设置某条数据的过期时间？](#milvus能否设置某条数据的过期时间)
@@ -787,6 +788,24 @@ print(collections)  # 输出所有集合的名称列表。
 True
 ['book', 'search_article_in_medium']
 ```
+
+## 加载/释放集合:
+
+前面已经介绍过集合的建立了，但偶尔你可能会见到某些代码中出现下列写法:<br>
+
+```python
+# 加载集合
+collection.release("xxx")
+
+"""你的代码"""
+
+# 释放集合
+collection.release("xxx")
+```
+
+此时，如果你没有特殊需求，忽略`collection.load()` 和 `collection.release()`即可。<br>
+
+通常情况下，你不需要手动调用 `collection.load()` 和 `collection.release()`，Milvus 将自动管理集合的加载和释放。<br>
 
 
 ## 分批向Milvus插入数据:
