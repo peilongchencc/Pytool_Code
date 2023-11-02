@@ -21,7 +21,10 @@
     - [Collection(创建集合):](#collection创建集合)
     - [重命名集合:](#重命名集合)
     - [utility拓展:](#utility拓展)
+    - [查看集合属性:](#查看集合属性)
   - [分批向Milvus插入数据:](#分批向milvus插入数据)
+  - [设置集合的过期时间:](#设置集合的过期时间)
+    - [Milvus能否设置某条数据的过期时间？](#milvus能否设置某条数据的过期时间)
   - [pymilvus示例代码:](#pymilvus示例代码)
     - [导入模块和库:](#导入模块和库)
     - [定义格式变量:](#定义格式变量)
@@ -705,9 +708,54 @@ print(progress)  # 输出集合加载的进度信息。
 
 这些辅助函数简化了对Milvus集合的一些常见管理任务的处理，让用户可以更容易地与Milvus集合进行交互。在使用这些函数时，通常需要确保已经通过`connections.connect`与Milvus数据库建立了连接。<br>
 
+### 查看集合属性:
+
+假设你使用了以下代码创建了一个名为`book`的集合:<br>
+
+```python
+from pymilvus import Collection, FieldSchema, CollectionSchema, DataType, connections, utility
+
+# 连接Milvus
+connections.connect(host='localhost', port='19530')
+
+# 定义集合架构
+schema = CollectionSchema(fields=[
+    FieldSchema("int64", DataType.INT64, description="int64", is_primary=True),
+    FieldSchema("float_vector", DataType.FLOAT_VECTOR, is_primary=False, dim=128),
+])
+
+# 架构实例化为一个名为"book"的集合
+collection = Collection(name="book", schema=schema)
+```
+
+```python
+from pymilvus import connections, utility
+
+connections.connect(host='localhost', port='19530')
+res = utility.has_collection("book")
+print(res)  # 没查到会返回False
+
+collections = utility.list_collections()
+print(collections)  # 输出所有集合的名称列表。
+```
+
+终端显示:<br>
+
+```log
+True
+['book', 'search_article_in_medium']
+```
+
+
 ## 分批向Milvus插入数据:
 
+## 设置集合的过期时间:
 
+```python
+collection.set_properties(properties={"collection.ttl.seconds": 1800})
+```
+
+### Milvus能否设置某条数据的过期时间？
 
 ## pymilvus示例代码:
 
