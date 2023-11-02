@@ -558,7 +558,7 @@ collection = Collection(name="test_collection", schema=schema)
 # 现在你可以向`collection`插入数据，查询数据等
 ```
 
-在这个例子中，`schema`是一个`CollectionSchema`对象，定义了`collection`应有的结构。创建`collection`时，我们使用这个结构定义，并且给它命名为"test_collection"，这个名字在Milvus中唯一地标识了这个集合。然后，我们可以在这个`collection`上执行各种操作，如插入数据、搜索、更新和删除数据等。
+在这个例子中，`schema`是一个`CollectionSchema`对象，定义了`collection`应有的结构。创建`collection`时，我们使用这个结构定义，并且给它命名为"test_collection"，这个名字在Milvus中唯一地标识了这个集合。然后，我们可以在这个`collection`上执行各种操作，如插入数据、搜索、更新和删除数据等。<br>
 
 ## 管理集合:
 
