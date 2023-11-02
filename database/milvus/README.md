@@ -14,13 +14,13 @@
     - [查找 Milvus 集群中的所有现有数据库:](#查找-milvus-集群中的所有现有数据库)
     - [使用数据库:](#使用数据库)
     - [删除数据库:](#删除数据库)
-  - [Milvus中Schema介绍:](#milvus中schema介绍)
+  - [Milvus中Schema介绍(集合相关操作):](#milvus中schema介绍集合相关操作)
     - [FieldSchema:](#fieldschema)
     - [DataType:](#datatype)
     - [CollectionSchema:](#collectionschema)
-      - [Collection:](#collection)
-  - [管理集合:](#管理集合)
-    - [创建集合:](#创建集合)
+    - [Collection(创建集合):](#collection创建集合)
+    - [重命名集合:](#重命名集合)
+  - [分批向Milvus插入数据:](#分批向milvus插入数据)
   - [pymilvus示例代码:](#pymilvus示例代码)
     - [导入模块和库:](#导入模块和库)
     - [定义格式变量:](#定义格式变量)
@@ -471,7 +471,7 @@ db.list_database()
 ```
 
 
-## Milvus中Schema介绍:
+## Milvus中Schema介绍(集合相关操作):
 
 Schema指结构，例如表结构、字段构成等。在我们介绍Milvus中Schema的定义方式前，先导入必要的方法，并连接到Milvus数据库:<br>
 
@@ -521,7 +521,7 @@ schema = CollectionSchema(fields=[id_field, vector_field], description="Test col
 
 这样，使用`CollectionSchema`和`FieldSchema`对象，你可以定义一个Milvus集合的完整结构，`DataType`用于指定字段的数据类型。这种结构化的方式使得Milvus可以灵活地处理不同类型的数据，并且可以对其进行有效的索引和搜索。<br>
 
-#### Collection:
+### Collection(创建集合):
 
 🚨🚨🚨`CollectionSchema`和`Collection`在Milvus中代表了两个相关但不同的概念：<br>
 
@@ -560,18 +560,35 @@ collection = Collection(name="test_collection", schema=schema)
 
 在这个例子中，`schema`是一个`CollectionSchema`对象，定义了`collection`应有的结构。创建`collection`时，我们使用这个结构定义，并且给它命名为"test_collection"，这个名字在Milvus中唯一地标识了这个集合。然后，我们可以在这个`collection`上执行各种操作，如插入数据、搜索、更新和删除数据等。<br>
 
-## 管理集合:
+### 重命名集合:
+
+```python
+from pymilvus import Collection, FieldSchema, CollectionSchema, DataType, connections, utility
+
+# 连接Milvus
+connections.connect(host='localhost', port='19530')
+
+# 定义集合架构
+schema = CollectionSchema(fields=[
+    FieldSchema("int64", DataType.INT64, description="int64", is_primary=True),
+    FieldSchema("float_vector", DataType.FLOAT_VECTOR, is_primary=False, dim=128),
+])
+
+# 架构实例化为一个名为"old_collection"的集合
+collection = Collection(name="old_collection", schema=schema)
+
+# 通过调用`utility.rename_collection`方法，将集合从`"old_collection"`重命名为`"new_collection"`。如果操作成功，这个方法将返回`True`。
+utility.rename_collection("old_collection", "new_collection") # Output: True
+
+# 删除刚刚重命名的集合`"new_collection"`。
+utility.drop_collection("new_collection")
+
+# 检查名为`"new_collection"`的集合是否还存在
+utility.has_collection("new_collection") # Output: False
+```
 
 
-
-
-### 创建集合:
-
-在Milvus中，一个集合由一个或多个分区组成。在创建新集合时，Milvus会创建一个默认分区 `_default`。<br>
-
-以下示例创建了一个名为 `book` 的两个分片集合，其中包括一个名为 `book_id` 的主键字段、一个名为 `word_count` 的 `INT64` 标量字段，以及一个名为 `book_intro` 的二维浮点向量字段。实际应用程序很可能会使用比这个示例更高维度的向量。<br>
-
-
+## 分批向Milvus插入数据:
 
 
 
