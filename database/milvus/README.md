@@ -35,7 +35,7 @@
     - [查看集合属性:](#查看集合属性)
   - [加载/释放集合:](#加载释放集合)
   - [分批向Milvus插入数据:](#分批向milvus插入数据)
-  - [设置集合的过期时间:](#设置集合的过期时间)
+    - [设置/查看集合的过期时间:](#设置查看集合的过期时间)
     - [Milvus能否设置某条数据的过期时间？](#milvus能否设置某条数据的过期时间)
   - [pymilvus示例代码:](#pymilvus示例代码)
     - [导入模块和库:](#导入模块和库)
@@ -822,11 +822,68 @@ collection.release("xxx")
 
 ## 分批向Milvus插入数据:
 
-## 设置集合的过期时间:
+### 设置/查看集合的过期时间:
+
+设置集合的过期时间(单位为 "秒")需要使用`set_properties`语句，具体操作如下:<br>
 
 ```python
-collection.set_properties(properties={"collection.ttl.seconds": 1800})
+from pymilvus import connections, Collection, FieldSchema, CollectionSchema, DataType
+# 连接milvus
+connections.connect(host='localhost', port='19530')
+# 定义字段
+fields = [
+    FieldSchema("film_id", DataType.INT64, is_primary=True),
+    FieldSchema("films", dtype=DataType.FLOAT_VECTOR, dim=128)
+    ]
+# 定义集合架构
+schema = CollectionSchema(fields=fields)
+# 利用集合架构实例化一个集合
+collection = Collection("test_set_properties", schema)
+# 设置集合的过期时间
+collection.set_properties({"collection.ttl.seconds": 1200})
 ```
+
+设置完成后，想要查看是否设置成功，可以运行下列代码:<br>
+
+```python
+from pymilvus import connections, Collection, FieldSchema, CollectionSchema, DataType
+# 连接milvus
+connections.connect(host='localhost', port='19530')
+# 选定集合
+collection = Collection("test_set_properties")
+print(f"the name of collection is :\n{collection.name}\n")
+# 获取集合的properties属性
+expiration_time = collection.describe().get("properties")
+print(f"the expiration time of collection is :\n{expiration_time}\n")
+print(f"the format of expiration_time is :\n{type(expiration_time)}\n")
+
+# 将"过期时间"属性转为可操作格式--字符串
+expiration_time_string = expiration_time.__str__()
+print(expiration_time_string)
+print(type(expiration_time_string))
+```
+
+终端显示:<br>
+
+```txt
+the name of collection is :
+test_set_properties
+
+the expiration time of collection is :
+[key: "collection.ttl.seconds"
+value: "60"
+]
+
+the format of expiration_time is :
+<class 'google._upb._message.RepeatedCompositeContainer'>
+
+[key: "collection.ttl.seconds"
+value: "60"
+]
+<class 'str'>
+```
+
+🐳🐳🐳设置过期时间后查看到的结果，格式比较奇怪，只当作参考，毕竟"过期时间"这个概念是Milvus新添加的功能，可能Milvus还没有彻底完善。<br>
 
 ### Milvus能否设置某条数据的过期时间？
 
