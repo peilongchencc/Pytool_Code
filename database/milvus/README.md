@@ -33,10 +33,10 @@
     - [集合重命名:](#集合重命名)
     - [计算两组向量之间的距离:](#计算两组向量之间的距离)
     - [查看集合属性:](#查看集合属性)
-  - [加载/释放集合:](#加载释放集合)
-  - [分批向Milvus插入数据:](#分批向milvus插入数据)
     - [设置/查看集合的过期时间:](#设置查看集合的过期时间)
     - [Milvus能否设置某条数据的过期时间？](#milvus能否设置某条数据的过期时间)
+  - [加载/释放集合:](#加载释放集合)
+  - [分批向Milvus插入数据:](#分批向milvus插入数据)
   - [pymilvus示例代码:](#pymilvus示例代码)
     - [导入模块和库:](#导入模块和库)
     - [定义格式变量:](#定义格式变量)
@@ -800,28 +800,6 @@ True
 ['book', 'search_article_in_medium']
 ```
 
-## 加载/释放集合:
-
-前面已经介绍过集合的建立了，但偶尔你可能会见到某些代码中出现下列写法:<br>
-
-```python
-# 加载集合
-collection.release("xxx")
-
-"""你的代码"""
-
-# 释放集合
-collection.release("xxx")
-```
-
-此时，如果你没有特殊需求，忽略`collection.load()` 和 `collection.release()`即可。<br>
-
-通常情况下，你不需要手动调用 `collection.load()` 和 `collection.release()`，Milvus 将自动管理集合的加载和释放。<br>
-
-
-
-## 分批向Milvus插入数据:
-
 ### 设置/查看集合的过期时间:
 
 设置集合的过期时间(单位为 "秒")需要使用`set_properties`语句，具体操作如下:<br>
@@ -886,6 +864,31 @@ value: "60"
 🐳🐳🐳设置过期时间后查看到的结果，格式比较奇怪🤨🤨🤨，只当作参考，毕竟"过期时间"这个概念是Milvus新添加的功能，可能Milvus还没有彻底完善。<br>
 
 ### Milvus能否设置某条数据的过期时间？
+
+
+## 加载/释放集合:
+
+前面已经介绍过集合的建立了，但偶尔你可能会见到某些代码中出现下列写法:<br>
+
+```python
+# 加载集合
+collection.release("xxx")
+
+"""你的代码"""
+
+# 释放集合
+collection.release("xxx")
+```
+
+此时，如果你没有特殊需求，忽略`collection.load()` 和 `collection.release()`即可。<br>
+
+通常情况下，你不需要手动调用 `collection.load()` 和 `collection.release()`，Milvus 将自动管理集合的加载和释放。<br>
+
+
+
+## 分批向Milvus插入数据:
+
+
 
 ## pymilvus示例代码:
 
