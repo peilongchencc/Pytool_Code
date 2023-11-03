@@ -26,6 +26,8 @@
   - [将集合分区(partition):](#将集合分区partition)
     - [查看某个集合的所有分区:](#查看某个集合的所有分区)
     - [在某个集合下创建分区:](#在某个集合下创建分区)
+    - [判断集合中是否有某个分区:](#判断集合中是否有某个分区)
+  - [删除某个集合下的分区:](#删除某个集合下的分区)
   - [utility介绍:](#utility介绍)
     - [查看Milvus中所有集合](#查看milvus中所有集合)
     - [查看Milvus中是否有某个集合](#查看milvus中是否有某个集合)
@@ -37,6 +39,9 @@
     - [Milvus能否设置某条数据的过期时间？](#milvus能否设置某条数据的过期时间)
   - [加载/释放集合:](#加载释放集合)
   - [分批向Milvus插入数据:](#分批向milvus插入数据)
+  - [upsert():](#upsert)
+    - [使用upsert时的注意事项:](#使用upsert时的注意事项)
+  - [Milvus数据迁移工具--MilvusDM:](#milvus数据迁移工具--milvusdm)
   - [pymilvus示例代码:](#pymilvus示例代码)
     - [导入模块和库:](#导入模块和库)
     - [定义格式变量:](#定义格式变量)
@@ -86,7 +91,7 @@ sudo docker-compose up -d
 
   - `up`: 这是 Docker Compose 命令的一个子命令，用于启动定义在配置文件中的服务。当运行 `docker-compose up` 时，它将会创建并启动定义的容器。
 
-  - `-d`: 这是一个选项标志，它告诉 Docker Compose 在后台运行容器。如果不使用 `-d` 标志，Docker Compose 将会在前台显示容器的输出日志，而且如果您关闭终端窗口，容器也会停止。
+  - `-d`: 这是一个选项标志，它告诉 Docker Compose 在后台运行容器。如果不使用 `-d` 标志，Docker Compose 将会在前台显示容器的输出日志，而且如果你关闭终端窗口，容器也会停止。
 
 总的来说，`sudo docker-compose up -d` 命令用于以后台模式启动 Docker Compose 配置文件中定义的容器应用，这些容器应用可以包含多个服务，例如 Web 服务器、数据库等。这个命令对于部署和管理容器化应用程序非常有用。<br>
 
@@ -682,6 +687,57 @@ print(f"集合book的分区有:{collection.partitions}")
 
 注意:Milvus的集合中，分区不允许重名，如果重复创建相同命名的分区，会引发`PartitionAlreadyExistException: (code=1, message=Partition already exist.)`错误。⛔️⛔️⛔️<br>
 
+### 判断集合中是否有某个分区:
+
+```python
+from pymilvus import connections, utility, Collection
+# 连接Milvus
+connections.connect(host='localhost', port='19530')
+# 选定集合
+collection = Collection("book")
+# 判断集合中是否有某个分区
+if collection.has_partition("novel"):
+    print(f"集合book中有novel分区")
+else:
+    print(f"集合book中没有novel分区")
+```
+
+如果集合"book"中有"novel"分区，则终端显示:<br>
+
+```log
+集合book中有novel分区
+```
+
+## 删除某个集合下的分区:
+
+在Milvus中，"删除集合的某个分区" 和 "删除集合的所有分区" 使用的方法是一样的。"删除集合的所有分区"通常需要遍历分区并逐个删除，"删除集合的某个分区"值需要根据名称删除特定分区即可。<br>
+
+因为Milvus不提供直接删除所有分区的单个API，**这是为了确保操作的安全性和可控性，因为删除分区是一个不可逆的操作，分区中的数据也会被删除。**🪴🪴🪴🪴🪴<br>
+
+```python
+from pymilvus import connections, Collection
+
+# 连接Milvus服务器
+connections.connect(host='localhost', port='19530')
+
+# 指定要删除分区的集合名称
+collection_name = 'book'
+
+# 获取指定名称的集合
+collection = Collection(name=collection_name)
+
+# 获取集合的所有分区名称
+partition_names = collection.partitions
+
+# 遍历分区并删除它们
+for partition_name in partition_names:
+    collection.drop_partition(partition_name)
+
+# 断开与Milvus服务器的连接
+connections.disconnect()
+```
+
+
 ## utility介绍:
 
 `pymilvus`中的`utility`模块提供了一组辅助函数，这些函数主要用于执行一些常见的、不直接涉及数据操作的任务。例如，检查集合或分区的存在、重命名集合、获取集合的统计信息等。以下是一些`utility`模块中常用函数的说明和用法：<br>
@@ -887,6 +943,43 @@ collection.release("xxx")
 
 
 ## 分批向Milvus插入数据:
+
+
+## upsert():
+
+### 使用upsert时的注意事项:
+
+官方文档:<br>
+
+```txt
+Limits
+Updating primary key fields is not supported by upsert().
+upsert() is not applicable and an error can occur if autoID is set to True for primary key fields.
+```
+
+在这段文档中，提到了Milvus数据库的一些操作限制。<br>
+
+首先解释一下背景知识：<br>
+
+- **Primary Key（主键）**：在数据库中，主键是唯一标识表中每一条记录的字段。它的值必须是唯一的，并且不允许为空。
+
+- **upsert() 操作**：`upsert` 是“update”和“insert”的结合词，指的是一种数据库操作，如果记录不存在，就执行插入（insert）操作；如果记录已经存在，则更新（update）这条记录。在一些数据库系统中，`upsert` 通常通过一个特定的命令或者一组操作来实现。
+
+- **autoID**：是一个设置项，当设置为True时，意味着数据库会自动为每条记录生成一个唯一的主键ID。当用户插入新记录时不需要（也不能）手动指定主键ID，系统会自动生成。
+
+根据你提供的文档内容：<br>
+
+1. **更新主键字段不被支持**：这说明在Milvus数据库中，一旦记录被创建，并且分配了主键值，你就不能使用`upsert()`操作来改变这个主键字段的值。主键一旦设定，就是不可更改的。
+
+2. **如果为主键字段设置了autoID为True，则upsert()不适用**：这表示如果你在定义数据模型时设置了主键字段的`autoID`为True，意味着主键值是由系统自动生成的，那么你不能使用`upsert()`操作。这可能是因为`upsert()`操作需要明确指定哪一条记录将被更新，如果主键是自动生成的，那么在执行`upsert()`操作时，系统可能无法确定要更新的确切记录，因此会引发错误。
+
+总结起来，Milvus在使用自动生成主键的配置下，不支持使用`upsert()`操作来更新或插入数据，你需要在插入数据时避免对主键字段进行操作，或者在设计数据模型时不使用autoID特性。<br>
+
+
+## Milvus数据迁移工具--MilvusDM:
+
+MilvusDM是专门用于导入和导出Milvus数据的开源工具。<br>
+
 
 
 
