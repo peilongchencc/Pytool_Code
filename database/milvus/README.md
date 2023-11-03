@@ -11,23 +11,24 @@
   - [关闭Milvus standalone:](#关闭milvus-standalone)
   - [安装Milvus Python SDK:](#安装milvus-python-sdk)
     - [补充说明Install Milvus Python SDK是什么意思？其中的SDK表示什么:](#补充说明install-milvus-python-sdk是什么意思其中的sdk表示什么)
-  - [利用pymilvus与Milvus数据库建立/断开连接:](#利用pymilvus与milvus数据库建立断开连接)
-  - [利用pymilvus管理数据库:](#利用pymilvus管理数据库)
+  - [Milvus数据库操作:](#milvus数据库操作)
+    - [利用pymilvus与Milvus数据库建立/断开连接:](#利用pymilvus与milvus数据库建立断开连接)
     - [创建数据库:](#创建数据库)
     - [查找 Milvus 集群中的所有现有数据库:](#查找-milvus-集群中的所有现有数据库)
-    - [使用数据库:](#使用数据库)
-    - [删除数据库:](#删除数据库)
-  - [Milvus中Schema介绍(集合相关操作):](#milvus中schema介绍集合相关操作)
-    - [FieldSchema:](#fieldschema)
-    - [DataType:](#datatype)
+    - [指定使用某个数据库:](#指定使用某个数据库)
+    - [删除某个数据库:](#删除某个数据库)
+  - [Milvus中集合的操作:](#milvus中集合的操作)
+    - [FieldSchema介绍:](#fieldschema介绍)
+    - [DataType介绍:](#datatype介绍)
     - [CollectionSchema:](#collectionschema)
-    - [Collection(创建集合):](#collection创建集合)
-  - [Partition(分区)和Collection(集合)的关系:](#partition分区和collection集合的关系)
-  - [将集合分区(partition):](#将集合分区partition)
+    - [Collection(创建集合)介绍:](#collection创建集合介绍)
+    - [加载/释放集合:](#加载释放集合)
+  - [Milvus中分区操作:](#milvus中分区操作)
+    - [Partition(分区)和Collection(集合)的关系:](#partition分区和collection集合的关系)
     - [查看某个集合的所有分区:](#查看某个集合的所有分区)
     - [在某个集合下创建分区:](#在某个集合下创建分区)
     - [判断集合中是否有某个分区:](#判断集合中是否有某个分区)
-  - [删除某个集合下的分区:](#删除某个集合下的分区)
+    - [删除某个集合下的分区:](#删除某个集合下的分区)
   - [utility介绍:](#utility介绍)
     - [查看Milvus中所有集合](#查看milvus中所有集合)
     - [查看Milvus中是否有某个集合](#查看milvus中是否有某个集合)
@@ -37,10 +38,11 @@
     - [查看集合属性:](#查看集合属性)
     - [设置/查看集合的过期时间:](#设置查看集合的过期时间)
     - [Milvus能否设置某条数据的过期时间？](#milvus能否设置某条数据的过期时间)
-  - [加载/释放集合:](#加载释放集合)
   - [分批向Milvus插入数据:](#分批向milvus插入数据)
-  - [upsert():](#upsert)
+  - [Milvus中的数据操作:](#milvus中的数据操作)
+    - [upsert():](#upsert)
     - [使用upsert时的注意事项:](#使用upsert时的注意事项)
+  - [删除实体:](#删除实体)
   - [Milvus数据迁移工具--MilvusDM:](#milvus数据迁移工具--milvusdm)
   - [pymilvus示例代码:](#pymilvus示例代码)
     - [导入模块和库:](#导入模块和库)
@@ -61,7 +63,7 @@
     - [获取插入实体的主键:](#获取插入实体的主键)
     - [构建删除表达式:](#构建删除表达式)
     - [查询并打印删除前的实体:](#查询并打印删除前的实体)
-    - [删除实体:](#删除实体)
+    - [删除实体:](#删除实体-1)
     - [查询并打印删除后的实体:](#查询并打印删除后的实体)
     - [删除集合:](#删除集合)
 
@@ -422,8 +424,11 @@ SDK 通常包括一组软件开发工具，这些工具允许开发者为特定�
 
 简而言之，如果你想使用 Python 来开发和 Milvus 相关的应用，你就需要安装 Milvus Python SDK。<br>
 
+## Milvus数据库操作:
 
-## 利用pymilvus与Milvus数据库建立/断开连接:
+与传统的数据库引擎类似，你也可以在 Milvus 创建数据库，并为某些用户分配管理数据库的特权。然后，这些用户有权管理数据库中的集合。Milvus 集群最多支持64个数据库。<br>
+
+### 利用pymilvus与Milvus数据库建立/断开连接:
 
 Milvus 支持两个端口，端口`19530`和端口`9091`，端口19530是用于gRPC的，是默认端口。端口9091是用于 RESTful API 的，当你用 HTTP 客户端连接到 Milvus 服务器时使用它。<br>
 
@@ -463,10 +468,6 @@ connections.disconnect("default")
 ```
 
 
-## 利用pymilvus管理数据库:
-
-与传统的数据库引擎类似，你也可以在 Milvus 创建数据库，并为某些用户分配管理数据库的特权。然后，这些用户有权管理数据库中的集合。Milvus 集群最多支持64个数据库。<br>
-
 ### 创建数据库:
 
 要创建数据库，首先需要连接到 Milvus 集群并为其准备一个名称，假设你要创建一个名为"book"的database，可以使用以下代码:<br>
@@ -500,7 +501,7 @@ print(f"数据库有:{database_name}")
 
 Milvus 集群默认只有一个名为"default"的数据库。<br>
 
-### 使用数据库:
+### 指定使用某个数据库:
 
 Milvus 集群默认只有一个名为"default"的数据库。除非另有说明，否则集合将在默认数据库中创建。<br>
 
@@ -519,7 +520,7 @@ conn = connections.connect(host="localhost",port="19530",db_name="default")
 db.using_database("book")
 ```
 
-### 删除数据库:
+### 删除某个数据库:
 
 若要删除数据库，必须首先删除其所有集合。否则，删除操作将失败。<br>
 
@@ -533,9 +534,9 @@ db.list_database()
 ```
 
 
-## Milvus中Schema介绍(集合相关操作):
+## Milvus中集合的操作:
 
-Schema指结构，例如表结构、字段构成等。在我们介绍Milvus中Schema的定义方式前，先导入必要的方法，并连接到Milvus数据库:<br>
+在Milvus中集合的基础是Schema，Schema指结构，例如表结构、字段构成等。在我们介绍Milvus中Schema的定义方式前，先导入必要的方法，并连接到Milvus数据库:<br>
 
 ```python
 from pymilvus import connections, FieldSchema, DataType, CollectionSchema, Collection
@@ -546,7 +547,7 @@ connections.connect(host='localhost', port='19530')
 
 在Milvus中，`CollectionSchema`、`FieldSchema`和`DataType`是创建一个集合(collection)的基本组件。Milvus是一个开源的向量数据库，用于存储和检索大量的向量数据。这三个组件定义了集合的结构和数据类型。<br>
 
-### FieldSchema:
+### FieldSchema介绍:
 
 `FieldSchema`用于定义集合中的一个字段(field)的结构。一个字段相当于传统数据库中的一个列(column)。它包括字段的名字、字段的数据类型以及一些额外的参数，比如是否是主键、是否自动创建索引等等。<br>
 
@@ -563,7 +564,7 @@ id_field = FieldSchema(name="id", dtype=DataType.INT64, is_primary=True)
 vector_field = FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=128)
 ```
 
-### DataType:
+### DataType介绍:
 
 `DataType`是一个枚举类，定义了Milvus中支持的不同数据类型。这些数据类型包括基本的数值类型、字符串和向量类型等。比如，`INT64`用于整数、`FLOAT_VECTOR`用于浮点数向量等。<br>
 
@@ -583,7 +584,7 @@ schema = CollectionSchema(fields=[id_field, vector_field], description="Test col
 
 这样，使用`CollectionSchema`和`FieldSchema`对象，你可以定义一个Milvus集合的完整结构，`DataType`用于指定字段的数据类型。这种结构化的方式使得Milvus可以灵活地处理不同类型的数据，并且可以对其进行有效的索引和搜索。<br>
 
-### Collection(创建集合):
+### Collection(创建集合)介绍:
 
 🚨🚨🚨`CollectionSchema`和`Collection`在Milvus中代表了两个相关但不同的概念：<br>
 
@@ -622,7 +623,33 @@ collection = Collection(name="test_collection", schema=schema)
 
 在这个例子中，`schema`是一个`CollectionSchema`对象，定义了`collection`应有的结构。创建`collection`时，我们使用这个结构定义，并且给它命名为"test_collection"，这个名字在Milvus中唯一地标识了这个集合。然后，我们可以在这个`collection`上执行各种操作，如插入数据、搜索、更新和删除数据等。<br>
 
-## Partition(分区)和Collection(集合)的关系:
+### 加载/释放集合:
+
+前面已经介绍过集合的建立了，但偶尔你可能会见到某些代码中出现下列写法:<br>
+
+```python
+# 加载集合
+collection.release("xxx")
+
+"""你的代码"""
+
+# 释放集合
+collection.release("xxx")
+```
+
+此时，如果你没有特殊需求，忽略`collection.load()` 和 `collection.release()`即可。<br>
+
+通常情况下，你不需要手动调用 `collection.load()` 和 `collection.release()`，Milvus 将自动管理集合的加载和释放。<br>
+
+
+
+## Milvus中分区操作:
+
+Milvus可以将搜索和其他操作限制在一个分区上，以提高性能。<br>
+
+集合一般由一个或多个分区组成。在创建一个新集合时，Milvus 会自动创建一个默认分区 `_default`。Milvus 中一个集合最多有4096个分区。<br>
+
+### Partition(分区)和Collection(集合)的关系:
 
 Milvus 是一个开源的向量数据库，用于存储大规模的特征向量，这些向量通常由机器学习模型生成，特别是在进行相似性搜索时。在 Milvus 中，“Collection”和“Partition”是两个核心概念，它们在组织数据时扮演着重要的角色。<br>
 
@@ -640,11 +667,6 @@ Milvus 是一个开源的向量数据库，用于存储大规模的特征向量�
 
 这样的数据组织结构既可以保持数据的管理效率，又可以在执行搜索和其他操作时提高性能。通过合理的设计 Collection 和 Partition，可以在 Milvus 中高效地处理和检索大规模向量数据。<br>
 
-## 将集合分区(partition):
-
-Milvus可以将搜索和其他操作限制在一个分区上，以提高性能。<br>
-
-集合一般由一个或多个分区组成。在创建一个新集合时，Milvus 会自动创建一个默认分区 `_default`。Milvus 中一个集合最多有4096个分区。<br>
 
 ### 查看某个集合的所有分区:
 
@@ -708,7 +730,7 @@ else:
 集合book中有novel分区
 ```
 
-## 删除某个集合下的分区:
+### 删除某个集合下的分区:
 
 在Milvus中，"删除集合的某个分区" 和 "删除集合的所有分区" 使用的方法是一样的。"删除集合的所有分区"通常需要遍历分区并逐个删除，"删除集合的某个分区"值需要根据名称删除特定分区即可。<br>
 
@@ -922,30 +944,15 @@ value: "60"
 ### Milvus能否设置某条数据的过期时间？
 
 
-## 加载/释放集合:
-
-前面已经介绍过集合的建立了，但偶尔你可能会见到某些代码中出现下列写法:<br>
-
-```python
-# 加载集合
-collection.release("xxx")
-
-"""你的代码"""
-
-# 释放集合
-collection.release("xxx")
-```
-
-此时，如果你没有特殊需求，忽略`collection.load()` 和 `collection.release()`即可。<br>
-
-通常情况下，你不需要手动调用 `collection.load()` 和 `collection.release()`，Milvus 将自动管理集合的加载和释放。<br>
 
 
 
 ## 分批向Milvus插入数据:
 
 
-## upsert():
+## Milvus中的数据操作:
+
+### upsert():
 
 ### 使用upsert时的注意事项:
 
@@ -974,6 +981,11 @@ upsert() is not applicable and an error can occur if autoID is set to True for p
 2. **如果为主键字段设置了autoID为True，则upsert()不适用**：这表示如果你在定义数据模型时设置了主键字段的`autoID`为True，意味着主键值是由系统自动生成的，那么你不能使用`upsert()`操作。这可能是因为`upsert()`操作需要明确指定哪一条记录将被更新，如果主键是自动生成的，那么在执行`upsert()`操作时，系统可能无法确定要更新的确切记录，因此会引发错误。
 
 总结起来，Milvus在使用自动生成主键的配置下，不支持使用`upsert()`操作来更新或插入数据，你需要在插入数据时避免对主键字段进行操作，或者在设计数据模型时不使用autoID特性。<br>
+
+
+## 删除实体:
+
+Milvus支持通过主键或复杂布尔表达式来删除实体。**通过主键删除实体比通过复杂布尔表达式删除它们要快得多、也更轻便**🫠🫠🫠。这是因为Milvus在通过复杂布尔表达式删除数据时，会先执行查询操作。
 
 
 ## Milvus数据迁移工具--MilvusDM:
