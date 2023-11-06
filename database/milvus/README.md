@@ -45,6 +45,7 @@
   - [删除实体:](#删除实体)
   - [Milvus数据迁移工具--MilvusDM:](#milvus数据迁移工具--milvusdm)
   - [Milvus索引建立:](#milvus索引建立)
+    - [index\_type详细解释:](#index_type详细解释)
   - [Milvus使用FAQ:](#milvus使用faq)
     - [我使用的是Ubuntu18.4，我使用的是CPU版本Milvus，Milvus中存储了50万条向量数据，我的向量都是使用Electra转化的。我检索一条数据的耗时竟然需要0.2s，是否有方法提升检索速度？使用维度更低的模型转换词向量如何？我的数据都是中文文本。](#我使用的是ubuntu184我使用的是cpu版本milvusmilvus中存储了50万条向量数据我的向量都是使用electra转化的我检索一条数据的耗时竟然需要02s是否有方法提升检索速度使用维度更低的模型转换词向量如何我的数据都是中文文本)
     - [我使用的是Ubuntu18.4，我使用的是CPU版本Milvus，我使用的是pymilvus 2.x版本，我应该如何使用pymilvus进行批量查询？](#我使用的是ubuntu184我使用的是cpu版本milvus我使用的是pymilvus-2x版本我应该如何使用pymilvus进行批量查询)
@@ -1023,8 +1024,9 @@ MilvusDM是专门用于导入和导出Milvus数据的开源工具。<br>
 | params      | 特定于索引的构建参数                   | 查看内存中索引和磁盘上索引了解更多信息。 |
 
 * DISKANN 需要满足一定的先决条件。详情请见磁盘上索引。
-* 当你安装了启用了GPU功能的Milvus时，GPU_IVF_FLAT 和 GPU_IVF_PQ才可用。更多详情请见相关文档。
+* 当你安装了启用了GPU功能的Milvus时，GPU_IVF_FLAT 和 GPU_IVF_PQ才可用。
 
+### index_type详细解释:
 
 1. **FLAT（暴力搜索）**
    - 描述：不使用任何索引，直接计算查询向量与数据库中所有向量之间的距离。
