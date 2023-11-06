@@ -44,7 +44,10 @@
     - [使用upsert时的注意事项:](#使用upsert时的注意事项)
   - [删除实体:](#删除实体)
   - [Milvus数据迁移工具--MilvusDM:](#milvus数据迁移工具--milvusdm)
+  - [Milvus索引建立:](#milvus索引建立)
   - [Milvus使用FAQ:](#milvus使用faq)
+    - [我使用的是Ubuntu18.4，我使用的是CPU版本Milvus，Milvus中存储了50万条向量数据，我的向量都是使用Electra转化的。我检索一条数据的耗时竟然需要0.2s，是否有方法提升检索速度？使用维度更低的模型转换词向量如何？我的数据都是中文文本。](#我使用的是ubuntu184我使用的是cpu版本milvusmilvus中存储了50万条向量数据我的向量都是使用electra转化的我检索一条数据的耗时竟然需要02s是否有方法提升检索速度使用维度更低的模型转换词向量如何我的数据都是中文文本)
+    - [我使用的是Ubuntu18.4，我使用的是CPU版本Milvus，我使用的是pymilvus 2.x版本，我应该如何使用pymilvus进行批量查询？](#我使用的是ubuntu184我使用的是cpu版本milvus我使用的是pymilvus-2x版本我应该如何使用pymilvus进行批量查询)
   - [pymilvus示例代码:](#pymilvus示例代码)
     - [导入模块和库:](#导入模块和库)
     - [定义格式变量:](#定义格式变量)
@@ -994,9 +997,37 @@ Milvus支持通过主键或复杂布尔表达式来删除实体。**通过主键
 MilvusDM是专门用于导入和导出Milvus数据的开源工具。<br>
 
 
+## Milvus索引建立:
+
+| 参数        | 描述                               | 选项                                  |
+| ----------- | ---------------------------------- | ------------------------------------- |
+| metric_type | 用于衡量向量相似度的度量类型         | 对于浮点向量：                        |
+|             |                                    | L2（欧几里得距离）                    |
+|             |                                    | IP（内积）                            |
+|             |                                    | COSINE（余弦相似性）                  |
+|             |                                    | 对于二进制向量：                      |
+|             |                                    | JACCARD（杰卡德距离）                 |
+|             |                                    | HAMMING（汉明距离）                   |
+| index_type  | 用于加速向量搜索的索引类型            | 对于浮点向量：                        |
+|             |                                    | FLAT（FLAT）                          |
+|             |                                    | IVF_FLAT（IVF_FLAT）                  |
+|             |                                    | IVF_SQ8（IVF_SQ8）                    |
+|             |                                    | IVF_PQ（IVF_PQ）                      |
+|             |                                    | GPU_IVF_FLAT*（GPU_IVF_FLAT）         |
+|             |                                    | GPU_IVF_PQ**（GPU_IVF_PQ）            |
+|             |                                    | HNSW（HNSW）                          |
+|             |                                    | DISKANN*（DISK_ANN）                  |
+|             |                                    | 对于二进制向量：                      |
+|             |                                    | BIN_FLAT（BIN_FLAT）                  |
+|             |                                    | BIN_IVF_FLAT（BIN_IVF_FLAT）          |
+| params      | 特定于索引的构建参数                   | 查看内存中索引和磁盘上索引了解更多信息。 |
+
+* DISKANN 需要满足一定的先决条件。详情请见磁盘上索引。
+* 当你安装了启用了GPU功能的Milvus时，GPU_IVF_FLAT 和 GPU_IVF_PQ才可用。更多详情请见相关文档。
+
 ## Milvus使用FAQ:
 
-我使用的是Ubuntu18.4，我使用的是CPU版本Milvus，Milvus中存储了50万条向量数据，我的向量都是使用Electra转化的。我检索一条数据的耗时竟然需要0.2s，是否有方法提升检索速度？使用维度更低的模型转换词向量如何？我的数据都是中文文本。
+### 我使用的是Ubuntu18.4，我使用的是CPU版本Milvus，Milvus中存储了50万条向量数据，我的向量都是使用Electra转化的。我检索一条数据的耗时竟然需要0.2s，是否有方法提升检索速度？使用维度更低的模型转换词向量如何？我的数据都是中文文本。
 
 Milvus 是一个开源的向量数据库，用于存储、检索和分析向量数据，特别适合处理大规模、高维度的数据。如果你在使用 Milvus 进行检索操作时遇到了性能瓶颈，以下是一些可能的优化策略：
 
@@ -1026,6 +1057,80 @@ Milvus 是一个开源的向量数据库，用于存储、检索和分析向量�
 
 最后，具体优化措施需要基于你的实际情况（如查询类型、系统资源、数据特性等）来决定。建议从监控工具和日志中收集信息，逐一尝试以上建议，并观察每次调整对性能的影响。
 
+### 我使用的是Ubuntu18.4，我使用的是CPU版本Milvus，我使用的是pymilvus 2.x版本，我应该如何使用pymilvus进行批量查询？
+
+在使用`pymilvus`进行批量查询时，主要步骤是创建一个搜索参数字典，并使用`search`函数进行查询。以下是使用pymilvus 2.x版本进行批量查询的大致步骤：<br>
+
+1. **连接到Milvus服务器**：首先，确保你已经启动了Milvus服务，然后使用`pymilvus`连接到服务。
+
+2. **准备数据**：准备你想要查询的向量数据。
+
+3. **构造查询**：构造一个搜索参数字典，指定你想要的搜索参数，例如查询向量、topK（返回最近邻的数量）和指标类型等。
+
+4. **执行搜索**：使用集合（collection）对象的`search`方法执行查询。
+
+5. **处理结果**：处理返回的结果，这通常包括距离分数和对应的ID。
+
+以下是一个简单的示例代码：<br>
+
+```python
+from pymilvus import (
+    connections,
+    utility,
+    FieldSchema, CollectionSchema, DataType,
+    Collection,
+)
+
+# 第1步：连接到Milvus服务器
+connections.connect("default", host='127.0.0.1', port='19530')
+
+# 检查连接是否成功
+print(f"Connected to Milvus: {utility.ping('default')}")
+
+# 第2步：指定你的集合名称
+collection_name = 'example_collection'
+
+# 这里假设你的集合已经存在并且你已经知道字段名称和参数
+# 如果需要，也可以创建新的集合
+
+# 第3步：准备你的查询向量
+# 这应该是一个二维数组，其中每个内部数组是一个查询向量
+query_vectors = [[0.1, 0.2, ...], [0.2, 0.3, ...], ...]
+
+# 第4步：构造查询
+# 在这里指定你想要搜索的参数
+search_params = {
+    "metric_type": "L2",  # 或者其他距离度量类型，如 "IP"（内积）
+    "params": {"nprobe": 10},
+}
+
+# 执行批量查询
+# topK是返回结果的数量，len(query_vectors)是查询的向量数
+results = collection.search(
+    data=query_vectors,
+    anns_field='embedding_field',  # 这里的'embedding_field'应该替换为你的向量字段名称
+    param=search_params,
+    limit=10,  # topK值
+    expr=None,
+    partition_names=None,
+    output_fields=None,
+    timeout=None,
+    **kwargs
+)
+
+# 第5步：处理结果
+# 打印查询结果
+for result in results:
+    for hit in result:
+        print(f"ID: {hit.id}, Distance: {hit.distance}")
+
+# 断开连接
+connections.disconnect("default")
+```
+
+请根据你的集合和字段进行相应的替换。特别是，你需要替换`example_collection`为你的集合名称，`embedding_field`为包含向量的字段名称。<br>
+
+还要注意，这只是一个示例，你可能需要根据你的集合配置和搜索需求调整代码中的参数。例如，你可能需要根据实际情况调整连接参数、搜索参数等。<br>
 
 ## pymilvus示例代码:
 
