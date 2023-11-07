@@ -862,3 +862,32 @@ from db_utils import fetchall_from_mysql
 ```
 
 这样，你就可以确保在应用的任何地方使用`fetchall_from_mysql`时，都是通过同一个连接池来管理数据库连接。<br>
+
+如果你不想要数据的解决含有字段信息(即字典格式)，可以简单修改`fetchall_from_mysql`中的`mysql_cursor`，参考代码如下:<br>
+
+```python
+def fetchall_from_mysql(sql):
+    # 连接到mysql
+    conn = conn_mysql()
+    # 定义游标
+    mysql_cursor = conn.cursor()
+    try:
+        # 利用游标执行sql语句
+        mysql_cursor.execute(sql)
+        return mysql_cursor.fetchall()
+    except pymysql.MySQLError as e:
+        print(f"Error: {e}")
+    finally:
+        # 关闭游标
+        mysql_cursor.close()
+        # conn.close()  # 只需要关闭游标，不关闭连接，连接池会负责管理连接的生命周期。
+```
+
+终端显示:<br>
+
+```txt
+(1, '黄金', datetime.datetime(2023, 11, 6, 20, 0, 50), datetime.datetime(2023, 11, 6, 20, 0, 50))
+(2, '暴涨', datetime.datetime(2023, 11, 6, 20, 1, 15), datetime.datetime(2023, 11, 6, 22, 42, 51))
+(3, '军工板块', datetime.datetime(2023, 11, 6, 20, 1, 35), datetime.datetime(2023, 11, 6, 22, 23, 15))
+(4, '百货', datetime.datetime(2023, 11, 6, 22, 42, 29), datetime.datetime(2023, 11, 6, 22, 46, 46))
+```
