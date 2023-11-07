@@ -789,6 +789,7 @@ pip install DBUtils
 接着，你可以使用如下代码创建连接池并从MySQL数据库中查询数据：<br>
 
 ```python
+# db_utils.py
 import pymysql
 from dbutils.pooled_db import PooledDB
 
@@ -841,3 +842,14 @@ if __name__ == "__main__":
     for item in res:
         print(item)
 ```
+
+在其他需要数据库连接的模块中，就可以采用下列方式从mysql连接池获取一条连接进行查询：<br>
+
+```python
+from db_utils import fetchall_from_mysql
+
+# 在这个模块中你可以使用 fetchall_from_mysql 函数
+# 它将使用 db_utils.py 中定义的连接池
+```
+
+这样，你就可以确保在应用的任何地方使用`fetchall_from_mysql`时，都是通过同一个连接池来管理数据库连接。<br>
