@@ -30,6 +30,7 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
     - [创建表：](#创建表)
     - [获取表中的内容：](#获取表中的内容)
   - [pymysql示例：](#pymysql示例)
+  - [Mysql连接池示例:](#mysql连接池示例)
 ## 服务器安装MySQL数据库：
 MySQL数据库的安装非常简单～<br>
 1. 更新系统软件包信息：
@@ -774,3 +775,69 @@ if __name__ == "__main__":
 ```
 
 🚨🚨🚨请注意:这条语句将删除名为`semantic_relation`的表格及其所有数据和结构。请确保在执行此操作之前备份重要的数据，以防不必要的数据丢失。<br>
+
+## Mysql连接池示例:
+
+在Python中，`pymysql`是一个用于连接MySQL数据库的库。但是，`pymysql`本身并不提供连接池功能。不过，你可以使用`DBUtils`这个第三方库，它提供了对`pymysql`的连接池支持。以下是一个使用`DBUtils`中的`PooledDB`来创建连接池并从MySQL数据库中获取数据的示例代码：<br>
+
+首先，你需要安装`DBUtils`：<br>
+
+```bash
+pip install DBUtils
+```
+
+接着，你可以使用如下代码创建连接池并从MySQL数据库中查询数据：<br>
+
+```python
+import pymysql
+from dbutils.pooled_db import PooledDB
+
+# mysql连接配置信息：
+Mysql_Server_Config = {
+        'host': 'localhost',
+        'user': 'root',
+        'password': 'Flameaway3.',
+        'database': 'irmdata',
+        'port': 3306
+    }
+
+# 创建连接池
+mysql_pool = PooledDB(
+    creator=pymysql,  # 使用pymysql作为数据库连接库
+    maxconnections=None,  # 连接池允许的最大连接数，0和None表示不限制连接数
+    mincached=2,  # 初始化时，连接池至少创建的空闲的连接，0表示不创建
+    maxcached=None,  # 连接池空闲的最多连接数，0和None表示不限制
+    maxshared=None,  # 连接池中最多共享的连接数量，0和None表示全部共享
+    blocking=True,  # 连接池中如果没有可用连接后，是否阻塞等待
+    maxusage=None,  # 一个连接最多被重复使用的次数，None表示无限制
+    setsession=[],  # 开始会话前执行的命令列表
+    ping=0,  # ping MySQL服务端，检查是否服务可用
+    **Mysql_Server_Config
+)
+
+def conn_mysql():
+    # 获取mysql连接
+    conn = mysql_pool.connection()
+    return conn
+
+def fetchall_from_mysql(sql):
+    # 连接到mysql
+    conn = conn_mysql()
+    # 定义游标
+    mysql_cursor = conn.cursor()
+    try:
+        # 利用游标执行sql语句
+        mysql_cursor.execute(sql)
+        return mysql_cursor.fetchall()
+    except pymysql.MySQLError as e:
+        print(f"Error: {e}")
+    finally:
+        # 关闭游标
+        mysql_cursor.close()
+        # conn.close()  # 只需要关闭游标，不关闭连接，连接池会负责管理连接的生命周期。
+
+if __name__ == "__main__":
+    res = fetchall_from_mysql("SELECT * FROM metadata_test")
+    for item in res:
+        print(item)
+```
