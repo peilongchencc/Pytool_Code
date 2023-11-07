@@ -824,8 +824,8 @@ def conn_mysql():
 def fetchall_from_mysql(sql):
     # 连接到mysql
     conn = conn_mysql()
-    # 定义游标
-    mysql_cursor = conn.cursor()
+    # 使用 DictCursor 定义游标，以便每一行结果都作为字典返回
+    mysql_cursor = conn.cursor(pymysql.cursors.DictCursor)
     try:
         # 利用游标执行sql语句
         mysql_cursor.execute(sql)
@@ -841,6 +841,15 @@ if __name__ == "__main__":
     res = fetchall_from_mysql("SELECT * FROM metadata_test")
     for item in res:
         print(item)
+```
+
+终端显示:<br>
+
+```txt
+{'id': 1, 'test_data': '黄金', 'create_time': datetime.datetime(2023, 11, 6, 20, 0, 50), 'modify_time': datetime.datetime(2023, 11, 6, 20, 0, 50)}
+{'id': 2, 'test_data': '暴涨', 'create_time': datetime.datetime(2023, 11, 6, 20, 1, 15), 'modify_time': datetime.datetime(2023, 11, 6, 22, 42, 51)}
+{'id': 3, 'test_data': '军工板块', 'create_time': datetime.datetime(2023, 11, 6, 20, 1, 35), 'modify_time': datetime.datetime(2023, 11, 6, 22, 23, 15)}
+{'id': 4, 'test_data': '百货', 'create_time': datetime.datetime(2023, 11, 6, 22, 42, 29), 'modify_time': datetime.datetime(2023, 11, 6, 22, 46, 46)}
 ```
 
 在其他需要数据库连接的模块中，就可以采用下列方式从mysql连接池获取一条连接进行查询：<br>
