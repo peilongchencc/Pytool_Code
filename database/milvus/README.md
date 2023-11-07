@@ -1191,7 +1191,7 @@ demo_collection.insert(data)
 # 刷新数据
 demo_collection.flush()
 
-# 先建立索引还是先刷新数据，这是个让我迷惑的点
+# 建立索引
 index_param = {
     "index_type": 'IVF_FLAT',
     "params": {"nlist": 10},
