@@ -296,3 +296,11 @@ fieldschema介绍...等内容。
 `<details>`：这个标签定义了一个可以展开和收起的详细信息。默认情况下，内容是隐藏的，用户可以点击来展开和查看详细内容。<br>
 
 `<summary>`：这个标签定义了`<details>`标签的标题。当用户点击这个标题时，它会展开`<details>`内的内容。在上述例子中，"NLU系列"是可点击的概要，用户点击它会展开下面的列表。<br>
+
+效果如下:<br>
+
+<details><summary>Milvus中集合的操作:</summary>
+
+fieldschema介绍...等内容。
+
+</details>
