@@ -176,9 +176,6 @@ class Convert_Text_2_Vector:
         data = outputs.last_hidden_state.mean(dim=1).squeeze().numpy()
         data = data / np.linalg.norm(data, axis=0)
         data = [data.tolist()]
-        print(f"**********************************")
-        print(f"数据向量化后的长度为:{len(data)}")
-        print(f"**********************************")
         return data
 ```
 
