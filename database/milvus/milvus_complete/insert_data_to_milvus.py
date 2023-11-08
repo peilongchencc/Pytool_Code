@@ -1,7 +1,6 @@
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 import torch
 import numpy as np
-from transformers import ElectraModel, ElectraTokenizer
 import time
 from tqdm import tqdm
 lines = []
@@ -50,12 +49,19 @@ for i in tqdm(range(0, num_texts, batch_size)):
     ids = np.arange(i, min(i + batch_size, num_texts)).tolist()
     encoded_texts = tokenizer(batch_texts, return_tensors='pt', padding=True)
     with torch.no_grad():
+        # 通过模型获取文本的隐藏状态
         last_hidden_state = model(**encoded_texts).last_hidden_state
-        attention_mask = encoded_texts["attention_mask"] 
+        # 获取注意力掩码
+        attention_mask = encoded_texts["attention_mask"]
+        # 将隐藏状态与注意力掩码相乘，用于消除padding的影响
         last_hidden_state = last_hidden_state * attention_mask.unsqueeze(-1)
+        # 对隐藏状态求和，用于获得整个文本的表示
         sum_hidden_state = last_hidden_state.sum(dim=1).squeeze()
+        # 通过注意力掩码的和进行归一化
         output = sum_hidden_state / attention_mask.sum(dim=1, keepdim=True)
+        # 转化为numpy数组
         output = output.numpy()
+    # 归一化输出向量，以便向量的模长为1
     output = output / np.linalg.norm(output, axis=1, keepdims=True).tolist()
     collection.insert([ids, batch_texts, output.tolist()])
 
