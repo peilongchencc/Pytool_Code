@@ -1,4 +1,9 @@
 ## 利用Milvus向量数据库返回相似数据
+- [利用Milvus向量数据库返回相似数据](#利用milvus向量数据库返回相似数据)
+- [模型选择：](#模型选择)
+- [程序运行方式：](#程序运行方式)
+- [存储时索引构造解释:](#存储时索引构造解释)
+- [词向量构造解释:](#词向量构造解释)
 
 ## 模型选择：
 
@@ -63,6 +68,40 @@ usr_input | 教师 |
 
 ❤️❤️❤️经测试:我的Milvus中存储了34万条向量数据(312维)，检索一条数据的耗时为2.7ms。<br>
 
+## 存储时索引构造解释:
+
+```python
+def create_milvus_collection(collection_name, dim):
+    if utility.has_collection(collection_name):
+        utility.drop_collection(collection_name)
+    
+    fields = [
+            FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=False),
+            FieldSchema(name="text", dtype=DataType.VARCHAR, max_length=500),   
+            FieldSchema(name="text_vector", dtype=DataType.FLOAT_VECTOR, dim=dim),
+    ]
+    schema = CollectionSchema(fields=fields, description='search text')
+    collection = Collection(name=collection_name, schema=schema)
+    
+    index_params = {
+        'metric_type': "COSINE",
+        'index_type': "HNSW",
+        'params': {"nlist": 1024, 'efConstruction': 10, 'M':60}
+    }
+    collection.create_index(field_name='text_vector', index_params=index_params)
+    return collection
+```
+
+1. `metric_type`: 定义用于向量搜索时计算向量之间相似度的度量类型。在这个例子中使用的是 "COSINE"，表示使用余弦相似度作为向量之间相似度的度量。余弦相似度是衡量两个向量方向上相似程度的一个度量标准，它的值域从-1（完全不同）到1（完全相同），其中0通常表示两个向量是正交的，即独立无关。
+
+2. `index_type`: 指定用于集合中的向量字段的索引类型。在这个例子中，使用的是 "HNSW"，Hierarchical Navigable Small World（分层可导航小世界图），这是一种图的近似最近邻搜索算法，它在大规模和高维数据集上提供了高效的搜索性能。
+
+3. `params`: 这是一个字典，包含用于构建索引时的额外参数。在这个例子中，有三个参数：
+   - `nlist`: 表示在索引中划分的聚类的数量，这个参数对于索引的质量和搜索性能都有影响。
+   - `efConstruction`: 是构建时的大小，这个参数决定了索引构建过程中的精度和性能。通常更高的 `efConstruction` 值会提高索引的质量，但同时会增加构建索引的时间和资源消耗。
+   - `M`: 与 `HNSW` 索引相关的参数，它定义了图中节点的最大出度，也就是每个元素将连接多少个邻居。`M` 越大，构建索引的时间越长，但搜索的准确性可能会提高。
+
+最后，`create_index` 方法是用来在集合的 `text_vector` 字段上创建指定类型的索引，以便更高效地执行搜索操作。<br>
 
 ## 词向量构造解释:
 
@@ -113,4 +152,4 @@ with torch.no_grad():
 
 🌿🌿🌿在之前的代码中，笔者通过乘以`attention_mask`来确保只有非填充tokens被考虑在内，这样可以获得更加准确的文本表示。<br>
 
-**如果你决定使用`.mean()`，请确保你的数据集中大部分文本的长度相近，这样填充对于结果的影响才不会太大。**如果文本长度相差很大，就应该采用类似之前代码中的加权平均，这样对于不同长度的文本都能获得较为准确的表示。<br>
+**如果你决定使用`.mean()`，请确保你的数据集中大部分文本的长度相近，这样填充对于结果的影响才不会太大。** 如果文本长度相差很大，就应该采用类似之前代码中的加权平均，这样对于不同长度的文本都能获得较为准确的表示。<br>

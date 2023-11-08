@@ -14,6 +14,7 @@ def search_data(data_vec):
     }
     
     start_time = time.time()
+    # limit=3，表示无论top_K为多少，也将返回的数量限制为limit的值。limit的优先级高于top_K。
     search_result = albert_collection.search(data_vec, "text_vector", search_params, limit=3, output_fields=['id', 'text'])
     end_time = time.time()
     total_time = end_time-start_time
