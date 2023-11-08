@@ -4,6 +4,7 @@
 - [程序运行方式：](#程序运行方式)
 - [存储时索引构造解释:](#存储时索引构造解释)
 - [词向量构造解释:](#词向量构造解释)
+- [albert\_text\_vec.py中类似用法的解释:](#albert_text_vecpy中类似用法的解释)
 
 ## 模型选择：
 
@@ -153,3 +154,36 @@ with torch.no_grad():
 🌿🌿🌿在之前的代码中，笔者通过乘以`attention_mask`来确保只有非填充tokens被考虑在内，这样可以获得更加准确的文本表示。<br>
 
 **如果你决定使用`.mean()`，请确保你的数据集中大部分文本的长度相近，这样填充对于结果的影响才不会太大。** 如果文本长度相差很大，就应该采用类似之前代码中的加权平均，这样对于不同长度的文本都能获得较为准确的表示。<br>
+
+## albert_text_vec.py中类似用法的解释:
+
+```python
+from transformers import BertTokenizer, AlbertModel
+import torch
+import numpy as np
+
+class Convert_Text_2_Vector:
+    
+    tokenizer = BertTokenizer.from_pretrained("clue/albert_chinese_tiny")
+    model = AlbertModel.from_pretrained("clue/albert_chinese_tiny")
+    
+    def __init__(self):
+        pass
+    def convert_to_vec(self, user_input):
+        inputs = self.tokenizer(user_input, return_tensors='pt')
+        with torch.no_grad():
+                outputs = self.model(**inputs)
+        data = outputs.last_hidden_state.mean(dim=1).squeeze().numpy()
+        data = data / np.linalg.norm(data, axis=0)
+        data = [data.tolist()]
+        print(f"**********************************")
+        print(f"数据向量化后的长度为:{len(data)}")
+        print(f"**********************************")
+        return data
+```
+
+检索的时候是一条一条检索，不需要padding(padding是因为需要batch操作)。**如果没有padding(填充)操作，那所有token都是有意义的，所以可以直接`mean(dim=1)`**。<br>
+
+💦💦💦另外，解释下为什么输入文本长度不一，但生成的词向量长度依旧为312:<br>
+
+`outputs.last_hidden_state`给出的是模型所有隐藏层的输出，其形状通常是`[batch_size, sequence_length, hidden_size]`。当你调用`.mean(dim=1)`时，你实际上是在沿着**序列长度维度**对隐藏状态进行平均，从而获得每个时间步上特征的平均值，结果的形状是`[batch_size, hidden_size]`。因为`hidden_size`是模型定义的固定值，所以得到的向量长度总是312，这对应于`AlbertModel`配置的隐藏层大小。<br>
