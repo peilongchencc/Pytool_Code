@@ -51,12 +51,6 @@
     - [我使用的是Ubuntu18.4，我使用的是CPU版本Milvus，我使用的是pymilvus 2.x版本，我应该如何使用pymilvus进行批量查询？](#我使用的是ubuntu184我使用的是cpu版本milvus我使用的是pymilvus-2x版本我应该如何使用pymilvus进行批量查询)
     - [flush()后create\_index()卡住:](#flush后create_index卡住)
   - [pymilvus示例代码:](#pymilvus示例代码)
-    - [导入模块和库:](#导入模块和库)
-    - [定义格式变量:](#定义格式变量)
-    - [定义实体数量和向量维度:](#定义实体数量和向量维度)
-    - [连接到Milvus服务器:](#连接到milvus服务器)
-    - [检查集合是否存在:](#检查集合是否存在)
-    - [定义字段列表:](#定义字段列表)
     - [定义集合的结构:](#定义集合的结构)
     - [创建新的集合:](#创建新的集合)
     - [插入实体:](#插入实体)
@@ -1237,16 +1231,18 @@ from pymilvus import (
     Collection,
 )
 
+# `fmt`和`search_latency_fmt`是字符串格式模板，用于后面的输出。
 fmt = "\n=== {:30} ===\n"
 search_latency_fmt = "搜索延迟 = {:.4f}s"
+# 实体的数量设置为3000，维度设置为8。
 num_entities, dim = 3000, 8
 
 #################################################################################
 # 1. 连接到 Milvus
-# 为位于 `localhost:19530` 的 Milvus 服务器添加一个新的连接别名 `default`
-# 实际上 "default" 别名在 PyMilvus 中是内置的。
+# 连接`localhost:19530` 的 Milvus 服务器的 `default` 数据库
+# "default" 是默认数据库
 # 如果 Milvus 的地址与 `localhost:19530` 相同，你可以省略所有
-# 参数并调用该方法，例如：`connections.connect()`。
+# 可以省略参数直接调用：`connections.connect()`。
 #
 # 注意: 以下方法的 `using` 参数默认为 "default"。
 print(fmt.format("开始连接到 Milvus"))
@@ -1268,11 +1264,19 @@ print(f"Milvus 中是否存在 hello_milvus 集合: {has}")
 # +-+------------+------------+------------------+------------------------------+
 # |3|"embeddings"| FloatVector|     dim=8        |  "维度为 8 的 float 向量"     |
 # +-+------------+------------+------------------+------------------------------+
+# `pk`：一个VARCHAR类型的字段，作为主键（`is_primary=True`）。该字段不会自动生成ID（`auto_id=False`），并且最大长度为100（`max_length=100`）。
+# `random`：一个DOUBLE类型的字段，用于存储浮点数。
+# `embeddings`：一个FLOAT_VECTOR类型的字段，用于存储浮点数向量。向量的维度由之前的代码中定义的`dim`变量决定。
+
 fields = [
     FieldSchema(name="pk", dtype=DataType.VARCHAR, is_primary=True, auto_id=False, max_length=100),
     FieldSchema(name="random", dtype=DataType.DOUBLE),
     FieldSchema(name="embeddings", dtype=DataType.FLOAT_VECTOR, dim=dim)
 ]
+
+# `CollectionSchema`函数用于定义一个集合的结构，它接受两个参数：
+# 1. `fields`：一个字段列表，定义了集合中的数据结构。
+# 2. Description：一个描述该集合的字符串。
 
 schema = CollectionSchema(fields, "hello_milvus 是一个简单的演示，用于介绍 APIs")
 
@@ -1398,88 +1402,6 @@ print(f"使用表达式=`{expr}` 查询删除后的结果 -> 结果: {result}\n"
 print(fmt.format("删除集合 `hello_milvus`"))
 utility.drop_collection("hello_milvus")
 ```
-
-接下来详细解释上述代码各部分的作用：<br>
-
-### 导入模块和库:
-
-```python
-import time
-import numpy as np
-from pymilvus import (
-      connections,
-      utility,
-      FieldSchema, CollectionSchema, DataType,
-      Collection,
-)
-```
-
-- `time`: Python的标准库，用于处理时间。
-
-- `numpy as np`: 一个用于大量数据计算的Python库。
-
-- `pymilvus`: Milvus的Python客户端，用于与Milvus服务器进行交互。
-
-### 定义格式变量:
-
-```python
-fmt = "\n=== {:30} ===\n"
-search_latency_fmt = "search latency = {:.4f}s"
-```
-
-- `fmt`和`search_latency_fmt`是字符串格式模板，用于后面的输出。
-
-### 定义实体数量和向量维度:
-
-```python
-num_entities, dim = 3000, 8
-```
-
-- `num_entities`：代表实体的数量，这里设置为3000。
-
-- `dim`：代表向量的维度，这里设置为8。
-
-### 连接到Milvus服务器:
-
-```python
-print(fmt.format("start connecting to Milvus"))
-connections.connect("default", host="localhost", port="19530")
-```
-
-- 使用`fmt.format("start connecting to Milvus")`格式化并打印连接开始信息。
-
-- `connections.connect()`用于连接到Milvus服务器，参数`"default"`是连接的别名，`host="localhost"`指定了服务器地址，`port="19530"`指定了服务器端口。
-
-### 检查集合是否存在:
-
-```python
-has = utility.has_collection("hello_milvus")
-print(f"Does collection hello_milvus exist in Milvus: {has}")
-```
-
-- `utility.has_collection("hello_milvus")`：检查名为"hello_milvus"的集合是否在Milvus中存在。
-
-- 使用f-string打印查询结果。
-
-**通过这段代码，可以学到如何使用pymilvus库连接到Milvus服务器并简单地检查一个集合是否存在。**<br>
-
-### 定义字段列表:
-
-```python
-fields = [
-      FieldSchema(name="pk", dtype=DataType.VARCHAR, is_primary=True, auto_id=False, max_length=100),
-      FieldSchema(name="random", dtype=DataType.DOUBLE),
-      FieldSchema(name="embeddings", dtype=DataType.FLOAT_VECTOR, dim=dim)
-]
-```
-
-这里定义了三个字段：<br>
-
-- `pk`：一个VARCHAR类型的字段，作为主键（`is_primary=True`）。该字段不会自动生成ID（`auto_id=False`），并且最大长度为100（`max_length=100`）。
-
-- `random`：一个DOUBLE类型的字段，用于存储浮点数。
-
-- `embeddings`：一个FLOAT_VECTOR类型的字段，用于存储浮点数向量。向量的维度由之前的代码中定义的`dim`变量决定。
 
 ### 定义集合的结构:
 
