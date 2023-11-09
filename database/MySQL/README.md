@@ -791,7 +791,7 @@ if __name__ == "__main__":
     # 创建一个新的cursor对象
     mysql_cursor = mysql_conn.cursor()
     
-    # 检查是否存在semantic_relation表,有则返回1，无则返回0
+    # 检查是否存在semantic_relation表,有则返回1,无则返回0
     table_exists = mysql_cursor.execute("SHOW TABLES LIKE 'semantic_relation'")
 
     if table_exists:
