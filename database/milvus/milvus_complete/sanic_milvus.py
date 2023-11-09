@@ -2,10 +2,14 @@ from sanic import Sanic
 from sanic import response
 from albert_text_vec import Convert_Text_2_Vector
 from search_from_milvus import search_data
+from pymilvus import connections
 
 app = Sanic(__name__)
 # 词向量转化类的实例化
 embed_model = Convert_Text_2_Vector()
+
+# 连接milvus(milvus会自动构建连接池，全局形式)，不确定多进程/线程中是否要重新建立连接
+connections.connect(host='localhost', port='19530')
 
 @app.route("/vector_similarity", methods=["POST"])
 async def answer(request):

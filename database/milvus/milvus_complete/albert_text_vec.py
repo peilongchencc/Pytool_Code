@@ -15,5 +15,5 @@ class Convert_Text_2_Vector:
                 outputs = self.model(**inputs)
         data = outputs.last_hidden_state.mean(dim=1).squeeze().numpy()
         data = data / np.linalg.norm(data, axis=0)
-        data = [data.tolist()]
+        data = [data.tolist()]  # 数据格式为: [[-0.05411861091852188, 0.048285916447639465, -0.029383817687630653, ...]]
         return data

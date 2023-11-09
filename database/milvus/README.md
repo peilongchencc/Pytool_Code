@@ -22,6 +22,7 @@
     - [DataType介绍:](#datatype介绍)
     - [CollectionSchema:](#collectionschema)
     - [Collection(创建集合)介绍:](#collection创建集合介绍)
+      - [查看集合名称:](#查看集合名称)
     - [加载/释放集合:](#加载释放集合)
   - [Milvus中分区操作:](#milvus中分区操作)
     - [Partition(分区)和Collection(集合)的关系:](#partition分区和collection集合的关系)
@@ -608,18 +609,25 @@ collection = Collection(name="test_collection", schema=schema)
 
 在这个例子中，`schema`是一个`CollectionSchema`对象，定义了`collection`应有的结构。创建`collection`时，我们使用这个结构定义，并且给它命名为"test_collection"，这个名字在Milvus中唯一地标识了这个集合。然后，我们可以在这个`collection`上执行各种操作，如插入数据、搜索、更新和删除数据等。<br>
 
+#### 查看集合名称:
+
+```python
+# 获取集合的名字
+print(collection.name)
+```
+
 ### 加载/释放集合:
 
 前面已经介绍过集合的建立了，但偶尔你可能会见到某些代码中出现下列写法:<br>
 
 ```python
 # 加载集合
-collection.release("xxx")
+collection.load()
 
 """你的代码"""
 
 # 释放集合
-collection.release("xxx")
+collection.release()
 ```
 
 此时，如果你没有特殊需求，忽略`collection.load()` 和 `collection.release()`即可。<br>
