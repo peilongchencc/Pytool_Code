@@ -30,6 +30,7 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
     - [创建表：](#创建表)
     - [获取表中的内容：](#获取表中的内容)
   - [pymysql示例：](#pymysql示例)
+    - [检查mysql中是否存在某个表](#检查mysql中是否存在某个表)
   - [Mysql连接池示例:](#mysql连接池示例)
 ## 服务器安装MySQL数据库：
 MySQL数据库的安装非常简单～<br>
@@ -775,6 +776,30 @@ if __name__ == "__main__":
 ```
 
 🚨🚨🚨请注意:这条语句将删除名为`semantic_relation`的表格及其所有数据和结构。请确保在执行此操作之前备份重要的数据，以防不必要的数据丢失。<br>
+
+### 检查mysql中是否存在某个表
+
+请注意，下列代码省略了 `connect_to_mysql()` 中连接mysql的具体代码，但无关紧要，重要的是其他部分~<br>
+
+```python
+if __name__ == "__main__":
+    # # 创建语义关系表
+    # execute_sql_sentence(create_semantic_relation_table)
+    
+    # 连接mysql
+    mysql_conn = connect_to_mysql()
+    # 创建一个新的cursor对象
+    mysql_cursor = mysql_conn.cursor()
+    
+    # 检查是否存在semantic_relation表
+    table_exists = mysql_cursor.execute("SHOW TABLES LIKE 'semantic_relation'")
+
+    if table_exists:
+        print(f"mysql中存在该表。")
+        
+        # 如果表存在，删除它
+        # mysql_cursor.execute("DROP TABLE semantic_relation")
+```
 
 ## Mysql连接池示例:
 
