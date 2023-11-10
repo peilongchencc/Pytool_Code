@@ -38,6 +38,7 @@ Ps:本文所有指令为 Linux 版本，Windows 或 MacOS 指令请自行从网�
       - [设置屏蔽项:](#设置屏蔽项)
       - [同时屏蔽文件夹和文件：](#同时屏蔽文件夹和文件)
     - [find+tree，限制树的深度，同时屏蔽某些文件或文件夹：](#findtree限制树的深度同时屏蔽某些文件或文件夹)
+  - [ubuntu系统如何设置root级别的别名--例如 alias cls='clear'](#ubuntu系统如何设置root级别的别名--例如-alias-clsclear)
 
 ## Linux 中的重要目录：
 
@@ -962,3 +963,32 @@ find . -maxdepth 2 -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g' | tree -I 'li
 ```
 解释：<br>
 限制目录树的深度为2层，同时目录树中不含文件夹 `lib.egg-info` 和 `__pycache__` 及其下属内容。<br>
+
+
+## ubuntu系统如何设置root级别的别名--例如 alias cls='clear'
+
+如果你想在以root用户身份切换后也能够使用别名，可以进行以下操作：<br>
+
+1. 打开root用户的配置文件`.bashrc`，可以使用任何文本编辑器来打开该文件。以下示例使用vim编辑器：
+
+```bash
+vim ~/.bashrc
+```
+
+如果你是root用户，该指令会默认打开root用户的目录文件。如果你是常规用户，该指令会默认打开常规用户的目录文件。<br>
+
+2. 在`.bashrc`文件的末尾，添加你想要设置的别名。例如，添加一个名为cls的别名，将其映射到clear命令：
+
+```bash
+alias cls='clear'
+```
+
+3. 保存并关闭文件(`:x`)。
+
+4. 重新加载`.bashrc`文件，使设置生效。可以使用以下命令重新加载：
+
+```bash
+source /root/.bashrc
+```
+
+不需要重启终端，现在，你已经成功设置了root级别的别名。在以root身份运行的终端会话中，输入`cls`命令将会执行`clear`命令来清空终端屏幕。
