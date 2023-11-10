@@ -548,7 +548,7 @@ CREATE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '李四'})
 RETURN m,r,n
 ```
 
-``sql
+```sql
 // 语句2
 CREATE (m:Person {name: '张三'})-[r:知道]->(n:Person {name: '王五'})
 RETURN m,r,n
