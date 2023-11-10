@@ -117,13 +117,13 @@ vscode更智能，直接按下图点击选项即可：<br>
 
 3. **编辑authorized_keys文件**：
 
- - 切换到`deployer`用户的主目录（如果你已作为`deployer`登录，那么你应该已经在这个目录里，或者 `cd /home/deployer` 进入该目录）。
+  - 切换到`deployer`用户的主目录（如果你已作为`deployer`登录，那么你应该已经在这个目录里，或者 `cd /home/deployer` 进入该目录）。
  
- - 查找(`ll -a`)一个名为`.ssh`的目录。如果没有，可以使用命令`mkdir -p ~/.ssh`来创建这个目录。
+  - 查找(`ll -a`)一个名为`.ssh`的目录。如果没有，可以使用命令`mkdir -p ~/.ssh`来创建这个目录。
  
- - 在`.ssh`目录中，有一个名为`authorized_keys`的文件用于存储公钥。如果该文件不存在，你可以创建它。
+  - 在`.ssh`目录中，有一个名为`authorized_keys`的文件用于存储公钥。如果该文件不存在，你可以创建它。
  
- - 使用文本编辑器（如`vim`）打开`authorized_keys`文件。例如，`vim ~/.ssh/authorized_keys`。
+  - 使用文本编辑器（如`vim`）打开`authorized_keys`文件。例如，`vim ~/.ssh/authorized_keys`。
 
 4. **添加公钥**：将对方的公钥（从`.pub`文件中获得）复制并粘贴到`authorized_keys`文件中。每个密钥应该占一行。
 
@@ -131,11 +131,11 @@ vscode更智能，直接按下图点击选项即可：<br>
 
 6. **设置权限**：
 
- - 如果其他人已经设置过权限，可以跳过这一步。
+  - 如果其他人已经设置过权限，可以跳过这一步。
 
- - 确保`.ssh`目录的权限是700（只有所有者可以读写执行）。使用命令`chmod 700 ~/.ssh`。
+  - 确保`.ssh`目录的权限是700（只有所有者可以读写执行）。使用命令`chmod 700 ~/.ssh`。
  
- - 确保`authorized_keys`文件的权限是600（只有所有者可以读写）。使用命令`chmod 600 ~/.ssh/authorized_keys`。
+  - 确保`authorized_keys`文件的权限是600（只有所有者可以读写）。使用命令`chmod 600 ~/.ssh/authorized_keys`。
 
 7. **测试连接**：让对方尝试使用他们的SSH私钥连接到你的服务器，看是否成功。
 
