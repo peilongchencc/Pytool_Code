@@ -32,6 +32,7 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [CREATE的必要性：](#create的必要性)
     - [为2个节点创建多个关系：](#为2个节点创建多个关系)
     - [更新Neo4j中实体间的关系：](#更新neo4j中实体间的关系)
+    - [实体间创建相同名称的关系(关系含有的属性不同)：](#实体间创建相同名称的关系关系含有的属性不同)
   - [Neo4j中的查询操作：](#neo4j中的查询操作)
     - [查询创建的节点和关系：](#查询创建的节点和关系)
     - [查看节点--限制返回25条数据：](#查看节点--限制返回25条数据)
@@ -663,6 +664,37 @@ CREATE (zhangsan)-[:前姐夫]->(lisi)
 ‼️‼️注意，Neo4j不支持直接重命名关系类型，所以这里的方法是删除旧的关系并创建一个新的关系。<br>
 
 <img src="https://github.com/peilongchencc/Pytool_Code/assets/89672905/4e9f6183-a2bc-4f2d-9e37-a238c021cbba" alt="image" width="30%" height="30%">
+
+
+### 实体间创建相同名称的关系(关系含有的属性不同)： 
+
+```sql
+// 以检查重复的方式创建两个节点
+MERGE (a:Entity {name: '卖出'})
+MERGE (b:Entity {name: '圣龙股份'})
+// 在这两个节点之间创建第一个FRIEND关系
+MERGE (a)-[:SEMANTIC {relation: 'Pat', mean_zh: '受事', subject_role: '谓语', object_role: '受事'}]->(b)
+// 创建第二个FRIEND关系，具有不同的属性
+MERGE (a)-[:SEMANTIC {relation: 'Exp', mean_zh: '当事', subject_role: '谓语', object_role: '当事'}]->(b);
+```
+
+要在Neo4j中修改已经存在的关系的属性，你可以使用 `MATCH` 语句来定位特定的关系，然后使用 `SET` 语句来更新这个关系的属性。根据你的需求，假设你想修改第一个 `SEMANTIC` 关系的属性，你可以这样做：<br>
+
+1. **使用 `MATCH` 定位关系**：首先，你需要使用 `MATCH` 语句和一个模式来找到你想要修改的特定关系。在你的例子中，这个模式可能是 `(a:Entity {name: '卖出'})-[r:SEMANTIC]->(b:Entity {name: '圣龙股份'})`，其中 `r` 是关系的引用。
+
+2. **指定要修改的关系**：由于存在两个 `SEMANTIC` 关系，你需要指定要修改的关系。这可以通过关系的特定属性来实现，比如 `relation`。
+
+3. **使用 `SET` 更新属性**：一旦找到正确的关系，你可以使用 `SET` 语句来更新其属性。
+
+例如，如果你想修改 `relation` 属性为 `Pat` 的关系，使其 `mean_zh` 属性变为 `'新受事'`，你可以这样写：<br>
+
+```sql
+MATCH (a:Entity {name: '卖出'})-[r:SEMANTIC]->(b:Entity {name: '圣龙股份'})
+WHERE r.relation = 'Pat'
+SET r.mean_zh = '新受事'
+```
+
+这个语句会找到从 `'卖出'` 实体到 `'圣龙股份'` 实体的 `SEMANTIC` 关系，其中 `relation` 属性为 `'Pat'`，然后将这个关系的 `mean_zh` 属性设置为 `'新受事'`。<br>
 
 
 ## Neo4j中的查询操作：
