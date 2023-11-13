@@ -75,6 +75,7 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [利用Neo4j Desktop导入数据：](#利用neo4j-desktop导入数据)
     - [查看效果：](#查看效果)
   - [python与Neo4j：](#python与neo4j)
+    - [py2neo示例代码:](#py2neo示例代码)
     - [测试python与Neo4j的连接状态：](#测试python与neo4j的连接状态)
     - [创建三元组：](#创建三元组)
     - [获取三元组的值：](#获取三元组的值)
@@ -1486,6 +1487,40 @@ MATCH ()-[r]->() RETURN r
 ```bash
 pip install py2neo
 ```
+
+### py2neo示例代码:
+
+```python
+from config import Neo4J_Server_Config
+from py2neo import Graph
+
+class Neo4jManager:
+    """以类属性的方式创建Neo4j连接,避免连接耗时
+    """
+    graph = Graph("bolt://localhost:7687", auth=(Neo4J_Server_Config['user'], Neo4J_Server_Config['password']))
+    
+    def __init__(self):
+        pass
+
+    def run_query(self, query):
+        return self.graph.run(query)
+
+# 使用示例
+neo4j_manager = Neo4jManager()
+result = neo4j_manager.run_query("MATCH (n) RETURN n LIMIT 5")
+
+# 打印查询结果
+for record in result:
+    print(record)
+```
+
+代码优势:<br>
+
+1. **共享连接：** 所有的`Neo4jManager`实例将共享相同的`Graph`连接。这样可以减少多次实例化时连接Neo4j的开销。
+
+2. **延迟初始化：** 在第一次访问类属性`graph`时，连接将被创建。这意味着，如果从不使用`Neo4jManager`，则不会创建不必要的数据库连接。
+
+3. **配置中心化：** 通过从配置文件中导入配置，可以在一个地方管理数据库的连接信息，这使得代码更易于维护。
 
 ### 测试python与Neo4j的连接状态：
 
