@@ -76,6 +76,7 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [查看效果：](#查看效果)
   - [python与Neo4j：](#python与neo4j)
     - [py2neo示例代码:](#py2neo示例代码)
+    - [f-string插入示例:](#f-string插入示例)
     - [测试python与Neo4j的连接状态：](#测试python与neo4j的连接状态)
     - [创建三元组：](#创建三元组)
     - [获取三元组的值：](#获取三元组的值)
@@ -1521,6 +1522,44 @@ for record in result:
 2. **延迟初始化：** 在第一次访问类属性`graph`时，连接将被创建。这意味着，如果从不使用`Neo4jManager`，则不会创建不必要的数据库连接。
 
 3. **配置中心化：** 通过从配置文件中导入配置，可以在一个地方管理数据库的连接信息，这使得代码更易于维护。
+
+### f-string插入示例:
+
+```python
+from config import Neo4J_Server_Config
+from py2neo import Graph
+
+class Neo4jManager:
+    """以类属性的方式创建Neo4j连接,避免连接耗时
+    """
+    graph = Graph("bolt://localhost:7687", auth=(Neo4J_Server_Config['user'], Neo4J_Server_Config['password']))
+    
+    def __init__(self):
+        pass
+
+    def run_query_with_variables(self, entity_a, entity_b, relation, mean_zh, subject_role, object_role):
+        """
+        Args:
+            entity_a: 实体A
+            entity_b: 实体B
+            relation: 语义关系(英文)
+            mean_zh: 语义关系(中文)
+            subject_role: 实体A的语义角色
+            object_role: 实体B的语义角色
+        Return:
+            None, 目的是修改数据库中的数据,不需要返回值
+        """
+        query = f"""
+        MERGE (a:Entity {{name: '{entity_a}'}})
+        MERGE (b:Entity {{name: '{entity_b}'}})
+        MERGE (a)-[:SEMANTIC {{relation: '{relation}', mean_zh: '{mean_zh}', subject_role: '{subject_role}', object_role: '{object_role}'}}]->(b);
+        """
+        self.graph.run(query)
+
+# 使用示例
+neo4j_manager = Neo4jManager()
+neo4j_manager.run_query_with_variables('卖出', '圣龙股份', 'Pat', '受事', '受事主体', '受事客体')
+```
 
 ### 测试python与Neo4j的连接状态：
 
