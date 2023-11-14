@@ -6,6 +6,7 @@
     - [句向量示例:](#句向量示例)
     - ["hfl/chinese-electra-180g-base-discriminator"模型简介:](#hflchinese-electra-180g-base-discriminator模型简介)
   - [同义词替换构建新语句：](#同义词替换构建新语句)
+    - [tensor转list:](#tensor转list)
 
 ## dataset：
 如果数据集较小，会放在项目文件中。如果数据集较大，会放在 dataset 文件夹下。如果遇到项目文件中缺少数据集，请在 dataset 文件夹下寻找对应网盘链接下载。<br>
@@ -233,4 +234,20 @@ print(all_replaced_sentences)
 
 ```log
 ['抛售基金三佳收益如何？', '抛售三佳收益如何？', '抛售组合三佳收益如何？', '抛售货币三佳收益如何？', '卖出基金三佳收益如何？', '卖出三佳收益如何？', '卖出组合三佳收益如何？', '卖出货币三佳收益如何？', '售出基金三佳收益如何？', '售出三佳收益如何？', '售出组合三佳收益如何？', '售出货币三佳收益如何？', '雪球基金的年收益率如何？', '雪球基金的年收益如何？', '雪球基金的年化率如何？']
+```
+
+### tensor转list:
+
+```python
+import torch
+
+# 创建一个PyTorch张量，形状为[512, 768]
+tensor_data = torch.randn(512, 768)
+
+print(f"\ntensor_data为:\n{tensor_data}")
+
+# 将张量转换为Python列表
+list_data = tensor_data.tolist()
+
+print(list_data)
 ```
