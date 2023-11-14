@@ -1528,38 +1528,71 @@ for record in result:
 ```python
 from config import Neo4J_Server_Config
 from py2neo import Graph
+import time
 
-class Neo4jManager:
-    """以类属性的方式创建Neo4j连接,避免连接耗时
-    """
+class Create_Neo4j_Semantic_Relation:
     graph = Graph("bolt://localhost:7687", auth=(Neo4J_Server_Config['user'], Neo4J_Server_Config['password']))
     
     def __init__(self):
         pass
 
+    def current_timestamp(self):
+        """返回当前日期时间的字符串表示形式,格式为: 2023-08-15 11:29:22 """
+        return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
     def run_query_with_variables(self, entity_a, entity_b, relation, mean_zh, subject_role, object_role):
-        """
-        Args:
-            entity_a: 实体A
-            entity_b: 实体B
-            relation: 语义关系(英文)
-            mean_zh: 语义关系(中文)
-            subject_role: 实体A的语义角色
-            object_role: 实体B的语义角色
-        Return:
-            None, 目的是修改数据库中的数据,不需要返回值
-        """
+        current_time = self.current_timestamp()
         query = f"""
         MERGE (a:Entity {{name: '{entity_a}'}})
         MERGE (b:Entity {{name: '{entity_b}'}})
-        MERGE (a)-[:SEMANTIC {{relation: '{relation}', mean_zh: '{mean_zh}', subject_role: '{subject_role}', object_role: '{object_role}'}}]->(b);
+        SET a.last_updated = '{current_time}', b.last_updated = '{current_time}'
+        MERGE (a)-[r:SEMANTIC]->(b)
+        SET r.relation = '{relation}', r.mean_zh = '{mean_zh}', r.subject_role = '{subject_role}',
+            r.object_role = '{object_role}', r.last_updated = '{current_time}'
         """
         self.graph.run(query)
 
-# 使用示例
-neo4j_manager = Neo4jManager()
-neo4j_manager.run_query_with_variables('卖出', '圣龙股份', 'Pat', '受事', '受事主体', '受事客体')
+    def query_recent_data(self, days=7):
+        """查询过去几天的节点和关系"""
+        current_time = time.time()
+        past_time = current_time - (days * 24 * 60 * 60)  # 7天的秒数
+        date_limit = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(past_time))
+        query = f"""
+        MATCH (a:Entity)-[r:SEMANTIC]->(b:Entity)
+        WHERE a.last_updated >= '{date_limit}' OR b.last_updated >= '{date_limit}' OR r.last_updated >= '{date_limit}'
+        RETURN r
+        """
+        return self.graph.run(query).data()
+
+if __name__ == "__main__":
+    neo4j_manager = Create_Neo4j_Semantic_Relation()
+    # neo4j_manager.run_query_with_variables('卖出', '圣龙股份', 'Pat', '受事', '受事主体', '受事客体')
+    recent_data = neo4j_manager.query_recent_data()
+    print(recent_data)
+    # start_node的属性
+    start_node_name = recent_data[0]['r'].start_node['name']    # 卖出
+    start_node_last_updated = recent_data[0]['r'].start_node['last_updated']    # '2023-11-14 10:55:04'
+    # 关系的属性
+    relation_relation = recent_data[0]['r']['relation'] # Pat
+    relation_mean_zh = recent_data[0]['r']['mean_zh']   # 受事
+    relation_subject_role = recent_data[0]['r']['subject_role'] # 受事主体
+    relation_object_role = recent_data[0]['r']['object_role']   # 受事客体
+    relation_last_updated = recent_data[0]['r']['last_updated'] # '2023-11-14 10:55:04'
 ```
+
+🤨🤨🤨拓展: `self.graph.run(query).data()`为什么要加`data()`?<br>
+
+在 Py2neo 库中，当您执行一个 Cypher 查询（如 `self.graph.run(query)`）时，返回的对象是一个 `Cursor` 实例。这个 `Cursor` 实例代表查询结果的迭代器。要从这个迭代器中获取实际的数据，您需要以某种方式遍历或转换它。这就是 `data()` 方法的用途。<br>
+
+使用 `data()` 方法的原因和优点如下：<br>
+
+1. **直接获取结果**：`data()` 方法将查询结果转换为一个字典列表，每个字典代表查询结果中的一行。这使得结果易于处理和访问，尤其是在需要将数据传递给其他函数或输出到屏幕时。
+
+2. **简化数据处理**：不使用 `data()` 方法，则需要手动遍历 `Cursor` 对象来提取和处理数据。使用 `data()` 可以简化这个过程，特别是当您只对结果数据感兴趣，而不关心其他元数据时。
+
+3. **易于理解和维护**：对于阅读和维护代码的人来说，`data()` 方法明确表示您的意图是提取查询结果的数据部分。
+
+简而言之，`data()` 是一个方便的方法，**用于将 Cypher 查询的结果转换为易于使用的字典列表形式**。这种方法在处理数据库查询结果时非常有用，特别是在需要进一步处理这些数据的场景中。<br>
 
 ### 测试python与Neo4j的连接状态：
 
