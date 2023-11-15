@@ -10,7 +10,7 @@
   - [tdqm参数详解：](#tdqm参数详解)
   - [自定义进度条描述示例：](#自定义进度条描述示例)
   - [自定义进度条颜色:](#自定义进度条颜色)
-  - [直接使用html颜色代码实现黄绿色进度条:](#直接使用html颜色代码实现黄绿色进度条)
+    - [直接使用html颜色代码实现黄绿色进度条:](#直接使用html颜色代码实现黄绿色进度条)
     - [借助colorama实现蓝色进度条:](#借助colorama实现蓝色进度条)
   - [在嵌套循环中使用 "tqdm"示例：](#在嵌套循环中使用-tqdm示例)
   - [tqdm和enumerate联合使用示例：](#tqdm和enumerate联合使用示例)
@@ -73,7 +73,7 @@ for item in tqdm(items, desc="Processing items"):
 
 ## 自定义进度条颜色:
 
-## 直接使用html颜色代码实现黄绿色进度条:
+### 直接使用html颜色代码实现黄绿色进度条:
 
 tqdm可以直接使用html颜色代码，任何颜色都可以，例如colour = "#FF5733"<br>
 
@@ -90,6 +90,10 @@ for x in data_bar:
 
 🐳🐳🐳`data_bar.set_description()`与tqdm的参数 `desc="Processing items"` 效果相似，区别在于前者能动态更新表头。<br>
 
+终端效果:<br>
+
+![](./tqdm_materials/黄绿色进度条.jpg)
+
 ### 借助colorama实现蓝色进度条:
 
 ```python
@@ -102,6 +106,10 @@ items = range(10)
 for item in tqdm(items, desc="Processing items", bar_format='{l_bar}%s{bar}%s{r_bar}' % (Fore.BLUE, Fore.RESET)):
     time.sleep(0.2)
 ```
+
+终端效果:<br>
+
+![](./tqdm_materials/蓝色进度条.jpg)
 
 ## 在嵌套循环中使用 "tqdm"示例：
 
