@@ -85,8 +85,10 @@ data = range(100)
 data_bar = tqdm(data, colour='#C0FF20')                    # 实例化tqdm对象，包含颜色
 for x in data_bar:
     time.sleep(0.1)
-    data_bar.set_description(f'这是表头,当前数值:{x}')     # 实时更新tqdm的表头,与tqdm的参数 `desc="Processing items"` 效果相同
+    data_bar.set_description(f'这是表头,当前数值:{x}')     # 实时更新tqdm的表头
 ```
+
+🐳🐳🐳`data_bar.set_description()`与tqdm的参数 `desc="Processing items"` 效果相似，区别在于前者能动态更新表头。<br>
 
 ### 借助colorama实现蓝色进度条:
 
