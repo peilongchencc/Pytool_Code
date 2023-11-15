@@ -2,11 +2,16 @@
 
 "tqdm" 是一个Python库，用于在命令行界面中创建进度条，以显示代码执行的进度。它通常用于循环迭代或长时间运行的任务，以便用户可以清楚地看到任务的进度。<br>
 
+在命令行界面中创建进度条库还有其他，例如`Alive Progress`，`Alive Progress`的动画效果更多，感兴趣就自己了解下吧，这里只讲解tqdm的使用，原因在于方便，你如果有更多进度条样式方面的需求，也可以使用其他库。<br>
+
 - [tqdm](#tqdm)
   - [tqdm安装:](#tqdm安装)
   - [基本用法:](#基本用法)
   - [tdqm参数详解：](#tdqm参数详解)
   - [自定义进度条描述示例：](#自定义进度条描述示例)
+  - [自定义进度条颜色:](#自定义进度条颜色)
+  - [直接使用html颜色代码实现黄绿色进度条:](#直接使用html颜色代码实现黄绿色进度条)
+    - [借助colorama实现蓝色进度条:](#借助colorama实现蓝色进度条)
   - [在嵌套循环中使用 "tqdm"示例：](#在嵌套循环中使用-tqdm示例)
   - [tqdm和enumerate联合使用示例：](#tqdm和enumerate联合使用示例)
     - [enumerate包裹tqdm:](#enumerate包裹tqdm)
@@ -63,6 +68,36 @@ items = range(10)
 
 # 自定义进度条描述
 for item in tqdm(items, desc="Processing items"):
+    time.sleep(0.2)
+```
+
+## 自定义进度条颜色:
+
+## 直接使用html颜色代码实现黄绿色进度条:
+
+tqdm可以直接使用html颜色代码，任何颜色都可以，例如colour = "#FF5733"<br>
+
+```python
+from tqdm import tqdm
+import time
+
+data = range(100)
+data_bar = tqdm(data, colour='#C0FF20')                    # 实例化tqdm对象，包含颜色
+for x in data_bar:
+    time.sleep(0.1)
+    data_bar.set_description(f'这是表头,当前数值:{x}')     # 实时更新tqdm的表头,与tqdm的参数 `desc="Processing items"` 效果相同
+```
+
+### 借助colorama实现蓝色进度条:
+
+```python
+from tqdm import tqdm
+from colorama import Fore
+import time
+
+items = range(10)
+
+for item in tqdm(items, desc="Processing items", bar_format='{l_bar}%s{bar}%s{r_bar}' % (Fore.BLUE, Fore.RESET)):
     time.sleep(0.2)
 ```
 
