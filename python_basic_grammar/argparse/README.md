@@ -23,6 +23,7 @@ def main(data):
     print(f'数字规范化后的结果为：{data.number:,.2f}')
 
 if __name__ == "__main__":
+    # 参数解析
     args = arg_parse()
     main(args)
 ```
