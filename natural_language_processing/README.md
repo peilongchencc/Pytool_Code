@@ -7,6 +7,9 @@
     - ["hfl/chinese-electra-180g-base-discriminator"模型简介:](#hflchinese-electra-180g-base-discriminator模型简介)
   - [同义词替换构建新语句：](#同义词替换构建新语句)
     - [tensor转list:](#tensor转list)
+  - [以缓存方式加载模型:](#以缓存方式加载模型)
+    - [huggingface 加载缓存模型的路径查看:](#huggingface-加载缓存模型的路径查看)
+    - [huggingface 加载缓存模型的文件名:](#huggingface-加载缓存模型的文件名)
 
 ## dataset：
 如果数据集较小，会放在项目文件中。如果数据集较大，会放在 dataset 文件夹下。如果遇到项目文件中缺少数据集，请在 dataset 文件夹下寻找对应网盘链接下载。<br>
@@ -250,4 +253,116 @@ print(f"\ntensor_data为:\n{tensor_data}")
 list_data = tensor_data.tolist()
 
 print(list_data)
+```
+
+## 以缓存方式加载模型:
+
+工作中你可能会遇到要在无法连网的机器上加载 `transformer` 模型的情况，如果你的机器无法自动从 `huggingface` 下列模型，会提示类似以下错误:<br>
+
+```txt
+OSError: We couldn't connect to 'https://huggingface.co' to load this file, couldn't find it in the cached files and it looks like hfl/chinese-electra-180g-small-discriminator is not the path to a directory containing a file named config.json.
+Checkout your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.
+```
+
+更为复杂的情况为，代码把 `hugging face` 的模型当作模型组件的一部分，你无法显式写入模型路径，只能通过本地缓存加载，此时你就可以使用下列方式:<br>
+
+以下列代码为例:<br>
+
+```python
+from transformers import BertModel, BertTokenizer
+
+# 设定模型名称
+model_name = "bert-base-uncased"
+
+# 加载分词器和模型
+# 这两个函数会首先检查本地缓存中是否有指定的模型和分词器
+# 如果没有，它们会从互联网下载并存入本地缓存
+tokenizer = BertTokenizer.from_pretrained(model_name)
+model = BertModel.from_pretrained(model_name)
+```
+
+代码运行后，会在本地 `~/.cache/huggingface/hub/` 路径下生成一个 `models--bert-base-uncased` 文件夹，文件夹下具体的内容为:<br>
+
+> 这里指的是你的电脑能自动从 huggingface 下载模型，如果自动下载模型失败，会生成 `models--bert-base-uncased` 文件夹，但内容为空。
+
+```txt
+├── models--bert-base-uncased
+│   ├── blobs
+│   │   ├── 097417381d6c7230bd9e3557456d726de6e83245ec8b24f529f60198a67b203a
+│   │   ├── 45a2321a7ecfdaaf60a6c1fd7f5463994cc8907d
+│   │   ├── a661b1a138dac6dc5590367402d100765010ffd6
+│   │   └── fb140275c155a9c7c5a3b3e0e77a9e839594a938
+│   ├── refs
+│   │   └── main
+│   └── snapshots
+│       └── 1dbc166cf8765166998eff31ade2eb64c8a40076
+│           ├── config.json -> ../../blobs/45a2321a7ecfdaaf60a6c1fd7f5463994cc8907d
+│           ├── pytorch_model.bin -> ../../blobs/097417381d6c7230bd9e3557456d726de6e83245ec8b24f529f60198a67b203a
+│           ├── tokenizer_config.json -> ../../blobs/a661b1a138dac6dc5590367402d100765010ffd6
+│           └── vocab.txt -> ../../blobs/fb140275c155a9c7c5a3b3e0e77a9e839594a938
+└── version.txt
+```
+
+🚨🚨🚨注意:<br>
+
+所有文件都不要修改，文件是含有软链接的，不要修改，`snapshots` 下的文件夹名称(`1dbc166cf...`)也不要修改，虽然你看不懂，但transformer加载模型可识别，不同模型的文件名不一样，但**相同模型在不同机器上缓存的名称是一致的。**<br>
+
+如果你的电脑无法连网，可以找一个可以连网的电脑，运行上述代码，然后将文件完整上传至 `无法连网的那台电脑` ，上传路径为 huggingface 加载缓存模型的路径!<br>
+
+### huggingface 加载缓存模型的路径查看:
+
+如果你不知道个人电脑 huggingface 加载缓存模型的路径，可以运行下列代码:<br>
+
+```python
+from transformers.file_utils import default_cache_path
+
+# 打印出 transformers 默认缓存目录的路径
+print(default_cache_path)
+```
+
+笔者本地运行上述代码后，终端显示:<br>
+
+```txt
+/Users/peilongchencc/.cache/huggingface/hub
+```
+
+笔者在服务器运行上述代码后，终端显示:<br>
+
+```txt
+/root/.cache/huggingface/hub
+```
+
+### huggingface 加载缓存模型的文件名:
+
+huggingface 加载缓存模型的文件名与代码的写法有关，假设你使用下列代码:<br>
+
+```python
+from transformers import AutoModel
+
+model = AutoModel.from_pretrained("hfl/chinese-electra-180g-small-discriminator")
+```
+
+在 `/Users/peilongchencc/.cache/huggingface/hub` 路径下生成的文件夹名称为 `models--hfl--chinese-electra-180g-small-discriminator`，文件夹下具体内容为:<br>
+
+```txt
+.
+├── models--hfl--chinese-electra-180g-small-discriminator
+│   ├── blobs
+│   │   ├── 66051e65c65b3ec5e0b437496d1e545c5d8934b4
+│   │   ├── 9e26dfeeb6e641a33dae4961196235bdb965b21b
+│   │   ├── b8f933dc8a91286e134ef5a2fd969a631f3ca649
+│   │   ├── ca4f9781030019ab9b253c6dcb8c7878b6dc87a5
+│   │   ├── e7b0375001f109a6b8873d756ad4f7bbb15fbaa5
+│   │   └── eba64ab600f7bb029b38ac391b35651e3b55f185
+│   ├── refs
+│   │   └── main
+│   └── snapshots
+│       └── 826a243f3f387450ef8d70de9c3d0706d8d8e924
+│           ├── added_tokens.json -> ../../blobs/9e26dfeeb6e641a33dae4961196235bdb965b21b
+│           ├── config.json -> ../../blobs/b8f933dc8a91286e134ef5a2fd969a631f3ca649
+│           ├── special_tokens_map.json -> ../../blobs/e7b0375001f109a6b8873d756ad4f7bbb15fbaa5
+│           ├── tokenizer.json -> ../../blobs/eba64ab600f7bb029b38ac391b35651e3b55f185
+│           ├── tokenizer_config.json -> ../../blobs/66051e65c65b3ec5e0b437496d1e545c5d8934b4
+│           └── vocab.txt -> ../../blobs/ca4f9781030019ab9b253c6dcb8c7878b6dc87a5
+└── version.txt
 ```
