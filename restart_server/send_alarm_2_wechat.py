@@ -1,9 +1,39 @@
+import argparse
 import requests
 import json
 from datetime import datetime
 
-def send_order_error_message(content, phone_num_list):
-    web_hook = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxxxx"  # xxxxxx 是你自己的key；
+def arg_parse():
+    """获取终端传参
+    Args:
+        依靠终端传入
+    Return:
+        args:参数类, 通过 '.xxx' 的方式调用对应参数
+    Example:
+        终端的输入请参考:
+        ```bash
+        python xxx.py --content="错误信息" --phone_num_list="156...,186..."
+        ```
+    """
+    parser = argparse.ArgumentParser(description='参数设定')
+    parser.add_argument('-c','--content',type=str,help='请传入待通知信息')
+    parser.add_argument('-p','--phone_num_list',type=str,help='请传入待通知人手机号,用逗号分隔多个手机号')
+    args = parser.parse_args()
+    return args
+
+def send_order_error_message(content, phone_num):
+    """通过手机号在企业微信群中@某人发送消息
+    Args:
+        content(str): 信息
+        pyhone(str): 手机号,用逗号分隔多个手机号, 例如: "156...,186..."
+    Return:
+        无返回值,执行发送信息操作
+    """
+
+    # 将手机号转为list形式
+    phone_num_list = phone_num.split(',')
+    
+    web_hook = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=e210dc0a-4346-40dc-a415-6a37e822xxx"  
                                                                                 # 微信提供了很多种形式的接口，自己选择一种适合自己的就好；
     # 为content注明事件发生的事件
     content += f"发生时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
@@ -32,7 +62,10 @@ def send_order_error_message(content, phone_num_list):
     else:
         print('消息发送失败')
 
-content = "报警信息提醒：\ntools文件夹下Redis数据刷新失败\n"         # 企业微信显示的错误信息，数据类型:String。
-phone_num_list = ["156..."]                  # 如果要通知多个人，将手机号采用英文逗号间隔即可，例如 ["138...","133...","133..."]。
-# 调用示例
-send_order_error_message(content, phone_num_list)
+if __name__ == "__main__":
+    # 获取终端传参
+    args = arg_parse()
+    # 调用示例
+    content = args.content                  # 企业微信显示的错误信息, 例如:content="报警信息提醒：\nzip失败，请检查日志以查找问题。\n"         
+    phone_num_list = args.phone_num_list    # 如果要通知多个人，将手机号采用英文逗号间隔即可，例如 "156...,186..."
+    send_order_error_message(content, phone_num_list)  
