@@ -11,6 +11,7 @@ Ps:本文所有指令为 Linux 版本，Windows 或 MacOS 指令请自行从网�
     - [linux更改文件夹下所有内容的权限，例如从root改为deployer用户：](#linux更改文件夹下所有内容的权限例如从root改为deployer用户)
   - [系统信息指令：](#系统信息指令)
     - [查看自己电脑的硬盘空间:](#查看自己电脑的硬盘空间)
+  - [清理磁盘空间:](#清理磁盘空间)
     - [查看自己电脑的系统内存:](#查看自己电脑的系统内存)
   - [CPU 和 GPU 相关：](#cpu-和-gpu-相关)
   - [服务相关：](#服务相关)
@@ -320,6 +321,65 @@ shm              64M     0   64M   0% /var/lib/docker/containers/a4959f4ba78158d
 - `/dev/vdb1`是我挂载的云盘。
 
 - `overlay`是Docker使用的存储驱动程序之一，Docker的默认存储位置是在`/var/lib/docker`，而这个目录位于`/dev/vda1`上，即挂载在文件系统的根目录`/`上。这有可能会导致硬盘空间不足，以笔者举例，笔者为避免由于空间问题导致Docker无法启动/运行，将Docker(Milvus相关)的数据文件移到了挂载的云盘(`/data`)上了。
+
+
+## 清理磁盘空间:
+
+在使用阿里云服务器时，经常遇到的一个问题为 "磁盘空间不足"，"磁盘空间不足"会导致mysql停止运行，各种程序无法启动。所以知道如何清理磁盘空间非常重要。<br>
+
+输入以下指令查看 `\` 根目录下磁盘空间占用情况:<br>
+
+```bash
+sudo du -ah / | sort -rh | head -n 20
+```
+
+这个命令会列出 `/` 目录下最大的20个文件和目录。`du` 命令用于计算文件大小，`sort` 命令用于排序，`head` 命令用于只显示列表的前20项。<br>
+
+终端效果如下:<br>
+
+```txt
+(base) root@iZ2zea5v77oawjy2qz7c20Z:/data/Pytool_Code# du -ah / | sort -rh | head -n 20
+du: cannot access '/proc/29422/task/29825': No such file or directory
+du: cannot access '/proc/29827/task/29827/fd/4': No such file or directory
+du: cannot access '/proc/29827/task/29827/fdinfo/4': No such file or directory
+du: cannot access '/proc/29827/fd/3': No such file or directory
+du: cannot access '/proc/29827/fdinfo/3': No such file or directory
+du: cannot access '/proc/29875': No such file or directory
+du: cannot access '/proc/29876': No such file or directory
+du: cannot access '/proc/29882': No such file or directory
+du: cannot access '/proc/29887': No such file or directory
+du: cannot access '/proc/29888': No such file or directory
+du: cannot access '/proc/29893': No such file or directory
+37G     /
+18G     /root
+12G     /root/anaconda3
+8.4G    /data
+5.7G    /var
+5.4G    /var/lib
+4.5G    /root/anaconda3/lib
+4.5G    /root/anaconda3/envs/nudge_new/lib/python3.10/site-packages
+4.5G    /root/anaconda3/envs/nudge_new/lib/python3.10
+4.5G    /root/anaconda3/envs/nudge_new/lib
+4.5G    /root/anaconda3/envs/nudge_new
+4.5G    /root/anaconda3/envs
+4.4G    /data/milvus_data
+4.3G    /data/milvus_data/rdb_data
+3.4G    /root/.cache
+3.3G    /root/.cache/pip/http
+3.3G    /root/.cache/pip
+2.9G    /usr
+2.7G    /var/lib/docker
+2.6G    /root/anaconda3/envs/nudge_new/lib/python3.10/site-packages/nvidia
+```
+
+此时根据路径情况删除对应的内容即可，如果不是很清楚某个路径下占用空间较大的文件是那个，可以修改路径再次运行上述指令。<br>
+
+```bash
+sudo du -ah /var/lib | sort -rh | head -n 20
+```
+
+这个命令会列出 `/var/lib` 目录下最大的20个文件和目录。<br>
+
 
 ### 查看自己电脑的系统内存:
 
