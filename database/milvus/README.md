@@ -1,6 +1,7 @@
 # Milvus
 - [Milvus](#milvus)
   - [Milvus安装:](#milvus安装)
+  - [脱机状态下安装milvus:](#脱机状态下安装milvus)
   - [查看Milvus版本:](#查看milvus版本)
     - [利用yml文件查看:](#利用yml文件查看)
     - [利用docker查看:](#利用docker查看)
@@ -131,6 +132,33 @@ milvus-standalone   /tini -- milvus run standalone   Up             0.0.0.0:1953
 `docker compose` 是 Docker Compose 的一个新的命令结构，它在 Docker 20.10 之后的版本中被引入。在此之前，通常使用 `docker-compose`（带连字符）的命令格式。两种格式的功能基本相同，但命令结构略有不同。<br>
 
 简而言之，`sudo docker compose ps` 命令用于查看当前目录下由 `docker-compose.yml` 定义的 Docker 服务的状态。<br>
+
+
+## 脱机状态下安装milvus:
+
+工作中，你所用的服务器可能无法连网，或者无法从milvus的镜像库获取对应的镜像，此时可在一台可连接网络的电脑上拉取milvus镜像，然后将该镜像压缩，上传至脱机服务器，再导入milvus镜像。具体操作如下:<br>
+
+1. 查看本地镜像库所有docker镜像:
+
+```bash
+sudo docker images
+```
+
+终端显示:<br>
+
+| REPOSITORY          | TAG                          | IMAGE ID       | CREATED         | SIZE        |
+|---------------------|------------------------------|----------------|-----------------|-------------|
+| milvusdb/milvus     | v2.3.2                       | 4b6c62c2b5f8   | 3 weeks ago     | 868MB       |
+| minio/minio         | RELEASE.2023-03-20T20-16-18Z | 400c20c8aac0   | 8 months ago    | 252MB       |
+| quay.io/coreos/etcd | v3.5.5                       | 673f29d03de9   | 14 months ago   | 182MB       |
+
+```bash
+sudo docker pull milvusdb/milvus:v2.3.2
+```
+
+```bash
+sudo docker save milvusdb/milvus:v2.3.2 > milvus_v2.3.2.tar
+```
 
 ## 查看Milvus版本:
 

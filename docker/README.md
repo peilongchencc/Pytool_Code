@@ -9,6 +9,7 @@
     - [检查 Docker 服务的状态(按q键退出检查状态):](#检查-docker-服务的状态按q键退出检查状态)
     - [启动 Docker 服务:](#启动-docker-服务)
     - [将 Docker 添加到启动项，以确保在系统重新启动时 Docker 会自动启动：](#将-docker-添加到启动项以确保在系统重新启动时-docker-会自动启动)
+    - [查看本地镜像库所有docker镜像:](#查看本地镜像库所有docker镜像)
   - [卸载Docker Compose:](#卸载docker-compose)
 
 
@@ -205,6 +206,21 @@ sudo systemctl enable docker
 Synchronizing state of docker.service with SysV service script with /lib/systemd/systemd-sysv-install.
 Executing: /lib/systemd/systemd-sysv-install enable docker
 ```
+
+### 查看本地镜像库所有docker镜像:
+
+```bash
+sudo docker images
+```
+
+终端显示:<br>
+
+| REPOSITORY          | TAG                          | IMAGE ID       | CREATED         | SIZE        |
+|---------------------|------------------------------|----------------|-----------------|-------------|
+| milvusdb/milvus     | v2.3.2                       | 4b6c62c2b5f8   | 3 weeks ago     | 868MB       |
+| minio/minio         | RELEASE.2023-03-20T20-16-18Z | 400c20c8aac0   | 8 months ago    | 252MB       |
+| quay.io/coreos/etcd | v3.5.5                       | 673f29d03de9   | 14 months ago   | 182MB       |
+
 
 ## 卸载Docker Compose:
 
