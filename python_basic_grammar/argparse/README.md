@@ -1,4 +1,7 @@
 # Argparse
+- [Argparse](#argparse)
+  - [代码示例:](#代码示例)
+  - [使用argparse时的debug方法:](#使用argparse时的debug方法)
 
 ## 代码示例:
 
