@@ -59,7 +59,7 @@ python arg_test.py --path='xxx' --number=0.123
 
 - 例如，如果你的程序需要两个参数 `--arg1 value1 --arg2 value2`，你的配置可能看起来像这样：
 
-```json
+```txt
 {
 "name": "Python: Current File",
 "type": "python",
