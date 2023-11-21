@@ -1326,6 +1326,34 @@ print(values)  # 输出: dict_values(['John', 31, 'USA'])
 print(items)  # 输出: dict_items([('name', 'John'), ('age', 31), ('country', 'USA')])
 ```
 
+结合for循环的使用示例:<br>
+
+```python
+my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
+
+for key in my_dict.keys():
+    print(key)
+# name
+# age
+# city
+
+for value in my_dict.values():
+    print(value)
+# John
+# 30
+# New York
+
+# 使用`items()`方法，它会返回键-值对的元组。以下是如何做到这一点的示例：
+for key, value in my_dict.items():
+    print(key, value)
+# John
+# 30
+# New Yorkz
+
+# 在这个示例中，`items()`方法返回一个迭代器，每次迭代时都会返回一个键值对的元组，然后我们使用`key`和`value`来分别获取键和值。
+```
+
+
 #### `for` 循环遍历字典:
 可以使用 `for` 循环来遍历字典的键值对。<br>
 
