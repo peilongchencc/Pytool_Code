@@ -438,7 +438,7 @@ sudo rm -rf  volumes
 
 ## Milvus稳定性简介:
 
-Milvus中的数据默认存储是永久。<br>
+Milvus中的数据，默认存储时间是永久。<br>
 
 如果docker意外关闭，或被其他人销毁了，数据也不会丢失，重启后数据依旧存在。(除非你删除了`volumes`下的Milvus数据)<br>
 
