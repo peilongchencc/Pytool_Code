@@ -10,6 +10,7 @@
   - [为Milvus设置密码:](#为milvus设置密码)
   - [更改milvus中数据的存储位置：](#更改milvus中数据的存储位置)
   - [关闭Milvus standalone:](#关闭milvus-standalone)
+  - [Milvus稳定性简介:](#milvus稳定性简介)
   - [安装Milvus Python SDK:](#安装milvus-python-sdk)
     - [补充说明Install Milvus Python SDK是什么意思？其中的SDK表示什么:](#补充说明install-milvus-python-sdk是什么意思其中的sdk表示什么)
   - [Milvus数据库操作:](#milvus数据库操作)
@@ -434,6 +435,13 @@ sudo docker compose down
 ```bash
 sudo rm -rf  volumes
 ```
+
+## Milvus稳定性简介:
+
+Milvus中的数据默认存储是永久。<br>
+
+如果docker意外关闭，或被其他人销毁了，数据也不会丢失，重启后数据依旧存在。(除非你删除了`volumes`下的Milvus数据)<br>
+
 
 ## 安装Milvus Python SDK:
 
