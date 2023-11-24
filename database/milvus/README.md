@@ -54,6 +54,7 @@
     - [我使用的是Ubuntu18.4，我使用的是CPU版本Milvus，我使用的是pymilvus 2.x版本，我应该如何使用pymilvus进行批量查询？](#我使用的是ubuntu184我使用的是cpu版本milvus我使用的是pymilvus-2x版本我应该如何使用pymilvus进行批量查询)
     - [flush()后create\_index()卡住:](#flush后create_index卡住)
   - [pymilvus示例代码:](#pymilvus示例代码)
+  - [pymilvus简单示例:](#pymilvus简单示例)
 
 ## Milvus安装:
 
@@ -1452,4 +1453,74 @@ print(f"使用表达式=`{expr}` 查询删除后的结果 -> 结果: {result}\n"
 # 最后，删除 hello_milvus 集合
 print(fmt.format("删除集合 `hello_milvus`"))
 utility.drop_collection("hello_milvus")
+```
+
+## pymilvus简单示例:
+
+```python
+"""查看milvus集合中的量级
+"""
+import sys
+import os
+# 获取当前脚本的绝对路径
+current_script_path = os.path.abspath(__file__)
+# 获取当前脚本的父目录的父目录
+parent_directory_of_the_parent_directory = os.path.dirname(os.path.dirname(current_script_path))
+# 将这个目录添加到 sys.path
+sys.path.append(parent_directory_of_the_parent_directory)
+
+from pymilvus import Collection, connections, utility
+from config.server_settings import Milvus_Server_Config
+
+def milvus_connection():
+    """建立milvus连接(milvus默认为连接池形式)
+    Ps: milvus的连接不需要返回值
+    """
+    connections.connect(host = Milvus_Server_Config['host'], port = Milvus_Server_Config['port'])
+
+def view_milvus_collection():
+    """查看当前所连接数据库中含有的集合名称
+    Return:
+        milvus_collection_name(list): 返回值为集合名(str)组成的list
+    """
+    # 建立milvus连接,无返回值
+    milvus_connection()
+    
+    print(f"\n当前所连接数据库中含有的集合为:")
+    milvus_collection_name = utility.list_collections()
+    print(milvus_collection_name)
+    return milvus_collection_name
+
+def view_milvus_collection_num_entities(milvus_collection_name):
+    """查看milvus中某个集合的量级
+    """
+    # 建立milvus连接,无返回值
+    milvus_connection()
+    
+    albert_collection = Collection(milvus_collection_name)
+    albert_collection.load()
+
+    num_entities = albert_collection.num_entities
+    print(f"{albert_collection.name}集合中num_entities量级为:  ", num_entities)
+
+def flush_milvus_collection(milvus_collection_name):
+    """刷新milvus数据
+    Args:
+        milvus_collection_name(str): milvus集合的名称,例如: 'standard_financial_question_collection'
+    """
+    # 建立milvus连接,无返回值
+    milvus_connection()
+    # 连接milvus集合
+    milvus_collection = Collection(name=milvus_collection_name)
+    print(f"现在进行Milvus{milvus_collection.name}集合数据刷新... ...")
+    # 刷新数据
+    milvus_collection.flush()
+    print(f"Milvus{milvus_collection.name}集合数据刷新成功~")
+
+if __name__ == '__main__':
+    # 查看当前所连接数据库中含有的集合名称
+    milvus_collection_name = view_milvus_collection()
+    for item in milvus_collection_name:
+        # 查看milvus中某个集合的量级
+        view_milvus_collection_num_entities(item)
 ```
