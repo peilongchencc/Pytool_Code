@@ -53,6 +53,7 @@
     - [多行字符串的处理：](#多行字符串的处理)
       - [隐式换行（不使用反斜杠 `\`）：](#隐式换行不使用反斜杠-)
       - [使用反斜杠 `\` 进行换行：](#使用反斜杠--进行换行)
+    - [find()检测字符串中的子串位置并修改:](#find检测字符串中的子串位置并修改)
   - [列表：](#列表)
     - [创建列表：](#创建列表)
     - [列表索引：](#列表索引)
@@ -807,8 +808,56 @@ formatted_string = \
 
 **选择使用哪种方式主要取决于个人偏好和项目的代码风格指南**。一些项目可能更喜欢隐式换行方式，以提高可读性和维护性，而另一些项目可能更注重代码的紧凑性，因此更喜欢使用反斜杠进行换行。<br>
 
-总之，重要的是在整个项目中保持一致的风格，以确保代码的可读性和可维护性。无论你选择哪种方式，都应该遵循项目的代码风格指南和团队的约定。<br>
-<br>
+总之，重要的是在整个项目中保持一致的风格，以确保代码的可读性和可维护性。无论你选择哪种方式，都应该遵循项目的代码风格指南和团队的约定。
+
+
+### find()检测字符串中的子串位置并修改:
+
+要求: 根据子串`-synonym-`的位置修改它的后缀数字。以函数形式调用该方法，首先检测text是否含有`-synonym-`，如果不含有`-synonym-`，则在text末尾添加`-synonym-1`。如果text含有`-synonym-`让后缀的数字自动加一。<br>
+
+示例代码如下:<br>
+
+```python
+def update_text(text):
+    # 检查text中是否包含'-synonym-'
+    synonym_index = text.find('-synonym-')
+    
+    if synonym_index == -1:
+        # 如果不包含'-synonym-'，则在末尾添加'-synonym-1'
+        return text + '-synonym-1'
+    else:
+        # 找到数字的起始位置
+        start_of_number = synonym_index + len('-synonym-')
+        end_of_number = text.find('-', start_of_number)
+        end_of_number = end_of_number if end_of_number != -1 else len(text)
+
+        # 获取并增加数字
+        number = int(text[start_of_number:end_of_number]) + 1
+        new_text = text[:start_of_number] + str(number) + text[end_of_number:]
+
+        return new_text
+
+# 示例使用
+text = 'WJT-3-20220216-32'
+updated_text = update_text(text)
+print(updated_text)  # 对不包含'-synonym-'的text测试
+
+text = 'WJT-3-20220216-32-synonym-1-semantic-2'
+updated_text = update_text(text)
+print(updated_text)  # 对包含'-synonym-'的text测试
+
+text = 'WJT-3-20220216-32-synonym-23-semantic-2'
+updated_text = update_text(text)
+print(updated_text)  # 对包含'-synonym-'的text测试
+```
+
+终端效果:<br>
+
+```txt
+WJT-3-20220216-32-synonym-1
+WJT-3-20220216-32-synonym-2-semantic-2
+WJT-3-20220216-32-synonym-24-semantic-2
+```
 
 ## 列表：
 Python 中的列表是一种非常常见和有用的数据结构，用于存储一组有序的元素。列表是可变的，这意味着你可以添加、删除和修改其中的元素。下面是关于 Python 列表的详细介绍：<br>
