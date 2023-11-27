@@ -821,14 +821,17 @@ formatted_string = \
 def update_text(text):
     # 检查text中是否包含'-synonym-'
     synonym_index = text.find('-synonym-')
-    
+    # find()方法如果找到了该子串，`find` 方法会返回它的起始位置索引，这个索引值是一个非负整数。
+    # 如果`find()` 方法没有找到该子串，它会返回 `-1`。
     if synonym_index == -1:
         # 如果不包含'-synonym-'，则在末尾添加'-synonym-1'
         return text + '-synonym-1'
     else:
         # 找到数字的起始位置
         start_of_number = synonym_index + len('-synonym-')
+        # 在字符串 `text` 中查找从索引 `start_of_number` 开始的下一个破折号（`'-'`）的位置
         end_of_number = text.find('-', start_of_number)
+        # 如果后面没有更多的'-'，则数字一直延伸到字符串的末尾
         end_of_number = end_of_number if end_of_number != -1 else len(text)
 
         # 获取并增加数字
