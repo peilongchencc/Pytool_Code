@@ -13,6 +13,7 @@
     - [阿里云客服回应：](#阿里云客服回应)
   - [cannot create temp file for here-document: No space left on device](#cannot-create-temp-file-for-here-document-no-space-left-on-device)
   - [Could not establish connection to "xxx.xxx.xxx.xxx": Cannot read properties of undefined (reading 'replace').](#could-not-establish-connection-to-xxxxxxxxxxxx-cannot-read-properties-of-undefined-reading-replace)
+  - ["项目部署在AWS的Lambda"是什么意思？](#项目部署在aws的lambda是什么意思)
 
 ## 连接阿里云服务器：
 ### 进入实例：
@@ -222,3 +223,22 @@ Could not establish connection to "xxx.xxx.xxx.xxx": Cannot read properties of u
 1. 点击 vscode 中的拓展模块；
 2. 点击远程连接的插件，我使用的是 Remote Explorer；
 3. 将 Remote 版本切换为 "预发布" 版本；("预览"-->"预发布")
+
+
+## "项目部署在AWS的Lambda"是什么意思？
+
+"项目部署在AWS的Lambda" 这句话是关于云计算服务的。这里的“项目”指的是某种软件应用或代码，而“部署”是指在某个平台上设置和运行这个应用或代码。<br>
+
+AWS（Amazon Web Services）是亚马逊提供的一种云计算服务平台。Lambda是AWS提供的一种服务，允许你运行代码而不需要管理服务器。在Lambda上部署项目意味着你的代码会在AWS的云基础设施上运行，而无需担心底层服务器的维护和管理。<br>
+
+使用AWS Lambda的优点包括：<br>
+
+1. **无服务器架构**：你不需要管理或维护服务器，只需关注你的代码。
+
+2. **按需定价**：你只需为代码执行时消耗的计算资源付费。
+
+3. **自动扩展**：Lambda可以根据需要自动增加或减少计算资源，以适应应用程序的需求。
+
+4. **事件驱动**：Lambda可以配置为响应AWS内的各种事件，如文件上传到S3、更新数据库等。
+
+总之，这是一种现代的、高效的方式来运行和扩展应用程序，特别适合那些希望减少基础设施管理负担的开发者或企业。
