@@ -19,19 +19,30 @@ chmod +x ./run_main.sh  # 开启权限；
 ⚠️注意：必须要开启权限，否则脚本是无法正常运行的。❌❌❌
 
 ## run_main.sh 相关内容拓展：
-conda 的默认激活指令如下:
+
+conda 的默认激活指令如下:<br>
+
 ```shell
 source ~/anaconda3/etc/profile.d/conda.sh   # 默认路径
 ```
+
 如果使用默认 conda 激活指令报错，可先查看终端正在使用的shell解释器，确定自己的shell解释器:<br>
+
 ```shell
 echo $SHELL
 ```
+
+> 部分系统在使用 `crontab` 的定时任务时，必须指定sh环境，因为 `crontab` 运行的环境不一定和自己手动运行脚本时的环境相同。
+> 即，需要在shell文件第一行添加类似 `#!/bin/bash` 的内容。
+
 若上述指令显示 /bin/zsh，可通过以下指令确定 conda.sh 的路径。<br>
+
 ```shell
 cat ~/.zshrc
 ```
+
 我的 zshrc 中 conda.sh 相关内容如下:<br>
+
 ```shell
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
