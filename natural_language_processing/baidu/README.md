@@ -1,4 +1,15 @@
 # 千帆大模型API调用
+- [千帆大模型API调用](#千帆大模型api调用)
+  - [代码示例:](#代码示例)
+  - [代码解释:](#代码解释)
+    - [导入模块和初始化:](#导入模块和初始化)
+    - [API密钥和获取Access Token:](#api密钥和获取access-token)
+    - [聊天接口地址:](#聊天接口地址)
+    - [用户聊天历史存储:](#用户聊天历史存储)
+    - [路由和视图函数:](#路由和视图函数)
+    - [处理聊天:](#处理聊天)
+    - [启动服务器:](#启动服务器)
+  - [拓展-`sanic`中有用于渲染HTML模板的吗？](#拓展-sanic中有用于渲染html模板的吗)
 
 ## 代码示例:
 
@@ -9,7 +20,7 @@ import uuid
 
 app = Flask(__name__)  # 初始化Flask应用
 
-# 替换成您的API Key和Secret Key
+# 替换成你的API Key和Secret Key
 API_KEY="你的APIKey"  # 填入平台申请的实际APIKey
 SECRET_KEY="你的SecretKey" # 填入平台申请的实际SecretKey
 
