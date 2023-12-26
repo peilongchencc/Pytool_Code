@@ -10,6 +10,7 @@
     - [处理聊天:](#处理聊天)
     - [启动服务器:](#启动服务器)
   - [拓展-`sanic`中有用于渲染HTML模板的吗？](#拓展-sanic中有用于渲染html模板的吗)
+  - [jsonify的作用:](#jsonify的作用)
 
 ## 代码示例:
 
@@ -187,3 +188,34 @@ if __name__ == "__main__":
 在这个示例中，`SanicJinja2` 被用来渲染一个名为`index.html`的模板，你可以在模板中使用`my_variable`变量。<br>
 
 请注意，虽然Sanic是异步的，但模板渲染通常是同步进行的。如果你的模板非常复杂或需要处理大量数据，可能需要考虑性能问题，或者寻找可以异步渲染模板的解决方案。<br>
+
+
+## jsonify的作用:
+
+`jsonify` 是 Flask 框架中的一个函数，用于将数据转换为 JSON 格式并构建一个带有正确 MIME 类型的 Response 对象。其主要作用和特点包括：<br>
+
+1. **数据转换**：`jsonify` 自动将 Python 字典或其他数据结构转换成 JSON 格式的字符串。这意味着你可以将字典、列表等对象传递给 `jsonify`，它会处理转换工作，确保数据以 JSON 格式发送给客户端。
+
+2. **设置响应头**：除了转换数据，`jsonify` 还会自动设置响应的 MIME 类型为 `application/json`。这告诉接收响应的客户端，响应内容是 JSON 格式的数据，有助于客户端正确解析和处理数据。
+
+3. **简化响应创建**：使用 `jsonify` 可以简化 API 开发过程中的响应创建。你不需要手动将数据转换为 JSON，再设置正确的 MIME 类型，`jsonify` 为你处理了这些细节。
+
+4. **支持回调函数**：`jsonify` 支持 JSONP 回调，如果请求中指定了回调，它可以生成 JSONP 响应，这对于跨域请求尤其有用。
+
+例如，在 Flask 应用程序中，你可能会这样使用 `jsonify`：<br>
+
+```python
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    data = {"message": "Hello, World!"}
+    return jsonify(data)
+
+if __name__ == '__main__':
+    app.run()
+```
+
+在上面的例子中，`jsonify` 将字典 `{"message": "Hello, World!"}` 转换为 JSON 格式，并返回一个带有该 JSON 和正确 MIME 类型的响应。当这个端点被请求时，客户端将接收到一个包含 JSON 数据的响应，可以很容易地在客户端进行解析和使用。<br>
