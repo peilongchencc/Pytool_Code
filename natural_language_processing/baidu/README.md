@@ -51,9 +51,7 @@ if __name__ == "__main__":
 
 ## 代码解释:
 
-以上代码是一个使用Flask框架构建的简单Web服务器，旨在与百度的ERNIE-Bot聊天接口进行交互。下面是详细解释：
-
-`sanic`中有用于渲染HTML模板的吗？
+以上代码是一个使用Flask框架构建的简单Web服务器，旨在与百度的ERNIE-Bot聊天接口进行交互。下面是详细解释：<br>
 
 ### 导入模块和初始化:
 - **Flask** 是一个用于构建Web应用的轻量级框架。
@@ -90,4 +88,38 @@ if __name__ == "__main__":
 ### 启动服务器:
 - 最后，`if __name__ == "__main__":` 表明如果这个脚本是作为主程序运行，则启动Flask应用，监听在所有可用的IP上的1333端口，并设置调试模式为关闭。
 
-总之，这个脚本创建了一个可以与百度的ERNIE-Bot进行交互的Web应用，用户可以发送消息并接收来自ERNIE-Bot的回复，所有的交互都通过Web界面进行。
+总之，这个脚本创建了一个可以与百度的ERNIE-Bot进行交互的Web应用，用户可以发送消息并接收来自ERNIE-Bot的回复，所有的交互都通过Web界面进行。<br>
+
+
+
+## 拓展-`sanic`中有用于渲染HTML模板的吗？
+
+Sanic 是一个异步Python 3.7+ Web服务器和Web框架，它是为了快速构建高性能的Web应用而设计的。与Flask类似，Sanic也支持HTML模板的渲染，但它不自带模板引擎。你需要结合额外的模板库来渲染HTML模板。<br>
+
+常用的模板引擎有：<br>
+
+1. **Jinja2**: 这是一个非常流行的Python模板引擎，Flask默认使用的也是它。尽管Jinja2不是异步的，但你可以在Sanic中同步地使用它来渲染模板。因为模板渲染通常很快，所以这通常不会成为性能瓶颈。
+
+2. **Sanic-Jinja2**: 这是为Sanic框架定制的Jinja2支持。它提供了一个简单的接口来集成Jinja2模板引擎与Sanic应用。
+
+要在Sanic中使用Jinja2进行模板渲染，你需要首先安装Jinja2或Sanic-Jinja2，然后在Sanic应用中设置并使用它。以下是一个简单的示例，说明如何在Sanic中使用Sanic-Jinja2：<br>
+
+```python
+from sanic import Sanic
+from sanic.response import html
+from sanic_jinja2 import SanicJinja2
+
+app = Sanic(__name__)
+jinja = SanicJinja2(app)
+
+@app.route("/")
+async def index(request):
+    return jinja.render('index.html', request, my_variable='Hello World')
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
+```
+
+在这个示例中，`SanicJinja2` 被用来渲染一个名为`index.html`的模板，你可以在模板中使用`my_variable`变量。<br>
+
+请注意，虽然Sanic是异步的，但模板渲染通常是同步进行的。如果你的模板非常复杂或需要处理大量数据，可能需要考虑性能问题，或者寻找可以异步渲染模板的解决方案。<br>
