@@ -70,6 +70,41 @@ db_pass = os.getenv('DB_PASS')
 db_name = os.getenv('DB_NAME')
 ```
 
+假设你没有加载 `.env.local` 文件，使用下列代码，直接使用 `os` 调用环境变量中的配置，终端将显示:<br>
+
+```python
+import os
+
+db_host = os.getenv('DB_HOST')
+db_user = os.getenv('DB_USER')
+
+print(f"mysql的配置信息为:\n主机:{db_host}, 用户:{db_user}")
+```
+
+```txt
+mysql的配置信息为:
+主机:None, 用户:None
+```
+
+以 `.env.local` 文件中的内容为例，如果你加载了 `.env.local` 文件，使用 `os` 调用环境变量中的配置，终端将显示:<br>
+
+```python
+import os
+from dotenv import load_dotenv
+
+load_dotenv('.env.local')  # 或者使用 load_dotenv() 来加载默认的 '.env' 文件
+
+db_host = os.getenv('DB_HOST')
+db_user = os.getenv('DB_USER')
+
+print(f"mysql的配置信息为:\n主机:{db_host}, 用户:{db_user}")
+```
+
+```txt
+mysql的配置信息为:
+主机:localhost, 用户:myuser
+```
+
 ### 总结:
 
 - **安全性**: 不要将 `.env.local` 文件提交到你的代码仓库中，特别是如果它包含敏感信息。通常，你应该将 `.env` 文件添加到 `.gitignore` 中以避免意外提交。
