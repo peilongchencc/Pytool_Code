@@ -88,6 +88,8 @@ def chat_with_ernie_bot():
         (3)必须为奇数个成员,成员中message的role必须依次为user、assistant
         (4)最后一个message的content长度(即此轮对话的问题)不能超过4800个字符,且不能超过2000 tokens
         (5)如果messages中content总长度大于4800个字符或2000 tokens,系统会依次遗忘最早的历史会话,直到content的总长度不超过4800个字符且不超过2000 tokens
+        
+        body参数详情见 https://cloud.baidu.com/doc/WENXINWORKSHOP/s/clntwmv7t
         """
         response = requests.post(CHAT_API_URL, headers=headers, json=data)
         response.raise_for_status()
