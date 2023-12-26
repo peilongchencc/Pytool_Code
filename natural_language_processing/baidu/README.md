@@ -14,20 +14,45 @@
 ## 代码示例:
 
 ```python
-from flask import Flask, render_template, request, jsonify, make_response  # 导入Flask及其他必要库
+from flask import Flask, render_template, request, jsonify, make_response
 import requests
 import uuid
+from loguru import logger
 
-app = Flask(__name__)  # 初始化Flask应用
+app = Flask(__name__)
+
+# 使用loguru设置日志
+logger.add("baidu_llm.log", rotation="1 GB", backtrace=True, diagnose=True, format="{time} {level} {message}", append=True)
+logger.remove() # 移除默认的控制台日志输出
+
+# - `"baidu_llm.log"`: 这指定了日志文件的名称。日志消息将被写入到这个文件中。
+# - `rotation="1 GB"`: 这设置了文件轮转的条件。在这里，它意味着每当日志文件达到1GB时，将创建一个新的日志文件，旧的日志文件将被保存。
+# - `backtrace=True`: 当异常发生时，这会使得`loguru`记录异常的回溯信息，这有助于调试。
+# - `diagnose=True`: 这会记录更多的诊断信息，比如变量的值等，以帮助理解导致错误的原因。
+# - `format="{time} {level} {message}"`: 这定义了日志消息的格式。每条日志都将包含时间戳、日志级别和日志消息。
+# - `append=True`: 这确保日志消息会被追加到指定的文件中，而不是每次运行脚本时都覆盖文件。
+# - `logger.remove()`: `logger`默认会将所有消息输出到终端。这行代码移除了所有的默认处理程序，这意味着会按照上一行中已经添加了文件处理程序，所以日志将只记录到文件中。
 
 # 替换成你的API Key和Secret Key
-API_KEY="你的APIKey"  # 填入平台申请的实际APIKey
-SECRET_KEY="你的SecretKey" # 填入平台申请的实际SecretKey
+API_KEY = "你的APIKey"  # 填入平台申请的实际APIKey
+SECRET_KEY = "你的SecretKey"  # 填入平台申请的实际SecretKey
+
+# 初始化ACCESS_TOKEN
+ACCESS_TOKEN = None
+
+# 获取access_token的函数
+def get_access_token():
+    token_url = f"https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id={API_KEY}&client_secret={SECRET_KEY}"
+    try:
+        response = requests.get(token_url)
+        response.raise_for_status()
+        return response.json()["access_token"]
+    except requests.exceptions.RequestException as e:
+        logger.error(f"获取access_token失败: {e}")
+        return None
 
 # 获取access_token
-TOKEN_URL = f"https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id={API_KEY}&client_secret={SECRET_KEY}"
-response = requests.get(TOKEN_URL)
-ACCESS_TOKEN = response.json()["access_token"]
+ACCESS_TOKEN = get_access_token()
 
 # 定义ERNIE-Bot聊天接口地址
 CHAT_API_URL = f"https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions?access_token={ACCESS_TOKEN}"
@@ -42,22 +67,48 @@ def index():
 
 @app.route("/chat", methods=["POST"])  # 定义处理聊天请求的路由
 def chat_with_ernie_bot():
-    user_id = request.cookies.get("sessionid")  # 从请求中获取用户ID
-    user_input = request.json["user_input"]  # 获取用户输入
-    user_history = user_chat_histories.get(user_id, [])  # 获取该用户的对话历史
+    try:
+        user_id = request.cookies.get("sessionid")  # 从请求中获取用户ID
+        user_input = request.json.get("user_input")  # 获取用户输入
+        if not user_input:
+            raise ValueError("用户输入为空")
 
-    user_history.append({"role": "user", "content": user_input})  # 将用户输入添加到历史记录中
-    headers = {"Content-Type": "application/json"}  # 设置请求头
-    data = {"messages": user_history}  # 创建请求数据，包括所有历史消息
-    response = requests.post(CHAT_API_URL, headers=headers, json=data)  # 向API发送请求并获取响应
-    result = response.json()["result"]  # 从响应中提取结果
-    print(result)
-    user_history.append({"role": "assistant", "content": result})  # 将结果添加到历史记录中
-    user_chat_histories[user_id] = user_history  # 更新该用户的聊天历史
-    return jsonify({"response": result})  # 返回JSON响应
+        user_history = user_chat_histories.get(user_id, [])  # 获取该用户的对话历史
+        user_history.append({"role": "user", "content": user_input})  # 将用户输入添加到历史记录中
+        headers = {"Content-Type": "application/json"}  # 设置请求头
+        # 创建请求数据,包括所有历史消息。`data`变量代表了要发送给API的请求体(body)
+        data = {
+            "messages": user_history,  # 包括所有历史消息
+            # 添加其他可能需要的参数,其他数据都为非必填项,如 max_tokens, stop, temperature 等
+            }
+        """
+        `messages`(聊天上下文信息)参数说明：
+        (1)messages成员不能为空,1个成员表示单轮对话,多个成员表示多轮对话
+        (2)最后一个message为当前请求的信息,前面的message为历史对话信息
+        (3)必须为奇数个成员,成员中message的role必须依次为user、assistant
+        (4)最后一个message的content长度(即此轮对话的问题)不能超过4800个字符,且不能超过2000 tokens
+        (5)如果messages中content总长度大于4800个字符或2000 tokens,系统会依次遗忘最早的历史会话,直到content的总长度不超过4800个字符且不超过2000 tokens
+        """
+        response = requests.post(CHAT_API_URL, headers=headers, json=data)
+        response.raise_for_status()
+        result = response.json()["result"]  # 从响应中提取结果
+        logger.info(f"API响应: {result}")
+
+        user_history.append({"role": "assistant", "content": result})  # 将结果添加到历史记录中
+        user_chat_histories[user_id] = user_history  # 更新该用户的聊天历史
+        return jsonify({"response": result})  # 返回JSON响应
+    except requests.exceptions.RequestException as e:
+        logger.error(f"与API通信时出错: {e}")
+        return jsonify({"error": "无法获取响应"}), 500
+    except ValueError as e:
+        logger.error(f"无效输入: {e}")
+        return jsonify({"error": "无效输入"}), 400
+    except Exception as e:
+        logger.error(f"未预料的错误: {e}")
+        return jsonify({"error": "服务器内部错误"}), 500
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=1333, debug=False)  # 启动应用
+    app.run(host='0.0.0.0', port=1333, debug=False) # 启动应用
 ```
 
 ## 代码解释:
