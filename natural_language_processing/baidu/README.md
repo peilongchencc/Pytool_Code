@@ -17,11 +17,17 @@
 
 ```python
 from flask import Flask, render_template, request, jsonify, make_response
+from dotenv import load_dotenv
 import requests
+import os
 import uuid
 from loguru import logger
 
 app = Flask(__name__)
+
+# 加载环境变量
+dotenv_path = '.env.local'
+load_dotenv(dotenv_path=dotenv_path)
 
 # 使用loguru设置日志
 logger.add("baidu_llm.log", rotation="1 GB", backtrace=True, diagnose=True, format="{time} {level} {message}", append=True)
@@ -35,9 +41,9 @@ logger.remove() # 移除默认的控制台日志输出
 # - `append=True`: 这确保日志消息会被追加到指定的文件中，而不是每次运行脚本时都覆盖文件。
 # - `logger.remove()`: `logger`默认会将所有消息输出到终端。这行代码移除了所有的默认处理程序，这意味着会按照上一行中已经添加了文件处理程序，所以日志将只记录到文件中。
 
-# 替换成你的API Key和Secret Key
-API_KEY = "你的APIKey"  # 填入平台申请的实际APIKey
-SECRET_KEY = "你的SecretKey"  # 填入平台申请的实际SecretKey
+# 从环境变量中读取API Key和Secret Key
+API_KEY = os.getenv("BAIDU_API_KEY") # 填入平台申请的实际APIKey
+SECRET_KEY = os.getenv("BAIDU_SECRET_KEY") # 填入平台申请的实际SecretKey
 
 # 初始化ACCESS_TOKEN
 ACCESS_TOKEN = None
@@ -112,7 +118,7 @@ def chat_with_ernie_bot():
         return jsonify({"error": "服务器内部错误"}), 500
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=1333, debug=False) # 启动应用
+    app.run(host='0.0.0.0', port=1333, debug=False)
 ```
 
 ## 代码解释:
