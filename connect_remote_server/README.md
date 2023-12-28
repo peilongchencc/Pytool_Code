@@ -11,6 +11,7 @@
   - [使用阿里云提供的Redis时流量占用问题：](#使用阿里云提供的redis时流量占用问题)
     - [问题描述：](#问题描述)
     - [阿里云客服回应：](#阿里云客服回应)
+  - [阿里云的RAM用户登陆和普通用户登陆有区别吗？](#阿里云的ram用户登陆和普通用户登陆有区别吗)
   - [cannot create temp file for here-document: No space left on device](#cannot-create-temp-file-for-here-document-no-space-left-on-device)
   - [Could not establish connection to "xxx.xxx.xxx.xxx": Cannot read properties of undefined (reading 'replace').](#could-not-establish-connection-to-xxxxxxxxxxxx-cannot-read-properties-of-undefined-reading-replace)
   - ["项目部署在AWS的Lambda"是什么意思？](#项目部署在aws的lambda是什么意思)
@@ -165,8 +166,41 @@ Redis实例作为更靠近应用服务的数据层，通常会执行较多的数
 ```
 <br>
 
+
+## 阿里云的RAM用户登陆和普通用户登陆有区别吗？
+
+阿里云（Alibaba Cloud）的RAM（Resource Access Management）用户登录和普通用户登录确实存在一些区别，这些区别主要体现在权限管理、访问控制和用途上：<br>
+
+1. **用户类型**:
+
+- **普通用户**: 通常指的是拥有阿里云账户的主用户，可以访问和管理阿里云的所有资源和服务，具有账户的最高权限。
+
+- **RAM用户**: 是在主账户下创建的子账户，通常用于对权限进行细粒度的控制。通过为RAM用户分配不同的权限，账户拥有者可以限制他们可以访问和管理的资源范围。
+
+2. **登录方式**:
+
+- **普通用户登录**: 通常通过阿里云主页面登录，使用注册时设置的邮箱或手机号和密码。
+
+- **RAM用户登录**: 通常通过RAM用户的登录链接进行，该链接是由主账户用户提供的，RAM用户需要该特定的URL，以及他们的用户名和密码。
+
+3. **权限管理**:
+
+- **普通用户**: 拥有对账户下所有资源的完全控制权，可以创建和管理RAM用户，分配权限等。
+- **RAM用户**: 权限受限，只能进行被授权的操作，这有助于遵循最小权限原则，降低安全风险。
+
+4. **用途**:
+
+- **普通用户**: 适用于账户的主要拥有者和需要完全控制的管理员。
+
+- **RAM用户**: 适合需要对不同员工或系统分配不同权限的情况，例如开发者、审计员或只需要访问特定服务的应用程序。
+
+通过这种方式，阿里云用户可以更安全、更灵活地管理他们的资源和权限。在实际使用中，根据具体的业务需求和安全要求选择合适的用户类型和权限设置非常重要。<br>
+
+
 ## cannot create temp file for here-document: No space left on device
+
 当你使用 `cd` 指令时，如果一直提示下列信息，表明你的服务器上的磁盘空间已经用完，无法创建临时文件来处理一个"here-document"。<br>
+
 ```bash
 cannot create temp file for here-document: No space left on device
 ```
@@ -176,6 +210,7 @@ cannot create temp file for here-document: No space left on device
 🚨🚨🚨要解决这个问题，你可以采取以下步骤：<br>
 
 **检查磁盘空间使用情况：**<br> 
+
 首先，使用 `df -h` 命令来查看服务器上各个分区的磁盘空间使用情况。这将显示磁盘空间使用百分比以及可用空间。<br>
 
 ```bash
@@ -185,6 +220,7 @@ df -h
 通过查看这些信息，确定哪个分区的空间已经耗尽。<br>
 
 **清理不必要的文件：**<br>
+
 如果你确定哪个分区空间不足，可以尝试删除不必要的文件或日志，以释放磁盘空间。使用 `rm` 命令来删除文件，或者 `find` 命令来查找和删除较旧或不需要的文件。<br>
 
 例如，删除旧日志文件：<br>
@@ -194,6 +230,7 @@ rm /path/to/old/log/files/*.log
 ```
 
 **查找大文件：**<br>
+
 使用 `du` 和 `sort` 命令来查找占用磁盘空间较多的文件或目录。例如，以下命令将列出指定目录中最大的文件：<br>
 
 ```bash
@@ -203,25 +240,34 @@ du -h /path/to/directory | sort -rh | head -n 10
 这将显示前10个最大的文件或目录。<br>
 
 **清空临时文件：**<br> 
+
 有时，服务器上的临时文件可能占用了大量磁盘空间，例如 `nohup.out` 文件。你可以使用 `rm` 命令来删除不再需要的临时文件。<br>
 
 **增加磁盘空间：**<br> 
+
 如果磁盘空间问题经常发生，可能需要考虑增加服务器的磁盘空间，或者将一些数据迁移到其他存储设备。<br>
 
 **检查日志文件：**<br> 
+
 如果你的服务器有日志记录问题，日志文件可能会快速增长，导致磁盘空间耗尽。检查并限制日志文件的大小，以避免此问题。<br>
 
 🥹🥹🥹一旦你释放了足够的磁盘空间，你应该能够解决这个错误并正常执行你的任务。确保定期监视服务器的磁盘空间使用情况，以及时采取措施来防止空间不足的问题。笔者解决这个问题就是通过删除了一些占用空间巨大的文件夹。🫠🫠🫠🫠<br>
 <br>
 
 ## Could not establish connection to "xxx.xxx.xxx.xxx": Cannot read properties of undefined (reading 'replace').
+
 情况描述：使用终端连接远程服务器正常，但使用 vscode 连接远程服务器时，出现错误提示:
+
 ```txt
 Could not establish connection to "xxx.xxx.xxx.xxx": Cannot read properties of undefined (reading 'replace').
 ```
-解决方案：
+
+解决方案：<br>
+
 1. 点击 vscode 中的拓展模块；
+
 2. 点击远程连接的插件，我使用的是 Remote Explorer；
+
 3. 将 Remote 版本切换为 "预发布" 版本；("预览"-->"预发布")
 
 

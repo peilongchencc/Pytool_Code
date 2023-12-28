@@ -16,12 +16,11 @@
 ## 代码示例:
 
 ```python
-from flask import Flask, render_template, request, jsonify, make_response
-from dotenv import load_dotenv
+from flask import Flask, request, jsonify
 import requests
 import os
-import uuid
 from loguru import logger
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
@@ -29,27 +28,26 @@ app = Flask(__name__)
 dotenv_path = '.env.local'
 load_dotenv(dotenv_path=dotenv_path)
 
-# 使用loguru设置日志
-logger.add("baidu_llm.log", rotation="1 GB", backtrace=True, diagnose=True, format="{time} {level} {message}", append=True)
-logger.remove() # 移除默认的控制台日志输出
+# 设置终端控制台不输出日志
+logger.remove()
+# 使用loguru设置日志写入,包括格式、轮转等
+logger.add("baidu_llm.log", rotation="1 GB", backtrace=True, diagnose=True, format="{time} {level} {message}")
 
 # - `"baidu_llm.log"`: 这指定了日志文件的名称。日志消息将被写入到这个文件中。
-# - `rotation="1 GB"`: 这设置了文件轮转的条件。在这里，它意味着每当日志文件达到1GB时，将创建一个新的日志文件，旧的日志文件将被保存。
-# - `backtrace=True`: 当异常发生时，这会使得`loguru`记录异常的回溯信息，这有助于调试。
-# - `diagnose=True`: 这会记录更多的诊断信息，比如变量的值等，以帮助理解导致错误的原因。
+# - `rotation="1 GB"`: 这设置了文件轮转的条件。在这里,它意味着每当日志文件达到1GB时,将创建一个新的日志文件,旧的日志文件将被保存。
+# - `backtrace=True`: 当异常发生时,这会使得`loguru`记录异常的回溯信息,这有助于调试。
+# - `diagnose=True`: 这会记录更多的诊断信息,比如变量的值等,以帮助理解导致错误的原因。
 # - `format="{time} {level} {message}"`: 这定义了日志消息的格式。每条日志都将包含时间戳、日志级别和日志消息。
-# - `append=True`: 这确保日志消息会被追加到指定的文件中，而不是每次运行脚本时都覆盖文件。
-# - `logger.remove()`: `logger`默认会将所有消息输出到终端。这行代码移除了所有的默认处理程序，这意味着会按照上一行中已经添加了文件处理程序，所以日志将只记录到文件中。
+# - `append=True`: 这确保日志消息会被追加到指定的文件中,而不是每次运行脚本时都覆盖文件。
+# - `logger.remove()`: `logger`默认会将所有消息输出到终端。这行代码移除了所有的默认处理程序,这意味着会按照上一行中已经添加了文件处理程序,所以日志将只记录到文件中。
 
 # 从环境变量中读取API Key和Secret Key
-API_KEY = os.getenv("BAIDU_API_KEY") # 填入平台申请的实际APIKey
-SECRET_KEY = os.getenv("BAIDU_SECRET_KEY") # 填入平台申请的实际SecretKey
-
-# 初始化ACCESS_TOKEN
-ACCESS_TOKEN = None
+API_KEY = os.getenv("BAIDU_API_KEY")  # 填入平台申请的实际APIKey
+SECRET_KEY = os.getenv("BAIDU_SECRET_KEY")  # 填入平台申请的实际SecretKey
 
 # 获取access_token的函数
 def get_access_token():
+    # 定义获取access_token的URL
     token_url = f"https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id={API_KEY}&client_secret={SECRET_KEY}"
     try:
         response = requests.get(token_url)
@@ -66,47 +64,65 @@ ACCESS_TOKEN = get_access_token()
 CHAT_API_URL = f"https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions?access_token={ACCESS_TOKEN}"
 user_chat_histories = {}  # 用于存储不同用户的聊天历史
 
-@app.route("/")  # 定义根路由
-def index():
-    sessionid = str(uuid.uuid4())[:16]  # 生成一个会话ID
-    resp = make_response(render_template("index.html"))  # 渲染HTML页面
-    resp.set_cookie("sessionid", sessionid)  # 在响应中设置会话ID的cookie
-    return resp
-
 @app.route("/chat", methods=["POST"])  # 定义处理聊天请求的路由
 def chat_with_ernie_bot():
     try:
-        user_id = request.cookies.get("sessionid")  # 从请求中获取用户ID
-        user_input = request.json.get("user_input")  # 获取用户输入
+        """
+        用户在与ERNIE-Bot进行交流时,聊天历史被妥善地存储和检索(可选,如果需要,需要补充代码)
+        """
+        # 从表单数据中获取用户ID
+        user_id = request.form.get("user_id")
+        if not user_id:
+            raise ValueError("缺少用户ID")
+
+        # 从表单数据中获取用户输入
+        user_input = request.form.get("user_input")
         if not user_input:
             raise ValueError("用户输入为空")
 
-        user_history = user_chat_histories.get(user_id, [])  # 获取该用户的对话历史
-        user_history.append({"role": "user", "content": user_input})  # 将用户输入添加到历史记录中
-        headers = {"Content-Type": "application/json"}  # 设置请求头
-        # 创建请求数据,包括所有历史消息。`data`变量代表了要发送给API的请求体(body)
+        # 获取该用户的对话历史
+        user_history = user_chat_histories.get(user_id, [])
+        # 将用户输入添加到历史记录中
+        user_history.append({"role": "user", "content": user_input})
+
+        # 设置请求头
+        headers = {"Content-Type": "application/json"}
+        # 构建请求数据,包含所有历史消息
         data = {
-            "messages": user_history,  # 包括所有历史消息
+            "messages": user_history  # 包括所有历史消息
             # 添加其他可能需要的参数,其他数据都为非必填项,如 max_tokens, stop, temperature 等
-            }
+        }
         """
-        `messages`(聊天上下文信息)参数说明：
+        `messages`(聊天上下文信息)参数说明:
         (1)messages成员不能为空,1个成员表示单轮对话,多个成员表示多轮对话
         (2)最后一个message为当前请求的信息,前面的message为历史对话信息
         (3)必须为奇数个成员,成员中message的role必须依次为user、assistant
         (4)最后一个message的content长度(即此轮对话的问题)不能超过4800个字符,且不能超过2000 tokens
         (5)如果messages中content总长度大于4800个字符或2000 tokens,系统会依次遗忘最早的历史会话,直到content的总长度不超过4800个字符且不超过2000 tokens
+        2000个token大概近2000个简单的中文字符(包括标点符号,标点符号也会被视为token)。
         
         body参数详情见 https://cloud.baidu.com/doc/WENXINWORKSHOP/s/clntwmv7t
         """
+        # 向API发送请求并获取响应
         response = requests.post(CHAT_API_URL, headers=headers, json=data)
         response.raise_for_status()
-        result = response.json()["result"]  # 从响应中提取结果
-        logger.info(f"API响应: {result}")
+        """
+        `response.raise_for_status()`的作用为检查响应的状态码,详细解释如下:
+        1. **成功的响应**:如果请求成功,即HTTP状态码在200-299的范围内,`raise_for_status()`不会做任何事情,你的程序会继续执行下一步。
+        2. **错误的响应**:如果服务器返回了一个4xx客户端错误或5xx服务器错误响应,`raise_for_status()`会抛出一个`requests.exceptions.HTTPError`异常。
+        - **4xx客户端错误**:这类错误表明请求包含错误或无法完成。例如,404 Not Found 表明请求的资源不存在。
+        - **5xx服务器错误**:这类错误表明服务器未能完成明显有效的请求。例如,500 Internal Server Error 表明服务器遇到了意外情况,阻止它完成请求。
+        """
+        # 从响应中提取结果
+        result = response.json()["result"]
 
-        user_history.append({"role": "assistant", "content": result})  # 将结果添加到历史记录中
-        user_chat_histories[user_id] = user_history  # 更新该用户的聊天历史
-        return jsonify({"response": result})  # 返回JSON响应
+        # 将结果添加到历史记录中
+        user_history.append({"role": "assistant", "content": result})
+        # 更新该用户的聊天历史
+        user_chat_histories[user_id] = user_history
+
+        # 返回JSON响应
+        return jsonify({"response": result})
     except requests.exceptions.RequestException as e:
         logger.error(f"与API通信时出错: {e}")
         return jsonify({"error": "无法获取响应"}), 500
@@ -118,7 +134,8 @@ def chat_with_ernie_bot():
         return jsonify({"error": "服务器内部错误"}), 500
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=1333, debug=False)
+    # 启动应用
+    app.run(host='0.0.0.0', port=8848, debug=False)
 ```
 
 ## 代码解释:
