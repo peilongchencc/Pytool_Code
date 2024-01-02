@@ -4,6 +4,7 @@
   - [滑块和点击:](#滑块和点击)
   - [ChatInterface接口:](#chatinterface接口)
   - [流式输出:](#流式输出)
+  - [history的使用:](#history的使用)
 
 
 ## 定义文本框大小:
@@ -108,3 +109,11 @@ demo = gr.ChatInterface(
 demo.launch()
 ```
 
+## history的使用:
+
+在使用`gradio`库的`ChatInterface`类时，`history`参数用于表示聊天历史。对于`gradio`的`ChatInterface`类，`history`参数是由系统自动管理的，自动从交互界面获取，数据格式为:`[[user_message, bot_message], ...]`。<br>
+
+具体形式如下:<br>
+
+当前的histtory为:[]<br>
+当前的histtory为:[['你的名字叫什么', '您好，我没有特定的名字。我的目的是回答问题并帮助用户，您可以向我随时提出问题。']]<br>
