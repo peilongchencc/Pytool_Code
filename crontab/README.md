@@ -215,3 +215,10 @@ cat /var/log/syslog
 使用 **`2>&1`** ，脚本的所有输出，无论是正常的输出还是错误信息，都会被记录在同一个日志文件中。如果不使用 `2>&1`，那么 stderr（错误信息）将不会被重定向，可能会被丢弃或者发送到不同的地方，例如邮件给系统管理员或者默认的错误日志位置。(默认crontab的日志输出路径为`cat /var/log/syslog`)<br>
 
 如果不存在`semantic_task_log.log`，系统会自动创建，但需要确定这个用户(例如我是`ecs-user`)需要有足够的权限来在指定的目录下创建文件。如果权限不足，重定向操作会失败，并且可能会生成错误消息。<br>
+
+```bash
+# 每天凌晨0点执行2个日常任务:
+# 日常-任务1:语义重刷
+# 日常-任务2:针对企业微信中用户聊天记录(过去1天)进行扩充
+0 0 * * * nohup /home/ecs-user/Project/semantic_timed_task/semantic_task_daily.sh > /home/ecs-user/Project/semantic_timed_task/semantic_daily.log 2>&1 &
+```
