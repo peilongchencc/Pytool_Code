@@ -53,6 +53,7 @@
     - [我使用的是Ubuntu18.4，我使用的是CPU版本Milvus，Milvus中存储了50万条向量数据，我的向量都是使用Electra转化的。我检索一条数据的耗时竟然需要0.2s，是否有方法提升检索速度？使用维度更低的模型转换词向量如何？我的数据都是中文文本。](#我使用的是ubuntu184我使用的是cpu版本milvusmilvus中存储了50万条向量数据我的向量都是使用electra转化的我检索一条数据的耗时竟然需要02s是否有方法提升检索速度使用维度更低的模型转换词向量如何我的数据都是中文文本)
     - [我使用的是Ubuntu18.4，我使用的是CPU版本Milvus，我使用的是pymilvus 2.x版本，我应该如何使用pymilvus进行批量查询？](#我使用的是ubuntu184我使用的是cpu版本milvus我使用的是pymilvus-2x版本我应该如何使用pymilvus进行批量查询)
     - [flush()后create\_index()卡住:](#flush后create_index卡住)
+    - [text字段的模糊匹配无法实现:](#text字段的模糊匹配无法实现)
   - [pymilvus示例代码:](#pymilvus示例代码)
   - [pymilvus简单示例:](#pymilvus简单示例)
 
@@ -1261,6 +1262,47 @@ ps -f -p 5374,5825,5677
 ```
 
 这将显示每个进程的完整命令行，你可能能从中看到它们启动的脚本或是应用程序的名称。如果实在不知道，可能就需要问问同事了。<br>
+
+### text字段的模糊匹配无法实现:
+
+当前，笔者使用的是 `milvus v2.3.2`，该版本不支持模糊匹配，只支持前缀匹配。<br>
+
+假设你的 `text`字段记录的是文本数据，如果你想要检索含有 "老师" 的数据("我的老师...")是无法做到的，只能支持检索到前缀为 "老师" 的文本，即 "老师很..."。<br>
+
+代码为:<br>
+
+```python
+from config.server_settings import Milvus_Server_Config
+from pymilvus import Collection, connections
+
+def milvus_connection():
+    """建立milvus连接(milvus默认为连接池形式)
+    Ps: milvus的连接不需要返回值
+    """
+    connections.connect(host = Milvus_Server_Config['host'], port = Milvus_Server_Config['port'])
+
+def delete_data_in_milvus_according_expr(expression, milvus_collection_name):
+    """根据表达式删除milvus数据
+    Args:
+        expression(str): 布尔表达式, 请使用 milvus 支持的布尔表达式,例如: expr = "text == '货币三佳是t+1到账吗'"
+        milvus_collection_name(str): milvus集合的名称,例如: 'standard_financial_question_collection'
+    Return:
+        无返回值
+    """
+    # 建立milvus连接,无返回值
+    milvus_connection()
+    # 连接milvus集合
+    milvus_collection = Collection(name=milvus_collection_name)
+    # 传入Expression,使用布尔表达式删除数据
+    milvus_collection.delete(expression)
+    # 提交更改
+    milvus_collection.load()
+
+if __name__ == "__main__":
+    expr="text LIKE '老师%'"  # 只支持前缀匹配，不支持模糊匹配
+    milvus_collection_name = 'standard_collection'
+    delete_data_in_milvus_according_expr(expr, milvus_collection_name)
+```
 
 
 ## pymilvus示例代码:
