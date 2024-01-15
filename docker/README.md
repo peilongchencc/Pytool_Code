@@ -11,6 +11,7 @@
     - [将 Docker 添加到启动项，以确保在系统重新启动时 Docker 会自动启动：](#将-docker-添加到启动项以确保在系统重新启动时-docker-会自动启动)
     - [查看本地镜像库所有docker镜像:](#查看本地镜像库所有docker镜像)
   - [卸载Docker Compose:](#卸载docker-compose)
+  - [K8s介绍:](#k8s介绍)
 
 
 ## Docker和Docker Compose 安装:
@@ -227,3 +228,9 @@ sudo docker images
 ```bash
 sudo apt remove docker-compose
 ```
+
+## K8s介绍:
+
+Kubernetes（简称K8s）不是一个容器，而是一个开源的容器编排系统，用于自动化部署、扩展和管理容器化应用程序。它提供了一个平台，使得您可以方便地管理和调度位于物理或虚拟机上的容器。Kubernetes 使得运行和管理跨多个容器（如Docker或rkt等）的应用程序变得更加简单高效。<br>
+
+简单来说，如果把容器比作轿车，那么Kubernetes就像是交通管理系统，负责指挥和调度这些车辆在道路上高效安全地行驶。<br>
