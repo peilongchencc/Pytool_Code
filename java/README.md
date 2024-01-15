@@ -34,4 +34,4 @@ sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk \
      /Library/Java/JavaVirtualMachines/openjdk.jdk
 ```
 
-[java安装](./java安装.jpg)
+![java安装](./java安装.jpg)
