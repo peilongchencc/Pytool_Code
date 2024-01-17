@@ -280,4 +280,19 @@ mvn clean install
 [INFO] ------------------------------------------------------------------------
 ```
 
-现在，在文件中右键点击 `run java` 运行文件。<br>
+现在，可以在`src/main/java/com/alichatbot/Test.java`文件中右键，然后点击 `Run Java` 运行文件。<br>
+
+我使用的mac，我使用的vscode，我的java文件目录如下，我已测试使用`mvn clean install`后，在`alichat/src/main/java/com/alichatbot/Test.java`文件中右键，然后点击 `Run Java` 可以运行文件，我想知道是否能通过终端运行这个java文件，具体要如何操作呢？
+
+```txt
+alichat
+├── pom.xml
+└── src
+    ├── main
+    │   └── java
+    │       └── com
+    │           └── alichatbot
+    │               ├── Test.java
+    │               └── SSEListener.java
+    └── test
+```
