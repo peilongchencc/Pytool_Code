@@ -1,4 +1,12 @@
 ## java
+- [java](#java)
+- [安装java:](#安装java)
+  - [Java环境变量配置:](#java环境变量配置)
+- [安装Maven：](#安装maven)
+  - [测试Maven：](#测试maven)
+  - [创建一个新的Maven项目:](#创建一个新的maven项目)
+  - [在 `pom.xml` 中添加依赖：](#在-pomxml-中添加依赖)
+  - [安装依赖：](#安装依赖)
 
 ## 安装java:
 
@@ -83,7 +91,9 @@ echo $JAVA_HOME
 这应该会显示你之前设置的路径。<br>
 
 
-## 安装maven：
+## 安装Maven：
+
+Maven是一个流行的Java项目管理和构建自动化工具。Maven使用项目对象模型（POM）来管理项目的构建，报告和文档。<br>
 
 Java通常通过Maven或Gradle这样的构建工具来管理依赖项。这里介绍Maven安装第三方库的方式：<br>
 
@@ -99,80 +109,175 @@ brew install maven
 mvn --version
 ```
 
+### 创建一个新的Maven项目:
 
-我使用的mac，vscode帮我安装依赖的时候，提示以下信息：
+创建一个新的Maven项目的指令如下:<br>
 
-```txt
-Command failed: mvn --version
-The JAVA_HOME environment variable is not defined correctly,
-this environment variable is needed to run this program.
+```bash
+mvn archetype:generate -DgroupId=com.alichatbot -DartifactId=alichat -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
 ```
 
-我在zsh界面运行`mvn --version`显示如下：
+> 如果你不需要项目默认生成的 `App.java` 文件，你可以安全地将其删除。
+> 这个文件是由 Maven 使用 `maven-archetype-quickstart` 形成的模板生成的，仅作为示例和起始点。
+
+指令解释:<br>
+
+1. `mvn archetype:generate`：
+   - `mvn` 是运行Maven命令的基本方式。
+   - `archetype:generate` 是Maven命令的一部分，用于生成一个项目原型（archetype）。原型是一种项目模板，用于帮助快速开始具有一定结构的项目。
+
+2. `-DgroupId=com.alichatbot`：
+   - `-D` 是设置Java系统属性的方式。
+   - `groupId` 是项目的唯一基础名称，通常是你或你公司的域名反向写成。在这个例子中，它被设置为 `com.alichatbot`。
+
+> 只要你的 Java 代码正确编写且没有错误，不论 `groupId` 如何设置，代码都应该能够正常运行。`groupId`影响的是你的文件夹结构。
+
+3. `-DartifactId=alichat`：
+   - `artifactId` 是你的项目的名称，这在Maven仓库中用于唯一标识你的项目。在这个例子中，项目名被设置为 `alichat`。
+
+4. `-DarchetypeArtifactId=maven-archetype-quickstart`：
+   - `archetypeArtifactId` 指定了要使用的原型的名称。`maven-archetype-quickstart` 是Maven提供的一个基本原型，适合创建简单的Java应用。
+
+5. `-DinteractiveMode=false`：
+   - 这告诉Maven在非交互模式下运行，这意味着它不会询问用户输入，而是使用提供的命令行参数。
+
+总的来说，这条命令用于创建一个名为 `alichat` 的新Maven项目，其组织名为 `com.alichatbot`，并使用 `maven-archetype-quickstart` 作为基本原型来设置项目结构。这样做可以快速开始一个标准的Java项目。<br>
+
+生成的文件夹的目录树如下:<br>
 
 ```txt
-Apache Maven 3.9.6 (bc0240f3c744dd6b6ec2920b3cd08dcc295161ae)
-Maven home: /opt/homebrew/Cellar/maven/3.9.6/libexec
-Java version: 21.0.1, vendor: Homebrew, runtime: /opt/homebrew/Cellar/openjdk/21.0.1/libexec/openjdk.jdk/Contents/Home
-Default locale: zh_CN_#Hans, platform encoding: UTF-8
-OS name: "mac os x", version: "14.1.2", arch: "aarch64", family: "mac"
+alichat
+├── pom.xml
+└── src
+    ├── main
+    │   └── java
+    │       └── com
+    │           └── alichatbot
+    │               └── App.java
+    └── test
+        └── java
+            └── com
+                └── alichatbot
+                    └── AppTest.java
 ```
 
-这是因为vscode运行的不是我的zsh环境吗？我应该怎样让vscode运行zsh环境呢？
+如果你打算使用自己的java文件，可以将`App.java`文件删除，在相同位置添加自己的代码，目录树如下:<br>
 
-### 使用Maven来管理依赖
+```txt
+alichat
+├── pom.xml
+└── src
+    ├── main
+    │   └── java
+    │       └── com
+    │           └── alichatbot
+    │               ├── Test.java
+    │               └── SSEListener.java
+    └── test
+```
 
-1. **创建一个Maven项目**：
-   - 在包含你的 `Demo.java` 的目录中，创建一个新文件，命名为 `pom.xml`。
-   - 在 `pom.xml` 文件中，你需要定义项目的基础结构和依赖项。这个文件告诉Maven如何构建你的项目。
+### 在 `pom.xml` 中添加依赖：
 
-2. **在 `pom.xml` 中添加依赖**：
-   你需要添加以下依赖项到你的 `pom.xml` 文件中：
+将需要添加以下依赖项到你的 `pom.xml` 文件中，可参考笔者的 `pom.xml`文件：<br>
 
-   ```xml
-   <dependencies>
-       <!-- fastjson -->
-       <dependency>
-           <groupId>com.alibaba</groupId>
-           <artifactId>fastjson</artifactId>
-           <version>1.2.75</version> <!-- 请使用最新的版本号 -->
-       </dependency>
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.alichatbot</groupId>
+  <artifactId>alichat</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>alichat</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+      <!-- 指定java版本，注意改为自己的java版本 -->
+      <maven.compiler.source>21</maven.compiler.source>
+      <maven.compiler.target>21</maven.compiler.target>
+      <!-- 指定utf-8编码 -->
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>com.aliyun</groupId>
+      <artifactId>chatbot20220408</artifactId>
+      <version>1.0.9</version>
+    </dependency>
+    <dependency>
+        <groupId>com.aliyun</groupId>
+        <artifactId>aliyun-java-sdk-core</artifactId>
+        <version>4.6.4</version>
+    </dependency>
+    <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>fastjson</artifactId>
+        <version>1.2.72_noneautotype</version>
+    </dependency>
+    <dependency>
+        <groupId>com.squareup.okhttp3</groupId>
+        <artifactId>okhttp-sse</artifactId>
+        <version>4.9.3</version>
+    </dependency>
+    <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>24.1-jre</version>
+    </dependency>
+    <!-- 可添加其他依赖 -->
+  </dependencies>
+</project>
+```
 
-       <!-- Aliyun SDK -->
-       <dependency>
-           <groupId>com.aliyun</groupId>
-           <artifactId>aliyun-java-sdk-core</artifactId>
-           <version>4.5.10</version> <!-- 请使用最新的版本号 -->
-       </dependency>
+### 安装依赖：
 
-       <!-- Apache Commons Codec -->
-       <dependency>
-           <groupId>commons-codec</groupId>
-           <artifactId>commons-codec</artifactId>
-           <version>1.15</version> <!-- 请使用最新的版本号 -->
-       </dependency>
-   </dependencies>
-   ```
+在终端中，导航到包含 `pom.xml` 的目录，然后运行：<br>
 
-3. **构建项目**：
-   在终端中，导航到包含 `pom.xml` 的目录，然后运行：
-   ```bash
-   mvn clean install
-   ```
+```bash
+mvn clean install
+```
 
-4. **运行Java程序**：
-   在Maven成功构建项目后，你可以使用以下命令来运行你的程序：
-   ```bash
-   java -cp target/classes com.yourpackage.Demo
-   ```
-   请将 `com.yourpackage.Demo` 替换成你的 `Demo.java` 的实际包路径。
+> 也可以选择运行 `mvn compile` ，这个命令只会生成`target`目录，而不会清理以往的目录。
 
-### 注意事项
-- 确保你的 `Demo.java` 文件位于正确的目录结构中，这是Maven项目的要求。例如，如果你的包是 `com.yourpackage`，那么你的Java文件应该在 `src/main/java/com/yourpackage/` 目录下。
-- 依赖的版本
+运行`mvn clean install`后，会生成一个`target`目录，同时终端显示信息如下:<br>
 
-号可能会随时间变化，请查找相应库的最新版本号。
-- 由于代码中涉及到阿里云的服务，你需要确保已经有了有效的阿里云账号并且已经获取了相应的AK（Access Key）和SK（Secret Key）。
+```txt
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.alichatbot:alichat >-----------------------
+[INFO] Building alichat 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ alichat ---
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ alichat ---
+[INFO] skip non existing resourceDirectory /Users/peilongchencc/Desktop/maven_test/alichat/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ alichat ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 2 source files with javac [debug target 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ alichat ---
+[INFO] skip non existing resourceDirectory /Users/peilongchencc/Desktop/maven_test/alichat/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ alichat ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] 
+[INFO] --- surefire:3.2.2:test (default-test) @ alichat ---
+[INFO] 
+[INFO] --- jar:3.3.0:jar (default-jar) @ alichat ---
+[INFO] Building jar: /Users/peilongchencc/Desktop/maven_test/alichat/target/alichat-1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- install:3.1.1:install (default-install) @ alichat ---
+[INFO] Installing /Users/peilongchencc/Desktop/maven_test/alichat/pom.xml to /Users/peilongchencc/.m2/repository/com/alichatbot/alichat/1.0-SNAPSHOT/alichat-1.0-SNAPSHOT.pom
+[INFO] Installing /Users/peilongchencc/Desktop/maven_test/alichat/target/alichat-1.0-SNAPSHOT.jar to /Users/peilongchencc/.m2/repository/com/alichatbot/alichat/1.0-SNAPSHOT/alichat-1.0-SNAPSHOT.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.169 s
+[INFO] Finished at: 2024-01-16T11:55:15+08:00
+[INFO] ------------------------------------------------------------------------
+```
 
-如果你不熟悉Maven的使用或者在使用过程中遇到任何困难，可以查阅Maven的官方文档或相关的Java开发资源。
-
+现在，在文件中右键点击 `run java` 运行文件。<br>
