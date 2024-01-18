@@ -20,6 +20,8 @@ Sanic 是一个用于构建异步（asynchronous）Web应用的Python框架，�
       - [为什么使用它们(Why use them)？](#为什么使用它们why-use-them)
       - [问题所在(The problem)：](#问题所在the-problem)
       - [解决方案(The solution)：](#解决方案the-solution)
+    - [Streaming:](#streaming)
+      - [Response streaming:](#response-streaming)
   - [使用 Postman 动态更新Sanic服务中类属性：](#使用-postman-动态更新sanic服务中类属性)
     - [在主文件中定义路由：](#在主文件中定义路由)
     - [附属文件中定义用户输出的处理流程：](#附属文件中定义用户输出的处理流程)
@@ -456,6 +458,56 @@ class FooBar(HTTPMethodView):
 
 app.add_route(FooBar.as_view(), "/foobar")
 ```
+
+
+### Streaming:
+
+#### Response streaming:
+
+Sanic 允许你向客户端流式传输内容。<br>
+
+```python
+from sanic import Sanic
+from sanic.response.types import BaseHTTPResponse   # response.send 中 send 方法出处；
+from sanic.request import Request
+
+app = Sanic("MyApp")
+
+@app.route("/")
+async def test(request: Request):
+    response = await request.respond(content_type="text/csv")
+    await response.send("foo,")
+    await response.send("bar")
+
+    # Optionally, you can explicitly end the stream by calling:
+    await response.eof()
+
+
+if __name__ == '__main__':
+    app.run()
+```
+
+这在你想要将来自外部服务（如数据库）的内容流式 (stream content) 传输给客户端的情况下非常有用。<br>
+
+例如，你可以使用 `asyncpg` 提供的异步游标(asynchronous cursor)将 **数据库记录** 流式传输给客户端。<br>
+
+```python
+@app.route("/")
+async def index(request):
+    response = await request.respond()
+    conn = await asyncpg.connect(database='test')
+    async with conn.transaction():
+        async for record in conn.cursor('SELECT generate_series(0, 10)'):
+            await response.send(record[0])
+```
+
+你可以通过调用 `await response.eof()` 来显式(explicitly)结束一个流。这是一个方便的方法(a convenience method)，用来替代 `await response.send("", True)`。
+
+在处理程序确定没有更多内容需要发送回客户端后，应该调用它一次。<br>
+
+🚨🚨🚨虽然在使用 Sanic 服务器时可以选择使用它，但如果你在 ASGI 模式下运行 Sanic，那么必须显式终止流。<br>
+
+> 在 v21.6 版本中，调用 `eof` 变成了可选操作。
 
 
 ## 使用 Postman 动态更新Sanic服务中类属性：
