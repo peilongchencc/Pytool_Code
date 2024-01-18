@@ -15,6 +15,11 @@ Sanic 是一个用于构建异步（asynchronous）Web应用的Python框架，�
     - [Postman 中 Body 选项的含义与选择：](#postman-中-body-选项的含义与选择)
   - [request 对象：](#request-对象)
   - [response 对象：](#response-对象)
+  - [高级功能:](#高级功能)
+    - [基于类的视图(Class Based Views)：](#基于类的视图class-based-views)
+      - [为什么使用它们(Why use them)？](#为什么使用它们why-use-them)
+      - [问题所在(The problem)：](#问题所在the-problem)
+      - [解决方案(The solution)：](#解决方案the-solution)
   - [使用 Postman 动态更新Sanic服务中类属性：](#使用-postman-动态更新sanic服务中类属性)
     - [在主文件中定义路由：](#在主文件中定义路由)
     - [附属文件中定义用户输出的处理流程：](#附属文件中定义用户输出的处理流程)
@@ -393,6 +398,65 @@ async def html_example(request):
 这将返回一个包含指定 HTML 内容的响应。<br>
 
 总之，`response` 模块提供了一些方便的函数，用于构建不同类型的 HTTP 响应，包括 JSON、文本、HTML 等。你可以根据你的需求使用这些函数来构建和返回适当类型的响应给客户端。<br>
+
+
+## 高级功能:
+
+### 基于类的视图(Class Based Views)：
+
+#### 为什么使用它们(Why use them)？
+
+#### 问题所在(The problem)：
+
+设计API时的一个常见模式是在同一个端点上根据HTTP方法实现多种功能。<br>
+
+尽管这两种选择都可行，但它们并不是好的设计实践，并且随着项目的增长，随着时间的推移可能难以维护。<br>
+
+```python
+@app.get("/foo")
+async def foo_get(request):
+    ...
+
+@app.post("/foo")
+async def foo_post(request):
+    ...
+
+@app.put("/foo")
+async def foo_put(request):
+    ...
+
+@app.route("/bar", methods=["GET", "POST", "PATCH"])
+async def bar(request):
+    if request.method == "GET":
+        ...
+
+    elif request.method == "POST":
+        ...
+
+    elif request.method == "PATCH":
+        ...
+```
+
+#### 解决方案(The solution)：
+
+基于类的视图 (Class-based views) 实际上是实现对请求响应行为的类。它们提供了一种方式，可以在同一端点上 **对不同HTTP请求类型进行分门别类的处理** 。<br>
+
+```python
+from sanic.views import HTTPMethodView
+
+class FooBar(HTTPMethodView):
+    async def get(self, request):
+        ...
+
+    async def post(self, request):
+        ...
+
+    async def put(self, request):
+        ...
+
+app.add_route(FooBar.as_view(), "/foobar")
+```
+
 
 ## 使用 Postman 动态更新Sanic服务中类属性：
 
