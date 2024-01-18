@@ -14,6 +14,8 @@ Sanic 是一个用于构建异步（asynchronous）Web应用的Python框架，�
     - [POST 方法路由的测试：](#post-方法路由的测试)
     - [Postman 中 Body 选项的含义与选择：](#postman-中-body-选项的含义与选择)
   - [request 对象：](#request-对象)
+    - [request的属性:](#request的属性)
+    - [sanic中的request什么时候用:](#sanic中的request什么时候用)
   - [response 对象：](#response-对象)
   - [高级功能:](#高级功能)
     - [基于类的视图(Class Based Views)：](#基于类的视图class-based-views)
@@ -339,6 +341,8 @@ usr_input: 这是一段用户数据，需要进行分词。
 
 ## request 对象：
 
+### request的属性:
+
 **request**包含了客户端（浏览器）发过来的HTTP请求的各类数据。request不需要显示导入，Sanic内部含有。request 包含以下属性：<br>
 
 | 属性   | 使用方式        | 意义                                        |
@@ -348,6 +352,47 @@ usr_input: 这是一段用户数据，需要进行分词。
 | files  | 字典            | 拥有name、body和type的文件对象的字典           |
 | form   | 表单            | 以POST方式传递的form变量                     |
 | body   | 字节串          | POST的原始数据                               |  
+
+
+### sanic中的request什么时候用:
+
+在 Sanic 这个异步 Web 框架中，`request` 对象是在处理传入的 HTTP 请求时使用的。当一个请求发送到你的 Sanic 服务器时，Sanic 会创建一个 `request` 对象，它包含了这个请求的所有信息，包括请求的 URL、HTTP 方法、头信息、查询参数、表单数据、JSON 数据等。<br>
+
+简单来说，每当你的服务器收到一个 HTTP 请求（无论是 GET 请求、POST 请求、还是其他类型的请求），Sanic 都会为这个请求创建一个 `request` 对象，并将其传递给相应的处理函数。在这个处理函数中，你可以通过 `request` 对象访问请求的所有信息。<br>
+
+下面是一个简单的例子，展示了如何在 Sanic 中使用 `request` 对象：<br>
+
+```python
+from sanic import Sanic
+from sanic.response import json
+
+app = Sanic("MyApp")
+
+@app.route("/get_data", methods=["GET"])
+async def get_data(request):
+    # 使用 request.args 获取 URL 查询参数
+    query_params = request.args
+
+    # 你可以进一步处理这些参数
+    # ...
+
+    return json({"message": "收到 GET 请求", "query_params": query_params})
+
+@app.route("/post_data", methods=["POST"])
+async def post_data(request):
+    # 使用 request.json 获取 JSON 格式的请求体数据
+    json_data = request.json
+
+    # 你可以进一步处理这些数据
+    # ...
+
+    return json({"message": "收到 POST 请求", "json_data": json_data})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
+```
+
+在这个例子中，我们定义了两个路由处理函数 `get_data` 和 `post_data`。它们分别用于处理 GET 和 POST 请求。在这些函数中，我们使用了 `request.args` 来获取 GET 请求的查询参数，使用了 `request.json` 来获取 POST 请求的 JSON 数据。这展示了 `request` 对象如何在不同情况下被使用。<br>
 
 
 ## response 对象：
