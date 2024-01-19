@@ -11,6 +11,7 @@
   - [使用阿里云提供的Redis时流量占用问题：](#使用阿里云提供的redis时流量占用问题)
     - [问题描述：](#问题描述)
     - [阿里云客服回应：](#阿里云客服回应)
+  - [阿里云服务器连接不到github的解决方案:](#阿里云服务器连接不到github的解决方案)
   - [阿里云的RAM用户登陆和普通用户登陆有区别吗？](#阿里云的ram用户登陆和普通用户登陆有区别吗)
   - [cannot create temp file for here-document: No space left on device](#cannot-create-temp-file-for-here-document-no-space-left-on-device)
   - [Could not establish connection to "xxx.xxx.xxx.xxx": Cannot read properties of undefined (reading 'replace').](#could-not-establish-connection-to-xxxxxxxxxxxx-cannot-read-properties-of-undefined-reading-replace)
@@ -165,6 +166,19 @@ Redis实例作为更靠近应用服务的数据层，通常会执行较多的数
 排查Redis实例流量使用率高的问题  https://help.aliyun.com/zh/redis/user-guide/troubleshoot-high-traffic-usage-on-an-apsaradb-for-redis-instance?spm=a2c4g.11174283.0.i10
 ```
 <br>
+
+
+## 阿里云服务器连接不到github的解决方案:
+
+阿里云 `ping github.com` 看下解析到的IP是：`20.205.243.166`，这个github节点有问题导致访问超时。<br>
+
+在 `/etc/hosts` 文件中将 github.com 指定到 `20.27.177.113` 这个IP上可以连接github。<br>
+
+即，终端 `vim /etc/hohsts` 然后再最后一行添加:<br>
+
+```bash
+20.27.177.113   github.com
+```
 
 
 ## 阿里云的RAM用户登陆和普通用户登陆有区别吗？
