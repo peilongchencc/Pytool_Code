@@ -60,6 +60,10 @@ GitHub上我发现某人的代码有问题，我fork他的仓库并创建一个�
    - 填写Pull Request的标题和描述，清晰地说明你所做的更改和为什么这样做。
    - 提交Pull Request。
 
+出现以下界面，需点击 `"Compare & pull request"`:<br>
+
+![](./fork_pull_request.jpg)
+
 3. **等待反馈**：提交Pull Request后，原仓库的维护者会收到通知。他们可以查看你的更改，提出反馈或者直接合并你的更改到他们的仓库中。
 
 4. **可能的讨论**：维护者可能会在Pull Request上提出问题或者要求进一步的更改。这通常会在GitHub的Pull Request页面上以评论的形式出现。
