@@ -7,8 +7,9 @@
   - [异步调用大模型接口返回答案示例:](#异步调用大模型接口返回答案示例)
     - [情况描述:](#情况描述)
     - [解决方案:](#解决方案)
-    - [追问:](#追问)
-    - [解答:](#解答)
+    - [数据串扰问题:](#数据串扰问题)
+    - [数据串扰问题解答:](#数据串扰问题解答)
+    - [工具函数和sanic路由不在同一个文件时的代码改动:](#工具函数和sanic路由不在同一个文件时的代码改动)
 
 
 ## yield生成器的多种返回格式:
@@ -166,11 +167,11 @@ if __name__ == "__main__":
 
 4. 在Sanic中定义路由时使用 `async` 和 `await` 以保持异步性。
 
-### 追问:
+### 数据串扰问题:
 
 使用你的代码，多个用户同时请求，不会出现用户A的问题返回的是用户B的答案吧，不会串了吧？<br>
 
-### 解答:
+### 数据串扰问题解答:
 
 使用我提供的代码，多个用户同时发送请求时，不会发生用户A的问题得到用户B答案的情况。这是因为每个请求都是独立处理的，每个请求都会创建自己的异步上下文并执行。这就是异步编程的优势之一：**即使在并发请求的情况下，也能保持每个请求的数据隔离。**<br>
 
@@ -179,3 +180,45 @@ if __name__ == "__main__":
 在你的应用场景中，当 `con_aichatbot` 函数被调用时，它会处理传入的参数（例如 `access_token`、`channel_id`、`sign`、`timestamp` 和 `user_input`），这些参数都是请求特有的。因此，每个请求都会根据其特定的输入处理并生成独立的输出。<br>
 
 总之，在你的使用场景中，使用异步编程和 Sanic 框架，可以确保即使在高并发的情况下，每个用户的请求都是独立处理的，不会发生数据串扰的问题。<br>
+
+### 工具函数和sanic路由不在同一个文件时的代码改动:
+
+如果你的函数和 Sanic 路由不在同一个文件中，你可以通过导入模块的方式来使用这些函数。这是 Python 中常见的做法，可以帮助你组织和模块化代码。以下是一个简单的示例，展示了如何在不同的文件中定义函数和路由，并将它们整合在一起。<br>
+
+假设你有两个文件：一个是包含 `con_aichatbot` 函数的文件（我们称之为 `aichatbot.py`），另一个是定义 Sanic 应用和路由的文件（我们称之为 `app.py`）。<br>
+
+1. **aichatbot.py**:
+
+```python
+# 异步函数定义
+async def con_aichatbot(access_token=None, channel_id=None, sign=None, timestamp=None, user_input=None):
+    # ... 函数实现 ...
+```
+
+2. **app.py**:
+
+```python
+from sanic import Sanic, response
+# 从其他文件导入异步函数
+from aichatbot import con_aichatbot
+
+app = Sanic("MyApp")
+
+@app.route("/answer", methods=['POST'])
+async def answer(request):
+    data = request.json
+    # 调用异步函数
+    output = await con_aichatbot(
+        access_token=data.get("access_token"),
+        channel_id=data.get("channel_id"),
+        # ... 其他参数 ...
+    )
+    return response.json({"reply": output})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
+```
+
+在这个例子中，`aichatbot.py` 包含了你的异步函数 `con_aichatbot`，而 `app.py` 包含了 Sanic 应用和路由的定义。你可以在 `app.py` 中通过 `from aichatbot import con_aichatbot` 来导入 `aichatbot.py` 中定义的函数。<br>
+
+这种组织方式不仅有助于保持代码的清晰和模块化，而且也确保了不同文件中的代码可以相互调用。当你的项目规模增长时，这种模块化的方法特别有用。<br>
