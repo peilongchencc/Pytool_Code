@@ -8,7 +8,7 @@ def squares_generator(n):
         yield i ** 2
 
 if __name__ == "__main__":
-    # 使用生成器
+    # 遍历生成器
     for square in squares_generator(5):
         print(square)
 ```
