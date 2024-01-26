@@ -3,6 +3,7 @@
   - [I/O 操作介绍:](#io-操作介绍)
   - [异步编程:](#异步编程)
     - [基本概念](#基本概念)
+    - [异步生成器:](#异步生成器)
     - [异步网络I/O示例:](#异步网络io示例)
       - [步骤 1: 引入必要的库](#步骤-1-引入必要的库)
       - [步骤 2: 定义异步函数](#步骤-2-定义异步函数)
@@ -44,6 +45,36 @@ Python中的异步编程是一种编程范式，它允许程序在等待某些�
 2. **事件循环（Event Loop）**: 管理并分配执行异步任务的机制。事件循环在后台运行，按照任务的就绪状态进行调度。
 
 3. **`await`**: 用于暂停协程的执行，直到等待的协程完成。在`await`之后的代码，只有在`await`的协程完成后才会执行。
+
+> 在函数内部，使用 `await` 来暂停函数的执行，直到等待的异步操作完成。
+
+### 异步生成器:
+
+```python
+import asyncio
+
+async def async_generator():
+    for i in range(5):
+        await asyncio.sleep(1)
+        yield i
+
+async def main():
+    async for value in async_generator():
+        print(value)
+
+# 运行main函数
+asyncio.run(main())
+```
+
+🚨🚨🚨注意:<br>
+
+不需要在 `main` 函数中使用 `await` 来等待 `async_generator` 完成，因为异步生成器的工作方式有所不同。<br>
+
+当你在 `main` 函数中使用 `async for` 循环来迭代 `async_generator` 产生的值时，**每次迭代都会自动处理等待**（如果有必要的话）。<br>
+
+在异步编程中，当你使用 `await` 时，你通常是在等待一个单独的异步操作（如异步函数调用）完成。但在使用异步生成器时，`async for` 循环会自动处理这些等待，不需要显式地在循环外部使用 `await`。<br>
+
+因此，你的 `main` 函数中不需要使用 `await async_generator()`。它通过 `async for` 循环正确地处理了异步生成器中的等待。<br>
 
 ### 异步网络I/O示例:
 
