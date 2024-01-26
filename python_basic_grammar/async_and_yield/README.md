@@ -20,6 +20,7 @@
     - [数据串扰问题:](#数据串扰问题)
     - [数据串扰问题解答:](#数据串扰问题解答)
     - [工具函数和sanic路由不在同一个文件时的代码改动:](#工具函数和sanic路由不在同一个文件时的代码改动)
+    - [yield方式：](#yield方式)
 
 ## I/O 操作介绍:
 
@@ -247,14 +248,27 @@ import json
 
 async def con_aichatbot(access_token=None, channel_id=None, sign=None, timestamp=None, user_input=None):
     if access_token and channel_id and sign and timestamp and user_input:
-        data = {
-            # ... 同之前的data定义
-        }
+        # In the context of task-oriented multi-turn dialogues, Alibaba's general-purpose robot automatically differentiates, so there's no need for me to make the distinction.
+        data = {'messageId': '1', 
+                'action': 'TongyiBeebotChat', 
+                'version': '2022-04-08', 
+                'data': [{'type': 'JSON_TEXT', 
+                          'value': '{"InstanceId":"chatbot-cn-fa6mVnFBmb","Utterance":"' + user_input + '"}',
+                          'SandBox': 'false'
+                          }]}
+        # The `SandBox` parameter indicates whether the environment is a testing or production environment, with the default being the production environment.
+        # `'SandBox': 'true'` signifies a testing environment.
+        # `'SandBox': 'false'` denotes a production environment.
+        
         url = (
-            # ... 同之前的url定义
+            f"https://alime-ws.aliyuncs.com/sse/paas4Json/"
+            f"{access_token}/"
+            f"{channel_id}/"
+            f"{sign}/"
+            f"{timestamp}"
         )
-        headers = {
-            # ... 同之前的headers定义
+        header = {
+            'Accept': 'text/event-stream'
         }
 
         try:
@@ -264,7 +278,17 @@ async def con_aichatbot(access_token=None, channel_id=None, sign=None, timestamp
                     complete_output = None
                     async for line in response.content:
                         line = line.decode('utf-8')
-                        # ... 同之前的处理逻辑
+                        # Modify the condition for when 'line' is empty to avoid parsing the situation where `line=''`.
+                        if line and line != '' and line.startswith('data:'):
+                            data_content = line.replace('data:', '')
+                            data_content = data_content.strip()
+                            data_content_dict = json.loads(data_content)
+                            print(f"当前requestId为:{data_content_dict['requestId']}")
+                            value = json.loads(data_content_dict["data"][0]["value"])
+                            if value.get("MessageBody"):
+                                sentence_list = value["MessageBody"]["DirectMessageBody"]["SentenceList"]
+                                complete_output = process_sentence_list(sentence_list)
+
         except Exception as e:
             print("连接大模型时出错：", e)
         
@@ -355,3 +379,76 @@ if __name__ == "__main__":
 在这个例子中，`aichatbot.py` 包含了你的异步函数 `con_aichatbot`，而 `app.py` 包含了 Sanic 应用和路由的定义。你可以在 `app.py` 中通过 `from aichatbot import con_aichatbot` 来导入 `aichatbot.py` 中定义的函数。<br>
 
 这种组织方式不仅有助于保持代码的清晰和模块化，而且也确保了不同文件中的代码可以相互调用。当你的项目规模增长时，这种模块化的方法特别有用。<br>
+
+
+### yield方式：
+
+```python
+import aiohttp
+import json
+
+async def con_aichatbot(access_token=None, channel_id=None, sign=None, timestamp=None, user_input=None):
+    if access_token and channel_id and sign and timestamp and user_input:
+        # In the context of task-oriented multi-turn dialogues, Alibaba's general-purpose robot automatically differentiates, so there's no need for me to make the distinction.
+        data = {'messageId': '1', 
+                'action': 'TongyiBeebotChat', 
+                'version': '2022-04-08', 
+                'data': [{'type': 'JSON_TEXT', 
+                          'value': '{"InstanceId":"chatbot-cn-fa6mVnFBmb","Utterance":"' + user_input + '"}',
+                          'SandBox': 'false'
+                          }]}
+        # The `SandBox` parameter indicates whether the environment is a testing or production environment, with the default being the production environment.
+        # `'SandBox': 'true'` signifies a testing environment.
+        # `'SandBox': 'false'` denotes a production environment.
+        
+        url = (
+            f"https://alime-ws.aliyuncs.com/sse/paas4Json/"
+            f"{access_token}/"
+            f"{channel_id}/"
+            f"{sign}/"
+            f"{timestamp}"
+        )
+        header = {
+            'Accept': 'text/event-stream'
+        }
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url, json=data, headers=headers) as response:
+                    response.raise_for_status()
+                    async for line in response.content:
+                        line = line.decode('utf-8')
+                        # Modify the condition for when 'line' is empty to avoid parsing the situation where `line=''`.
+                        if line and line != '' and line.startswith('data:'):
+                            data_content = line.replace('data:', '')
+                            data_content = data_content.strip()
+                            data_content_dict = json.loads(data_content)
+                            print(f"当前requestId为:{data_content_dict['requestId']}")
+                            value = json.loads(data_content_dict["data"][0]["value"])
+                            if value.get("MessageBody"):
+                                sentence_list = value["MessageBody"]["DirectMessageBody"]["SentenceList"]
+                                rtn = process_sentence_list(sentence_list)
+                                yield rtn
+
+        except Exception as e:
+            print("连接大模型时出错：", e)
+
+# 在Sanic中使用该函数
+from sanic import Sanic, response
+
+app = Sanic("MyApp")
+
+@app.route("/answer", methods=['POST'])
+async def answer(request):
+    data = request.json
+    # 假设data包含了所需的所有参数
+    output = await con_aichatbot(
+        access_token=data.get("access_token"),
+        channel_id=data.get("channel_id"),
+        # ... 其他参数
+    )
+    return response.json({"reply": output})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
+```
