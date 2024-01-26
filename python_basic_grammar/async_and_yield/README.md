@@ -273,7 +273,7 @@ async def con_aichatbot(access_token=None, channel_id=None, sign=None, timestamp
 
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.post(url, json=data, headers=headers) as response:
+                async with session.post(url, json=data, headers=header) as response:
                     response.raise_for_status()
                     complete_output = None
                     async for line in response.content:
@@ -414,7 +414,7 @@ async def con_aichatbot(access_token=None, channel_id=None, sign=None, timestamp
 
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.post(url, json=data, headers=headers) as response:
+                async with session.post(url, json=data, headers=header) as response:
                     response.raise_for_status()
                     async for line in response.content:
                         line = line.decode('utf-8')
