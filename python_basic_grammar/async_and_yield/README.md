@@ -1,5 +1,14 @@
-# yield
-- [yield](#yield)
+# async 和 yield
+- [async 和 yield](#async-和-yield)
+  - [I/O 操作介绍:](#io-操作介绍)
+  - [异步编程:](#异步编程)
+    - [基本概念](#基本概念)
+    - [示例](#示例)
+      - [步骤 1: 引入必要的库](#步骤-1-引入必要的库)
+      - [步骤 2: 定义异步函数](#步骤-2-定义异步函数)
+      - [步骤 3: 创建主要的异步函数](#步骤-3-创建主要的异步函数)
+      - [步骤 4: 运行事件循环](#步骤-4-运行事件循环)
+    - [完整代码](#完整代码)
   - [yield生成器的多种返回格式:](#yield生成器的多种返回格式)
     - [生成器的常规使用:](#生成器的常规使用)
     - [将生成器的所有结果收集到一个列表中并返回:](#将生成器的所有结果收集到一个列表中并返回)
@@ -10,6 +19,95 @@
     - [数据串扰问题:](#数据串扰问题)
     - [数据串扰问题解答:](#数据串扰问题解答)
     - [工具函数和sanic路由不在同一个文件时的代码改动:](#工具函数和sanic路由不在同一个文件时的代码改动)
+
+## I/O 操作介绍:
+
+I/O 是 "Input/Output" 的缩写，I/O 操作即输入/输出操作，是计算机程序与外界（例如用户、文件系统、网络等）进行数据交换的过程。这个术语通常用于描述两种主要类型的操作：<br>
+
+1. **文件 I/O**：这涉及到读写文件系统上的文件。例如，当你的程序从硬盘上的文件中读取数据，或者向文件写入数据时，这就是文件 I/O 操作。这些操作通常涉及等待磁盘驱动器或者固态硬盘完成数据的读取或写入，这可能需要相对较长的时间。
+
+2. **网络 I/O**：这指的是通过网络发送和接收数据。例如，当你的程序向服务器发送请求或从服务器接收数据时，这就是网络 I/O 操作。网络 I/O 通常涉及等待网络延迟和数据传输，这也可能是一个耗时的过程。
+
+I/O 操作通常是计算机程序中较慢的部分，因为它们依赖于外部系统（如硬盘、网络设备等），这些系统的速度通常比 CPU 和内存慢得多。**这就是为什么在进行 I/O 操作时，常常会使用异步编程技术。**异步编程允许程序在等待 I/O 操作完成时继续执行其他任务，从而提高程序的整体效率和响应性。🫠🫠🫠<br>
+
+
+## 异步编程:
+
+Python中的异步编程是一种编程范式，它允许程序在等待某些操作（如I/O操作）完成时继续执行其他任务。这在处理大量并发连接或高延迟操作时特别有用。Python从3.5版本开始引入了`async`和`await`关键字，使异步编程变得更加简单和直观。<br>
+
+### 基本概念
+
+1. **协程（Coroutine）**: 使用`async def`定义的函数。这种函数在调用时不会立即执行，而是返回一个协程对象。
+
+2. **事件循环（Event Loop）**: 管理并分配执行异步任务的机制。事件循环在后台运行，按照任务的就绪状态进行调度。
+
+3. **`await`**: 用于暂停协程的执行，直到等待的协程完成。在`await`之后的代码，只有在`await`的协程完成后才会执行。
+
+### 示例
+
+让我们通过一个简单的例子来理解这些概念：假设我们要异步地获取多个网页的内容。<br>
+
+#### 步骤 1: 引入必要的库
+
+```python
+import asyncio
+import aiohttp
+```
+
+这里，`asyncio`是Python标准库中的异步I/O框架，`aiohttp`是一个支持异步请求的HTTP客户端。<br>
+
+#### 步骤 2: 定义异步函数
+
+```python
+async def fetch(session, url):
+    async with session.get(url) as response:
+        return await response.text()
+```
+
+这个`fetch`函数是一个协程，它异步地获取给定URL的内容。<br>
+
+#### 步骤 3: 创建主要的异步函数
+
+```python
+async def main(urls):
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch(session, url) for url in urls]
+        return await asyncio.gather(*tasks)
+```
+
+`main`函数也是一个协程，它创建了多个`fetch`协程的任务，并且使用`asyncio.gather`来并发地运行它们。<br>
+
+#### 步骤 4: 运行事件循环
+
+```python
+urls = ["https://www.example.com", "https://www.example.org"]
+result = asyncio.run(main(urls))
+print(result)
+```
+
+这里使用`asyncio.run()`来运行主协程`main`。它会创建事件循环，运行协程，直到协程完成。<br>
+
+### 完整代码
+
+```python
+import asyncio
+import aiohttp
+
+async def fetch(session, url):
+    async with session.get(url) as response:
+        return await response.text()
+
+async def main(urls):
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch(session, url) for url in urls]
+        return await asyncio.gather(*tasks)
+
+urls = ["https://www.example.com", "https://www.example.org"]
+result = asyncio.run(main(urls))
+print(result)
+```
+
+这个例子展示了Python异步编程的基本结构和步骤。你可以根据自己的需要修改这个例子，以适应不同的异步编程场景。<br>
 
 
 ## yield生成器的多种返回格式:
