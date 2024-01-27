@@ -16,6 +16,16 @@
   - [cannot create temp file for here-document: No space left on device](#cannot-create-temp-file-for-here-document-no-space-left-on-device)
   - [Could not establish connection to "xxx.xxx.xxx.xxx": Cannot read properties of undefined (reading 'replace').](#could-not-establish-connection-to-xxxxxxxxxxxx-cannot-read-properties-of-undefined-reading-replace)
   - ["项目部署在AWS的Lambda"是什么意思？](#项目部署在aws的lambda是什么意思)
+  - [服务器连接openai:](#服务器连接openai)
+    - [ubuntu 18.04 安装 GNOME 桌面环境:](#ubuntu-1804-安装-gnome-桌面环境)
+    - [阿里云服务器VNC无法登录问题:](#阿里云服务器vnc无法登录问题)
+      - [无法登录，提示 "Sorry, that didn't work. Please try again.":](#无法登录提示-sorry-that-didnt-work-please-try-again)
+    - [登录后提示"Error found when...":](#登录后提示error-found-when)
+    - [安装monocloud for Linux:](#安装monocloud-for-linux)
+    - [终端科学上网:](#终端科学上网)
+      - [临时启用代理:](#临时启用代理)
+      - [永久使用代理:](#永久使用代理)
+    - [测试代码效果:](#测试代码效果)
 
 ## 连接阿里云服务器：
 ### 进入实例：
@@ -302,3 +312,288 @@ AWS（Amazon Web Services）是亚马逊提供的一种云计算服务平台。L
 4. **事件驱动**：Lambda可以配置为响应AWS内的各种事件，如文件上传到S3、更新数据库等。
 
 总之，这是一种现代的、高效的方式来运行和扩展应用程序，特别适合那些希望减少基础设施管理负担的开发者或企业。<br>
+
+
+## 服务器连接openai:
+
+服务器连接openai首先要服务器支持科学上网，以笔者使用的monocloud为例进行讲解。<br>
+
+由于monocloud只支持图形化界面的Linux安装，故笔者先介绍 ubuntu 18.04 图形化界面安装。<br>
+
+### ubuntu 18.04 安装 GNOME 桌面环境:
+
+要在 Ubuntu 18.04 服务器版本上安装 GNOME 桌面环境，你可以按照以下步骤操作：<br>
+
+1. **更新系统软件包列表**：
+
+首先，打开终端并更新系统的软件包列表。这可以确保你安装的是最新版本的软件包。运行以下命令：<br>
+
+```bash
+sudo apt update
+```
+
+2. **升级系统**：
+
+推荐升级所有现有的软件包到最新版本。运行以下命令：<br>
+
+```bash
+sudo apt upgrade
+```
+
+这可能需要一些时间，具体取决于你的系统和网络速度。<br>
+
+3. **安装 GNOME 桌面环境**：
+
+安装 GNOME 桌面，只需运行以下命令：<br>
+
+```bash
+sudo apt install ubuntu-desktop
+```
+
+`ubuntu-desktop` 是 Ubuntu 的标准桌面环境，包括 GNOME 和其他必需的软件包。<br>
+
+4. **启动图形界面**：
+
+安装完成后，你可以通过运行以下命令来启动图形界面：<br>
+
+```bash
+sudo systemctl start gdm3
+```
+
+如果你希望在系统启动时自动进入图形界面，可以确保 gdm3（GNOME Display Manager）已被设置为默认的显示管理器。通常，安装过程会自动处理这个步骤。<br>
+
+5. **重新启动**：
+
+重启你的系统以应用更改：<br>
+
+> 或者可以重启实例。
+
+```bash
+sudo reboot
+```
+
+重启后，你应该能看到 GNOME 的登录界面。<br>
+
+请注意，安装图形化桌面环境可能会消耗相当多的系统资源，特别是在内存和处理器方面。如果你的服务器资源有限，请考虑这一点。此外，确保你的服务器有足够的硬盘空间来容纳额外的软件包。(大约1～2G空间)<br>
+
+### 阿里云服务器VNC无法登录问题:
+
+首先，注意阿里云服务器的VNC登录不支持特殊字符输入，可以使用登录界面左上角的 `复制命令输入` 进行特殊字符的输入。<br>
+
+> 特殊字符主要出现在你的密码中，或者你可以选择修改密码。
+
+![](./复制命令输入.jpg)
+
+
+#### 无法登录，提示 "Sorry, that didn't work. Please try again.":
+
+如果你在账号密码正确的情况下，遇到 "Sorry, that didn't work. Please try again.":<br>
+
+![](./sorry_dont_work.jpg)
+
+请终端输入 `vim /etc/pam.d/gdm-password` ，然后将配置项的 `user != root` 删除，具体效果如下:<br>
+
+![](./gam_password.jpg)
+
+修改后正常关闭文件即可，不需要激活文件或重启实例，现在你应该能够使用VNC登录了。<br>
+
+### 登录后提示"Error found when...":
+
+如果你VNC登录实例后，又遇到了 "Error found when..." ，如下图所示:<br>
+
+![](./error_found_profile.jpg)
+
+此时需要修改 `/root/.profile` 文件，命令如下:<br>
+
+```bash
+vim /root/.profile 
+```
+
+将文中的最后一行 `mesg n` 修改成 `tty -s && mesg n`，效果如下:<br>
+
+```bash
+tty -s && mesg n || true
+```
+
+![](./tty.jpg)
+
+依旧不需要激活文件，尝试重新登录VNC，显示的效果:<br>
+
+![](./unbuntu_desktop.jpg)
+
+如果出现上图这个界面，就表示ubuntu图形化界面安装成功了。<br>
+
+### 安装monocloud for Linux:
+
+1. 官网下载Linux版安装包，并将文件上传到指定位置，笔者是上传到的桌面，即 `~/Desktop`;
+
+2. 选择 **Extract Here** 将文件解压到当前目录;
+
+3. 双击解压后的文件，然后运行 `cfw` 文件。如果显示无法运行，可以和笔者一样通过终端运行，运行指令如下:<br>
+
+非root用户使用的指令:<br>
+
+```bash
+./cfw
+```
+
+由于 `cfw` 文件默认不允许以root用户身份启动，需要使用以下指令启动:<br>
+
+```bash
+./cfw --no-sandbox
+```
+
+4. 程序启动后需要获取Clash链接，具体操作如下:<br>
+
+![](./clash_url.jpg)
+
+5. monocloud界面中点击 **profiles** 选项，然后将刚刚获取到的Clash链接填入下图所示位置，点击Download，就会在当前界面生成一个新的配置文件，具体操作如下:<br>
+
+![](./apply_clash.jpg)
+
+注意，导入成功之后，Profiles 内会显示下载下来的配置文件，并默认选中该配置文件，请在以后使用代理的过程中确保一直使用的是下载下来的配置文件，而不是默认的 config.yaml。<br>
+
+6. 由于monocloud的节点配置可能会根据情况不定时调整，建议在导入 Clash 订阅配置成功之后，右键该配置文件打开“settings”设置，找到 Update Interval 选项设置定时更新订阅配置，如下图:
+
+![](./update.jpg)
+
+7. 修改网络节点，默认是香港节点，是无法连接openai服务的，需要修改为其他节点，具体操作如下图:
+
+![](./network_agent.jpg)
+
+8. 修改ubuntu中的网络设置:
+
+clash for Windows 不会主动修改系统设置，个人需要手动修改系统的网络设置中代理部分设置以便让浏览器等程序可以使用代理进行连接，具体设置可参考下图。如果你跳过此步，后续任何程序（包括浏览器）要使用代理都需要你手动为其添加代理设置。<br>
+
+打开 ubuntu 的 settings，然后按照下图操作:<br>
+
+![](./network_setting.jpg)
+
+9. 测试科学上网:
+
+![](./con_network.jpg)
+
+好了，现在浏览器已经能科学上网了。<br>
+
+### 终端科学上网:
+
+假设你已经完成了前面的步骤，现在浏览器已经能科学上网了，我们试着让终端执行代码也科学上网。<br>
+
+#### 临时启用代理:
+
+终端运行以下指令，可以让终端临时使用代理，只要你的终端没有关闭，就可以一直使用代理:<br>
+
+> 两个使用的都是 `"http://127.0..."`，笔者没有写错。
+
+```txt
+export http_proxy="http://127.0.0.1:7890"
+export https_proxy="http://127.0.0.1:7890"
+```
+
+#### 永久使用代理:
+
+要在 Ubuntu 18.04 中永久设置网络代理，你需要将这些 `export` 命令添加到你的个人 shell 启动脚本中。通常，这意味着将它们添加到您的 `~/.bashrc` 或 `~/.profile` 文件中。这样，每次你启动一个新的终端会话时，这些环境变量就会自动设置。<br>
+
+按照以下步骤操作：
+
+1. **打开您的 `~/.bashrc` 或 `~/.profile` 文件：**
+   
+你可以使用任何文本编辑器打开这个文件。例如，使用 `nano` 编辑器：<br>
+
+```bash
+vim ~/.bashrc
+```
+
+2. **将代理设置添加到文件末尾：**
+
+在打开的文件中，移动到文件的末尾，然后添加以下行：<br>
+
+```bash
+export http_proxy="http://127.0.0.1:7890"
+export https_proxy="http://127.0.0.1:7890"
+```
+
+3. **保存文件并退出编辑器：**
+   
+使用的是 `:x` 保存更改并退出编辑器。
+
+4. **应用更改：**
+
+要使更改立即生效，你需要重新加载 `~/.bashrc` 文件。这可以通过在新终端中运行以下命令来实现：<br>
+
+```bash
+source ~/.bashrc
+```
+
+或者，你可以简单地关闭并重新打开您的终端。<br>
+
+5. **验证设置：**
+
+使用 `echo $http_proxy` 和 `echo $https_proxy` 命令来验证这些环境变量是否被正确设置。<br>
+
+请注意，这些设置只适用于基于 bash shell 的终端会话。如果你使用其他类型的 shell（例如 zsh 或 fish），你可能需要修改不同的配置文件。<br>
+
+> 这些设置不会影响图形用户界面应用程序，如果你需要为 GUI 应用程序设置代理，你可能需要在系统设置中进行配置，也就是上一节的操作。
+
+### 测试代码效果:
+
+笔者的测试代码如下，大家可以使用这份代码测试，也可以使用自己写的代码测试:<br>
+
+```python
+"""
+@author:ChenPeilong(peilongchencc@163.com)
+@description:OpenAI streaming output example code.
+"""
+import os
+from loguru import logger
+from dotenv import load_dotenv
+from openai import OpenAI
+
+# 加载环境变量
+dotenv_path = '.env.local'
+load_dotenv(dotenv_path=dotenv_path)
+
+# 设置日志
+logger.remove()
+logger.add("openai_stream.log", rotation="1 GB", backtrace=True, diagnose=True, format="{time} {level} {message}")
+
+
+def get_openai_response(chat_history):
+    # create openAI client
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    # connect openai API server and fetch the response of chat_history with streaming.
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=chat_history,
+        stream=True
+    )
+    # combine the results of streaming output.
+    response_content = ""
+    for chunk in completion:
+        if chunk.choices[0].delta.content is not None:
+            print(chunk.choices[0].delta.content, end="")
+            response_content += chunk.choices[0].delta.content
+    print() # For Line Breaks, Optimizing Terminal Display.
+    chat_history.append({"role": "assistant", "content": response_content})
+    return chat_history
+
+if __name__ == '__main__':
+    # chath_istory can be [], without providing a semantic context(语义环境).
+    # chat_history = [{"role": "system", "content": "你是一名NLP算法工程师"}]
+    chat_history = []
+    while True:
+        user_input = input("\nPlease enter your question (type 'exit' to end the program):")
+        print() # For Line Breaks, Optimizing Terminal Display.
+        # If the user enters 'exit', then terminate the loop.
+        if user_input == 'exit':
+            break
+        
+        chat_history.append({"role": "user", "content": user_input})
+        # fetch the results of the API response and display them in a streaming manner on the terminal, 
+        # while simultaneously(同时) updating chat_history.
+        chat_history = get_openai_response(chat_history)
+```
+
+![](./con_openai_server.jpg)
+
+大功告成，可喜可贺～🚀🚀🚀<br>
