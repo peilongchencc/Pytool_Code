@@ -26,6 +26,19 @@
       - [临时启用代理:](#临时启用代理)
       - [永久使用代理:](#永久使用代理)
     - [测试代码效果:](#测试代码效果)
+  - [将"ip+port"改为通过域名访问自己的服务:](#将ipport改为通过域名访问自己的服务)
+    - [域名购买与实名认证:](#域名购买与实名认证)
+    - [域名解析配置:](#域名解析配置)
+  - [ICP备案:](#icp备案)
+    - [服务器开启端口：](#服务器开启端口)
+    - [使用 Certbot 正在为指定的域名获取一个(新的) SSL/TLS 证书:](#使用-certbot-正在为指定的域名获取一个新的-ssltls-证书)
+    - [验证SSL证书是否有效(可选):](#验证ssl证书是否有效可选)
+    - [Nginx配置:](#nginx配置)
+      - [安装Nginx:](#安装nginx)
+      - [配置Nginx:](#配置nginx)
+      - [重定向 HTTP 到 HTTPS（可选）:](#重定向-http-到-https可选)
+      - [答疑-Nginx配置中哪部分表示了"www"记录？哪部分表示了"@"记录？](#答疑-nginx配置中哪部分表示了www记录哪部分表示了记录)
+      - [检查配置文件的语法并重新启动 Nginx:](#检查配置文件的语法并重新启动-nginx)
 
 ## 连接阿里云服务器：
 ### 进入实例：
@@ -600,3 +613,250 @@ if __name__ == '__main__':
 ![](./con_openai_server.jpg)
 
 大功告成，可喜可贺～🚀🚀🚀<br>
+
+
+## 将"ip+port"改为通过域名访问自己的服务:
+
+### 域名购买与实名认证:
+
+笔者购买的是阿里云的域名，具体操作如下，注意创建模板进行实名认证。<br>
+
+~[](./website_domain_purchase.jpg)
+
+实名认证后，需要阿里云审核(非常快)，然后需要注册局审核(大约1～2个小时)。<br>
+
+### 域名解析配置:
+
+登录以下阿里云DNS产品控制台:<br>
+
+```txt
+https://dns.console.aliyun.com/?spm=5176.smartservice_service_robot_chat_new.help.12.127b3f1b3EE8rv#/dns/domainList
+```
+
+具体操作如下图:<br>
+
+![](./www_and_@.jpg)
+
+一般对于同一个IP会配 "www" 和 "@" 两种主机记录，即支持用户在网址栏输入 "www.peilongchencc.cn" 和 "peilongchencc.cn" 访问自己的服务。<br>
+
+记录类型要看自己的IP是什么类型，我的公网IP为 `8.140...`，是IPv4，所以选的A记录类型。<br>
+
+
+## ICP备案:
+
+实名注册域名、管理局审核通过后，还需要进行ICP备案。<br>
+
+注意:ICP备案走的是工信部系统，需要域名实名认证2～3天后才能进行ICP备案。如果你使用的阿里云的域名，可以参考以下网址进行操作:<br>
+
+> 朋友告诉我，ICP备案大概需要一周，不确定，后续有具体结果更新这里的时间。
+
+```txt
+https://help.aliyun.com/zh/icp-filing/basic-icp-service/user-guide/for-the-first-time-the-record-process
+```
+
+### 服务器开启端口：
+
+需要确保服务器的 80 端口（HTTP）和 443 端口（HTTPS）是开放的，因为这是 web 服务的标准端口。以笔者所用的阿里云服务器为例，，需要在云服务控制面板中配置安全组规则来开放这2个端口。<br>
+
+### 使用 Certbot 正在为指定的域名获取一个(新的) SSL/TLS 证书:
+
+终端运行以下指令，使用 Certbot 正在为指定的域名获取一个(新的) SSL/TLS 证书，注意将域名修改为你自己的域名:<br>
+
+> Certbot获取的SSL证书是免费的，阿里云的SSL证书一年4000¥以上。
+> 连接Certbot不需要开通代理，正常网络连接即可。
+
+```bash
+sudo certbot certonly --nginx -d www.peilongchencc.cn
+```
+
+此时需要注意，如果你的服务器没有打开80和443端口，是无法使用 Cerbot 获取SSL证书的，提示信息如下:<br>
+
+```txt
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Plugins selected: Authenticator nginx, Installer nginx
+Obtaining a new certificate
+Performing the following challenges:
+http-01 challenge for www.peilongchencc.cn
+Waiting for verification...
+Cleaning up challenges
+Failed authorization procedure. www.peilongchencc.cn (http-01): urn:ietf:params:acme:error:connection :: The server could not connect to the client to verify the domain :: 8.140.203.136: Fetching http://www.peilongchencc.cn/.well-known/acme-challenge/yPm_orH_DOox6QVUFBv5jiAiZWH9r8bhFOO-9_T91qk: Timeout during connect (likely firewall problem)
+
+IMPORTANT NOTES:
+ - The following errors were reported by the server:
+
+   Domain: www.peilongchencc.cn
+   Type:   connection
+   Detail: 8.140.203.136: Fetching
+   http://www.peilongchencc.cn/.well-known/acme-challenge/yPm_orH_DOox6QVUFBv5jiAiZWH9r8bhFOO-9_T91qk:
+   Timeout during connect (likely firewall problem)
+
+   To fix these errors, please make sure that your domain name was
+   entered correctly and the DNS A/AAAA record(s) for that domain
+   contain(s) the right IP address. Additionally, please check that
+   your computer has a publicly routable IP address and that no
+   firewalls are preventing the server from communicating with the
+   client. If you're using the webroot plugin, you should also verify
+   that you are serving files from the webroot path you provided.
+```
+
+❤️如果你已经开通了80和443端口，应该会看到以下内容:<br>
+
+```txt
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Plugins selected: Authenticator nginx, Installer nginx
+Obtaining a new certificate
+Performing the following challenges:
+http-01 challenge for www.peilongchencc.cn
+Waiting for verification...
+Cleaning up challenges
+
+IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/www.peilongchencc.cn/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/www.peilongchencc.cn/privkey.pem
+   Your cert will expire on 2024-04-28. To obtain a new or tweaked
+   version of this certificate in the future, simply run certbot
+   again. To non-interactively renew *all* of your certificates, run
+   "certbot renew"
+ - If you like Certbot, please consider supporting our work by:
+
+   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le
+```
+
+讲下这段信息的关键含义:<br>
+
+新获得的证书和链文件被保存在:<br>
+
+```bash
+/etc/letsencrypt/live/www.peilongchencc.cn/fullchain.pem
+```
+
+私钥文件保存在: <br>
+
+```bash
+/etc/letsencrypt/live/www.peilongchencc.cn/privkey.pem
+```
+
+上述信息提到提到证书将在 2024-04-28 过期，建议在未来要更新或修改证书时再次运行 Certbot。也可以使用 `certbot renew` 命令自动更新所有证书。<br>
+
+### 验证SSL证书是否有效(可选):
+
+使用 openssl 命令：在服务器上，你可以使用 openssl 命令行工具来检查 SSL 证书。运行以下命令来检查证书：<br>
+
+```bash
+openssl s_client -connect peilongchencc.cn:443 -servername peilongchencc.cn
+```
+
+这将连接到你的服务器并显示 SSL 证书的详细信息，包括证书链和任何错误。<br>
+
+### Nginx配置:
+
+#### 安装Nginx:
+
+可以终端输入以下指令，通过检查 Nginx 版本来确定自己电脑中是否有Nginx:<br>
+
+```bash
+nginx -v
+```
+
+更新的系统信息，然后使用以下指令安装 Nginx:<br>
+
+```bash
+sudo apt update
+```
+
+```bash
+sudo apt upgrade
+```
+
+```bash
+sudo apt install nginx
+```
+
+终端输入以下指令，检查 Nginx 版本:<br>
+
+```bash
+nginx -v
+```
+
+#### 配置Nginx:
+
+```conf
+server {
+    listen 80;
+    server_name peilongchencc.cn www.peilongchencc.cn;
+    
+    # 重定向所有 HTTP 请求到 HTTPS
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name peilongchencc.cn www.peilongchencc.cn;
+
+    # 指定 SSL 证书和私钥路径
+    ssl_certificate /etc/letsencrypt/live/www.peilongchencc.cn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/www.peilongchencc.cn/privkey.pem;
+
+    # 其他 SSL 配置...
+
+    # 代理设置
+    location / {
+        proxy_pass http://localhost:7860;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+这个配置做了以下几件事情：<br>
+
+监听 80 端口（HTTP）：所有到达 "peilongchencc.cn" 或 "www.peilongchencc.cn" 的 HTTP 请求都会被重定向到 HTTPS。<br>
+
+监听 443 端口（HTTPS）：处理来自 "peilongchencc.cn" 和 "www.peilongchencc.cn" 的 HTTPS 请求。<br>
+
+SSL 证书和密钥：使用 Let's Encrypt 提供的证书和密钥。<br>
+
+代理到本地服务：所有请求都被代理到运行在本机的 7860 端口上的服务。<br>
+
+#### 重定向 HTTP 到 HTTPS（可选）:
+
+Question:<br>
+
+我想要将所有通过 HTTP 访问的流量重定向到 HTTPS，这种情况下我还需要开通服务器的 80 端口吗？<br>
+
+Answer:<br>
+
+即使你打算将所有通过 HTTP 访问的流量重定向到 HTTPS，你仍然需要开放服务器的 80 端口。这是因为初始的 HTTP 请求首先会到达 80 端口，然后才会被服务器重定向到 443 端口（HTTPS）。如果不开放 80 端口，那么初始的 HTTP 请求就无法到达服务器，从而无法完成重定向。<br>
+
+#### 答疑-Nginx配置中哪部分表示了"www"记录？哪部分表示了"@"记录？
+
+在 Nginx 配置中，server_name 指令是用来指定哪些主机名（或域名）由该服务器块处理。在提供的配置示例中，server_name 指令同时涵盖了 "www" 记录和 "@" 记录。让我解释一下：<br>
+
+`server_name peilongchencc.cn www.peilongchencc.cn;` 这行代码的作用是告诉 Nginx，无论是访问 "peilongchencc.cn"（这代表 "@" 记录）还是 "www.peilongchencc.cn"（这代表 "www" 记录），都由这个服务器块处理。<br>
+
+在 Nginx 配置中，并没有专门用来区分 "www" 记录和 "@" 记录的特定部分。server_name 指令可以接受多个域名，这意味着无论用户输入的 URL 中包含 "www" 还是不包含，只要这些域名都在 server_name 指令中列出，Nginx 都会为它们提供服务。<br>
+
+上述Nginx配置能够处理同时指向 "peilongchencc.cn" 和 "www.peilongchencc.cn" 的请求。这样做的好处是无论用户访问哪个版本的域名（无论是带 "www" 还是不带），他们都能够访问到同一个网站。<br>
+
+#### 检查配置文件的语法并重新启动 Nginx:
+
+假定你现在已经按照上述操作将Nginx配置导入了自己的Nginx配置，现在请按照以下步骤执行:<br>
+
+检查配置文件的语法是否正确，使用命令:<br>
+
+```bash
+sudo nginx -t
+```
+
+如果没有错误，重新启动 Nginx 以应用更改，使用命令:<br>
+
+```bash
+sudo systemctl restart nginx
+```
+
+完成这些步骤后，且你的ICP备案通过来，用户就可以通过 "https://peilongchencc.cn" 和 "https://www.peilongchencc.cn" 正常访问你的服务了。<br>
