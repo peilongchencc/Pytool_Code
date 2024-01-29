@@ -1205,7 +1205,7 @@ if __name__ == "__main__":
 
 运行以上代码后，Postman测试效果为:<br>
 
-![](./sanic_sse.mp4)
+![](./sanic_sse.gif)
 
 
 ### 结合LLM API的SSE示例:
