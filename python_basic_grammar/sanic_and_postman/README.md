@@ -40,6 +40,11 @@ Sanic 是一个用于构建异步（asynchronous）Web应用的Python框架，�
   - [Sanic Blueprint:](#sanic-blueprint)
     - [完整代码--单个蓝图：](#完整代码--单个蓝图)
     - [完整代码--多个蓝图：](#完整代码--多个蓝图)
+  - [使用Sanic实现Server Sent Event(SSE):](#使用sanic实现server-sent-eventsse)
+    - [`index.html`文件代码如下:](#indexhtml文件代码如下)
+    - [`server.py`文件代码如下:](#serverpy文件代码如下)
+    - [POST方式进行SSE传输:](#post方式进行sse传输)
+    - [结合LLM API的SSE示例:](#结合llm-api的sse示例)
 
 ## Sanic的安装
 
@@ -1008,3 +1013,200 @@ if __name__ == "__main__":
 现在，你的应用程序将同时支持两个蓝图的"/ans"接口，分别由`answer1`和`answer2`处理。这两个蓝图可以分别在不同的URL前缀下访问。<br>
 
 🚨🚨🚨注意：虽然两个蓝图"/ans"接口的处理相同，但由于我们定义的是2个视图函数，不能都使用`async def answer(request)`写法，要进行区分。<br>
+
+
+## 使用Sanic实现Server Sent Event(SSE):
+
+使用sanic实现SSE传输，服务器所返回的响应内容需符合 SSE 格式规范：<br>
+
+- 将消息内容放在 `data:` 之后；
+- 在每条消息结尾使用 2 个换行符(`\n\n`)，即每条消息之间空一行；
+
+下面以Sanic官方给出的代码示例进行示范，在同一目录下创建`index.html`、`server.py`文件，然后将下列代码分别粘贴到文件内。<br>
+
+终端运行以下指令:<br>
+
+```bash
+python server.py
+```
+
+打开 `http://8.140.203.xxx:8848/` 即可看到效果。<br>
+
+### `index.html`文件代码如下:
+
+```html
+<!DOCTYPE html>
+<script>
+    let eventSource
+    let in_focus = true
+    let should_run = false
+
+    window.onblur = function () {
+        in_focus = false
+    }
+    window.onfocus = function () {
+        in_focus = true
+        if (should_run) {
+            start()
+        }
+    }
+
+    function start() {
+        should_run = true
+        if (!window.EventSource) {
+            // IE or an old browser
+            alert("The browser doesn't support EventSource.")
+            return
+        }
+
+        eventSource = new EventSource('/sse')
+
+        eventSource.onopen = function (e) {
+            log("Event: open")
+        }
+
+        eventSource.onerror = function (e) {
+            log("Event: error")
+            if (this.readyState == EventSource.CONNECTING) {
+                log(`Reconnecting (readyState=${this.readyState})...`)
+            } else {
+                log("Error has occured.")
+            }
+        }
+
+        eventSource.addEventListener('bye', function (e) {
+            log("Event: bye, data: " + e.data)
+            if (e.data == "close") {
+                eventSource.close()
+            }
+        })
+
+        eventSource.addEventListener('first_only', function (e) {
+            log("Event: first_only, data: " + e.data)
+        })
+
+        eventSource.onmessage = function (e) {
+            log("Event: message, data: " + e.data)
+            if (!in_focus) {
+                do_stop()
+            }
+        }
+    }
+
+    function stop(manual) {
+        should_run = false
+        do_stop()
+    }
+
+    function do_stop() {
+        eventSource.close()
+        log("eventSource.close()")
+    }
+
+    function log(msg) {
+        console.log(msg)
+        logElem.innerHTML += msg + "<br>"
+        document.documentElement.scrollTop = 99999999
+    }
+
+    function reset() {
+        document.querySelector("#logElem").innerHTML = ""
+    }
+</script>
+<button onclick="start()">Start</button>
+<button onclick="stop()">Stop</button>
+<button onclick="reset()">Clear</button>
+<pre id="logElem" style="margin: 6px 0"></pre>
+```
+
+### `server.py`文件代码如下:
+
+```python
+import asyncio
+from itertools import count
+
+from sanic import Sanic
+from sanic.request import Request
+from sanic.response import redirect
+
+c = count()
+app = Sanic("__BASE__")
+asyncio.set_event_loop_policy(None)
+
+
+@app.get("/sse")
+async def sse(request: Request):
+    print("Incoming SSE")
+    headers = {"Cache-Control": "no-cache"}
+    response = await request.respond(
+        headers=headers, content_type="text/event-stream"
+    )
+
+    await response.send("event: first_only\n")
+    while True:
+        i = next(c)
+        await response.send(f"data: {i}\n\n")
+        await asyncio.sleep(1)
+
+        if i and i % 4 == 0:
+            await response.send("event: bye\n")
+            await response.send("data: close\n\n")
+            break
+
+        await response.send("event: message\n")
+    print("Done")
+
+
+app.static("/index.html", "./index.html")
+
+
+@app.route("/")
+def index(request):
+    return redirect("/index.html")
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8848)
+```
+
+### POST方式进行SSE传输:
+
+```python
+import asyncio
+from sanic import Sanic
+from sanic.request import Request
+
+app = Sanic("MyApp")
+
+@app.route("/ans", methods=["POST"])
+async def test(request: Request):
+    user_input = request.form.get("user_input")
+    response = await request.respond(content_type="text/event-stream")
+    await response.send(f"data: {user_input}\n\n")  # 测试post传输的值
+    await asyncio.sleep(1)
+    await response.send("data: 您\n\n")
+    await asyncio.sleep(1)
+    await response.send("data: 好，有\n\n")
+    await asyncio.sleep(1)
+    await response.send("data: 什么\n\n")
+    await asyncio.sleep(1)
+    await response.send("data: 可\n\n")
+    await asyncio.sleep(1)
+    await response.send("data: 以为您\n\n")
+    await asyncio.sleep(1)
+    await response.send("data: 效劳的\n\n")
+    await asyncio.sleep(1)
+    await response.send("data: 呢？\n\n")
+    await asyncio.sleep(1)
+    print("Done")   # 终端输出，不会返回给前端或postman
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8848)
+```
+
+运行以上代码后，Postman测试效果为:<br>
+
+![](./sanic_sse.mp4)
+
+### 结合LLM API的SSE示例:
+
+待补充。<br>
