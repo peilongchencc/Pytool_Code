@@ -316,7 +316,7 @@ If your setup does not meet these requirements and you are unable to upgrade the
 
 版本回退到 1.85 后，远程连接正常，并且关闭vscode的自动更新选项。<br>
 
-> 版本回退到 1.85 后，远程连接如果不正常，考虑卸载 `Remote SSH` 然后重新安装。
+> 版本回退到 1.85 后，远程连接如果不正常，卸载 `Remote SSH` 然后重新安装即可。
 
 关闭vscode的自动更新选项步骤为:<br>
 
