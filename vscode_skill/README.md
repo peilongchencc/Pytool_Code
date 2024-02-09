@@ -18,6 +18,9 @@
   - [vscode查找文件时如何设置排除文件：](#vscode查找文件时如何设置排除文件)
   - [Github中MarkDown文档中所用的目录生成方式：](#github中markdown文档中所用的目录生成方式)
   - [让vscode同级只有一个文件夹时不合并为一行:](#让vscode同级只有一个文件夹时不合并为一行)
+  - [vscode 突然连接不上服务器了（2024年版本 自动更新从1.85-1.86）:](#vscode-突然连接不上服务器了2024年版本-自动更新从185-186)
+    - [问题分析:](#问题分析)
+    - [解决方案:](#解决方案)
 
 ## 断点调试：
 
@@ -269,3 +272,52 @@ Ps:由于github无法自动同步目录，需要在本地 `git pull` 拉取代�
 图示:<br>
 
 ![compact floders](./文件树视图.jpg)
+
+
+## vscode 突然连接不上服务器了（2024年版本 自动更新从1.85-1.86）:
+
+### 问题分析:
+
+这个问题在于你使用 Visual Studio Code 通过 **SSH连接** 到服务器时遇到了GLIBC版本不匹配的问题，新版 VScode(1.86) 需要的GLIBC版本很高，如果你的远程服务器是 ubuntu 20.04 以下版本，则不支持SSH连接。<br>
+
+### 解决方案:
+
+暂不确定vscode是今后一直不再维护，还是后期会修复。但官方也给出了解决方案:<br>
+
+1. 更新GLIBC版本： 首先，尝试更新你的系统的GLIBC版本。这可能需要你升级你的Linux发行版或手动更新GLIBC。请注意，手动更新GLIBC可能会涉及到系统稳定性的风险，因此请确保你了解你所采取的步骤，并在更新之前备份重要数据。(其实不如直接将 ubuntu 18.04更新到 ubuntu 20.04)
+
+2. 使用适用于你系统版本的Visual Studio Code： 如果你的系统版本无法升级GLIBC，尝试使用Visual Studio Code的旧版本，该版本与你的系统GLIBC版本兼容。你可以在 Visual Studio Code的GitHub Release页面 找到以前的版本。
+
+官方原文：<br>
+
+Can I run VS Code Server on older Linux distributions?(我可以使用较旧的 Linux 发行版运行 VS Code Server 吗？)<br>
+
+Starting with VS Code release 1.86, the minimum requirements for the build toolchain of the remote server were raised. The prebuilt servers distributed by VS Code are compatible with Linux distributions based on glibc 2.28 or later, for example, Debian 10, RHEL 8, Ubuntu 20.04.<br>
+
+从 VS Code 1.86 版本开始，远程服务器的构建工具链的最低要求有所提高。VS Code 分布式预构建的服务器与基于 glibc 2.28 或更高版本的 Linux 发行版兼容，例如 Debian 10、RHEL 8、Ubuntu 20.04。<br>
+
+If your setup does not meet these requirements and you are unable to upgrade the Linux distribution, you can downgrade the VS Code client to version 1.85 to continue using Remote Development. You can downgrade the VS Code client on both desktop and web:<br>
+
+如果您的设置不符合这些要求，并且无法升级 Linux 发行版，您可以降级 VS Code 客户端到 1.85 版本，以继续使用 Remote Development。您可以在桌面和 Web 上降级 VS Code 客户端：<br>
+
+- On desktop, you can download the VS Code release 1.85 from [here](https://code.visualstudio.com/updates/v1_85) . Depending on your platform, make sure to disable updates to stay on that version. A good recommendation is to have release 1.85 as a separate installation, set up with Portable Mode . That way, you won't affect your main desktop VS Code version.
+
+- 在桌面方面，您可以从这里下载 VS Code 1.85 版本。根据您的平台，请确保禁用更新以保持在该版本。一个好的建议是使 1.85 版本作为单独的安装，并设置便携模式。这样，您不会影响您的主要桌面 VS Code 版本。
+
+- On web, you can add the following query argument ?vscode-version=0ee08df0cf4527e40edc9aa28f4b5bd38bbff2b2 to use VS Code release 1.85.
+
+- 在 Web 上，您可以添加以下查询参数 ?vscode-version=0ee08df0cf4527e40edc9aa28f4b5bd38bbff2b2 以使用 VS Code 1.85 版本。
+
+结论:<br>
+
+2024 发布的版本1.86连接有问题，需要将vs版本回退到1.85。<br>
+
+验证:<br>
+
+版本回退到 1.85 后，远程连接正常，并且关闭vscode的自动更新选项。<br>
+
+> 版本回退到 1.85 后，远程连接如果不正常，考虑卸载 `Remote SSH` 然后重新安装。
+
+关闭vscode的自动更新选项步骤为:<br>
+
+设置-->搜索框输入 "Auto Check Updates"-->取消勾选<br>
