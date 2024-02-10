@@ -6,8 +6,10 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
 
 - [Neo4j](#neo4j)
   - [Neo4j的安装：](#neo4j的安装)
-    - [更新系统软件包信息：](#更新系统软件包信息)
-    - [安装jdk11:](#安装jdk11)
+    - [ubuntu 18.04安装java11:](#ubuntu-1804安装java11)
+      - [更新系统软件包信息：](#更新系统软件包信息)
+      - [安装jdk11:](#安装jdk11)
+    - [Centos7 安装java11:](#centos7-安装java11)
     - [下载安装包：](#下载安装包)
     - [安装包上传/移动到指定位置：](#安装包上传移动到指定位置)
     - [解压tar.gz文件并重命名：](#解压targz文件并重命名)
@@ -90,31 +92,82 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
   - [卸载JDK：](#卸载jdk)
 
 ## Neo4j的安装：
-### 更新系统软件包信息：
+
+### ubuntu 18.04安装java11:
+
+#### 更新系统软件包信息：
+
 终端输入以下指令：<br>
+
 ```shell
 sudo apt update
 ```
+
 不用担心，这一步只是让系统确认安装的包的信息，并不会更新或改变包的版本。<br>
 
-### 安装jdk11:
+#### 安装jdk11:
+
 安装 Java 运行时环境（JRE），Neo4j 需要 Java 运行。运行以下命令安装 OpenJDK 11<br>
+
 ```shell
 sudo apt install openjdk-11-jre
 ```
+
 如果你使用的不同系统，注意jdk版本是否与自己的系统兼容～🌿🌿🌿<br>
 
 上述指令运行成功后，输入以下指令查看jdk版本信息：<br>
+
 ```shell
 java -version
 ```
+
 此时终端应该可以看到以下信息：<br>
+
 ```txt
 openjdk version "11.0.19"
 ```
 
+### Centos7 安装java11:
+
+CentOS 7 同样能够安装 Java 11。安装 Java 11 可以通过多种方式完成，包括使用 CentOS 的包管理器 `yum` 安装 OpenJDK 11（开源版本），或者下载并安装 Oracle JDK 11（商业版本）。以下是使用 `yum` 安装 OpenJDK 11 的步骤：<br>
+
+1. **打开终端**：首先，打开你的 CentOS 7 系统上的终端。
+
+2. **更新你的包管理器**：运行以下命令以确保你的 `yum` 包管理器是最新的。
+
+```
+sudo yum update
+```
+
+3. **安装 OpenJDK 11**：通过 `yum` 安装 OpenJDK 11，使用以下命令：
+
+```
+sudo yum install java-11-openjdk
+```
+
+4. **验证安装**：安装完成后，你可以通过运行以下命令来验证 Java 版本：
+
+```
+java -version
+```
+
+这应该会显示安装的 Java 版本信息，确保显示的是 Java 11 的相关信息。例如:<br>
+
+```txt
+[root@localhost ~]# java -version
+openjdk version "11.0.22" 2024-01-16 LTS
+OpenJDK Runtime Environment (Red_Hat-11.0.22.0.7-1.el7_9) (build 11.0.22+7-LTS)
+OpenJDK 64-Bit Server VM (Red_Hat-11.0.22.0.7-1.el7_9) (build 11.0.22+7-LTS, mixed mode, sharing)
+```
+
+🚨🚨🚨如果你需要 Oracle JDK 11，你可以从 Oracle 官网下载 JDK 11 的安装包，并遵循官方的安装指南进行安装。Oracle JDK 的安装可能涉及解压下载的文件并设置环境变量，例如 `JAVA_HOME` 和更新 `PATH` 变量以指向 JDK 的安装位置。<br>
+
+🤭🤭🤭使用 OpenJDK 11 是 CentOS 7 上安装 Java 11 的一个简单且推荐的方式，因为它可以直接通过 CentOS 的包管理器安装，**无需手动下载或设置环境变量**。这也确保了易于管理和更新。<br>
+
 ### 下载安装包：
+
 要安装Neo4j，首先要确定适合自己的版本，Ubuntu 18.4 的用户直接访问下方链接下载 Neo4j 4.1.0 版本即可。<br>
+
 ```txt
 https://we-yun.com/doc/neo4j/   # 国内镜像源，微云数聚的仓库，内含Neo4j各历史版本
 ```
