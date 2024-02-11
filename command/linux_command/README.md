@@ -465,6 +465,18 @@ netstat -ntlp
 
 这将显示当前正在监听的所有TCP和UDP端口以及它们的占用情况。TCP端口以 "tcp" 标识，UDP端口以 "udp" 标识。<br>
 
+Centos系统需要先安装net-tools:<br>
+
+```bash
+yum install net-tools
+```
+
+然后运行以下指令:<br>
+
+```bash
+netstat -tuln # Centos系统使用
+```
+
 2. 使用 lsof 命令：
 
 ```bash
