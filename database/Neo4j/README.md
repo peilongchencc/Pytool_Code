@@ -19,6 +19,7 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [开启服务器端口：](#开启服务器端口)
     - [启动/关闭 Neo4j 数据库：](#启动关闭-neo4j-数据库)
     - [Neo4j Desktop 连接远程Neo4j数据库：](#neo4j-desktop-连接远程neo4j数据库)
+    - [Centos7修改最大文件打开数(可选):](#centos7修改最大文件打开数可选)
   - [Neo4j创建多个数据库：(如果你只需要一个Neo4j数据库，可以跳过此节内容。)](#neo4j创建多个数据库如果你只需要一个neo4j数据库可以跳过此节内容)
     - [cd到Neo4j安装包所在位置：](#cd到neo4j安装包所在位置)
     - [解压tar.gz文件并重命名：](#解压targz文件并重命名-1)
@@ -357,31 +358,87 @@ telnet my_server.com 7474
 ```
 <br>
 
+
+### Centos7修改最大文件打开数(可选):
+
+你在启动Neo4j时，可能遇到类似以下信息:<br>
+
+```txt
+WARNING: Max 1024 open files allowed, minimum of 40000 recommended. See the Neo4j manual.
+```
+
+这表明你的系统最大文件打开数太小，需要设置的大一些。<br>
+
+你可以通过以下指令 **查看最大文件打开数** (假设你的系统为Centos7):<br>
+
+```bash
+ulimit -Hn # 查看硬限制
+ulimit -Sn # 查看软限制
+```
+
+修改方式也很简单，按照以下步骤操作即可:<br>
+
+1. 修改/etc/security/limits.conf文件，追加如下内容：
+
+```bash
+* soft nofile 65535 
+* hard nofile 65535
+```
+
+> 65535 是 2^16 - 1，这是一个基于 16 位计算机体系结构的最大数值。
+
+2. 修改/etc/profile，追加如下内容：
+
+```bash
+ulimit -n 65535
+```
+
+3. 重启主机，然后使用 `ulimit -n` 检查。
+
+重启系统/服务器(Centos7版本):<br>
+
+```bash
+sudo systemctl reboot
+```
+
 ## Neo4j创建多个数据库：(如果你只需要一个Neo4j数据库，可以跳过此节内容。)
+
 工作中我们可能需要用到多份 Neo4j 数据库的情况，例如"医疗知识图谱"、"金融知识图谱"。那么如何在一台服务器上创建和启动2个或多个Neo4j呢？接下来，笔者将介绍具体的操作。<br>
+
 ### cd到Neo4j安装包所在位置：
+
 移动到我们安装 `neo4j_1` 的位置：<br>
+
 ```shell
 cd /opt
 ```
+
 依旧是刚刚的服务器，因为我们前面已经安装过jdk，所以这里不需要再安装。<br>
 
 ### 解压tar.gz文件并重命名：
+
 终端依次运行下列2个指令：<br>
+
 ```shell
 tar -xf neo4j-community-4.1.0-unix.tar.gz
 ```
+
 ```shell
 mv neo4j-community-4.1.0 neo4j_2
 ```
 
 ### 修改neo4j.conf 中的配置，开放远程连接限制:
+
 输入以下指令打开 neo4j.conf 文件：<br>
+
 ```confg
 vim /opt/neo4j_2/conf/neo4j.conf
 ```
+
 修改 `Bolt connector` 和 `HTTP Connector`:<br>
+
 修改前：<br>
+
 ```conf
 # Bolt connector
 dbms.connector.bolt.enabled=true
@@ -392,7 +449,9 @@ dbms.connector.bolt.enabled=true
 dbms.connector.http.enabled=true
 #dbms.connector.http.listen_address=:7474
 ```
+
 修改后：<br>
+
 ```conf
 # Bolt connector
 dbms.connector.bolt.enabled=true
@@ -404,6 +463,7 @@ dbms.connector.bolt.listen_address=0.0.0.0:7688
 dbms.connector.http.enabled=true
 dbms.connector.http.listen_address=0.0.0.0:7475
 ```
+
 端口可以修改为任意值，只要端口不冲突就可以。<br>
 
 ### 更改默认密码：
