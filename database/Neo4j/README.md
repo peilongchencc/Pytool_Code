@@ -81,6 +81,7 @@ Neo4j是一种图形数据库管理系统，用于存储和管理图形数据。
     - [利用Neo4j Desktop导入数据：](#利用neo4j-desktop导入数据)
     - [查看效果：](#查看效果)
   - [python与Neo4j：](#python与neo4j)
+    - [数据格式示例:](#数据格式示例)
     - [py2neo示例代码:](#py2neo示例代码)
     - [f-string插入示例:](#f-string插入示例)
     - [测试python与Neo4j的连接状态：](#测试python与neo4j的连接状态)
@@ -1630,6 +1631,57 @@ MATCH ()-[r]->() RETURN r
 
 ```bash
 pip install py2neo
+```
+
+### 数据格式示例:
+
+```python
+data = {
+    "triplet_1": [
+        {
+            "entity_type": "Person",    # 实体的类型
+            "properties": {
+                "name": "Jerry",        # 实体的属性
+                "age": 30
+                }
+            },
+        {
+            "entity_type": "Person",    # 实体的类型
+            "properties": {
+                "name": "Tom",          # 实体的属性
+                "age": 28
+                }
+            },
+        {
+            "relationship": "Catch",    # 关系的类型
+            "properties": {
+                "time": "2024-2-12"     # 关系的属性
+                }
+            }
+        ],
+    "triplet_2": [
+        {
+            "entity_type": "Person",    # 实体的类型
+            "properties": {
+                "name": "Jerry",        # 实体的属性
+                "age": 30
+                }
+            },
+        {
+            "entity_type": "Person",    # 实体的类型
+            "properties": {
+                "name": "Tom",          # 实体的属性
+                "age": 28
+                }
+            },
+        {
+            "relationship": "Catch",    # 关系的类型
+            "properties": {
+                "time": "2024-2-12"     # 关系的属性
+                }
+            }
+        ]
+    }
 ```
 
 ### py2neo示例代码:
