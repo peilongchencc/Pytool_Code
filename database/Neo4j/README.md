@@ -1684,6 +1684,83 @@ data = {
     }
 ```
 
+```python
+import json
+import os
+from py2neo import Graph
+from dotenv import load_dotenv
+load_dotenv('.env.local')  # 或者使用 load_dotenv() 来加载默认的 '.env' 文件
+
+def connect_to_neo4j():
+    """连接neo4j数据库,py2neo自动管理连接池
+    """
+    graph = Graph('bolt://{0}:{1}'.format(os.getenv('NEO4J_HOST'), os.getenv('NEO4J_PORT')),
+                  auth=(os.getenv('NEO4J_USER'), os.getenv('NEO4J_PASS')))
+    return graph
+
+def build_set_sentence(pro_origin, pro_data):
+    """构造属性设置语句
+    Args:
+        pro_origin: 属性源头,实体a、实体b或关系,输入值为 "a"、"b"、"r"
+        pro_data: 含属性的数据
+    Return:
+        set_sentece: set语句
+    example pro_data:
+        pro_data = {'name': 'PUMM', '功能': '通过执行单元划分防止使用后自由内存和双重释放错误', '操作系统': 'Linux', '组成部分': ['离线剖析器（profiler）', '在线执行器（enforcer）'], '优点': '相比于之前的工作，将内存开销减少了52.0%，并平均产生了2.04%的运行时间开销'}
+    """
+    # 使用列表推导式构建每个属性的赋值字符串，对于列表类型的值，将其元素合并为以逗号间隔的字符串
+    # 添加条件以跳过name键值对
+    assignments_updated = [
+        f"{pro_origin}.{key}='{', '.join(value)}'" if isinstance(value, list) else f"{pro_origin}.{key}='{value}'"
+        for key, value in pro_data.items() if key != 'name'
+    ]
+    if assignments_updated:
+        # 使用join方法连接所有的赋值字符串，以", "作为分隔符
+        set_sentece = "SET " + ", ".join(assignments_updated)
+        return set_sentece
+    else:
+        return ""
+
+
+def insert_triplet_to_neo4j(entity_a_info, entity_b_info, relationship_info):
+    # 获取neo4j连接
+    neo4j_graph = connect_to_neo4j()
+    
+    entity_a_type = entity_a_info["entity_type"]
+    properties_a = entity_a_info["properties"]
+    properties_a_name = properties_a["name"]
+    set_sentence_a = build_set_sentence("a", properties_a)
+    
+    entity_b_type = entity_b_info["entity_type"]
+    properties_b = entity_b_info["properties"]
+    properties_b_name = properties_b["name"]
+    set_sentence_b = build_set_sentence("b", properties_b)
+    
+    relationship = relationship_info["relationship"]
+    
+    merge_sentence = f"""
+    MERGE (a:{entity_a_type} {{name: '{properties_a_name}'}})
+    MERGE (b:{entity_b_type} {{name: '{properties_b_name}'}})
+    MERGE (a)-[r:{relationship}]->(b)
+    """
+    # 将SET语句和MERGE语句拼接
+    complete_query = merge_sentence + '\n' + set_sentence_a + '\n' + set_sentence_b
+    print(complete_query)
+    neo4j_graph.run(complete_query)
+
+if __name__ == "__main__":
+    data_path = "./example.json"
+
+    with open(data_path, 'r', encoding='utf-8') as file:
+        triplet_data = json.load(file)  # <class 'dict'>
+
+    for triplet_each in triplet_data.values():
+        entity_a_info = triplet_each[0]
+        entity_b_info = triplet_each[1]
+        relationship_info = triplet_each[2]
+        insert_triplet_to_neo4j(entity_a_info, entity_b_info, relationship_info)
+```
+
 ### py2neo示例代码:
 
 ```python
