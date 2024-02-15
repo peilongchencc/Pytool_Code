@@ -321,3 +321,5 @@ If your setup does not meet these requirements and you are unable to upgrade the
 关闭vscode的自动更新选项步骤为:<br>
 
 设置-->搜索框输入 "Auto Check Updates"-->取消勾选<br>
+
+设置-->搜索框输入 "Update: Mode" --> 将 default 改为 none <br>
