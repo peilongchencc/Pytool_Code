@@ -9,6 +9,7 @@
   - [git分支：](#git分支)
     - [分支创建：](#分支创建)
     - [查看分支：](#查看分支)
+    - [查看当前分支的上游分支：`git branch -vv`](#查看当前分支的上游分支git-branch--vv)
     - [切换分支：](#切换分支)
     - [修改分支名称：](#修改分支名称)
     - [合并分支：](#合并分支)
@@ -279,6 +280,16 @@ git branch -a
 
 🥷🥷🥷<br>
 其中星号 (*) 开头的分支为我们当前所在分支， `remotes/` 开头的部分为远程仓库分支，你可能已经注意到了 `remotes/` 开头部分并没有 `branch_b` 的内容，那是因为 `branch_b` 是在本地创建的，还没有和远程仓库同步(即没有`git push`过)。<br>
+
+### 查看当前分支的上游分支：`git branch -vv`
+
+```txt
+(base) root@iZ2zea5v77oawjy2qz7c20Z:/data/chatgpt-webui# git branch -vv
+* custom 4719c2c [origin/custom] requirements.txt添加loguru
+  main   d582566 [origin/main] update 1106
+```
+
+该指令用于当你有其他上游分支的时候进行同步操作。<br>
 
 
 ### 切换分支：
