@@ -44,6 +44,7 @@
       - [`reverse()`反转：](#reverse反转)
       - [`index()`获取索引：](#index获取索引)
       - [append()、extend()和加法操作符：](#appendextend和加法操作符)
+      - [列表相加示例代码:](#列表相加示例代码)
     - [列表解析：](#列表解析)
   - [元组：](#元组)
     - [创建元组：](#创建元组)
@@ -734,6 +735,62 @@ print(my_list)  # 输出 [1, 2, 3, 4, 5, 6]
 ```
 
 这两种方法允许你一次性添加多个值到列表中。<br>
+
+#### 列表相加示例代码:
+
+当2个列表都有值:<br>
+
+```python
+list1 = [1, 2, 3]
+list2 = [4, 5, 6]
+
+# 使用 extend 方法将 list2 的元素添加到 list1 的末尾
+list1.extend(list2)
+
+# 输出结果
+print(f"列表使用extend的结果为:{list1}")
+
+list_new = list1 + list2
+print(f"列表相加的结果为:{list_new}")
+
+list1 += list2
+print(f"+=的结果为:{list1}")
+```
+
+终端显示:<br>
+
+```txt
+列表使用extend的结果为:[1, 2, 3, 4, 5, 6]
+列表相加的结果为:[1, 2, 3, 4, 5, 6, 4, 5, 6]
++=的结果为:[1, 2, 3, 4, 5, 6, 4, 5, 6]
+```
+
+当其中一个列表为空list:<br>
+
+```python
+list1 = [1, 2, 3]
+list2 = []
+
+# 使用 extend 方法将 list2 的元素添加到 list1 的末尾
+list1.extend(list2)
+
+# 输出结果
+print(f"列表使用extend的结果为:{list1}")
+
+list_new = list1 + list2
+print(f"列表相加的结果为:{list_new}")
+
+list1 += list2
+print(f"+=的结果为:{list1}")
+```
+
+终端显示:<br>
+
+```txt
+列表使用extend的结果为:[1, 2, 3]
+列表相加的结果为:[1, 2, 3]
++=的结果为:[1, 2, 3]
+```
 
 ### 列表解析：
 列表解析是一种简洁的方式来创建新的列表，通常通过对现有列表的元素进行变换和筛选来实现。<br>
