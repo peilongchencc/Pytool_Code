@@ -37,6 +37,14 @@ Sanic 是一个用于构建异步（asynchronous）Web应用的Python框架，�
     - [清空Redis数据(可选)：](#清空redis数据可选)
     - [文件运行顺序：](#文件运行顺序)
     - [代码解释：](#代码解释)
+  - [启动Sanic服务时只加载一次模型--避免每次调用接口时加载模型的耗时:](#启动sanic服务时只加载一次模型--避免每次调用接口时加载模型的耗时)
+    - [模拟场景:](#模拟场景)
+    - [解决方案-sanic应用的上下文:](#解决方案-sanic应用的上下文)
+    - [解决方案-全局变量:](#解决方案-全局变量)
+    - [应用上下文管理`app.ctx`写法和全局变量写法的区别:](#应用上下文管理appctx写法和全局变量写法的区别)
+      - [应用上下文管理 (`app.ctx.classify_model = Classify_data()`)](#应用上下文管理-appctxclassify_model--classify_data)
+      - [全局实例化 (`classify_model = Classify_data()`)](#全局实例化-classify_model--classify_data)
+      - [选择依据](#选择依据)
   - [Sanic Blueprint:](#sanic-blueprint)
     - [完整代码--单个蓝图：](#完整代码--单个蓝图)
     - [完整代码--多个蓝图：](#完整代码--多个蓝图)
@@ -808,6 +816,100 @@ redis_conn.flushall()
 当运行`metadata_to_redis.py`后，数据被存入Redis。之后运行`/refresh`接口，数据从Redis中读取并存储到全局变量`metadata`中。此时，对于后续的`/ans`接口调用，程序直接从全局变量`metadata`中读取数据，而不是从Redis中。<br>
 
 用户每次调用`ans`接口不会再有从Redis获取数据并pickle的时间，因为数据已经被存储在全局变量`metadata`中，接口直接从这个变量获取数据。<br>
+
+
+## 启动Sanic服务时只加载一次模型--避免每次调用接口时加载模型的耗时:
+
+### 模拟场景:
+
+我使用sanic起了一个服务，`/classify`接口中调用了我自定义的类Classify_data中的predict方法，类Classify_data的`init`方法中加载了bert模型。我的代码应该怎么写才能避免每次调用`/classify`接口都要加载模型？<br>
+
+### 解决方案-sanic应用的上下文:
+
+为了避免每次调用`/classify`接口都要加载BERT模型，你可以在启动Sanic服务时就加载模型，并将模型保存在一个全局变量或者应用的上下文中。这样，每次调用接口时，只需要从上下文中获取已加载的模型即可。这种方法可以显著减少接口的响应时间，因为加载大型模型（如BERT）通常需要较长时间。<br>
+
+以下是一个简化的例子，展示如何在Sanic应用中实现这个策略：<br>
+
+```python
+from sanic import Sanic
+from sanic.response import json
+from your_model_file import Classify_data  # 假设这是你的模型类
+
+app = Sanic("ModelApp")
+
+# 在启动应用时加载模型
+@app.listener('before_server_start')
+async def load_model(app, loop):
+    app.ctx.classify_model = Classify_data()
+
+# 使用已加载的模型进行预测
+@app.route('/classify', methods=['POST'])
+async def classify(request):
+    # 获取请求数据
+    data = request.json
+    # 直接使用已加载的模型进行预测
+    prediction = app.ctx.classify_model.predict(data)
+    return json({"prediction": prediction})
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=8000)
+```
+
+在这个例子中，`Classify_data`的实例化（包括BERT模型的加载）发生在`before_server_start`事件处理器中。这意味着模型只会在Sanic服务启动时加载一次。之后，每次调用`/classify`接口时，通过`app.ctx.classify_model`即可访问到这个已加载的模型实例，而无需重复加载。<br>
+
+请根据你的实际情况调整`your_model_file`和`Classify_data`的相关部分。这种方法适用于任何需要避免重复加载重量级资源（如模型文件、数据库连接等）的场景。<br>
+
+### 解决方案-全局变量:
+
+```python
+from sanic import Sanic
+from sanic.response import json
+from your_model_file import Classify_data  # 假设这是你的模型类
+
+app = Sanic("ModelApp")
+# 实例化类Classify_data
+classify_model = Classify_data()
+
+# 使用已加载的模型进行预测
+@app.route('/classify', methods=['POST'])
+async def classify(request):
+    # 获取请求数据
+    data = request.json
+    # 直接使用已加载的模型进行预测
+    prediction = classify_model.predict(data)
+    return json({"prediction": prediction})
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=8000)
+```
+
+在这个例子中，你在Sanic应用的全局作用域中创建了`Classify_data`的实例。这意味着，当你的Python脚本执行时（包括但不限于启动Sanic服务器时），`Classify_data`会被实例化一次，并且这个实例会被保存在`classify_model`变量中。随后，在每次调用`/classify`接口时，你都会使用这个已经加载并实例化的模型来进行预测，而不需要重新加载模型。<br>
+
+这种方法同样有效地避免了每次请求都重新加载模型的问题，并且是实现这一目标的另一种简洁方式。选择在全局作用域中实例化模型（如你所示例的代码），还是在应用上下文中保存模型实例（如之前的例子所示），主要取决于你的偏好以及应用的具体需求。两种方法都可以达到相同的目标，即减少不必要的重复资源加载，优化服务的响应时间。<br>
+
+
+### 应用上下文管理`app.ctx`写法和全局变量写法的区别:
+
+应用上下文管理`app.ctx`写法和全局变量写法主要有两个区别，它们分别关涉到Sanic应用的上下文管理和模型实例化的时机。下面是这两种方法的对比：<br>
+
+#### 应用上下文管理 (`app.ctx.classify_model = Classify_data()`)
+
+1. **上下文作用域**：将模型保存在`app.ctx`（即应用的上下文）中，这意味着模型实例与Sanic应用的生命周期紧密相关。这种方法更加面向对象，利用了Sanic提供的应用上下文管理功能，有助于维护和组织代码，尤其是在更大、更复杂的应用中。
+2. **模型加载时机**：模型是在`before_server_start`事件监听器中被显式加载的。这允许在服务器完全启动前执行初始化代码，如加载模型、建立数据库连接等。这样做可以确保在处理任何请求之前，所有的初始化工作都已完成。
+
+#### 全局实例化 (`classify_model = Classify_data()`)
+
+1. **全局变量**：将模型实例化为一个全局变量。这种方法简单直接，对于小型应用或者脚本来说非常方便和足够用。它直观地显示了模型是如何和何时被加载的，使得代码易于理解。
+2. **模型加载时机**：模型在脚本执行期间（包括服务器启动前）就被加载了。这意味着，一旦开始执行脚本，无论服务器是否准备好接受请求，模型加载的工作就已经开始。这对于启动时间不敏感的应用是可行的。
+
+#### 选择依据
+
+- **应用规模**：对于较大、结构复杂的应用，推荐使用应用上下文管理方式，因为它有助于更好地组织代码和管理资源。而对于简单的应用或脚本，全局实例化方式可能更直接和简便。
+- **代码组织**：使用`app.ctx`可以让资源和配置与特定的Sanic应用实例关联，这在处理多个Sanic实例或在工厂函数中创建Sanic应用时特别有用。
+- **初始化时机**：如果你的模型加载或其他初始化操作需要异步执行，或者需要在服务器完全启动前完成特定的准备工作，使用`before_server_start`监听器会更适合。
+
+总的来说，两种方法都可以实现避免重复加载模型的目标，选择哪一种主要取决于你的具体需求和偏好。<br>
+
 
 ## Sanic Blueprint:
 
