@@ -9,6 +9,9 @@
     - [注意事项](#注意事项)
     - [`asyncio.gather`中`return_exceptions=True`的作用是什么？](#asynciogather中return_exceptionstrue的作用是什么)
     - [`asyncio.gather(*tasks)`中 `*tasks` 是什么用法？](#asynciogathertasks中-tasks-是什么用法)
+    - [python根据文件路径删除指定文件:](#python根据文件路径删除指定文件)
+      - [场景模拟:](#场景模拟)
+      - [解决方案:](#解决方案)
 
 ## 使用`requests`同步下载图片:
 
@@ -181,3 +184,30 @@ Task 2 is running
 这样，如果你的 `tasks` 列表中有三个任务，`asyncio.gather(*tasks)` 就相当于 `asyncio.gather(task1, task2, task3)`，其中 `task1, task2, task3` 是列表中的三个元素。<br>
 
 这种用法使得函数调用非常灵活，特别是当你事先不知道有多少个参数需要传递给函数时。通过将参数组织在列表或元组中，然后在函数调用时使用 `*` 符号展开，可以动态地调整传递给函数的参数数量。<br>
+
+### python根据文件路径删除指定文件:
+
+#### 场景模拟:
+
+我的文件保存路径为 "ocr_pictures/20240112102706-1.jpg"，我在代码的OCR服务执行完毕后想要删除这个文件，应该怎么做呢？<br>
+
+#### 解决方案:
+
+你可以使用`os`模块来删除文件。首先，需要导入`os`模块，然后使用`os.remove()`函数来删除指定的文件。这里是一个示例代码，展示如何删除你提到的文件：<br>
+
+```python
+import os
+
+# 文件路径
+file_path = "ocr_pictures/20240112102706-1.jpg"
+
+# 检查文件是否存在
+if os.path.exists(file_path):
+    # 删除文件
+    os.remove(file_path)
+    print("文件已删除。")
+else:
+    print("找不到文件，无法删除。")
+```
+
+这段代码首先检查文件是否存在，如果存在，则使用`os.remove()`函数删除该文件。这样做的好处是避免在文件不存在时尝试删除文件，从而引发异常。如果文件不存在，它会打印一条消息说找不到文件。这种做法可以确保代码的健壮性。<br>
