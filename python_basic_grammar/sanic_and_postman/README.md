@@ -42,9 +42,9 @@ Sanic 是一个用于构建异步（asynchronous）Web应用的Python框架，�
     - [解决方案-sanic应用的上下文:](#解决方案-sanic应用的上下文)
     - [解决方案-全局变量:](#解决方案-全局变量)
     - [应用上下文管理`app.ctx`写法和全局变量写法的区别:](#应用上下文管理appctx写法和全局变量写法的区别)
-      - [应用上下文管理 (`app.ctx.classify_model = Classify_data()`)](#应用上下文管理-appctxclassify_model--classify_data)
-      - [全局实例化 (`classify_model = Classify_data()`)](#全局实例化-classify_model--classify_data)
-      - [选择依据](#选择依据)
+      - [应用上下文管理 (`app.ctx.classify_model = Classify_data()`):](#应用上下文管理-appctxclassify_model--classify_data)
+      - [全局实例化 (`classify_model = Classify_data()`):](#全局实例化-classify_model--classify_data)
+      - [选择依据:](#选择依据)
   - [Sanic Blueprint:](#sanic-blueprint)
     - [完整代码--单个蓝图：](#完整代码--单个蓝图)
     - [完整代码--多个蓝图：](#完整代码--多个蓝图)
@@ -892,17 +892,17 @@ if __name__ == '__main__':
 
 应用上下文管理`app.ctx`写法和全局变量写法主要有两个区别，它们分别关涉到Sanic应用的上下文管理和模型实例化的时机。下面是这两种方法的对比：<br>
 
-#### 应用上下文管理 (`app.ctx.classify_model = Classify_data()`)
+#### 应用上下文管理 (`app.ctx.classify_model = Classify_data()`):
 
 1. **上下文作用域**：将模型保存在`app.ctx`（即应用的上下文）中，这意味着模型实例与Sanic应用的生命周期紧密相关。这种方法更加面向对象，利用了Sanic提供的应用上下文管理功能，有助于维护和组织代码，尤其是在更大、更复杂的应用中。
 2. **模型加载时机**：模型是在`before_server_start`事件监听器中被显式加载的。这允许在服务器完全启动前执行初始化代码，如加载模型、建立数据库连接等。这样做可以确保在处理任何请求之前，所有的初始化工作都已完成。
 
-#### 全局实例化 (`classify_model = Classify_data()`)
+#### 全局实例化 (`classify_model = Classify_data()`):
 
 1. **全局变量**：将模型实例化为一个全局变量。这种方法简单直接，对于小型应用或者脚本来说非常方便和足够用。它直观地显示了模型是如何和何时被加载的，使得代码易于理解。
 2. **模型加载时机**：模型在脚本执行期间（包括服务器启动前）就被加载了。这意味着，一旦开始执行脚本，无论服务器是否准备好接受请求，模型加载的工作就已经开始。这对于启动时间不敏感的应用是可行的。
 
-#### 选择依据
+#### 选择依据:
 
 - **应用规模**：对于较大、结构复杂的应用，推荐使用应用上下文管理方式，因为它有助于更好地组织代码和管理资源。而对于简单的应用或脚本，全局实例化方式可能更直接和简便。
 - **代码组织**：使用`app.ctx`可以让资源和配置与特定的Sanic应用实例关联，这在处理多个Sanic实例或在工厂函数中创建Sanic应用时特别有用。
