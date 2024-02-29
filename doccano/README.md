@@ -309,7 +309,7 @@ http://8.140.203.xxx:8000/admin/
 
 2. "AUTHENTICATION AND AUTHORIZATION" 模块下，点击 "Users"，然后点击右上角的 "ADD USER"；
 
-3. 输入 "Username" 和 "Password"，例如；
+3. 输入 "Username" 和 "Password"，例如：
 
 ```txt
 Username:peilongchencc
