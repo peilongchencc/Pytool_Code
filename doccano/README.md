@@ -301,7 +301,11 @@ if __name__ == "__main__":
 
 如果想要进行多人协作，共同标注，操作步骤如下:<br>
 
-1. 登录管理员站点，网址为 `http://localhost:{port}/admin/` ，如果你是服务器启动的服务，则网址类似 `http://8.140.203.xxx:8000/admin/`:
+1. 登录管理员站点，网址为 `http://localhost:{port}/admin/` ，如果你是服务器启动的服务，则网址类似:
+
+```txt
+http://8.140.203.xxx:8000/admin/
+```
 
 2. "AUTHENTICATION AND AUTHORIZATION" 模块下，点击 "Users"，然后点击右上角的 "ADD USER"；
 
