@@ -16,6 +16,7 @@ Sanic 是一个用于构建异步（asynchronous）Web应用的Python框架，�
   - [request 对象：](#request-对象)
     - [request的属性:](#request的属性)
     - [sanic中的request什么时候用:](#sanic中的request什么时候用)
+    - [`request.json` 用法示例:](#requestjson-用法示例)
   - [response 对象：](#response-对象)
   - [高级功能:](#高级功能)
     - [基于类的视图(Class Based Views)：](#基于类的视图class-based-views)
@@ -406,6 +407,58 @@ if __name__ == "__main__":
 ```
 
 在这个例子中，我们定义了两个路由处理函数 `get_data` 和 `post_data`。它们分别用于处理 GET 和 POST 请求。在这些函数中，我们使用了 `request.args` 来获取 GET 请求的查询参数，使用了 `request.json` 来获取 POST 请求的 JSON 数据。这展示了 `request` 对象如何在不同情况下被使用。<br>
+
+### `request.json` 用法示例:
+
+```python
+import os
+from sanic import Sanic, response
+from ocr_server import OCRClass
+from fetch_pictures_aiohttp import download_image
+
+app = Sanic("OCRService")
+
+# 以全局变量方式实例化OCR对象
+ocr_instance = OCRClass()
+
+@app.post("/ocr_handler")
+async def ocr_handler(request):
+    """根据传入的image_url下载图片执行OCR,OCR执行完毕后,将结果返回同时写入mysql,之后删除下载的图片文件,避免空间占用。
+    """
+    # 异步获取请求数据
+    request_data = await request.json   # 使用 `request_data = request.json` 也是可以的，但由于函数是异步函数，更推荐使用 `await`。
+    """
+    传入的数据格式如下:
+    {
+        "image_url": "https://xxxx.com/...png",  # 图片链接地址 必填参数 字符串类型
+        "url_type": "oss"   # 图片地址类型 必填参数 字符串类型,取值为 "oss" 或 "7min_local"
+    }
+    """
+    image_url = request_data.get("image_url")
+    url_type = request_data.get("url_type")
+
+    if image_url and url_type:
+        # 根据图片链接下载图片到指定路径,具体路径可点击download_image跳转查看。
+        # 下载会有网络波动、耗时问题,采用异步避免阻塞
+        image_save_path = await download_image(image_url)
+        if not image_save_path:
+            return response.json({"error": "图片下载失败，请检查所输入图片链接是否有效。"})
+        # 转换数据格式,格式必须类似 ['/OCR/2024-01-12/23c6b8f9-afe6-4eb8-b196-40235b0e89d5.jpg']，元素个数只能为1。
+        path_images_list = [image_save_path]
+        # 调用OCR处理方法
+        ocr_result = ocr_instance.ocr_handler(path_images_list)
+        # OCR执行结束后删除文件,避免空间占用
+        os.remove(image_save_path)
+        return response.json(ocr_result)
+    else:
+        # 提示用户 "image_url" 和 "url_type" 都为必填参数。
+        return response.json({"error": "Invalid request, The 'image_url' and 'url_type' fields are both required parameters."}, status=400)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
+```
+
+`request.json` 的中的键值对可以使用`.get("key")`方法来获取，使用`.get("key")`方法来获取字典中的值有一个好处，那就是如果键不存在，它会返回`None`而不是抛出一个异常。这可以让你的代码更加健壮，特别是在处理外部传入的数据时。<br>
 
 
 ## response 对象：
