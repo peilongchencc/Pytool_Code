@@ -2678,6 +2678,16 @@ if isinstance(x, int):
     print("x 是一个整数")
 ```
 
+🚨🚨🚨变量的取值为 `None` 时，也可以执行 `isinstance()` 方法。如下列代码中 `url_type` 被初始化为`None`，因此 `isinstance(url_type, str)` 的结果为 `False` ，所以代码将执行 `else` 块的内容，打印出 **"url_type不是str"** 。<br>
+
+```python
+url_type = None
+if isinstance(url_type, str):
+    print("url_type是str")
+else:
+    print("url_type不是str")
+```
+
 #### 检查对象是否是多个类型之一：
 
 ```python
