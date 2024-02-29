@@ -1,10 +1,16 @@
 # doccano
 doccano 是一个开源的文本标注工具，用于人工标注。它提供了用于文本分类、序列标注和序列到序列任务的标注功能。用户可以创建带有情感分析、命名实体识别、文本摘要等标签的数据。只需创建一个项目、上传数据，然后开始进行标注。用户可以在几小时内构建一个数据集。<br>
 
-doccano官网如下:<br>
+doccano的github链接如下:<br>
 
 ```txt
 https://github.com/doccano/doccano
+```
+
+doccano《使用手册》链接如下:<br>
+
+```txt
+https://doccano.github.io/doccano/
 ```
 
 - [doccano](#doccano)
