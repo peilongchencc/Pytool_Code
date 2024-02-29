@@ -14,6 +14,9 @@ Ps:本文所有指令为 Linux 版本，Windows 或 MacOS 指令请自行从网�
   - [清理磁盘空间:](#清理磁盘空间)
     - [查看自己电脑的系统内存:](#查看自己电脑的系统内存)
   - [CPU 和 GPU 相关：](#cpu-和-gpu-相关)
+    - [`nvcc -V` 是什么意思？和 `nvidia-smi` 有什么区别？](#nvcc--v-是什么意思和-nvidia-smi-有什么区别)
+    - [同一台服务器下，为什么CUDA的版本不同，`nvidia-smi`显示的是`12.0`，`nvcc -V`显示的是`11.7`:](#同一台服务器下为什么cuda的版本不同nvidia-smi显示的是120nvcc--v显示的是117)
+    - [如果安装pytorch，应该安装基于cuda 11.7的pytorch，还是安装基于cuda 12.0的pytorch？](#如果安装pytorch应该安装基于cuda-117的pytorch还是安装基于cuda-120的pytorch)
   - [服务相关：](#服务相关)
     - [nohup指令启动服务：](#nohup指令启动服务)
   - [常规文件操作：](#常规文件操作)
@@ -425,18 +428,113 @@ nproc
 <br>
 
 如果你想要做深度学习任务，想查看GPU使用情况，动态查看(0.5秒刷新一次)nvidia-smi使用情况指令为：<br>
+
 ```shell
 watch -n .5 nvidia-smi
 ```
+
 如果想要2秒刷新一次，简单修改指令即可：<br>
+
 ```shell
 watch -n 2 nvidia-smi
 ```
+
 查看GPU详细信息：<br>
+
 ```shell
 nvidia-smi -a
 ```
-<br>
+
+查看CUDA编译器版本:<br>
+
+```bash
+nvcc -V
+```
+
+### `nvcc -V` 是什么意思？和 `nvidia-smi` 有什么区别？
+
+`nvcc -V` 和 `nvidia-smi` 是两个与NVIDIA CUDA Toolkit相关的不同命令，它们的作用和输出信息有显著区别。<br>
+
+1. **`nvcc -V`**:
+    - `nvcc` 是 NVIDIA CUDA Compiler(编译) 的简称，它是 CUDA Toolkit 的一部分，用于编译 CUDA 代码。
+    - 执行 `nvcc -V` 命令会显示 `nvcc` 编译器的版本信息，这对于开发者来说很重要，因为不同版本的 CUDA Toolkit 支持不同版本的 CUDA 和 GPU 架构。
+    - 该命令的输出信息主要包括 `nvcc` 的版本号，以及它依赖的一些组件的版本信息，比如 C++ 编译器的版本。
+
+2. **`nvidia-smi`**:
+    - `nvidia-smi` 是 NVIDIA System Management Interface 的简称，它是一个命令行工具，用于查询和监控 NVIDIA GPU 设备的状态。
+    - 执行 `nvidia-smi` 命令会显示当前系统中 NVIDIA GPU 的详细信息，包括 GPU 型号、总显存、已使用显存、GPU 使用率、GPU 温度等。
+    - `nvidia-smi` 是一个面向系统管理和监控的工具，它可以显示当前系统中所有 NVIDIA GPU 的状态和配置信息，对于系统管理员和进行性能调优的开发者来说非常有用。
+
+总结来说，`nvcc -V` 用于显示 CUDA 编译器的版本信息，主要关注于 CUDA 开发环境；而 `nvidia-smi` 用于显示系统中 NVIDIA GPU 的状态和监控信息，更多地关注于硬件和系统层面的信息。两者都是 NVIDIA CUDA Toolkit 的重要组成部分，但服务于不同的目的和用户群体。<br>
+
+### 同一台服务器下，为什么CUDA的版本不同，`nvidia-smi`显示的是`12.0`，`nvcc -V`显示的是`11.7`:
+
+```txt
+(base) root@5f7d2xxx:~# nvidia-smi
+Thu Feb 29 17:46:45 2024       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 525.60.11    Driver Version: 525.60.11    CUDA Version: 12.0     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA A100-PCI...  On   | 00000000:00:07.0 Off |                    0 |
+| N/A   29C    P0    34W / 250W |      0MiB / 40960MiB |      0%      Default |
+|                               |                      |             Disabled |
++-------------------------------+----------------------+----------------------+
+|   1  NVIDIA A100-PCI...  On   | 00000000:00:08.0 Off |                    0 |
+| N/A   27C    P0    31W / 250W |      0MiB / 40960MiB |      0%      Default |
+|                               |                      |             Disabled |
++-------------------------------+----------------------+----------------------+
+|   2  NVIDIA A100-PCI...  On   | 00000000:00:09.0 Off |                  Off |
+| N/A   28C    P0    32W / 250W |      0MiB / 40960MiB |      0%      Default |
+|                               |                      |             Disabled |
++-------------------------------+----------------------+----------------------+
+|   3  NVIDIA A100-PCI...  On   | 00000000:00:0A.0 Off |                    0 |
+| N/A   28C    P0    34W / 250W |      0MiB / 40960MiB |      0%      Default |
+|                               |                      |             Disabled |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+
+(base) root@5f7d2xxx:~# nvcc -V
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2022 NVIDIA Corporation
+Built on Tue_May__3_18:49:52_PDT_2022
+Cuda compilation tools, release 11.7, V11.7.64
+Build cuda_11.7.r11.7/compiler.31294372_0
+```
+
+这种现象是正常的，原因在于`nvidia-smi`和`nvcc`显示的版本信息指的是不同的东西。<br>
+
+1. **`nvidia-smi`显示的CUDA版本**是指你的**NVIDIA驱动**当前支持的最新CUDA版本。这意味着你的系统驱动能够支持运行编译为该CUDA版本（或更低版本）的应用程序。在你提供的信息中，`nvidia-smi`显示支持的CUDA版本是12.0。
+
+2. **`nvcc -V`显示的CUDA版本**是指你安装的**CUDA Toolkit**的版本。`nvcc`（NVIDIA CUDA Compiler）是CUDA Toolkit的一部分，用于编译CUDA程序。在你的情况下，安装的CUDA Toolkit版本是11.7。
+
+这种差异意味着虽然你的系统驱动支持最新的CUDA 12.0应用程序，但你安装的CUDA Toolkit是11.7版本，所以你只能编译和运行最高为CUDA 11.7版本的应用程序。如果你需要开发或运行基于CUDA 12.0的应用程序，你需要安装匹配该版本的CUDA Toolkit。<br>
+
+简而言之，`nvidia-smi`显示了你的GPU驱动能支持的CUDA最高版本，而`nvcc`显示的是实际安装的CUDA Toolkit版本。这两者不需要完全匹配，但开发者通常会根据需要更新CUDA Toolkit以利用新版本CUDA的新特性或改进。<br>
+
+### 如果安装pytorch，应该安装基于cuda 11.7的pytorch，还是安装基于cuda 12.0的pytorch？
+
+选择安装基于CUDA 11.7还是CUDA 12.0版本的PyTorch，主要取决于两个因素：你已安装的CUDA Toolkit版本和你打算使用的功能或特性。根据你提供的信息，你的系统中安装了CUDA Toolkit 11.7。这里有几点考虑：<br>
+
+1. **与已安装的CUDA Toolkit兼容**：理想情况下，你应该安装一个与你当前安装的CUDA Toolkit版本兼容的PyTorch版本。这样可以确保你能够使用CUDA加速功能，而不会遇到版本不兼容的问题。因此，基于CUDA 11.7的PyTorch版本是首选。
+
+2. **利用NVIDIA驱动的支持**：由于`nvidia-smi`显示你的系统支持CUDA 12.0，这意味着你的NVIDIA驱动能够运行基于CUDA 12.0的应用程序。如果你打算使用PyTorch的一些最新功能，这些可能只在基于CUDA 12.0的版本中可用，那么安装基于CUDA 12.0的PyTorch可以是一个选项。然而，为了这样做，你可能需要升级你的CUDA Toolkit到12.0，以确保开发和运行环境的一致性。
+
+3. **考虑其他依赖**：如果你的项目或其他库有特定的CUDA版本要求，这也可能影响你的选择。
+
+总之，如果你不打算升级CUDA Toolkit，或者没有特定需求需要CUDA 12.0的特性，基于CUDA 11.7的PyTorch版本是更安全、更兼容的选择。这将确保你的开发环境稳定，且能够利用CUDA加速功(例如 **DeepSpeed** )能而不会遇到兼容性问题。<br>
+
+如果你决定需要基于CUDA 12.0的功能，那么考虑升级CUDA Toolkit到12.0，并安装相应的PyTorch版本。这可能需要更多的配置工作，但可以让你利用最新的CUDA特性。<br>
 
 
 ## 服务相关：
