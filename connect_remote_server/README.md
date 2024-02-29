@@ -158,7 +158,7 @@ drwx------ 31 root root 4096 Feb 29 12:10 ../
 -rw-r--r--  1 root root 1110 Jan 19 10:41 known_hosts
 ```
 
-  - 使用文本编辑器（如`vim`）打开`authorized_keys`文件。例如，`vim ~/.ssh/authorized_keys`。
+    - 使用文本编辑器（如`vim`）打开`authorized_keys`文件。例如，`vim ~/.ssh/authorized_keys`。
 
 4. **添加公钥**：将对方的公钥（从`.pub`文件中获得）复制并粘贴到`authorized_keys`文件中。每个密钥应该占一行。
 
@@ -166,15 +166,16 @@ drwx------ 31 root root 4096 Feb 29 12:10 ../
 
 6. **设置权限**：
 
-  - 如果其他人已经设置过权限，可以跳过这一步。
+   - 如果其他人已经设置过权限，可以跳过这一步。
 
-  - 确保`.ssh`目录的权限是700（只有所有者可以读写执行）。使用命令`chmod 700 ~/.ssh`。
+    - 确保`.ssh`目录的权限是700（只有所有者可以读写执行）。使用命令`chmod 700 ~/.ssh`。
  
-  - 确保`authorized_keys`文件的权限是600（只有所有者可以读写）。使用命令`chmod 600 ~/.ssh/authorized_keys`。
+    - 确保`authorized_keys`文件的权限是600（只有所有者可以读写）。使用命令`chmod 600 ~/.ssh/authorized_keys`。
 
 7. **测试连接**：让对方尝试使用他们的SSH私钥连接到你的服务器，看是否成功。
 
 完成这些步骤后，对方应该能够使用他们的SSH密钥登录到你的服务器上的`deployer`账户。<br>
+
 
 ## 使用阿里云提供的Redis时流量占用问题：
 
