@@ -151,7 +151,7 @@ vscode更智能，直接按下图点击选项即可：<br>
 
 ```txt
 (base) root@iZ2zea5v77oawjyxxx:~/.ssh# ll
-total 24
+total 8
 drwx------  2 root root 4096 Aug  9  2023 ./
 drwx------ 31 root root 4096 Feb 29 12:10 ../
 -rw-------  1 root root  509 Aug  8  2023 authorized_keys
