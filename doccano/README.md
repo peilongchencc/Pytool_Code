@@ -218,7 +218,7 @@ doccano支持多种数据导入方式，笔者推荐的是 **"TextLine"** 方式
 
 ## 导出文件：
 
-doccano 导出的 JSONL 文件中，每个实体和关系都有一个独特的 id 作为标识符。这些 id 是由 doccano 在标注数据的过程中自动生成的，**它们不一定按照顺序排列或者是连续的**。因此，如果你看到的id可能会出现乱序的情况，这并不影响数据的正确性和使用。<br>
+doccano 导出的 JSONL 文件中，每个实体和关系都有一个独特的 id 作为标识符。这些 id 是由 doccano 在标注数据的过程中自动生成的，**它们不一定按照顺序排列或者是连续的**。因此，你看到的id可能会出现乱序的情况，这并不影响数据的正确性和使用。<br>
 
 选择需要的数据，然后点击 "Export Dataset"，"File format" 选择 "JSONL" (暂时doccano只提供了JSONL这一种导出方式)，看个人需求勾选 "Export only approved documents" ，然后点击 "Export" 即可将文件下载到本地(zip格式，需要解压):<br>
 
