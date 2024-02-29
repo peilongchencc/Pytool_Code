@@ -149,14 +149,14 @@ vscode更智能，直接按下图点击选项即可：<br>
  
     - 在`.ssh`目录中，有一个名为`authorized_keys`的文件用于存储公钥。如果该文件不存在，你可以创建它。例如:
 
-```txt
-(base) root@iZ2zea5v77oawjyxxx:~/.ssh# ll
-total 8
-drwx------  2 root root 4096 Aug  9  2023 ./
-drwx------ 31 root root 4096 Feb 29 12:10 ../
--rw-------  1 root root  509 Aug  8  2023 authorized_keys
--rw-r--r--  1 root root 1110 Jan 19 10:41 known_hosts
-```
+    ```txt
+    (base) root@iZ2zea5v77oawjyxxx:~/.ssh# ll
+    total 8
+    drwx------  2 root root 4096 Aug  9  2023 ./
+    drwx------ 31 root root 4096 Feb 29 12:10 ../
+    -rw-------  1 root root  509 Aug  8  2023 authorized_keys
+    -rw-r--r--  1 root root 1110 Jan 19 10:41 known_hosts
+    ```
 
     - 使用文本编辑器（如`vim`）打开`authorized_keys`文件。例如，`vim ~/.ssh/authorized_keys`。
 
