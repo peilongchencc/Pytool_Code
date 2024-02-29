@@ -23,6 +23,7 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
     - [更新表中的内容(UPDATE)：](#更新表中的内容update)
     - [删除表中的内容(DELETE)：](#删除表中的内容delete)
   - [删除表(DROP TABLE)：](#删除表drop-table)
+  - [表格创建、数据插入、数据更新SQL语句完整示例及解释:](#表格创建数据插入数据更新sql语句完整示例及解释)
   - [Python与MySQL：](#python与mysql)
     - [pymysql的安装：](#pymysql的安装)
     - [使用pymysql测试连接MySQL：](#使用pymysql测试连接mysql)
@@ -444,7 +445,8 @@ SQL语句解释：这个示例将更新 `task_monitor` 表中 `'task_command'` �
 <br>
 
 ### 删除表中的内容(DELETE)：
-更新MySQL某个表的内容，主要使用 `DELETE` 和 `WHERE` 关键字。请谨慎使用，因为删除操作是不可逆的🚨🚨🚨<br>
+
+删除MySQL某个表的内容，主要使用 `DELETE` 和 `WHERE` 关键字。请谨慎使用，因为删除操作是不可逆的🚨🚨🚨<br>
 
 ```sql
 DELETE FROM task_monitor WHERE task_id = 1;
@@ -469,7 +471,79 @@ DROP TABLE task_monitor;
 ```
 
 SQL语句解释：这个示例将从数据库中永久删除 task_monitor 表及其所有数据。请谨慎使用，因为删除操作是不可逆的。在执行此操作之前，确保你没有需要保留的数据。<br>
-<br>
+
+
+## 表格创建、数据插入、数据更新SQL语句完整示例及解释:
+
+```sql
+CREATE TABLE `image_hold_share`  (
+  `id` int(11) AUTO_INCREMENT PRIMARY KEY,
+  `image_url` varchar(255) NOT NULL COMMENT '图片链接',
+  `url_type` varchar(255) NOT NULL COMMENT '图片地址类型,取值为 "oss" 或 "7min_local"',
+  `ocr_fund_code` varchar(255) NULL DEFAULT NULL COMMENT 'ocr识别的基金代码',
+  `ocr_hold_share` varchar(255) NULL DEFAULT NULL COMMENT 'ocr识别的持有份额',
+  `update_fund_code` varchar(255) NULL DEFAULT NULL COMMENT '持仓部更新的基金代码',
+  `update_hold_share` varchar(255) NULL DEFAULT NULL COMMENT '持仓不更新的持有份额',
+  `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+# `CHARACTER SET = utf8mb4`：指定了表的字符集是utf8mb4。字符集决定了数据库可以存储哪些字符。utf8mb4是UTF-8的超集，可以存储任何Unicode字符，包括表情符号。
+# `COLLATE = utf8mb4_unicode_ci`：指定了表的校对规则是utf8mb4_unicode_ci。校对规则决定了数据库中的字符如何比较。在这个例子中，`_ci`表示大小写不敏感，这意味着在比较字符时，大写和小写字母被认为是相同的。
+# `ROW_FORMAT = Dynamic`：指定了表的行格式是动态的。行格式决定了表中行的物理存储。动态行格式允许变长列（如VARCHAR、BLOB和TEXT类型）仅存储必要的空间，从而节省空间并提高性能。
+```
+
+上述 SQL 语句创建的表结构，不需要手动传入 `update_time` 的参数值。在这个表结构中，`update_time` 字段已经被设置为在记录被创建时自动填入当前时间戳（`DEFAULT CURRENT_TIMESTAMP`），并且在每次记录被更新时自动更新时间戳（`ON UPDATE CURRENT_TIMESTAMP`）。因此，当你插入或更新表中的记录时，MySQL 会自动管理 `update_time` 字段的值，无需你手动指定。<br>
+
+执行以下语句可将数据插入 `image_hold_share` 表:<br>
+
+```sql
+INSERT INTO `image_hold_share` (`image_url`, `url_type`) VALUES ('https://example.com/image1.jpg', 'oss');
+INSERT INTO `image_hold_share` (`image_url`, `url_type`) VALUES ('https://example.com/image2.jpg', '7min_local');
+INSERT INTO `image_hold_share` (`image_url`, `url_type`, `ocr_fund_code`, `ocr_hold_share`) VALUES ('https://example.com/image3.jpg', 'oss', '123456', '10000');
+```
+
+在这些示例中：<br>
+
+- 第一条和第二条插入语句仅填充了必须填写的字段 `image_url` 和 `url_type`。
+- 第三条插入语句除了必填字段外，还填充了可选字段 `ocr_fund_code` 和 `ocr_hold_share`。
+
+因为 `create_time` 和 `update_time` 字段有默认值且 `update_time` 在每次更新时自动改变，所以你不需要在插入语句中包含这些字段。<br>
+
+UPDATE语句测试:<br>
+
+```sql
+UPDATE `image_hold_share`
+SET `update_fund_code` = '654321', `update_hold_share` = '20000'
+WHERE `image_url` = 'https://example.com/image2.jpg';
+```
+
+这条 SQL 语句的目的是查找 `image_hold_share` 表中 `image_url` 字段值为 `'https://example.com/image2.jpg'` 的记录，并将这些记录的 `update_fund_code` 更新为 `'654321'`，`update_hold_share` 更新为 `'20000'`。<br>
+
+🥴🥴🥴即使原表中对应的 `update_fund_code` 和 `update_hold_share` 字段的值为 `NULL`，它们也可以被更新为新的值。在 SQL 中，`NULL` 表示一个字段没有值。使用 `UPDATE` 语句时，可以将任何字段的值从 `NULL` 更新为一个具体的值，包括数字、字符串或其他数据类型。<br>
+
+删除MySQL某个表的内容，主要使用 `DELETE` 和 `WHERE` 关键字。请谨慎使用，因为删除操作是不可逆的🚨🚨🚨<br>
+
+```sql
+DELETE FROM `image_hold_share` WHERE `id` = 2;
+```
+
+这条SQL语句的作用是从`image_hold_share`表中删除`id`字段值为2的行。<br>
+
+如果想删除这个表中的所有内容，但不删除表本身。可执行下列语句:<br>
+
+```sql
+DELETE FROM `image_hold_share`;
+```
+
+如果想要直接删除表和表中的数据，可以执行下列语句:<br>
+
+```sql
+DROP TABLE `image_hold_share`;
+```
+
+‼️‼️‼️注意：这个示例将从数据库中永久删除 task_monitor 表及其所有数据。请谨慎使用，因为删除操作是不可逆的。在执行此操作之前，确保你没有需要保留的数据。<br>
+
 
 ## Python与MySQL：
 
