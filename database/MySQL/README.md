@@ -24,15 +24,16 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
     - [删除表中的内容(DELETE)：](#删除表中的内容delete)
   - [删除表(DROP TABLE)：](#删除表drop-table)
   - [表格创建、数据插入、数据更新SQL语句完整示例及解释:](#表格创建数据插入数据更新sql语句完整示例及解释)
-  - [Python与MySQL：](#python与mysql)
+  - [同步变成--Pymysql：](#同步变成--pymysql)
     - [pymysql的安装：](#pymysql的安装)
     - [使用pymysql测试连接MySQL：](#使用pymysql测试连接mysql)
     - [pymysql操作数据库的关键：](#pymysql操作数据库的关键)
     - [创建表：](#创建表)
     - [获取表中的内容：](#获取表中的内容)
-  - [pymysql示例：](#pymysql示例)
+    - [pymysql示例：](#pymysql示例)
     - [检查mysql中是否存在某个表](#检查mysql中是否存在某个表)
-  - [Mysql连接池示例:](#mysql连接池示例)
+    - [pymysql连接池示例:](#pymysql连接池示例)
+    - [异步编程--aiomysql:](#异步编程--aiomysql)
 ## 服务器安装MySQL数据库：
 MySQL数据库的安装非常简单～<br>
 1. 更新系统软件包信息：
@@ -545,7 +546,7 @@ DROP TABLE `image_hold_share`;
 ‼️‼️‼️注意：这个示例将从数据库中永久删除 task_monitor 表及其所有数据。请谨慎使用，因为删除操作是不可逆的。在执行此操作之前，确保你没有需要保留的数据。<br>
 
 
-## Python与MySQL：
+## 同步变成--Pymysql：
 
 应用程序(app或网页)获取到的用户输入、用户个人信息等信息都是存入MySQL的，怎么存呢？<br>
 
@@ -695,7 +696,7 @@ finally:
 ### 获取表中的内容：
 
 
-## pymysql示例：
+### pymysql示例：
 
 ```python
 from config import Mysql_Server_Config
@@ -875,7 +876,7 @@ if __name__ == "__main__":
         # mysql_cursor.execute("DROP TABLE semantic_relation")
 ```
 
-## Mysql连接池示例:
+### pymysql连接池示例:
 
 在Python中，`pymysql`是一个用于连接MySQL数据库的库。但是，`pymysql`本身并不提供连接池功能。不过，你可以使用`DBUtils`这个第三方库，它提供了对`pymysql`的连接池支持。以下是一个使用`DBUtils`中的`PooledDB`来创建连接池并从MySQL数据库中获取数据的示例代码：<br>
 
@@ -990,3 +991,13 @@ def fetchall_from_mysql(sql):
 (3, '军工板块', datetime.datetime(2023, 11, 6, 20, 1, 35), datetime.datetime(2023, 11, 6, 22, 23, 15))
 (4, '百货', datetime.datetime(2023, 11, 6, 22, 42, 29), datetime.datetime(2023, 11, 6, 22, 46, 46))
 ```
+
+### 异步编程--aiomysql:
+
+使用`pymysql`直接进行异步编程是不行的，因为`pymysql`是一个同步的MySQL数据库客户端库，它不支持异步操作。在同步代码中执行数据库查询和其他操作会阻塞当前线程，直到操作完成。这意味着在等待数据库响应期间，程序不能执行其他任务。<br>
+
+异步编程模型允许在等待外部操作（如网络请求、数据库查询等）完成时执行其他任务。这是通过事件循环来实现的，事件循环可以管理多个任务的执行，允许单个线程中并发运行多个任务。<br>
+
+为了实现这种模型，需要使用设计为异步的库，这些库使用`async`和`await`关键字来标记异步操作和等待它们的结果，而不会阻塞事件循环。<br>
+
+因此，要在异步编程中操作MySQL数据库，你需要使用`aiomysql`这样的库。`aiomysql`是基于`PyMySQL`和`asyncio`（Python的异步I/O框架）开发的，提供了异步的数据库操作接口，可以在协程中使用，与`asyncio`的异步编程模型兼容。使用`aiomysql`可以让你的数据库操作非阻塞且高效，特别是在开发高并发的应用时。<br>
