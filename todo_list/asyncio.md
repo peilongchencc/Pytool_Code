@@ -9,6 +9,10 @@ https://docs.python.org/3/library/asyncio-task.html#asyncio.create_task
 openai讲解：
 https://chat.openai.com/share/f022d40f-77d6-44be-9a3d-f60d50d649e8
 
+sanic后台运行示例:
+https://sanic.dev/en/guide/basics/tasks.html#creating-tasks
+
+
 我的代码如下，代码的逻辑为把OCR识别后的结果返回给用户，同时将结果存入mysql。我在想是能优化代码，让存入mysql这部分时间不占用接口返回数据的时间，是否能做到呢？
 
 ```python
