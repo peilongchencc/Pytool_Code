@@ -426,6 +426,7 @@ async def main():
         print(f"started at {time.strftime('%X')}")
 
     # The await is implicit when the context manager exits.
+    # 当上下文管理器退出时，等待操作是隐式进行的。
 
     print(f"finished at {time.strftime('%X')}")
 ```
