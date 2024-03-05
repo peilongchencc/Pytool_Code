@@ -24,7 +24,7 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
     - [删除表中的内容(DELETE)：](#删除表中的内容delete)
   - [删除表(DROP TABLE)：](#删除表drop-table)
   - [表格创建、数据插入、数据更新SQL语句完整示例及解释:](#表格创建数据插入数据更新sql语句完整示例及解释)
-  - [同步变成--Pymysql：](#同步变成--pymysql)
+  - [同步编程--Pymysql：](#同步编程--pymysql)
     - [pymysql的安装：](#pymysql的安装)
     - [使用pymysql测试连接MySQL：](#使用pymysql测试连接mysql)
     - [pymysql操作数据库的关键：](#pymysql操作数据库的关键)
@@ -33,6 +33,7 @@ MySQL是一种开源的关系型数据库管理系统（RDBMS），广泛用于�
     - [pymysql示例：](#pymysql示例)
     - [检查mysql中是否存在某个表](#检查mysql中是否存在某个表)
     - [pymysql连接池示例:](#pymysql连接池示例)
+    - [pymysql标准代码示例:](#pymysql标准代码示例)
     - [异步编程--aiomysql:](#异步编程--aiomysql)
 ## 服务器安装MySQL数据库：
 MySQL数据库的安装非常简单～<br>
@@ -546,7 +547,7 @@ DROP TABLE `image_hold_share`;
 ‼️‼️‼️注意：这个示例将从数据库中永久删除 task_monitor 表及其所有数据。请谨慎使用，因为删除操作是不可逆的。在执行此操作之前，确保你没有需要保留的数据。<br>
 
 
-## 同步变成--Pymysql：
+## 同步编程--Pymysql：
 
 应用程序(app或网页)获取到的用户输入、用户个人信息等信息都是存入MySQL的，怎么存呢？<br>
 
@@ -952,6 +953,8 @@ if __name__ == "__main__":
 {'id': 4, 'test_data': '百货', 'create_time': datetime.datetime(2023, 11, 6, 22, 42, 29), 'modify_time': datetime.datetime(2023, 11, 6, 22, 46, 46)}
 ```
 
+> 如果某个字段为空，对应的结果为空字符串，而不会直接跳过该字段，类似 `'test_data': ''`。
+
 在其他需要数据库连接的模块中，就可以采用下列方式从mysql连接池获取一条连接进行查询：<br>
 
 ```python
@@ -991,6 +994,147 @@ def fetchall_from_mysql(sql):
 (3, '军工板块', datetime.datetime(2023, 11, 6, 20, 1, 35), datetime.datetime(2023, 11, 6, 22, 23, 15))
 (4, '百货', datetime.datetime(2023, 11, 6, 22, 42, 29), datetime.datetime(2023, 11, 6, 22, 46, 46))
 ```
+
+### pymysql标准代码示例:
+
+```python
+import pymysql
+import time
+import json
+import re
+from dbutils.pooled_db import PooledDB
+
+# mysql连接配置信息：
+Mysql_IRM_Config = {
+        'host': 'localhost',
+        'user': 'root',
+        'password': 'Flameaway3.',
+        'database': 'irmdata',
+        'port': 3306
+    }
+
+# 创建连接池,这里的写法即使因文件内部函数被调用,也不会创建新的连接池,而是复用已有的连接。
+mysql_pool = PooledDB(
+    creator=pymysql,  # 使用pymysql作为数据库连接库
+    maxconnections=None,  # 连接池允许的最大连接数,0和None表示不限制连接数
+    mincached=2,  # 初始化时,连接池至少创建的空闲的连接,0表示不创建
+    maxcached=None,  # 连接池空闲的最多连接数,0和None表示不限制
+    maxshared=None,  # 连接池中最多共享的连接数量,0和None表示全部共享
+    blocking=True,  # 连接池中如果没有可用连接后,是否阻塞等待
+    maxusage=None,  # 一个连接最多被重复使用的次数,None表示无限制
+    setsession=[],  # 开始会话前执行的命令列表
+    ping=0,  # ping MySQL服务端,检查是否服务可用
+    **Mysql_IRM_Config
+)
+
+def conn_mysql():
+    # 获取mysql连接
+    mysql_conn = mysql_pool.connection()
+    return mysql_conn
+
+def current_timestamp():
+    """返回当前日期时间的字符串表示形式,格式为: 2023-08-15 11:29:22 """
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
+####################################################################
+# 在MySQL中创建表和删除表
+# 注意:
+# 在mysql中创建表和删除表最好通过在Navicat或其他MySQL操作台执行，避免创建
+# 同名表报错，或无意间删除含有重要数据的表。
+# SQL示例--检查表 'my_table' 是否存在: 
+# SHOW TABLES LIKE 'my_table'  # 执行后返回的是0/1，即False/True
+# SQL示例--删除表 'my_table': 
+# DROP TABLE 'my_table'
+####################################################################
+
+####################################################################
+# 在MySQL中执行插入、更新、删除数据等操作。
+####################################################################
+
+def execute_sql_sentence_usual_without_return(sql, params=None, return_affected_rows=False, return_increased_id=False):
+    """执行SQL语句,可用于插入、更新、删除等操作。通常无返回值。
+    Args:
+        sql (str): SQL语句,其中的参数使用%s作为占位符。
+        params (tuple, optional): 与SQL语句中的占位符相对应的参数元组。默认为None。
+        return_affected_rows(bool): 是否返回受影响的行数,可用户判断更新语句是否成功更新了数据。
+        return_increased_id(bool): 返回最近插入行的自增ID, 插入milvus可能需要用到。
+    """
+    try:
+        # 连接池方式连接mysql
+        mysql_conn = conn_mysql()
+        # 普通游标 mysql_conn.cursor() 返回的结果是元组，不含有键名。如果想要以字典形式返回，需要使用下列形式。
+        mysql_cursor = mysql_conn.cursor()
+
+        mysql_cursor.execute(sql, params)
+        mysql_conn.commit()
+        print("操作成功完成。")
+        if return_affected_rows:
+            # 返回受影响的行数
+            # 需要注意,执行更新操作时,传入的更新数据于原数据相同不会更新,返回值为0。
+            return mysql_cursor.rowcount
+        if return_increased_id:
+            # 获取最近插入行的自增ID, 插入milvus可能需要用到
+            mysql_cursor.execute("SELECT LAST_INSERT_ID();")
+            inserted_id = mysql_cursor.fetchone()[0]  # 获取返回的ID
+            return inserted_id  # 返回获取到的ID
+        
+    except pymysql.MySQLError as e:
+        print(f"执行SQL时出现错误: {e}")
+        mysql_conn.rollback()
+    finally:
+        mysql_cursor.close()
+        mysql_conn.close()
+
+####################################################################
+# 在MySQL中执行查询操作。
+####################################################################
+
+def execute_sql_sentence_with_return(sql, params=None, return_one=False):
+    """执行SQL语句,用于查询操作,有返回值。
+    Args:
+        sql(str): 查询所用SQL语句,其中的参数使用%s作为占位符。例如 sql = "SELECT * FROM image_hold_share WHERE image_url = %s"
+        params (tuple, optional): 与SQL语句中的占位符相对应的参数元组。默认为None。
+    Returns:
+        query_result(list中嵌套dict): 匹配到的数据，可以通过遍历的形式获取匹配到的所有内容。
+    """
+    try:
+        # 连接到mysql
+        mysql_conn = conn_mysql()
+        # 普通游标 mysql_conn.cursor() 返回的结果是元组，不含有键名。如果想要以字典形式返回，需要使用下列形式。
+        mysql_cursor = mysql_conn.cursor(pymysql.cursors.DictCursor)
+        mysql_cursor.execute(sql, params)
+        if return_one:
+            # 获取单条查询结果，可用于检查某一项是否存在于表中
+            # 如果没有匹配到结果，会返回 None。
+            # 如果有匹配到结果，返回的是字典的结构，例如 {'id':1, 'image_url':'https://be...'}
+            query_result = mysql_cursor.fetchone()
+        else:
+            # (默认)获取全部查询结果，如果没有值返回的是空元组，例如 ()。
+            # 如果有匹配到结果，返回的是列表中嵌套字典的结构，例如 [{'id':1, 'image_url':'https://be...'}]
+            # 某些键对应的值为空，也会返回内容，只不过是空字符串，例如 'type':''。
+            query_result = mysql_cursor.fetchall()
+        return query_result
+    except pymysql.MySQLError as e:
+        print(f"执行SQL时出现错误: {e}")
+        mysql_conn.rollback()
+    finally:
+        mysql_cursor.close()
+        mysql_conn.close()
+
+
+if __name__ == '__main__':
+    # UPDATE操作不需要根据 image_url 检查是否已有数据存在，UPDATE操作如果不符合WHERE操作不报错，只是修改的数据行数为0。
+    # 构建更新SQL语句
+    update_sql = """
+        UPDATE image_hold_share
+        SET update_fund_code = %s, update_hold_share = %s
+        WHERE image_url = %s
+    """
+    params = ('677777', '', 'https://beta.7min.com.cn/user/file/download/?filePath=/positionimages/202401/20240112102706-1.jpg')
+    rtn = execute_sql_sentence_usual_without_return(update_sql, params, return_affected_rows=True)
+    print(rtn, type(rtn))   # 1 <class 'int'>
+```
+
 
 ### 异步编程--aiomysql:
 
