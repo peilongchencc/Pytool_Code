@@ -59,7 +59,7 @@ apt-get install psmisc
 
 安装了`psmisc`包，你才能使用`fuser`指令。`fuser`指令用于识别使用指定文件或文件系统的进程。这可以帮助你找出哪个进程正在使用某个文件。<br>
 
-2. 查找占用GPU资源的PID:
+2. 查找占用GPU资源的进程的PID:
 
 ```bash
 fuser -v /dev/nvidia*
