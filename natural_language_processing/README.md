@@ -472,6 +472,7 @@ model = AutoModel.from_pretrained("hfl/chinese-electra-180g-small-discriminator"
 
 ```python
 device_map = "cuda:0" if torch.cuda.is_available() else "auto"
+# "cuda:0" 就是第一张卡，"cuda:1" 就是第二张卡，同时指定多卡需要研究下，你也可以试试 "cuda:[0,1,2]"
 ```
 
 但为什么其他几张GPU的显存不是0MB，而是2MiB？<br>
