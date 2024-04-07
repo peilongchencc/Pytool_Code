@@ -467,6 +467,7 @@ for record in result:
     print(record)
     # 实体类型
     entity_labels = list(record['n'].labels)
+    # 实体的所有属性
     entity_properties = dict(record['n'])
     print(f"查询到的节点的标签为:{entity_labels},起始节点的所有属性为:{entity_properties}\n")
 ```
