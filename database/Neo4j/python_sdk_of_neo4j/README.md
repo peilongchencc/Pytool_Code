@@ -4,14 +4,13 @@
 - [python\_sdk\_of\_neo4j](#python_sdk_of_neo4j)
   - [python与Neo4j：](#python与neo4j)
     - [数据格式示例:](#数据格式示例)
+  - [py2neo将数据写入neo4j并查询完整示例:](#py2neo将数据写入neo4j并查询完整示例)
+    - [example.json:](#examplejson)
     - [将数据写入Neo4j:](#将数据写入neo4j)
-  - [不同cypher下py2neo查询、输出示例:](#不同cypher下py2neo查询输出示例)
-    - [f-string插入示例:](#f-string插入示例)
-    - [测试python与Neo4j的连接状态：](#测试python与neo4j的连接状态)
-    - [创建三元组：](#创建三元组)
-    - [获取三元组的值：](#获取三元组的值)
-  - [py2neo代码示例:](#py2neo代码示例)
-    - [根据某个条件遍历属性:](#根据某个条件遍历属性)
+    - [py2neo查询、输出示例:](#py2neo查询输出示例)
+  - [类属性方式调用neo4j连接:](#类属性方式调用neo4j连接)
+  - [f-string插入示例:](#f-string插入示例)
+  - [根据某个条件遍历属性:](#根据某个条件遍历属性)
 
 ## python与Neo4j：
 
@@ -84,11 +83,123 @@ Neo4j允许一个节点有多个节点类型(标签)，例如"成龙"的标签�
 
 如果一个节点有多个标签，需要将上述格式略微变换。<br>
 
+## py2neo将数据写入neo4j并查询完整示例:
+
+### example.json:
+
+```json
+{
+    "triplet_1": [
+        {
+            "entity_type": "Person",
+            "properties": {
+                "name": "张三",
+                "age": 30
+                }
+            },
+        {
+            "entity_type": "Person",
+            "properties": {
+                "name": "王五",
+                "age": 28
+                }
+            },
+        {
+            "relationship": "同事",
+            "properties": {
+                "time": "2024-02-12",
+                "friendly_level": "perfect"
+                }
+            }
+        ],
+    "triplet_2": [
+            {
+                "entity_type": "Person",
+                "properties": {
+                    "name": "张三",
+                    "age": 30
+                    }
+                },
+            {
+                "entity_type": "Person",
+                "properties": {
+                    "name": "王五",
+                    "age": 28
+                    }
+                },
+            {
+                "relationship": "同学",
+                "properties": {
+                    "start_time": "2015-09-12",
+                    "end_time": "2019-06-24"
+                    }
+                }
+            ],
+    "triplet_3": [
+        {
+            "entity_type": "Person",
+            "properties": {
+                "name": "张三",
+                "age": 30
+                }
+            },
+        {
+            "entity_type": "Person",
+            "properties": {
+                "name": "李四",
+                "age": 26
+                }
+            },
+        {
+            "relationship": "同事",
+            "properties": {
+                "time": "2023-05-11",
+                "friendly_level": "just so so"
+                }
+            }
+        ],
+    "triplet_4": [
+            {
+                "entity_type": "Person",
+                "properties": {
+                    "name": "赵六",
+                    "age": 52
+                    }
+                },
+            {
+                "entity_type": "Person",
+                "properties": {
+                    "name": "张三",
+                    "age": 30
+                    }
+                },
+            {
+                "relationship": "下属",
+                "properties": {
+                    "time": "2022-02-11",
+                    "friendly_level": "terrible",
+                    "often_promises_pie": "always"
+                    }
+                }
+            ]
+}
+```
+
 ### 将数据写入Neo4j:
 
-`数据格式示例`章节中的数据，更常见的形式是存在于json文件中。假设上述数据的文件名为 `example.json` ，可以使用以下代码将数据写入Neo4j数据库中，并完成属性设置。<br>
-
 ```python
+# insert_data_to_neo4j.py
+"""
+Author: peilongchencc@163.com
+Description: 读取json文件,利用py2neo执行cypher语句,将三元组信息写入neo4j。
+Requirements: 
+1. pip install py2neo python-dotenv
+2. 当前目录下创建 `.env.local` 文件,写入配置项
+3. 构建 `example.json` 文件
+Reference Link: 
+Notes: 
+三元组信息包括实体A的实体类型、所有属性,实体B的实体类型、所有属性,关系的关系类型、所有属性。
+"""
 import json
 import os
 from py2neo import Graph
@@ -98,19 +209,21 @@ load_dotenv('.env.local')  # 或者使用 load_dotenv() 来加载默认的 '.env
 def connect_to_neo4j():
     """连接neo4j数据库,py2neo自动管理连接池
     """
-    graph = Graph('bolt://{0}:{1}'.format(os.getenv('NEO4J_HOST'), os.getenv('NEO4J_PORT')),
+    neo4j_graph = Graph('bolt://{0}:{1}'.format(os.getenv('NEO4J_HOST'), os.getenv('NEO4J_PORT')),
                   auth=(os.getenv('NEO4J_USER'), os.getenv('NEO4J_PASS')))
-    return graph
+    return neo4j_graph
 
 def build_set_sentence(pro_origin, pro_data):
-    """构造属性设置语句
+    """构造属性设置语句,关键词为 `set`。
     Args:
-        pro_origin: 属性源头,实体a、实体b或关系,输入值为 "a"、"b"、"r"
-        pro_data: 含属性的数据
+        pro_origin(str): 属性源头,实体a、实体b或关系,输入值为 "a"、"b"、"r"
+        pro_data(dict): 含属性的数据。
     Return:
-        set_sentece: set语句
-    example pro_data:
+        set_sentece: set语句或空字符串。
+    Example of pro_data:
         pro_data = {'name': 'PUMM', '功能': '通过执行单元划分防止使用后自由内存和双重释放错误', '操作系统': 'Linux', '组成部分': ['离线剖析器（profiler）', '在线执行器（enforcer）'], '优点': '相比于之前的工作，将内存开销减少了52.0%，并平均产生了2.04%的运行时间开销'}
+    Notes:
+        `name`属性在上一级 Merge 语句中使用了,当前函数不必重复设置。
     """
     # 使用列表推导式构建每个属性的赋值字符串，对于列表类型的值，将其元素合并为以逗号间隔的字符串
     # 添加条件以跳过name键值对
@@ -127,37 +240,55 @@ def build_set_sentence(pro_origin, pro_data):
 
 
 def insert_triplet_to_neo4j(entity_a_info, entity_b_info, relationship_info):
+    """将三元组写入neo4j
+    Args:
+        entity_a_info(dict):包含实体A的实体类型、所有属性的字典。
+        entity_b_info(dict):包含实体B的实体类型、所有属性的字典。
+        relationship_info(dict):包含关系的关系类型、所有属性的字典。
+    Return:
+        写入操作,无返回值。
+    """
     # 获取neo4j连接
     neo4j_graph = connect_to_neo4j()
     
+    # 从实体A信息字典中提取出所有需要的信息
     entity_a_type = entity_a_info["entity_type"]
     properties_a = entity_a_info["properties"]
     properties_a_name = properties_a["name"]
+    # 根据实体A的属性为实体A构建set语句
     set_sentence_a = build_set_sentence("a", properties_a)
     
+    # 从实体B信息字典中提取出所有需要的信息
     entity_b_type = entity_b_info["entity_type"]
     properties_b = entity_b_info["properties"]
     properties_b_name = properties_b["name"]
+    # 根据实体A的属性为实体A构建set语句
     set_sentence_b = build_set_sentence("b", properties_b)
     
+    # 从关系字典中提取出所有需要的信息
     relationship = relationship_info["relationship"]
+    properties_r = relationship_info["properties"]
+    # 根据关系的属性为关系构建set语句
+    set_sentence_r = build_set_sentence("r", properties_r)
     
+    # 利用Merge语句进行节点构建,如果节点已经存在,不重复创建。
     merge_sentence = f"""
     MERGE (a:{entity_a_type} {{name: '{properties_a_name}'}})
     MERGE (b:{entity_b_type} {{name: '{properties_b_name}'}})
     MERGE (a)-[r:{relationship}]->(b)
     """
     # 将SET语句和MERGE语句拼接
-    complete_query = merge_sentence + '\n' + set_sentence_a + '\n' + set_sentence_b
+    complete_query = merge_sentence + '\n' + set_sentence_a + '\n' + set_sentence_b + '\n' + set_sentence_r
     print(complete_query)
+    # 执行cypher语句
     neo4j_graph.run(complete_query)
 
 if __name__ == "__main__":
+    # 读取json文件为字典
     data_path = "example.json"
-
     with open(data_path, 'r', encoding='utf-8') as file:
         triplet_data = json.load(file)  # <class 'dict'>
-
+    # 将三元组字典遍历，依次写入neo4j
     for triplet_each in triplet_data.values():
         entity_a_info = triplet_each[0]
         entity_b_info = triplet_each[1]
@@ -165,19 +296,20 @@ if __name__ == "__main__":
         insert_triplet_to_neo4j(entity_a_info, entity_b_info, relationship_info)
 ```
 
-## 不同cypher下py2neo查询、输出示例:
-
-已知实体A的节点类型为`Person`，`name`属性为 "李四"，请返回与这个节点相连的其他节点的信息。<br>
+### py2neo查询、输出示例:
 
 ```python
+# fetch_data_from_neo4j.py
 """
 Author: peilongchencc@163.com
-Description: py2neo代码示例。
+Description: py2neo执行cypher查询示例,以关系作为切入点进行介绍。
 Requirements: 
 1. pip install py2neo python-dotenv
 2. 当前目录下创建 `.env.local` 文件,写入配置项
 Reference Link: 
 Notes: 
+1. Neo4j的返回结果中,关系是最特殊的,关系包含三元组的所有信息。即起始节点的实体类型、所有属性,终止节点的实体类型、所有属性,关系的关系类型、所有属性。
+2. 如果你的目标场景是返回start_node或end_node,代码中`list(start_node.labels)`、`dict(start_node)`可以为你提供参考。
 """
 import os
 from py2neo import Graph
@@ -205,73 +337,180 @@ def cypher_run(cypher_query):
     query_result = neo4j_graph.run(cypher_query).data()
     return query_result
 
-# 编写并执行Cypher查询,如果想要查询时指明方向可以使用 `-[:知道]->(n)`。
+# 编写并执行Cypher查询
 cypher_query = """
-MATCH (m:Person {name: "李四"})-[:知道]-(n)
-RETURN n
+MATCH (m:Person {name: "张三"})-[r]-(n)
+RETURN r
 """
 
 if __name__ == "__main__":
     query_result = cypher_run(cypher_query)
-    print(query_result)
+    
+    print(f"查询结果为:\n{query_result}\n")
+    
     for record in query_result:
-        node = record['n']
-        # 检查节点的标签
-        node_labels = node.labels
-        print("Node Type:", list(node_labels), list(node_labels)[0], type(list(node_labels)[0]))
+        # 起始节点
+        start_node = record['r'].start_node
+        # `start_node.labels`终端输出看似是字符串,实际为py2neo.data下的类,需要进行list转换,转换为常规数据格式。
+        # 以列表第一项元素为例`type(list(node_labels)[0])`,此时结果才为字符串形式。
+        start_node_labels = list(start_node.labels)
+        # 起始节点的所有属性
+        start_node_properties = dict(start_node)
+        print(f"起始节点的标签为:{start_node_labels},起始节点的所有属性为:{start_node_properties}")
+        
+        # 终止节点
+        end_node = record['r'].end_node
+        end_node_labels = list(end_node.labels)
+        # 终止节点的所有属性
+        end_node_properties = dict(end_node)
+        print(f"终止节点的标签为:{end_node_labels},起始节点的所有属性为:{end_node_properties}")
+        
+        # 关系的类型
+        relationship_type = type(record['r']).__name__  # <class 'str'>
+        # 关系的所有属性
+        relationship_properties = dict(record['r'])
+        print(f"关系的类型为:{relationship_type},关系的所有属性为:{relationship_properties}\n")
 ```
 
 
+**终端输出:**<br>
+
+```txt
+查询结果为:
+[
+    {
+        "r": 下属(Node("Person", age="52", name="赵六"), Node("Person", age="30", name="张三"), friendly_level="terrible", often_promises_pie="always", time="2022-02-11")
+    },
+    {
+        "r": 同事(Node("Person", age="30", name="张三"), Node("Person", age="26", name="李四"), friendly_level="just so so", time="2023-05-11")
+    },
+    {
+        "r": 同学(Node("Person", age="30", name="张三"), Node("Person", age="28", name="王五"), end_time="2019-06-24", start_time="2015-09-12")
+    },
+    {
+        "r": 同事(Node("Person", age="30", name="张三"), Node("Person", age="28", name="王五"), friendly_level="perfect", time="2024-02-12")
+    }
+]
+
+起始节点的标签为:['Person'],起始节点的所有属性为:{'name': '赵六', 'age': '52'}
+终止节点的标签为:['Person'],起始节点的所有属性为:{'name': '张三', 'age': '30'}
+关系的类型为:下属,关系的所有属性为:{'time': '2022-02-11', 'often_promises_pie': 'always', 'friendly_level': 'terrible'}
+
+起始节点的标签为:['Person'],起始节点的所有属性为:{'name': '张三', 'age': '30'}
+终止节点的标签为:['Person'],起始节点的所有属性为:{'name': '李四', 'age': '26'}
+关系的类型为:同事,关系的所有属性为:{'friendly_level': 'just so so', 'time': '2023-05-11'}
+
+起始节点的标签为:['Person'],起始节点的所有属性为:{'name': '张三', 'age': '30'}
+终止节点的标签为:['Person'],起始节点的所有属性为:{'name': '王五', 'age': '28'}
+关系的类型为:同学,关系的所有属性为:{'end_time': '2019-06-24', 'start_time': '2015-09-12'}
+
+起始节点的标签为:['Person'],起始节点的所有属性为:{'name': '张三', 'age': '30'}
+终止节点的标签为:['Person'],起始节点的所有属性为:{'name': '王五', 'age': '28'}
+关系的类型为:同事,关系的所有属性为:{'friendly_level': 'perfect', 'time': '2024-02-12'}
+```
 
 
-
-
-
-
-
-
+## 类属性方式调用neo4j连接:
 
 ```python
-from config import Neo4J_Server_Config
+"""
+Author: peilongchencc@163.com
+Description: 以python类的方式使用py2neo连接neo4j,并执行常见操作。
+Requirements: 
+1. pip install py2neo python-dotenv
+2. 当前目录下创建 `.env.local` 文件,写入配置项
+Reference Link: 
+Notes: 
+"""
+import os
 from py2neo import Graph
+from dotenv import load_dotenv
+load_dotenv('.env.local')  # 或者使用 load_dotenv() 来加载默认的 '.env' 文件
 
 class Neo4jManager:
-    """以类属性的方式创建Neo4j连接,避免连接耗时
+    """以类属性的方式创建Neo4j连接,避免连接耗时(py2neo自动管理连接池)
     """
-    graph = Graph("bolt://localhost:7687", auth=(Neo4J_Server_Config['user'], Neo4J_Server_Config['password']))
+    neo4j_graph = Graph('bolt://{0}:{1}'.format(os.getenv('NEO4J_HOST'), os.getenv('NEO4J_PORT')),
+                  auth=(os.getenv('NEO4J_USER'), os.getenv('NEO4J_PASS')))
     
     def __init__(self):
         pass
 
-    def run_query(self, query):
-        return self.graph.run(query)
+    def run_query(self, cypher_query):
+        """执行写入/更新/删除类型的cypher语句
+        Args:
+            cypher_query(str):cypher语句。
+        Return:
+            写入/更新/删除操作,无返回值。
+        """
+        self.neo4j_graph.run(cypher_query)
+    
+    def run_query_with_data(self, cypher_query):
+        """执行查询类型的cypher语句
+        Args:
+            cypher_query(str):cypher语句。
+        Return:
+            以列表的形式返回结果,每一项为字典。
+        """
+        return self.neo4j_graph.run(cypher_query).data()
 
 # 使用示例
 neo4j_manager = Neo4jManager()
-result = neo4j_manager.run_query("MATCH (n) RETURN n LIMIT 5")
-
+result = neo4j_manager.run_query_with_data("MATCH (n) RETURN n LIMIT 5")
+print(result)
 # 打印查询结果
 for record in result:
     print(record)
 ```
 
-代码优势:<br>
+**终端显示:**<br>
 
-1. **共享连接：** 所有的`Neo4jManager`实例将共享相同的`Graph`连接。这样可以减少多次实例化时连接Neo4j的开销。
+```txt
+[
+    {
+        "n": Node("Person", age="30", name="张三")
+    },
+    {
+        "n": Node("Person", age="28", name="王五")
+    },
+    {
+        "n": Node("Person", age="26", name="李四")
+    },
+    {
+        "n": Node("Person", age="52", name="赵六")
+    }
+]
+{'n': Node('Person', age='30', name='张三')}
+{'n': Node('Person', age='28', name='王五')}
+{'n': Node('Person', age='26', name='李四')}
+{'n': Node('Person', age='52', name='赵六')}
+```
 
-2. **延迟初始化：** 在第一次访问类属性`graph`时，连接将被创建。这意味着，如果从不使用`Neo4jManager`，则不会创建不必要的数据库连接。
 
-3. **配置中心化：** 通过从配置文件中导入配置，可以在一个地方管理数据库的连接信息，这使得代码更易于维护。
-
-### f-string插入示例:
+## f-string插入示例:
 
 ```python
-from config import Neo4J_Server_Config
-from py2neo import Graph
+"""
+Author: peilongchencc@163.com
+Description: 利用python中`f-string`的特性,通过传入的变量,利用cypher语句模版进行neo4j数据库中数据的更新。
+Requirements: 
+1. pip install py2neo python-dotenv
+2. 当前目录下创建 `.env.local` 文件,写入配置项
+Reference Link: 
+Notes: 
+根据 `if __name__ == "__main__":` 中的注释执行即可,无需加载外部数据。
+"""
+import os
 import time
+from py2neo import Graph
+from dotenv import load_dotenv
+load_dotenv('.env.local')  # 或者使用 load_dotenv() 来加载默认的 '.env' 文件
 
-class Create_Neo4j_Semantic_Relation:
-    graph = Graph("bolt://localhost:7687", auth=(Neo4J_Server_Config['user'], Neo4J_Server_Config['password']))
+class Neo4jManager:
+    """以类属性的方式创建Neo4j连接,避免连接耗时(py2neo自动管理连接池)
+    """
+    neo4j_graph = Graph('bolt://{0}:{1}'.format(os.getenv('NEO4J_HOST'), os.getenv('NEO4J_PORT')),
+                  auth=(os.getenv('NEO4J_USER'), os.getenv('NEO4J_PASS')))
     
     def __init__(self):
         pass
@@ -281,6 +520,17 @@ class Create_Neo4j_Semantic_Relation:
         return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
     def run_query_with_variables(self, entity_a, entity_b, relation, mean_zh, subject_role, object_role):
+        """通过传入的变量,利用cypher语句模版进行neo4j数据库中数据的更新。
+        Args:
+            entity_a(str): 实体A的name属性
+            entity_b(str): 实体B的name属性
+            relation(str): 关系类型的英文表示
+            mean_zh(str): 关系类型的中文表示
+            subject_role(str): 实体A在当前三元组中的语法角色
+            object_role(str): 实体B在当前三元组中的语法角色
+        Return:
+            无返回值。
+        """
         current_time = self.current_timestamp()
         query = f"""
         MERGE (a:Entity {{name: '{entity_a}'}})
@@ -290,10 +540,11 @@ class Create_Neo4j_Semantic_Relation:
         SET r.relation = '{relation}', r.mean_zh = '{mean_zh}', r.subject_role = '{subject_role}',
             r.object_role = '{object_role}', r.last_updated = '{current_time}'
         """
-        self.graph.run(query)
+        self.neo4j_graph.run(query)
 
     def query_recent_data(self, days=7):
-        """查询过去几天的节点和关系"""
+        """查询过去几天的节点和关系
+        """
         current_time = time.time()
         past_time = current_time - (days * 24 * 60 * 60)  # 7天的秒数
         date_limit = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(past_time))
@@ -302,13 +553,20 @@ class Create_Neo4j_Semantic_Relation:
         WHERE a.last_updated >= '{date_limit}' OR b.last_updated >= '{date_limit}' OR r.last_updated >= '{date_limit}'
         RETURN r
         """
-        return self.graph.run(query).data()
+        return self.neo4j_graph.run(query).data()
 
 if __name__ == "__main__":
-    neo4j_manager = Create_Neo4j_Semantic_Relation()
+    neo4j_manager = Neo4jManager()
+    
+    # 写入时取消下一行注释
     # neo4j_manager.run_query_with_variables('卖出', '圣龙股份', 'Pat', '受事', '受事主体', '受事客体')
+    
+    # 写入时将下列内容注释,查询时将上一行注释。
     recent_data = neo4j_manager.query_recent_data()
     print(recent_data)
+    
+    # 这里就不进行遍历、输出了,只简单调用`index=0`,即 `recent_data[0]` 说明一下效果。
+    
     # start_node的属性
     start_node_name = recent_data[0]['r'].start_node['name']    # 卖出
     start_node_last_updated = recent_data[0]['r'].start_node['last_updated']    # '2023-11-14 10:55:04'
@@ -318,6 +576,16 @@ if __name__ == "__main__":
     relation_subject_role = recent_data[0]['r']['subject_role'] # 受事主体
     relation_object_role = recent_data[0]['r']['object_role']   # 受事客体
     relation_last_updated = recent_data[0]['r']['last_updated'] # '2023-11-14 10:55:04'
+```
+
+**终端输出:**<br>
+
+```txt
+[
+    {
+        "r": SEMANTIC(Node("Entity", last_updated="2024-04-07 16:46:16", name="卖出"), Node("Entity", last_updated="2024-04-07 16:46:16", name="圣龙股份"), last_updated="2024-04-07 16:46:16", mean_zh="受事", object_role="受事客体", relation="Pat", subject_role="受事主体")
+    }
+]
 ```
 
 🤨🤨🤨拓展: `self.graph.run(query).data()`为什么要加`data()`?<br>
@@ -334,209 +602,8 @@ if __name__ == "__main__":
 
 简而言之，`data()` 是一个方便的方法，**用于将 Cypher 查询的结果转换为易于使用的字典列表形式**。这种方法在处理数据库查询结果时非常有用，特别是在需要进一步处理这些数据的场景中。<br>
 
-### 测试python与Neo4j的连接状态：
 
-如果你是访问远程Neo4j数据库，可以按照类似下方代码的方式，修改自己的信息进行测试。如果你开了多个Neo4j数据库，注意端口是否正确。🚀🚀🚀<br>
-
-```python
-from py2neo import Graph
-try:
-    print('----开始尝试连接Neo4j----')
-    # 连接到Neo4j数据库
-    Graph('neo4j://8.140.203.xxx:7687', auth=("neo4j", "Flameaway3."))
-    print('Neo4j连接成功!!!')
-except:
-    print('Neo4j连接失败')
-```
-
-如果你是在部署Neo4j的机器上操作，将 `ip` 改为 `localhost` 即可。<br>
-
-```python
-from py2neo import Graph
-try:
-    print('----开始尝试连接Neo4j----')
-    # 连接到Neo4j数据库
-    Graph('neo4j://localhost:7687', auth=("neo4j", "Flameaway3."))
-    print('Neo4j连接成功!!!')
-except:
-    print('Neo4j连接失败')
-```
-
-### 创建三元组：
-
-`py2neo` 支持很多类似Neo4j中Cypher的操作，比如 `create`、`Node` 等方法，但笔者用的最多的还是 `Graph` 对象和 `run` 方法，`Graph` 对象可以直接接受Cypher语句，然后使用 `run` 方法运行Cypher语句。<br>
-
-`Graph` 对象和 `run` 方法的使用的使用很简单，通过复用之前的代码，这里介绍下具体操作：<br>
-
-```python
-from py2neo import Graph
-
-# 连接到Neo4j数据库
-graph = Graph('neo4j://localhost:7688', auth=("neo4j", "Giveaway3."))
-
-# 使用MERGE创建或查找节点和关系
-cypher_query = """
-MERGE (zhangsan:Person {name: '张三'})
-MERGE (lisi:Person {name: '李四'})
-MERGE (zhangsan)-[:同事]->(lisi)
-MERGE (zhangsan)-[:姐夫]->(lisi)
-MERGE (zhangsan)-[:领导]->(lisi)
-RETURN zhangsan, lisi
-"""
-
-result = graph.run(cypher_query)
-```
-
-### 获取三元组的值：
-
-获取三元组的值时需要采用 `graph.run().data()` 方法，这样才方便操作～🌿🌿🌿<br>
-
-假设我们构建三元组的代码如下：<br>
-
-```python
-from py2neo import Graph
-
-# 连接到Neo4j数据库
-graph = Graph('neo4j://localhost:7688', auth=("neo4j", "Giveaway3."))
-
-# 使用MERGE来创建节点和关系信息
-cypher_query = """
-MERGE (m:Word {name: '卖出'})-[r:Pat {name_zh: '受事', snowflake_id: 7104708589926234047}]->(n:Word {name: '钢琴'})
-return m,r,n
-"""
-
-result = graph.run(cypher_query)
-```
-
-我们如果想要利用 `py2neo` 获取详细的实体和关系信息，可以使用如下代码：<br>
-
-```python
-from py2neo import Graph
-
-# 连接到Neo4j数据库
-graph = Graph('neo4j://localhost:7688', auth=("neo4j", "Giveaway3."))
-
-# 使用MATCH来查找节点和关系信息
-cypher_query = """
-MATCH (m:Word {name: '卖出'})-[r:Pat {name_zh: '受事', snowflake_id: 7104708589926234047}]->(n:Word {name: '钢琴'})
-RETURN m, n, r
-"""
-
-result = graph.run(cypher_query).data()
-# print(result)
-# [{'m': Node('Word', name='卖出'), 'n': Node('Word', name='货币三佳'), 'r': Pat(Node('Word', name='卖出'), Node('Word', name='货币三佳'), snowflake_id=7104708589926234047)}]
-
-#########################
-# m 信息
-#########################
-node_m_info = result[0]['m']['name']
-print(node_m_info)  # 卖出，类型为 str
-
-#########################
-# n 信息
-#########################
-node_n_info = result[0]['n']['name']
-print(node_n_info)  # 钢琴，类型为 str
-
-#########################
-# relation 信息
-#########################
-relationship = result[0]['r']
-relationship_type = type(relationship).__name__
-print(relationship_type)  # Pat，类型为 str
-
-name_zh = relationship['name_zh']
-print(name_zh)        # 受事，类型为 str
-
-snowflake_id = relationship['snowflake_id']
-print(snowflake_id)        # 7104708589926234047，类型为 int
-```
-
-
-## py2neo代码示例:
-
-```python
-from config import Neo4J_Server_Config
-from py2neo import Graph
-
-# Cypher语句:创建语义关系并在关系中添加属性
-# is_synonym为True表示是同义词，is_synonym为False表示近义词。虽然写的时候是小写"false"，但代码获取后是<class 'bool'>类型。
-create_semantic_info = """
-MERGE (entity_a:Entity {name: '投资'})
-MERGE (entity_b:Entity {name: '盈米'})
-MERGE (entity_a)-[rel:semantic_information]->(entity_b)
-SET rel.Range = ['WJT-1', 'WJT-14']
-SET rel.Exp = ['WJT-51']
-SET rel.is_synonym = false
-SET rel.snow_id = 288247969436697000
-"""
-
-# 获取is_synonym的值
-fetch_is_synonym = """
-Match (entity_a:Entity {name: '投资'})-[r:semantic_information]->(entity_b:Entity {name: '盈米'})
-RETURN r.is_synonym  AS is_synonym
-"""
-
-# Cypher语句:删除neo4j中所有数据
-delete_all_neo4j_data = "MATCH (m) OPTIONAL MATCH (m)-[r]-() DELETE m, r"
-
-# Cypher语句:根据标准问句id(例如:WJT-1)查询neo4j中semantic_information关系
-according_wjt_fetch_data = """
-MATCH (a:Entity)-[r:semantic_information]->(b:Entity)
-WITH a, b, [attr IN keys(r) WHERE "WJT-1" IN coalesce(r[attr], [])] AS attrs
-WHERE size(attrs) > 0
-RETURN a.name AS entity_a, b.name AS entity_b, attrs AS attribute_names
-"""
-
-def connect_to_neo4j():
-    """连接neo4j数据库
-    """
-    neo4j_host = Neo4J_Server_Config['host']
-    neo4j_port = Neo4J_Server_Config['port']
-    neo4j_user = Neo4J_Server_Config['user']
-    neo4j_password = Neo4J_Server_Config['password']
-    return Graph(f'neo4j://{neo4j_host}:{neo4j_port}', auth=(neo4j_user, neo4j_password))
-
-def execute_cypher_sentence(cypher_sentence):
-    """执行cypher语句
-    Args:
-        cypher_sentence:cypher语句。
-    """
-    # 连接neo4j
-    neo4j_conn = connect_to_neo4j()
-    # 使用Graph执行cypher语句
-    result = neo4j_conn.run(cypher_sentence)
-    return result
-    
-if __name__ == "__main__":
-    # 获取is_synonym的值，并查看is_synonym的数据类型
-    res = execute_cypher_sentence(fetch_is_synonym)
-    for record in res:
-        is_synonym = record['is_synonym']
-        print("is_synonym:", is_synonym)
-        print("is_synonym的数据类型为:", type(is_synonym))
-```
-
-终端显示:<br>
-
-```log
-is_synonym: False
-is_synonym的数据类型为: <class 'bool'>
-```
-
-如果你想要获取**节点和关系信息**，请修改`if __name__ == "__main__":`为以下形式:<br>
-
-```python
-if __name__ == "__main__":
-    res = execute_cypher_sentence(according_wjt_fetch_data)
-    for item in res:
-        entity_a = item['entity_a']
-        entity_b = item['entity_b']
-        attribute_names = item['attribute_names']
-        print(f"实体A为:{entity_a},实体B为:{entity_b},属性为:{attribute_names}")
-```
-
-### 根据某个条件遍历属性:
+## 根据某个条件遍历属性:
 
 ```sql
 MATCH (a:Entity)-[r:semantic_information]->(b:Entity)
