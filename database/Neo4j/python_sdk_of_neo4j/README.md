@@ -467,7 +467,7 @@ for record in result:
     print(record)
 ```
 
-**终端显示:**<br>
+**终端输出:**<br>
 
 ```txt
 [
