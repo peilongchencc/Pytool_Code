@@ -316,7 +316,7 @@ def extract_triples_from_jsonl(file_path):
     Args:
         file_path: doccano输出的jsonl的文件路径。
     Return:
-        processed_data:整理后的三元组字典,每一个元素(`triplet_x`)为一个三元组列表,列表中含有三个字典,分别是实体A、关系、实体B的所有信息。
+        processed_data:整理后的三元组字典,每一个元素(`triplet_x`)为一个三元组列表,列表中含有三个字典,分别是实体A、实体B、关系的所有信息。
     """
     # 初始化三元组字典
     processed_data = {}
@@ -342,8 +342,6 @@ def extract_triples_from_jsonl(file_path):
                     "properties": {
                         "name": item["text"][from_entity["start_offset"]:from_entity["end_offset"]]
                     }})
-                # 关系信息
-                triples.append({"relationship": relation["type"]})
                 # 实体B的信息
                 triples.append({
                         "entity_type": to_entity["label"],
@@ -351,6 +349,8 @@ def extract_triples_from_jsonl(file_path):
                         "name": item["text"][to_entity["start_offset"]:to_entity["end_offset"]]
                         
                     }})
+                # 关系信息
+                triples.append({"relationship": relation["type"]})
                 processed_data[f"triplet_{triplet_counter}"] = triples
                 triplet_counter += 1
                 

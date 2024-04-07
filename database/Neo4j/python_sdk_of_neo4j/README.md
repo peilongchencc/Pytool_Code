@@ -4,7 +4,8 @@
 - [python\_sdk\_of\_neo4j](#python_sdk_of_neo4j)
   - [python与Neo4j：](#python与neo4j)
     - [数据格式示例:](#数据格式示例)
-    - [py2neo示例代码:](#py2neo示例代码)
+    - [将数据写入Neo4j:](#将数据写入neo4j)
+  - [不同cypher下py2neo查询、输出示例:](#不同cypher下py2neo查询输出示例)
     - [f-string插入示例:](#f-string插入示例)
     - [测试python与Neo4j的连接状态：](#测试python与neo4j的连接状态)
     - [创建三元组：](#创建三元组)
@@ -83,6 +84,10 @@ Neo4j允许一个节点有多个节点类型(标签)，例如"成龙"的标签�
 
 如果一个节点有多个标签，需要将上述格式略微变换。<br>
 
+### 将数据写入Neo4j:
+
+`数据格式示例`章节中的数据，更常见的形式是存在于json文件中。假设上述数据的文件名为 `example.json` ，可以使用以下代码将数据写入Neo4j数据库中，并完成属性设置。<br>
+
 ```python
 import json
 import os
@@ -148,7 +153,7 @@ def insert_triplet_to_neo4j(entity_a_info, entity_b_info, relationship_info):
     neo4j_graph.run(complete_query)
 
 if __name__ == "__main__":
-    data_path = "./example.json"
+    data_path = "example.json"
 
     with open(data_path, 'r', encoding='utf-8') as file:
         triplet_data = json.load(file)  # <class 'dict'>
@@ -160,7 +165,71 @@ if __name__ == "__main__":
         insert_triplet_to_neo4j(entity_a_info, entity_b_info, relationship_info)
 ```
 
-### py2neo示例代码:
+## 不同cypher下py2neo查询、输出示例:
+
+已知实体A的节点类型为`Person`，`name`属性为 "李四"，请返回与这个节点相连的其他节点的信息。<br>
+
+```python
+"""
+Author: peilongchencc@163.com
+Description: py2neo代码示例。
+Requirements: 
+1. pip install py2neo python-dotenv
+2. 当前目录下创建 `.env.local` 文件,写入配置项
+Reference Link: 
+Notes: 
+"""
+import os
+from py2neo import Graph
+from dotenv import load_dotenv
+load_dotenv('.env.local')
+
+def connect_to_neo4j():
+    """连接neo4j数据库,py2neo自动管理连接池
+    """
+    neo4j_graph = Graph('bolt://{0}:{1}'.format(os.getenv('NEO4J_HOST'), os.getenv('NEO4J_PORT')),
+                  auth=(os.getenv('NEO4J_USER'), os.getenv('NEO4J_PASS')))
+    return neo4j_graph
+
+def cypher_run(cypher_query):
+    """在neo4j中执行cypher语句。
+    Args:
+        cypher_query: cypher语句。
+    Return:
+        query_result: 以列表嵌套字典的形式返回查询结果。例如:`[{'n': Node('Person', name='王五')}]`
+    Notes:
+        `data()`方法将查询结果转换为一个字典列表,每个字典代表查询结果中的一行,这使得结果易于处理和访问,如果不使用`data()`方法,
+        即常规的`neo4j_graph.run(cypher_query)`,需要自己去整合格式,使用`data()`可以简化这个过程。
+    """
+    neo4j_graph = connect_to_neo4j()
+    query_result = neo4j_graph.run(cypher_query).data()
+    return query_result
+
+# 编写并执行Cypher查询,如果想要查询时指明方向可以使用 `-[:知道]->(n)`。
+cypher_query = """
+MATCH (m:Person {name: "李四"})-[:知道]-(n)
+RETURN n
+"""
+
+if __name__ == "__main__":
+    query_result = cypher_run(cypher_query)
+    print(query_result)
+    for record in query_result:
+        node = record['n']
+        # 检查节点的标签
+        node_labels = node.labels
+        print("Node Type:", list(node_labels), list(node_labels)[0], type(list(node_labels)[0]))
+```
+
+
+
+
+
+
+
+
+
+
 
 ```python
 from config import Neo4J_Server_Config

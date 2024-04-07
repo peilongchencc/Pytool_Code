@@ -283,7 +283,7 @@ CREATE (zhangsan)-[:前姐夫]->(lisi)
 // 以检查重复的方式创建两个节点
 MERGE (a:Entity {name: '卖出'})
 MERGE (b:Entity {name: '圣龙股份'})
-// 在这两个节点之间创建第一个FRIEND关系
+// 在这两个节点之间创建第一个SEMANTIC关系
 MERGE (a)-[:SEMANTIC {relation: 'Pat', mean_zh: '受事', subject_role: '谓语', object_role: '受事'}]->(b)
 // 创建第二个FRIEND关系，具有不同的属性
 MERGE (a)-[:SEMANTIC {relation: 'Exp', mean_zh: '当事', subject_role: '谓语', object_role: '当事'}]->(b);
