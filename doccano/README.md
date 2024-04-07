@@ -25,6 +25,7 @@ https://doccano.github.io/doccano/
   - [标注数据:](#标注数据)
   - [导出文件：](#导出文件)
   - [代码读取jsonl文件，构建三元组:](#代码读取jsonl文件构建三元组)
+    - [与Neo4j需要的数据格式联动的python代码示例:](#与neo4j需要的数据格式联动的python代码示例)
   - [多人协作:](#多人协作)
   - [任务分配:](#任务分配)
 
@@ -296,6 +297,77 @@ if __name__ == "__main__":
 {'text': '《指环王》系列由彼得·杰克逊导演。', 'subject': '《指环王》', 'predicate': '作者', 'object': '彼得·杰克逊'}
 ```
 
+### 与Neo4j需要的数据格式联动的python代码示例:
+
+上述的例子过于简单，如果数据复杂，我们需要将jsonl文件中的内容进行整理，这样才可以方便存入neo4j。这里提供笔者用的整理代码:<br>
+
+```python
+"""
+Author: peilongchencc@163.com
+Description: 将doccano输出的jsonl文件整理为方便写入neo4j的格式,并存入新的json文件。
+Requirements: 
+Reference Link:
+Notes: 输出的文件格式详情可以参考笔者`Neo4j/python_sdk_of_neo4j`章节的内容。
+"""
+import json
+
+def extract_triples_from_jsonl(file_path):
+    """将doccano输出的jsonl文件整理为方便写入neo4j的格式。
+    Args:
+        file_path: doccano输出的jsonl的文件路径。
+    Return:
+        processed_data:整理后的三元组字典,每一个元素(`triplet_x`)为一个三元组列表,列表中含有三个字典,分别是实体A、关系、实体B的所有信息。
+    """
+    # 初始化三元组字典
+    processed_data = {}
+    triplet_counter = 1
+    # 打开文件并按行读取
+    with open(file_path, "r", encoding="utf-8") as file:
+        for line in file:
+            # 解析每行的JSON数据
+            item = json.loads(line)
+            
+            # 构建实体ID到实体的映射
+            entities = {entity["id"]: entity for entity in item["entities"]}
+            
+            # 遍历关系，构建三元组。如果没有关系，则不提取信息。
+            for relation in item["relations"]:
+                triples = []
+                from_entity = entities[relation["from_id"]]
+                to_entity = entities[relation["to_id"]]
+                # 实体A的信息
+                triples.append({
+                    # "text": item["text"],
+                    "entity_type": from_entity["label"],
+                    "properties": {
+                        "name": item["text"][from_entity["start_offset"]:from_entity["end_offset"]]
+                    }})
+                # 关系信息
+                triples.append({"relationship": relation["type"]})
+                # 实体B的信息
+                triples.append({
+                        "entity_type": to_entity["label"],
+                        "properties": {
+                        "name": item["text"][to_entity["start_offset"]:to_entity["end_offset"]]
+                        
+                    }})
+                processed_data[f"triplet_{triplet_counter}"] = triples
+                triplet_counter += 1
+                
+    # 返回提取的三元组字典
+    return processed_data
+
+
+if __name__ == "__main__":
+    # 文件路径
+    file_path = "doccano_output.jsonl"
+    # 将doccano输出的jsonl文件整理为方便写入neo4j的格式。
+    triples = extract_triples_from_jsonl(file_path)
+    # print(len(triples))
+    # 将整理后的数据格式写入新文件(json)
+    with open("doccano_output_clean.json", "w", encoding="utf-8") as new_file:
+        json.dump(triples, new_file, ensure_ascii=False, indent=4)
+```
 
 ## 多人协作:
 
