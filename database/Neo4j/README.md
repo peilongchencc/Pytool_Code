@@ -25,4 +25,4 @@ install_multi_neo4j_on_one_system | 介绍在同一台ubuntu 18.04服务器上�
 common_commands_and_operations_in_neo4j | 介绍Neo4j常见命令(终端)与操作 | 
 backup_and_migration_of_neo4j_data | 介绍Neo4j数据备份与迁移 | 
 uninstall_neo4j_and_jdk | 介绍Neo4j和JDK的卸载 | 
-python_sdk_of_neo4j | 介绍python连接Neo4j的常见操作 | 
+python_sdk_of_neo4j | 介绍python连接Neo4j的常见操作(以py2neo为例) | 
