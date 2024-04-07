@@ -465,6 +465,10 @@ print(result)
 # 打印查询结果
 for record in result:
     print(record)
+    # 实体类型
+    entity_labels = list(record['n'].labels)
+    entity_properties = dict(record['n'])
+    print(f"查询到的节点的标签为:{entity_labels},起始节点的所有属性为:{entity_properties}\n")
 ```
 
 **终端输出:**<br>
@@ -485,9 +489,19 @@ for record in result:
     }
 ]
 {'n': Node('Person', age='30', name='张三')}
+查询到的节点的标签为:['Person'],起始节点的所有属性为:{'name': '张三', 'age': '30'}
+
 {'n': Node('Person', age='28', name='王五')}
+查询到的节点的标签为:['Person'],起始节点的所有属性为:{'name': '王五', 'age': '28'}
+
 {'n': Node('Person', age='26', name='李四')}
+查询到的节点的标签为:['Person'],起始节点的所有属性为:{'name': '李四', 'age': '26'}
+
 {'n': Node('Person', age='52', name='赵六')}
+查询到的节点的标签为:['Person'],起始节点的所有属性为:{'name': '赵六', 'age': '52'}
+
+{'n': Node('Entity', last_updated='2024-04-07 16:46:16', name='卖出')}
+查询到的节点的标签为:['Entity'],起始节点的所有属性为:{'name': '卖出', 'last_updated': '2024-04-07 16:46:16'}
 ```
 
 
