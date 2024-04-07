@@ -1,6 +1,6 @@
 # python_sdk_of_neo4j
 
-介绍python连接Neo4j的常见操作。<br>
+介绍python连接Neo4j的常见操作(以py2neo为例)。<br>
 - [python\_sdk\_of\_neo4j](#python_sdk_of_neo4j)
   - [python与Neo4j：](#python与neo4j)
     - [数据格式示例:](#数据格式示例)
