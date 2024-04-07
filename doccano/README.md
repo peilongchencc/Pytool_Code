@@ -369,6 +369,59 @@ if __name__ == "__main__":
         json.dump(triples, new_file, ensure_ascii=False, indent=4)
 ```
 
+`doccano_output_clean.json`的数据格式类似如下内容:<br>
+
+```python
+data = {
+    "triplet_1": [
+        {
+            "entity_type": "Person",    # 实体的类型
+            "properties": {
+                "name": "Jerry",        # 实体的属性
+                "age": 30
+                }
+            },
+        {
+            "entity_type": "Person",    # 实体的类型
+            "properties": {
+                "name": "Tom",          # 实体的属性
+                "age": 28
+                }
+            },
+        {
+            "relationship": "Catch",    # 关系的类型
+            "properties": {
+                "time": "2024-2-12"     # 关系的属性
+                }
+            }
+        ],
+    "triplet_2": [
+        {
+            "entity_type": "Person",    # 实体的类型
+            "properties": {
+                "name": "Jerry",        # 实体的属性
+                "age": 30
+                }
+            },
+        {
+            "entity_type": "Person",    # 实体的类型
+            "properties": {
+                "name": "Tom",          # 实体的属性
+                "age": 28
+                }
+            },
+        {
+            "relationship": "Catch",    # 关系的类型
+            "properties": {
+                "time": "2024-2-12"     # 关系的属性
+                }
+            }
+        ]
+    }
+```
+
+由于笔者使用的数据中关系没有属性，故笔者的python代码就没有写这部分。大家根据自己的情况，参考代码使用即可。<br>
+
 ## 多人协作:
 
 如果想要进行多人协作，共同标注，操作步骤如下:<br>
