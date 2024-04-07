@@ -296,6 +296,10 @@ if __name__ == "__main__":
         insert_triplet_to_neo4j(entity_a_info, entity_b_info, relationship_info)
 ```
 
+**neo4j显示如下:**<br>
+
+![](./example_json对应的图片.jpg)
+
 ### py2neo查询、输出示例:
 
 ```python
