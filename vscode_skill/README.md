@@ -21,6 +21,7 @@
   - [vscode 突然连接不上服务器了（2024年版本 自动更新从1.85-1.86）:](#vscode-突然连接不上服务器了2024年版本-自动更新从185-186)
     - [问题分析:](#问题分析)
     - [解决方案:](#解决方案)
+  - [vscode模板设置:](#vscode模板设置)
 
 ## 断点调试：
 
@@ -323,3 +324,105 @@ If your setup does not meet these requirements and you are unable to upgrade the
 设置-->搜索框输入 "Auto Check Updates"-->取消勾选<br>
 
 设置-->搜索框输入 "Update: Mode" --> 将 default 改为 none <br>
+
+
+## vscode模板设置:
+
+笔者在写代码时，习惯每次在文件开头加上文件描述之类的信息，但每创建一个文件就要写一次，就显得有些累了。即使复制、粘贴也会显得有些麻烦。<br>
+
+刚好，VS Code可以通过使用“代码片段”（Snippets）功能来实现自定义的代码模板。你可以创建一个特定语言的代码片段，比如Python文件的代码片段，然后定义你希望自动填充的模板代码。<br>
+
+在VS Code中，你可以按下Ctrl+Shift+P（或者在macOS上按下Cmd+Shift+P）来打开命令面板，然后输入“Configure User Snippets”，选择适合自己的选项来创建或编辑你的代码片段。笔者选择的是 `python.json(Python) 现有的代码片段` 。<br>
+
+```txt
+Configure User Snippets
+```
+
+创建或编辑完代码片段后，当你在Python文件中输入相应的**触发词**（prefix），比如输入"pybase"，然后按下Tab或Enter键，就会自动展开为你定义的模板代码，以此类推。<br>
+
+其实你还没有完全输入 "pybase" 时，例如你只输入了 "pyb"，vscode就会提示你有 "pybase"，此时直接按下Tab或Enter键，vscode就会自动展开为你定义的模板代码。<br>
+
+你可以根据自己的需要添加更多的代码片段，以便快速生成常用的代码结构。以下是笔者自定义的代码模板，读者可参考使用:<br>
+
+```json
+{
+	// Place your snippets for python here. Each snippet is defined under a snippet name and has a prefix, body and 
+	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the 
+	// same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+	"python template": {
+        "prefix": "pybase",
+        "body": [
+            "\"\"\"",
+            "Author: peilongchencc@163.com",
+            "Description: ",
+            "Requirements: ",
+            "Time: $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+            "Reference Link: ",
+            "Notes: ",
+            "\"\"\"",
+			"import argparse # import部分不需要写在__main__函数下",
+            "",
+            "def example(args1,args2):",
+            "    result = args1**args2",
+			"    return result",
+			"",
+            "if __name__ == '__main__':",
+            "    parser = argparse.ArgumentParser('测试argparse的用法') # 此处的作用仅仅是描述 ",
+            "    parser.add_argument('-a','--number_a', default=3, type=int, help='乘法a')",
+            "    parser.add_argument('-b','--number_b', default=2, type=int, help='乘法b')",
+            "    args = parser.parse_args() # 详细的argparse参数用法需要参考自己写的飞书文档\"argparse的使用模版\"",
+            "    # 文档中使用方式为 args.train_file ，传参可以用简写，文档中调用只能用全称。",
+            "    # 终端运行方式为： python xxx.py -a=4 --number_b=3",
+            "    # 终端传参\"=\"后面不能加空格，必须紧跟。",
+			"    result = example(args.number_a,args.number_b)",
+			"    print(result)",
+        ],
+        "description": "python文件基本结构",
+    },
+	"python head": {
+        "prefix": "pyhead",
+        "body": [
+            "# _*_ coding: utf-8 _*_",
+            "# @File_Path    :   $TM_FILEPATH",
+            "# @Author  :   chenpeilong",
+            "# @Email   :   peilongchencc@163.com",
+            "# @Time    :   $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+            "#Description:",
+        ],
+        "description": "python文件表头注释",
+    },
+	"python def": {
+        "prefix": "pydef",
+        "body": [
+            "def example(args1,args2):\n    \"\"\"\n    核心代码部分：\n    \"\"\"",
+			"    return",
+        ],
+        "description": "python函数结构快速调用",
+    },
+	"python_def_main": {
+        "prefix": "pymain",
+        "body": [
+            "if __name__ == '__main__':",
+        ],
+        "description": "__main__的快速调用",
+    },
+    "gpu_use": {
+        "prefix": "pygpu",
+        "body": [
+            "import os",
+            "os.environ['CUDA_VISIBLE_DEVICES'] = '1,3' # 设置gpu索引",
+        ],
+        "description": "设置gpu索引",
+    },
+}
+```
