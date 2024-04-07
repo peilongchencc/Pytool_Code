@@ -1,4 +1,7 @@
 # Installation Process of Neo4j
+
+本章介绍Neo4j在Ubuntu 18.04系统上的安装与启动。<br>
+
 - [Installation Process of Neo4j](#installation-process-of-neo4j)
   - [Neo4j的安装：](#neo4j的安装)
     - [ubuntu 18.04安装java11:](#ubuntu-1804安装java11)
@@ -14,6 +17,7 @@
     - [开启服务器端口：](#开启服务器端口)
     - [启动/关闭 Neo4j 数据库：](#启动关闭-neo4j-数据库)
     - [Neo4j Desktop 连接远程Neo4j数据库：](#neo4j-desktop-连接远程neo4j数据库)
+    - [Centos7修改最大文件打开数(可选):](#centos7修改最大文件打开数可选)
 
 ## Neo4j的安装：
 
@@ -280,3 +284,45 @@ Escape charcter is '^]'.
 telnet my_server.com 7474
 ```
 <br>
+
+### Centos7修改最大文件打开数(可选):
+
+你在启动Neo4j时，可能遇到类似以下信息:<br>
+
+```txt
+WARNING: Max 1024 open files allowed, minimum of 40000 recommended. See the Neo4j manual.
+```
+
+这表明你的系统最大文件打开数太小，需要设置的大一些。<br>
+
+你可以通过以下指令 **查看最大文件打开数** (假设你的系统为Centos7):<br>
+
+```bash
+ulimit -Hn # 查看硬限制
+ulimit -Sn # 查看软限制
+```
+
+修改方式也很简单，按照以下步骤操作即可:<br>
+
+1. 修改/etc/security/limits.conf文件，追加如下内容：
+
+```bash
+* soft nofile 65535 
+* hard nofile 65535
+```
+
+> 65535 是 2^16 - 1，这是一个基于 16 位计算机体系结构的最大数值。
+
+2. 修改/etc/profile，追加如下内容：
+
+```bash
+ulimit -n 65535
+```
+
+3. 重启主机，然后使用 `ulimit -n` 检查。
+
+重启系统/服务器(Centos7版本):<br>
+
+```bash
+sudo systemctl reboot
+```
