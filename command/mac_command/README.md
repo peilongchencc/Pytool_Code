@@ -12,7 +12,7 @@
   - [Mac的强制退出：](#mac的强制退出)
   - [Mac将文件移动至废纸篓:](#mac将文件移动至废纸篓)
   - [brew检查:](#brew检查)
-  - [Mac 关闭/开启 SIP:](#mac-关闭开启-sip)
+  - [Mac 关闭/开启 SIP(新版mac可用,笔者使用的是Mac M1):](#mac-关闭开启-sip新版mac可用笔者使用的是mac-m1)
   - [查看 SIP 状态](#查看-sip-状态)
   - [关闭或开启 SIP](#关闭或开启-sip)
 
@@ -101,7 +101,7 @@ open .
 brew doctor
 ```
 
-## Mac 关闭/开启 SIP:
+## Mac 关闭/开启 SIP(新版mac可用,笔者使用的是Mac M1):
 
 SIP 是 System Integrity Protection 的简写，译为系统完整性保护。 SIP 是 OS X El Capitan 时开始采用的一项安全技术，目的是为了限制 root 账户对系统的完全控制权，也叫 Rootless 保护机制。<br>
 
@@ -115,9 +115,10 @@ Mac 系统中 SIP 状态默认是开启的，但开启SIP会导致更改系统�
 
 ## 关闭或开启 SIP 
 
-1. 重启 Mac ，按住 Command + R 直到屏幕上出现苹果的标志和进度条 ，进入 Recovery 模式 ；
-2. 在屏幕上方的工具栏找到并打开终端，输入命令 `csrutil disable` ；
-3. 关掉终端，重启 Mac ；
-4. 重启以后可以在终端中查看状态确认 。
+1. 重启 Mac ，按住 **电源键** 直到屏幕上出现苹果的标志和"正在载入启动选项"再松手；
+2. 点击设置，选择账号，输入密码；
+3. 在屏幕上方的工具栏找到并打开终端，输入命令 `csrutil disable` ；
+4. 关掉终端，重启 Mac ；
+5. 重启以后可以在终端中查看状态确认 。
 
 开启 SIP 只需在上面第 2 步命令改为 `csrutil enable` 即可。<br>
