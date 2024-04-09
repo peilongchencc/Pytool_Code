@@ -171,3 +171,28 @@ if __name__ == "__main__":
 ```txt
 [{'university_name': '北京工业大学', 'major': '数学', 'research_direction': '应用数学', 'num_of_major_admissions': 12}, {'university_name': '北京工业大学', 'major': '数学', 'research_direction': '基础数学', 'num_of_major_admissions': 12}, {'university_name': '北京工业大学', 'major': '物理', 'research_direction': '应用物理', 'num_of_major_admissions': 11}]
 ```
+
+json方式的效果:<br>
+
+```json
+[
+    {
+        "university_name": "北京工业大学",
+        "major": "数学",
+        "research_direction": "应用数学",
+        "num_of_major_admissions": 12
+    },
+    {
+        "university_name": "北京工业大学",
+        "major": "数学",
+        "research_direction": "基础数学",
+        "num_of_major_admissions": 12
+    },
+    {
+        "university_name": "北京工业大学",
+        "major": "物理",
+        "research_direction": "应用物理",
+        "num_of_major_admissions": 11
+    }
+]
+```
