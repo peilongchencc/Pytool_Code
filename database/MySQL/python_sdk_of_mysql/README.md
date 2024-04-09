@@ -17,6 +17,7 @@ MYSQL_DB_NAME="irmdata"
 ### sql语句文件:
 
 ```python
+# sql_senteces.py
 # 创建大学招生信息表
 create_table_admission = """
 CREATE TABLE IF NOT EXISTS `university_admission_information`  (
