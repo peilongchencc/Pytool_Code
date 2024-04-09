@@ -54,6 +54,9 @@ Sanic 是一个用于构建异步（asynchronous）Web应用的Python框架，�
     - [`server.py`文件代码如下:](#serverpy文件代码如下)
     - [POST方式进行SSE传输:](#post方式进行sse传输)
     - [结合LLM API的SSE示例:](#结合llm-api的sse示例)
+  - [利用Chrome浏览器以非域名的形式解除限制访问自己的服务:](#利用chrome浏览器以非域名的形式解除限制访问自己的服务)
+    - [方案一: 为自己服务注册/绑定一个域名。](#方案一-为自己服务注册绑定一个域名)
+    - [方案二: 更改Chrome试验模式配置。](#方案二-更改chrome试验模式配置)
 
 ## Sanic的安装
 
@@ -1442,3 +1445,47 @@ async def answer(request):
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8848)
 ```
+
+
+## 利用Chrome浏览器以非域名的形式解除限制访问自己的服务:
+
+工作中你可能会遇到以下情况:<br>
+
+本地/服务器启动了一个服务，以`http://ip:port`的方式访问网页，网址的标签显示 **"不安全"** ，点击 **"不安全"** 后发现 麦克风等功能均无法使用。<br>
+
+解决方案:<br>
+
+### 方案一: 为自己服务注册/绑定一个域名。
+
+优点: 适用范围广。<br>
+
+缺点: 操作步骤多，需要注册域名，需要做Nginx反向代理。<br>
+
+### 方案二: 更改Chrome试验模式配置。
+
+1. chrome浏览器网址栏输入:
+
+```txt
+chrome://flags/#unsafely-treat-insecure-origin-as-secure
+```
+
+2. 在打开的网页中搜索:
+
+```txt
+Insecure origins treated as secure
+```
+
+3. 在 "Insecure origins treated as secure" 选项的搜索框输入自己服务的网址，例如:
+
+```txt
+http://8.140.203.xxx:8082,http://8.140.203.xxx:11167
+```
+
+注意:<br>
+
+- 多个网址之间使用英文逗号(`,`)间隔。
+- "Insecure origins treated as secure"的状态需要为"Enabled"。
+
+4. 点击右下角的"Relauch"，应用更改。
+
+当前界面有修改时，下方栏会自动弹出"Relauch"选项。点击右下角的"Relauch"后，chrome会自动重新启动打开网页。<br>
