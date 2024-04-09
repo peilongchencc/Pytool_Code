@@ -702,59 +702,72 @@ def current_timestamp():
 async def create_mysql_pool():
     """基于aiomysql创建连接池
     """
-    # 从环境变量中获取数据库连接信息
-    mysql_db_host = os.getenv("MYSQL_DB_HOST")
-    mysql_db_port = int(os.getenv("MYSQL_DB_PORT")) # 字符串要转int,端口号需要int类型
-    mysql_db_user = os.getenv("MYSQL_DB_USER")
-    mysql_db_password = os.getenv("MYSQL_DB_PASSWORD")
-    mysql_db_name = os.getenv("MYSQL_DB_NAME")
-    
-    # 创建连接池
-    mysql_pool = await aiomysql.create_pool(
-        host=mysql_db_host,
-        port=mysql_db_port,
-        user=mysql_db_user,
-        password=mysql_db_password,
-        db=mysql_db_name,
-        minsize=5,
-        maxsize=10
-    )
-    return mysql_pool
+    try:
+        # 从环境变量中获取数据库连接信息
+        mysql_db_host = os.getenv("MYSQL_DB_HOST")
+        mysql_db_port = int(os.getenv("MYSQL_DB_PORT")) # 字符串要转int,端口号需要int类型
+        mysql_db_user = os.getenv("MYSQL_DB_USER")
+        mysql_db_password = os.getenv("MYSQL_DB_PASSWORD")
+        mysql_db_name = os.getenv("MYSQL_DB_NAME")
+        
+        # 创建连接池
+        mysql_pool = await aiomysql.create_pool(
+            host=mysql_db_host,
+            port=mysql_db_port,
+            user=mysql_db_user,
+            password=mysql_db_password,
+            db=mysql_db_name,
+            minsize=5,
+            maxsize=10
+        )
+        return mysql_pool
+    except Exception as e:
+        print(f"Error occurred while creating MySQL pool: {e}")
 
-async def execute_mysql_command(mysql_pool, sql_sentence):
+async def execute_mysql_command(sql_sentence):
     """执行非查询的MySQL命令(如INSERT, UPDATE, CREATE)
+    Args:
+        sql_sentence(str): SQL语句。
     """
-    async with mysql_pool.acquire() as conn:
-        async with conn.cursor() as cur:
-            await cur.execute(sql_sentence)
-            await conn.commit()  # 确保执行了commit操作
+    try:
+        # 从mysql连接池获取的连接
+        mysql_pool = await create_mysql_pool()
+        async with mysql_pool.acquire() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(sql_sentence)
+                await conn.commit()  # 确保执行了commit操作
+    except Exception as e:
+        print(f"Error occurred while executing MySQL command: {e}")
+        # 如果执行出错，则回滚数据
+        await conn.rollback()
 
-async def fetch_data_from_mysql(mysql_pool, sql_sentence):
+async def fetch_data_from_mysql(sql_sentence):
     """从mysql中获取数据,以字典形式(DictCursor)返回每行数据。
     Args:
-        mysql_pool: 从mysql连接池获取的链接。
         sql_sentence(str): SQL查询语句,例如 "SELECT * FROM your_table;"。
     Return:
         fetch_result(list): 查询结果,格式为列表中每一项为字典。
     """
-    async with mysql_pool.acquire() as conn:
-        async with conn.cursor(aiomysql.DictCursor) as cur:  # 使用DictCursor
-            await cur.execute(sql_sentence)
-            # 获取查询结果
-            fetch_result = await cur.fetchall()
-            return fetch_result
+    try:
+        # 从mysql连接池获取的连接
+        mysql_pool = await create_mysql_pool()
+        async with mysql_pool.acquire() as conn:
+            async with conn.cursor(aiomysql.DictCursor) as cur:  # 使用DictCursor
+                await cur.execute(sql_sentence)
+                # 获取查询结果
+                fetch_result = await cur.fetchall()
+                return fetch_result
+    except Exception as e:
+        print(f"Error occurred while fetching data from MySQL: {e}")
 
 async def main():
     # 读取sql文件为字符串
     table_admission = read_file("university_admission_information.sql")
     table_major = read_file("university_major_information.sql")
-    
-    # 创建mysql连接池
-    mysql_pool = await create_mysql_pool()
 
     # 执行sql语句
-    await execute_mysql_command(mysql_pool, table_admission)
-    await execute_mysql_command(mysql_pool, table_major)
+    await execute_mysql_command(table_admission)
+    await execute_mysql_command(table_major)
 
     # 执行查询,联合这两个表查询每个专业的招生人数和研究方向。
     query = """
@@ -762,7 +775,7 @@ async def main():
     FROM university_admission_information a
     JOIN university_major_information m ON a.university_name = m.university_name AND a.major = m.major;
     """
-    data = await fetch_data_from_mysql(mysql_pool, query)
+    data = await fetch_data_from_mysql(query)
     print(data)
 
 if __name__ == "__main__":
