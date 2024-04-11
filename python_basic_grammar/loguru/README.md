@@ -1,5 +1,15 @@
 # Loguru
 Loguru 是一个简单而方便的日志库，用于在 Python 项目中记录和处理日志。相较于 python 自带的 logging 库，优势在于配置简单。<br>
+- [Loguru](#loguru)
+  - [loguru 的安装：](#loguru-的安装)
+  - [简单使用：](#简单使用)
+  - [格式化log信息：](#格式化log信息)
+  - [log信息输出至log文件：](#log信息输出至log文件)
+  - [logger.add() 方法解析：](#loggeradd-方法解析)
+    - [rotation(轮转):](#rotation轮转)
+    - [filter：](#filter)
+    - [compression:](#compression)
+  - [复杂示例：](#复杂示例)
 
 ## loguru 的安装：
 ```shell
