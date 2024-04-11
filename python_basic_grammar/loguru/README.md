@@ -181,6 +181,7 @@ logger.add(sink='test.log', level="INFO", rotation='00:00', retention='3 days', 
 例如,入口文件( `main.py` ):<br>
 
 ```python
+# main.py
 import os
 from loguru import logger
 from module_1 import some_function
