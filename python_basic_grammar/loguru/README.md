@@ -178,7 +178,7 @@ logger.add(sink='test.log', level="INFO", rotation='00:00', retention='3 days', 
 
 一个项目中要保证日志的格式统一,合理的做法是在程序的入口文件( `main.py` )中设置日志格式,其他文件中直接使用`logger.info()`等方法来记录日志即可,这样输出的日志格式都是统一的。<br>
 
-例如，入口文件( `main.py` ):<br>
+例如,入口文件( `main.py` ):<br>
 
 ```python
 import os
