@@ -218,7 +218,10 @@ crontab 编辑后不需要激活，会自动按照设定的指令运行。<br>
 `run_main.sh` 文件内容如下:<br>
 
 ```shell
-# 初始化Conda环境
+# 查看自己正在使用的shell解释器名称(可选)
+echo $SHELL
+
+# 添加conda脚本的激活程序，不添加这一步，执行conda指令会显示错误信息
 source /root/anaconda3/etc/profile.d/conda.sh
 
 # 激活nudge_new环境
