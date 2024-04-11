@@ -10,6 +10,7 @@ Loguru 是一个简单而方便的日志库，用于在 Python 项目中记录�
     - [filter：](#filter)
     - [compression:](#compression)
   - [复杂示例：](#复杂示例)
+  - [项目中loguru使用示例:](#项目中loguru使用示例)
 
 ## loguru 的安装：
 ```shell
@@ -137,6 +138,7 @@ for i in range (500):
 ```
 
 ## 复杂示例：
+
 ```python
 from loguru import logger
 # 关闭控制台输出
@@ -169,4 +171,75 @@ logger.add(sink='test.log', level="INFO", rotation='00:00', retention='3 days', 
     encoding: str = ...,
     **kwargs: Any
 ) -> int
+```
+
+
+## 项目中loguru使用示例:
+
+一个项目中要保证日志的格式统一,合理的做法是在程序的入口文件( `main.py` )中设置日志格式，其他文件中直接使用`logger.info()`等方法来记录日志即可，这样输出的日志格式都是统一的。<br>
+
+例如，入口文件( `main.py` ):<br>
+
+```python
+import os
+from loguru import logger
+from module_1 import some_function
+from module_2 import another_function
+
+# 设置日志
+logger.remove()
+logger.add("loguru_test.log", rotation="1 GB", backtrace=True, diagnose=True, format="{time} {level} {message}")
+
+def main_function():
+    # 获取当前文件的文件名
+    current_file_name = os.path.basename(__file__)
+    logger.info(f"主程序文件名为:{current_file_name}")
+
+if __name__ == '__main__':
+    main_function()
+    some_function()
+    another_function()
+```
+
+其他模块或文件,例如 `module_1.py`:<br>
+
+```python
+# module1.py
+import os
+from loguru import logger
+
+def some_function():
+    # 获取当前文件的文件名
+    current_file_name = os.path.basename(__file__)
+    logger.info(f"模块1文件名为:{current_file_name}")
+```
+
+其他模块或文件,例如 `module_2.py`:<br>
+
+```python
+# module2.py
+import os
+from loguru import logger
+
+def another_function():
+    # 获取当前文件的文件名
+    current_file_name = os.path.basename(__file__)
+    logger.info(f"模块2文件名为:{current_file_name}")
+```
+
+`python main.py` 运行入口文件后,会自动根据路径创建 `loguru_test.log` 文件,然后将log信息添加到其中。<br>
+
+如果`loguru_test.log` 文件已经存在,会以追加形式将log信息添加到其中。<br>
+
+这样做可以确保整个项目中的日志记录器是一致的，同时避免了在每个文件中都重复设置日志。<br>
+
+`loguru_test.log` 文件中内容如下:<br>
+
+```log
+2024-04-11T11:00:09.327469+0800 INFO 主程序文件名为:main.py
+2024-04-11T11:00:09.327596+0800 INFO 模块1文件名为:module_1.py
+2024-04-11T11:00:09.327681+0800 INFO 模块2文件名为:module_2.py
+2024-04-11T11:02:02.553378+0800 INFO 主程序文件名为:main.py
+2024-04-11T11:02:02.553503+0800 INFO 模块1文件名为:module_1.py
+2024-04-11T11:02:02.553574+0800 INFO 模块2文件名为:module_2.py
 ```
