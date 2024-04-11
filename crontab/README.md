@@ -218,10 +218,12 @@ crontab 编辑后不需要激活，会自动按照设定的指令运行。<br>
 `run_main.sh` 文件内容如下:<br>
 
 ```shell
-# 查看自己正在使用的shell解释器名称(可选)
+#!/bin/bash
+
+# 查看自己正在使用的shell解释器名称,这里是为了检查crontab运行的环境是否为 `/bin/bash`。
 echo $SHELL
 
-# 添加conda脚本的激活程序，不添加这一步，执行conda指令会显示错误信息
+# 初始化conda环境
 source /root/anaconda3/etc/profile.d/conda.sh
 
 # 激活nudge_new环境
