@@ -337,10 +337,15 @@ crontab -r
 
 ## Crontab 默认的日志输出路径：
 
-```shell
+```bash
 cat /var/log/syslog
 ```
 
+终端输入以下指令可以一次性清空crontab的日志:<br>
+
+```bash
+> /var/log/syslog
+```
 
 ## crontab命令解释:
 
