@@ -197,10 +197,10 @@ source /root/anaconda3/etc/profile.d/conda.sh
 conda activate langchain
 
 # 切换路径
-cd /data/selenium_data
+cd /data/
 
 # conda环境下运行python文件
-python fetch_webpage_content_baidu.py
+python main.py
 ```
 
 ### 5. 为shell脚本开通运行权限:
