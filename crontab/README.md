@@ -4,16 +4,21 @@ Crontab是一个用于在Linux和Unix系统中定期执行任务的命令。它�
   - [个人配置：](#个人配置)
   - [编辑crontab:](#编辑crontab)
   - [crontab 的使用规则：](#crontab-的使用规则)
-  - [设置定时任务的流程：](#设置定时任务的流程)
-  - [crontab运行shell脚本,shell脚本运行py文件示例:](#crontab运行shell脚本shell脚本运行py文件示例)
-    - [shell脚本常规运行方式：](#shell脚本常规运行方式)
-    - [run\_main.sh 相关内容拓展：](#run_mainsh-相关内容拓展)
-    - [应对的错误信息：](#应对的错误信息)
-    - [shell 解释器相关指令：](#shell-解释器相关指令)
+  - [设置定时任务的流程(以shell脚本运行python文件为例):](#设置定时任务的流程以shell脚本运行python文件为例)
+    - [1. 准备好你需要做定时任务的代码(`main.py`):](#1-准备好你需要做定时任务的代码mainpy)
+    - [2. 查看设置环境变量以及配置系统中的 Anaconda 环境的方式:](#2-查看设置环境变量以及配置系统中的-anaconda-环境的方式)
+    - [3. 查看自己的shell环境:](#3-查看自己的shell环境)
+    - [4. 编写shell脚本,假设你的shell脚本为 `main.sh`:](#4-编写shell脚本假设你的shell脚本为-mainsh)
+    - [5. 为shell脚本开通运行权限:](#5-为shell脚本开通运行权限)
+    - [6. 运行shell脚本测试是否正常运行:](#6-运行shell脚本测试是否正常运行)
+    - [7. crontab 编辑任务:](#7-crontab-编辑任务)
+    - [8. 查看所有的 crontab 任务(可选):](#8-查看所有的-crontab-任务可选)
+  - [关于定位conda.sh的补充:](#关于定位condash的补充)
+  - [shell 解释器相关指令：](#shell-解释器相关指令)
   - [查看所有定时任务：](#查看所有定时任务)
   - [删除定时任务：](#删除定时任务)
   - [Crontab 默认的日志输出路径：](#crontab-默认的日志输出路径)
-  - [使用示例:](#使用示例)
+  - [crontab命令解释:](#crontab命令解释)
 
 ## 个人配置：
 
@@ -129,38 +134,76 @@ Crontab 支持同时设定多个定时任务，每一行都代表一个独立的
 3. 脚本的错误可能会影响后续任务：如果一个脚本的错误导致了系统资源问题或者系统崩溃，这可能会影响后续的任务执行。
 
 
-**举个例子:**<br>
+## 设置定时任务的流程(以shell脚本运行python文件为例):
 
-假设你想要执行2个定时任务：<br>
+### 1. 准备好你需要做定时任务的代码(`main.py`):
 
-1. **每周一凌晨2点** 执行一个 python 的定时任务，文件名称为 `main.py`；
+确保自己的文件可以正常运行。<br>
 
-2. **每2分钟**执行一个 shell 脚本；
+### 2. 查看设置环境变量以及配置系统中的 Anaconda 环境的方式:
 
-**Crontab中的内容应为:**<br>
+设置环境变量以及配置系统中的 Anaconda 需要激活 `conda.sh` 文件,运行以下指令查看conda的安装路径:<br>
 
-```shell
-# 每周一凌晨2点执行 main.py；
-0 2 * * 1 /your_python_interpreter_path/python /your_file_path/main.py
-# 每2分钟执行 main.sh 脚本；
-*/2 * * * * /your_script_path/main.sh
+```bash
+which conda
 ```
-**任务1的解释：**
-- 0：表示分钟字段，即在每个小时的第0分钟执行命令。
-- 2：表示小时字段，即在每天的第2小时执行命令。
-- *：表示天、月份和星期几可以是任意值，因此*表示可以匹配任意值。
-- *：表示天、月份和星期几可以是任意值，因此*表示可以匹配任意值。
-- 1：表示星期几字段，即星期一。
 
-`/your_python_interpreter_path/python`表示指定 python 解释器，如果你使用了 **python 的虚拟环境**， 一定要注意自己的 python 解释器路径是否正确。可以用 `which python` 确定。<br>
+终端输出:<br>
 
-**任务2的解释：**
+```log
+/root/anaconda3/bin/conda
+```
 
-`*/2 * * * *` 表示每2分钟执行一次任务。<br>
+通常情况下，`conda.sh` 文件位于 Anaconda 安装目录的 `etc/profile.d` 目录下。因此,此例中conda激活方式为:<br>
 
-`/your_script_path/main.sh` 表示要执行的 shell 脚本。<br>
+```bash
+source /root/anaconda3/etc/profile.d/conda.sh
+```
 
-注意⚠️：如果要利用 crontab 运行 shell 脚本，一定要先确定 main.sh 是否开通了执行权限；<br>
+### 3. 查看自己的shell环境:
+
+终端运行以下指令，查看当前shell环境:<br>
+
+```bash
+echo $SHELL
+```
+
+笔者终端输出:<br>
+
+```log
+/bin/bash
+```
+
+由于crontab运行在一个相对干净的shell环境中，所用的shell环境可能与个人终端所使用的终端环境不同‼️‼️‼️，需要根据终端的输出进行shell脚本设置。<br>
+
+基于笔者终端的shell环境，编写shell脚本时，需要在文件第一行添加以下内容，指定shell脚本运行时的所用的shell环境:<br>
+
+```bash
+#!/bin/bash
+```
+
+### 4. 编写shell脚本,假设你的shell脚本为 `main.sh`:
+
+```bash
+#!/bin/bash
+
+# 查看自己正在使用的shell解释器名称,这里是为了检查crontab运行的环境是否为 `/bin/bash`。
+echo $SHELL
+
+# 初始化conda环境
+source /root/anaconda3/etc/profile.d/conda.sh
+
+# 激活conda环境
+conda activate langchain
+
+# 切换路径
+cd /data/selenium_data
+
+# conda环境下运行python文件
+python fetch_webpage_content_baidu.py
+```
+
+### 5. 为shell脚本开通运行权限:
 
 Linux为shell脚本开通权限的指令为：<br>
 
@@ -170,109 +213,57 @@ chmod +x /your_script_path/main.sh  # 开启权限；
 
 ⚠️注意：必须要开启权限，否则脚本是无法正常运行的。❌❌❌<br>
 
-> 更多 Crontab 常用指令请参考当前项目下txt文件。
-
-## 设置定时任务的流程：
-
-1. 准备好你需要做定时任务的代码：<br>
-
-假设准备做定时任务的文件为 `main.py`，具体内容如下：<br>
-
-```python
-print('测试 Crontab 的使用')
-```
-
-2. pwd 确定项目代码的路径：
+🚀如果你当前处于shell脚本所在目录，可以使用相对路径开启shell脚本权限:<br>
 
 ```shell
-/your_file_path/main.py  # 注意将your_file_path替换为你的完整的实际路径；
+chmod +x ./main.sh  # 开启权限；
 ```
 
-3. 输入以下命令进入 crontab 编辑模式：
+### 6. 运行shell脚本测试是否正常运行:
 
-```shell
+构建crontab任务前，应终端先测试下shell脚本是否运行正常:<br>
+
+```bash
+./main.sh
+```
+
+如果没有报错，我们就可以构建crontab任务了。<br>
+
+### 7. crontab 编辑任务:
+
+终端输入以下命令进入 crontab 编辑模式:<br>
+
+```bash
 crontab -e
 ```
 
-4. 进入 crontab 编辑模式后输入自己的指令即可：
+进入 crontab 编辑模式后输入自己的指令，假设你想要:<br>
 
-以 vim 举例，英文状态下按 `i` 开启 **vim** 编辑模式，假设输入的指令如下：<br>
-
-```shell
-*/2 * * * * /your_python_interpreter_path/python /your_file_path/main.py >> python /your_log_path/output.log    
-# 每隔2分钟执行一次main.py，将内容以 "追加" 的形式写入output.log 文件。
-# > 表示覆盖式写入；>> 表示追加式写入；
-```
-
-5. 保存退出：
-
-如果编辑结束，以 vim 举例，英文状态下按 `esc` 关闭 **vim** 编辑模式，然后按 `:` 输入x，然后回车。
-
-> vim中 `:x` 与 `:wq` 作用相同，都表示 "保存并退出"。
-
-crontab 编辑后不需要激活，会自动按照设定的指令运行。<br>
-
-
-## crontab运行shell脚本,shell脚本运行py文件示例:
-
-`run_main.sh` 文件内容如下:<br>
+以 vim 举例，英文状态下按 `i` 开启 **vim** 编辑模式，假设你想要每隔5分钟运行一次shell脚本:<br>
 
 ```shell
-#!/bin/bash
-
-# 查看自己正在使用的shell解释器名称,这里是为了检查crontab运行的环境是否为 `/bin/bash`。
-echo $SHELL
-
-# 初始化conda环境
-source /root/anaconda3/etc/profile.d/conda.sh
-
-# 激活nudge_new环境
-conda activate nudge_new
-
-# nudge_new环境下运行python文件
-python main.py
+*/5 * * * * /data/main.sh >> /data/task_log.log 2>&1
 ```
 
-### shell脚本常规运行方式：
+🌈然后保存内容并退出crontab即可，crontab 编辑后不需要激活，会自动按照设定的指令运行。<br>
 
-`cd` 到脚本文件所在目录，然后运行以下指令即可:<br>
+🚨🚨🚨注意:<br>
 
-```shell
-./run_main.sh           # 终端直接输入即可。
+在`crontab`中添加这样的条目后，指定的脚本或命令（在这个例子中是`*/5 * * * * /data/main.sh >> /data/task_log.log 2>&1`）将会在每个小时的第 5 分钟、第 10 分钟、第 15 分钟等等执行。这意味着它将按照设定的时间间隔（在这里是每 5 分钟）执行，而不是立即执行。<br>
+
+所以，如果你在 10:02 添加了这个`crontab`条目，那么第一次执行将在 10:05 发生。如果你在 10:04 添加了这个条目，同样，第一次执行也是在 10:05。这意味着，保存并退出`crontab`之后，脚本或命令的执行不会立即发生，而是等到下一个符合设定时间（即每小时的第 5、10、15... 分钟）的时刻。<br>
+
+### 8. 查看所有的 crontab 任务(可选):
+
+运行以下指令可以查看crontab中所有的定时任务:<br>
+
+```bash
+crontab -l
 ```
 
-如果提示 **"permission denied:./run_main.sh"** ，运行以下指令，然后再次运行上一步的操作即可。<br>
+## 关于定位conda.sh的补充:
 
-```shell
-chmod +x ./run_main.sh  # 开启权限；
-```
-
-⚠️注意：必须要开启权限，否则脚本是无法正常运行的。❌❌❌<br>
-
-### run_main.sh 相关内容拓展：
-
-conda 的默认激活指令如下:<br>
-
-```shell
-source ~/anaconda3/etc/profile.d/conda.sh   # 默认路径
-```
-
-如果使用默认 conda 激活指令报错，可先查看终端正在使用的shell解释器，确定自己的shell解释器:<br>
-
-```shell
-echo $SHELL
-```
-
-> 部分系统在使用 `crontab` 的定时任务时，必须指定sh环境，因为 `crontab` 运行的环境不一定和自己手动运行脚本时的环境相同。
-> 即，需要在shell文件第一行添加类似 `#!/bin/bash` 的内容。
-
-若上述指令显示 `/bin/zsh`，可通过以下指令确定 `conda.sh` 的路径。<br>
-
-```shell
-cat ~/.zshrc
-```
-
-笔者的 `zshrc` 中 `conda.sh` 相关内容如下:<br>
+`.bashrc` 或 `.zshrc` 中 `conda.sh` 相关内容如下:<br>
 
 ```shell
 # >>> conda initialize >>>
@@ -289,34 +280,14 @@ else
 fi
 ```
 
-所以，笔者使用的 conda 激活指令为：<br>
+所以，conda 激活指令为：<br>
 
 ```shell
 source /opt/anaconda3/etc/profile.d/conda.sh
 ```
 
-### 应对的错误信息：
 
-```shell
-CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.
-To initialize your shell, run
-
-    $ conda init <SHELL_NAME>
-
-Currently supported shells are:
-  - bash
-  - fish
-  - tcsh
-  - xonsh
-  - zsh
-  - powershell
-
-See 'conda init --help' for more information and options.
-
-IMPORTANT: You may need to close and restart your shell after running 'conda init'.
-```
-
-### shell 解释器相关指令：
+## shell 解释器相关指令：
 
 查看当前终端正在使用的 shell 解释器：<br>
 
@@ -338,31 +309,42 @@ chsh -s /bin/bash
 
 
 ## 查看所有定时任务：
+
 ```shell
 crontab -l
 ```
 
 ## 删除定时任务：
 
-要从 Crontab 中删除某个定时任务，可以按照以下步骤进行操作：
+要从 Crontab 中删除某个定时任务，可以按照以下步骤进行操作：<br>
+
 1. 打开终端窗口，输入 `crontab -e` 命令以编辑 Crontab 文件：
+
 2. 在文本编辑器中，定位到你要删除的定时任务所在的行。
+
 3. 删除该行，并保存文件。
+
 4. 当保存并退出文本编辑器后，Crontab文件将被更新，相应的定时任务也会被删除。
 
-如果你想删除全部的Crontab定时任务，可以使用以下命令：
+如果你想删除全部的Crontab定时任务，可以使用以下命令：<br>
+
 ```shell
 crontab -r
 ```
+
 这将删除你当前用户的所有定时任务。<br>
-请注意，删除Crontab定时任务是永久性的，一旦删除无法恢复，请确保你只删除了所需的定时任务。
+
+请注意，删除Crontab定时任务是永久性的，一旦删除无法恢复，请确保你只删除了所需的定时任务。<br>
+
 
 ## Crontab 默认的日志输出路径：
+
 ```shell
 cat /var/log/syslog
 ```
 
-## 使用示例:
+
+## crontab命令解释:
 
 ```bash
 # 注释以"#"开头, crontab支持注释, 用户输入 `crontab -l` 可以查看到注释信息
@@ -386,10 +368,3 @@ cat /var/log/syslog
 使用 **`2>&1`** ，脚本的所有输出，无论是正常的输出还是错误信息，都会被记录在同一个日志文件中。如果不使用 `2>&1`，那么 stderr（错误信息）将不会被重定向，可能会被丢弃或者发送到不同的地方，例如邮件给系统管理员或者默认的错误日志位置。(默认crontab的日志输出路径为`cat /var/log/syslog`)<br>
 
 如果不存在`semantic_task_log.log`，系统会自动创建，但需要确定这个用户(例如我是`ecs-user`)需要有足够的权限来在指定的目录下创建文件。如果权限不足，重定向操作会失败，并且可能会生成错误消息。<br>
-
-```bash
-# 每天凌晨0点执行2个日常任务:
-# 日常-任务1:语义重刷
-# 日常-任务2:针对企业微信中用户聊天记录(过去1天)进行扩充
-0 0 * * * nohup /home/ecs-user/Project/semantic_timed_task/semantic_task_daily.sh > /home/ecs-user/Project/semantic_timed_task/semantic_daily.log 2>&1 &
-```
