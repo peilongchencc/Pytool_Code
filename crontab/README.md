@@ -237,9 +237,7 @@ chmod +x ./main.sh  # 开启权限；
 crontab -e
 ```
 
-进入 crontab 编辑模式后输入自己的指令，假设你想要:<br>
-
-以 vim 举例，英文状态下按 `i` 开启 **vim** 编辑模式，假设你想要每隔5分钟运行一次shell脚本:<br>
+进入 crontab 编辑模式后输入自己的指令，以 vim 举例，英文状态下按 `i` 开启 **vim** 编辑模式，假设你想要每隔5分钟运行一次shell脚本:<br>
 
 ```shell
 */5 * * * * /data/main.sh >> /data/task_log.log 2>&1
