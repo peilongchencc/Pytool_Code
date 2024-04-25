@@ -151,7 +151,9 @@ Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
 <br>
 
 ## 设置git仓库信息(个人、远程仓库)：
+
 1. 获取github或gitlab的仓库信息。
+
 > 笔者以当前仓库为例，读者注意修改为自己的仓库信息。
 
 ```bash
@@ -159,9 +161,11 @@ git@github.com:peilongchencc/Pytool_Code.git
 ```
 
 2. 在终端中运行以下命令，为当前git仓库创建远程连接，并且将它们关联起来：
+
 ```bash
 git remote add origin git@github.com:peilongchencc/Pytool_Code.git
 ```
+
 其中`origin`是一个常用的默认远程仓库名称，但你也可以选择其他名称。当你想要删除远程仓库链接时，可以通过远程仓库名称删除。<br>
 
 git仓库允许一个仓库配置多个远程链接，方便在`git push`的时候同时推送到多个远程仓库，但不允许出现相同的远程仓库名称，例如你已经有了一个`origin`，就不能在当前git仓库再添加一个名为`origin`的远程仓库。🐳🐳🐳<br>
@@ -175,15 +179,25 @@ git remote -v
 这将列出所有与你的本地仓库关联的远程仓库。如果一切正常，你应该能够看到你刚刚添加的远程仓库URL。<br>
 
 4. 设置个人信息：
+
 我们要提交信息，管理员肯定需要看到我们的个人信息，知道是谁提交的内容，所以需要设置个人信息。<br>
 
 参考以下指令，然后将 `"Your_username"` 、 `"Your_email"` 替换为个人信息，然后运行指令，即可全局设置个人信息:<br>
+
 ```bash
 git config --global user.name "Your_username"
 git config --global user.email "Your_email"
 ```
 
+例如:<br>
+
+```bash
+git config --global user.name "peilongchencc"
+git config --global user.email "peilongchencc@163.com"
+```
+
 这样，只要是当前系统的git仓库都会绑定当前个人信息，效果如下：<br>
+
 ```log
 root@iZ2zea5v77oawjy2qz7cxxx:/data# git config --global user.name
 peilongchencc
