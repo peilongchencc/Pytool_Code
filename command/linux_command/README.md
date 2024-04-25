@@ -640,6 +640,15 @@ nohup ./my_script.sh > output.log 2>&1 &
 这条命令将标准输出和错误输出都重定向到output.log文件。<br>
 
 
+## 查看公网IP:
+
+```bash
+curl cip.cc
+```
+
+![](./查看公网ip.png)
+
+
 ## 常规文件操作：
 
 ### find 和 grep--查找特定目录下是否有某个文件或某个文件中是否包含特定内容:
