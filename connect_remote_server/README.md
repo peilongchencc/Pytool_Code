@@ -318,6 +318,113 @@ Could not establish connection to "xxx.xxx.xxx.xxx": Cannot read properties of u
 3. 将 Remote 版本切换为 "预发布" 版本；("预览"-->"预发布")
 
 
+## 服务器修改操作系统:
+
+### 实例控制台停止实例，然后修改操作系统。
+
+![](./服务器更改操作系统_1.jpg)
+
+### 确认是否已为Linux实例开启root用户远程登录。
+
+如果更改了操作系统后，能够直接连接服务器。可以忽略此节内容。<br>
+
+部分Linux系统中，SSHD服务默认禁用root用户远程登录，导致登录时提示用户名或密码错误。您可以按照以下步骤开启root用户远程登录。<br>
+
+1. 使用VNC或workbench方式连接实例。
+
+2. 打开SSH配置文件。
+
+```bash
+vim /etc/ssh/sshd_config
+```
+
+3. 按`i`键进入编辑模式。
+
+4. 设置 `PermitRootLogin` 和 `PasswordAuthentication` ，如下所示。
+
+```conf
+# 允许root用户远程连接实例
+PermitRootLogin yes
+# 允许使用密码远程连接实例(可以设置为no,笔者就是设置的no)
+PasswordAuthentication yes
+```
+
+5. 按Esc键，输入 `:wq` 保存修改。
+
+6. 重启SSHD服务。
+
+```bash
+systemctl restart sshd.service
+```
+
+### 更换了高版本的操作系统，不支持原有密钥:
+
+笔者的经验为，从 ubuntu 18 将系统更换后，使用相同的密钥登录提示 `无法与 "8.140.203.136" 建立连接: Permission denied (publickey).`。<br>
+
+解决方法为终端依次输入以下指令:<br>
+
+```bash
+echo 'PubkeyAcceptedAlgorithms +ssh-rsa' >> /etc/ssh/sshd_config 
+```
+
+```bash
+echo 'hostkeyalgorithms +ssh-rsa' >> /etc/ssh/sshd_config 
+```
+
+```bash
+echo 'kexAlgorithms +diffie-hellman-group14-sha1' >> /etc/ssh/sshd_config
+```
+
+重启SSHD服务:<br>
+
+```bash
+systemctl restart sshd.service
+```
+
+
+## 购买的云盘(数据盘)没有挂载上:
+
+![](./云盘挂载_1.png)
+
+终端分别执行以下指令查看挂载情况:<br>
+
+```bash
+lsblk
+```
+
+```bash
+blkid
+```
+
+![](./云盘挂载_2.png)
+
+图中 `vdb1` 就是数据盘，但可以看到最后 `MOUNTPOINTS` 那一列是没有内容的，说明没有完成挂载。<br>
+
+可以运行以下指令完成挂载:<br>
+
+```bash
+# 创建一个空目录挂载数据盘
+mkdir /data
+```
+
+```bash
+# 执行数据盘挂载
+mount /dev/vdb1 /data
+```
+
+依次运行以下2个指令，设置实例重启也自动挂载云盘，避免实例重启需要再次手动完成挂载:<br>
+
+```bash
+echo /dev/vdb1 /data ext4 defaults 1 1 >> /etc/fstab
+```
+
+```bash
+mount -a
+```
+
+没有报错就代表执行成功了😋。<br>
+
+
 ## "项目部署在AWS的Lambda"是什么意思？
 
 "项目部署在AWS的Lambda" 这句话是关于云计算服务的。这里的“项目”指的是某种软件应用或代码，而“部署”是指在某个平台上设置和运行这个应用或代码。<br>
