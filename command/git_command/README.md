@@ -725,11 +725,14 @@ git init --initial-branch=yourbranchname
 这将创建一个新的Git仓库并将默认分支设置为"yourbranchname"。<br>
 <br>
 
+
 ## git 和 github、gitlab 的区别：
+
 git 是一个版本控制软件，github 是一个代码托管平台。github 或 gitlab 可以使用 git 进行代码的版本控制，可以执行修改代码、切换分支、查看不同代码版本、分享代码、提交bug等操作。<br>
-<br>
+
 
 ## git clone 的使用：
+
 `git clone`是一个用于复制（克隆）Git仓库的命令。它允许你从远程或本地仓库创建一个本地副本，这样你就可以在本地工作、编辑和提交代码，而不需要直接访问原始仓库。这对于协作开发和版本控制非常有用。<br>
 
 要使用`git clone`，请按照以下步骤进行：<br>
