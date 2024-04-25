@@ -1,4 +1,5 @@
 # Vscode Skill
+
 本文记录笔者在使用vscode时所遇到的一些问题和解决方案，希望对大家有帮助。<br>
 
 声明：本文所列快捷键为 MacOs 版，windows用于请自行百度对应快捷键。<br>
@@ -242,6 +243,7 @@ sys.path.append("/data/nlp/")
 ## Github中MarkDown文档中所用的目录生成方式：
 
 **起因**：Markdown可以使用`[TOC]`自动生成Markdown文件的标题目录，比如在typora等编辑器，但是Github却不支持`[TOC]`标签，所以在Github上使用`[TOC]`无法正确显示目录，所以需要借助vscode的插件实现目录生成。<br>
+
 1. vscode拓展中搜索 `Markdown All in One`； 
 2. 点击安装；
 3. 在vscode打开需要生成目录的MarkDown文件，然后将光标定位到要生成目录的地方；

@@ -1,5 +1,7 @@
 # connect_remote_server
+
 记载笔者通过 终端/vscode 连接阿里云远程服务器的一些经验，包括如何连接远程服务器，出现的错误和相应的解决方案。<br>
+
 - [connect\_remote\_server](#connect_remote_server)
   - [连接阿里云服务器：](#连接阿里云服务器)
     - [进入实例：](#进入实例)
@@ -15,6 +17,11 @@
   - [阿里云的RAM用户登陆和普通用户登陆有区别吗？](#阿里云的ram用户登陆和普通用户登陆有区别吗)
   - [cannot create temp file for here-document: No space left on device](#cannot-create-temp-file-for-here-document-no-space-left-on-device)
   - [Could not establish connection to "xxx.xxx.xxx.xxx": Cannot read properties of undefined (reading 'replace').](#could-not-establish-connection-to-xxxxxxxxxxxx-cannot-read-properties-of-undefined-reading-replace)
+  - [服务器修改操作系统:](#服务器修改操作系统)
+    - [实例控制台停止实例，然后修改操作系统。](#实例控制台停止实例然后修改操作系统)
+    - [确认是否已为Linux实例开启root用户远程登录。](#确认是否已为linux实例开启root用户远程登录)
+    - [更换了高版本的操作系统，不支持原有密钥:](#更换了高版本的操作系统不支持原有密钥)
+  - [购买的云盘(数据盘)没有挂载上:](#购买的云盘数据盘没有挂载上)
   - ["项目部署在AWS的Lambda"是什么意思？](#项目部署在aws的lambda是什么意思)
   - [服务器连接openai:](#服务器连接openai)
     - [ubuntu 18.04 安装 GNOME 桌面环境:](#ubuntu-1804-安装-gnome-桌面环境)
@@ -39,6 +46,7 @@
       - [重定向 HTTP 到 HTTPS（可选）:](#重定向-http-到-https可选)
       - [答疑-Nginx配置中哪部分表示了"www"记录？哪部分表示了"@"记录？](#答疑-nginx配置中哪部分表示了www记录哪部分表示了记录)
       - [检查配置文件的语法并重新启动 Nginx:](#检查配置文件的语法并重新启动-nginx)
+
 
 ## 连接阿里云服务器：
 ### 进入实例：
@@ -422,7 +430,9 @@ echo /dev/vdb1 /data ext4 defaults 1 1 >> /etc/fstab
 mount -a
 ```
 
-没有报错就代表执行成功了😋。<br>
+没有报错就代表执行成功了😋。现在你就可以看到挂载的云盘的信息了:<br>
+
+![](./云盘挂载_3.jpg)
 
 
 ## "项目部署在AWS的Lambda"是什么意思？
