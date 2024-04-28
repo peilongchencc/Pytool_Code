@@ -1,4 +1,7 @@
 # Milvus
+
+本章介绍向量数据库Milvus的安装与使用，注意⚠️ Milvus 是一个内存数据库，数据需要 `load` 到内存中才能执行查询操作。<br>
+
 - [Milvus](#milvus)
   - [Milvus安装:](#milvus安装)
   - [脱机状态下安装milvus:](#脱机状态下安装milvus)
@@ -594,6 +597,8 @@ connections.connect(host='localhost', port='19530')
 
 在Milvus中，`CollectionSchema`、`FieldSchema`和`DataType`是创建一个集合(collection)的基本组件。Milvus是一个开源的向量数据库，用于存储和检索大量的向量数据。这三个组件定义了集合的结构和数据类型。<br>
 
+
+
 ### FieldSchema介绍:
 
 `FieldSchema`用于定义集合中的一个字段(field)的结构。一个字段相当于传统数据库中的一个列(column)。它包括字段的名字、字段的数据类型以及一些额外的参数，比如是否是主键、是否自动创建索引等等。<br>
@@ -616,6 +621,8 @@ vector_field = FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=12
 `DataType`是一个枚举类，定义了Milvus中支持的不同数据类型。这些数据类型包括基本的数值类型、字符串和向量类型等。比如，`INT64`用于整数、`FLOAT_VECTOR`用于浮点数向量等。<br>
 
 示例中的`DataType.FLOAT_VECTOR`表示字段是浮点型的向量数据，`dim=128`指的是向量的维度是128。<br>
+
+milvus对于varchar字段的单个长度限制是64k字节。<br>
 
 ### CollectionSchema:
 
