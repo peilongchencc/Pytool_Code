@@ -3,6 +3,10 @@
   - [Docker和Docker Compose 安装:](#docker和docker-compose-安装)
   - [安装Docker Compose 1.25.1版本:](#安装docker-compose-1251版本)
     - [docker-compose --version无法使用的解决方案:](#docker-compose---version无法使用的解决方案)
+  - [Docker Compose V2安装:](#docker-compose-v2安装)
+    - [1. 确保 Docker 已经安装:](#1-确保-docker-已经安装)
+    - [2. 安装 Docker Compose 插件:](#2-安装-docker-compose-插件)
+    - [3. 验证安装:](#3-验证安装)
   - [Docker指令:](#docker指令)
     - [查看Docker版本:](#查看docker版本)
     - [查看Docker Compose版本的指令如下:](#查看docker-compose版本的指令如下)
@@ -126,6 +130,60 @@ docker-compose --version
 现在大概率已经成功了，会出现这个问题是因为，你之前在不同的位置有 `docker-compose` 的版本，并且bash已经缓存了这个命令的位置。<br>
 
 使用 `hash -r` 来清除缓存是一个有用的技巧，特别是在安装、移动或更改可执行文件的路径时。<br>
+
+
+## Docker Compose V2安装:
+
+要在 Ubuntu 20.04 上安装 Docker Compose 并准备使用 `sudo docker compose up -d` 命令，你需要先安装 Docker Compose V2，因为在 V2 版本中，`docker-compose` 命令已经集成到 Docker CLI 中，直接用 `docker compose` （没有连字符）来调用。<br>
+
+下面是安装 Docker Compose V2 的步骤：<br>
+
+### 1. 确保 Docker 已经安装:
+
+Docker Compose V2 是 Docker 的一部分，所以你需要先安装 Docker。如果还未安装 Docker，可以运行以下命令来安装：<br>
+
+```bash
+sudo apt update
+sudo apt install docker.io
+```
+
+### 2. 安装 Docker Compose 插件:
+
+使用以下命令安装 Docker Compose V2 作为 Docker 的插件:<br>
+
+```bash
+sudo mkdir -p ~/.docker/cli-plugins
+sudo curl -SL https://github.com/docker/compose/releases/download/v2.4.1/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+sudo chmod +x ~/.docker/cli-plugins/docker-compose
+```
+
+这些命令从 Docker 的 GitHub 仓库下载最新的 Docker Compose V2 二进制文件到适当的位置，并使其可执行。<br>
+
+终端显示:<br>
+
+```log
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100 25.2M  100 25.2M    0     0  56057      0  0:07:52  0:07:52 --:--:-- 1591k
+```
+
+### 3. 验证安装:
+
+安装完成后，你可以通过以下命令来检查版本，确认安装是否成功:<br>
+
+```bash
+docker compose version
+```
+
+终端显示:<br>
+
+```log
+(base) root@iZ2zea5v77oawjy2qz7c20Z:/data/Pytool_Code# docker compose version
+Docker Compose version v2.4.1
+```
+
+完成这些步骤后，你就可以使用 `docker compose up -d` 命令来启动你的服务了。<br>
 
 
 ## Docker指令:
