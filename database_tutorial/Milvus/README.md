@@ -622,7 +622,9 @@ vector_field = FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=12
 
 示例中的`DataType.FLOAT_VECTOR`表示字段是浮点型的向量数据，`dim=128`指的是向量的维度是128。<br>
 
-milvus对于varchar字段的单个长度限制是64k字节。<br>
+milvus对于varchar字段的单个长度限制是64k字节。对于中文字符，通常使用 UTF-8 编码。在 UTF-8 编码下，一个中文字符通常占用 3 个字节。因此 64000 字节大约可以存储大约 21333 个中文字符。<br>
+
+> 这里的“字符”指的就是一个汉字，中文的标点符号也算作字符，并且在 UTF-8 编码中通常也占用 3 个字节。
 
 ### CollectionSchema:
 
