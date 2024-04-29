@@ -28,6 +28,11 @@
   - [git clone 的使用：](#git-clone-的使用)
     - [git clone 和 git pull 的区别：(含部分 git fetch讲解)](#git-clone-和-git-pull-的区别含部分-git-fetch讲解)
     - [git clone 拉取远程仓库指定分支：](#git-clone-拉取远程仓库指定分支)
+  - [git pull 的作用:](#git-pull-的作用)
+    - [问题描述:](#问题描述)
+    - [问题解答:](#问题解答)
+    - [更详细的示例:](#更详细的示例)
+    - [将不同分支的内容上传到不同的远程仓库:](#将不同分支的内容上传到不同的远程仓库)
   - [Git常见场景运用：](#git常见场景运用)
     - [协同工作时，你当前所在的分支被其他人更新，你需要拉取最新的内容再接着自己的工作：](#协同工作时你当前所在的分支被其他人更新你需要拉取最新的内容再接着自己的工作)
       - [git pull 让你选择分支合并方式：](#git-pull-让你选择分支合并方式)
@@ -800,14 +805,126 @@ git clone -b release git@github.com:peilongchencc/Pytool_Code.git
 
 🚨🚨🚨注意：git仓库中不能套着拉取一个git仓库。<br>
 
-<br>
+
+## git pull 的作用:
+
+### 问题描述:
+
+我的git项目有多个分支，不同分支对应的不同的远程仓库，我使用git pull拉取的是所有分支对应的最新代码吗？<br>
+
+### 问题解答:
+
+在 Git 中，默认情况下，`git pull` 命令只会拉取和更新当前活动分支的最新代码，并且它会从该分支关联的远程仓库拉取。<br>
+
+如果你有多个分支，每个分支对应不同的远程仓库，你需要切换到相应的分支并分别执行 `git pull` 命令来更新每个分支的代码。<br>
+
+例如，如果你在 `branchA` 分支上，并且它关联到了远程仓库 `origin`，当你执行 `git pull` 时，Git 会从 `origin` 拉取 `branchA` 的最新改动并合并到你的本地分支。如果你要更新其他分支，如 `branchB`，你需要先切换到那个分支：<br>
+
+```bash
+git checkout branchB
+```
+
+然后再执行 `git pull` 以拉取和合并远程分支的最新代码。<br>
+
+如果你想要查看或修改某个分支的远程跟踪关系，你可以使用 `git branch -vv` 命令查看所有分支的远程关联情况，或者用 `git remote show [remote-name]` 查看更详细的远程仓库信息。<br>
+
+如果有必要修改某个分支的远程跟踪仓库，你可以使用 `git branch --set-upstream-to` 命令。例如，要将 `branchB` 的远程跟踪设置为远程仓库 `otherRemote` 上的 `branchB`：<br>
+
+```bash
+git branch --set-upstream-to=otherRemote/branchB branchB
+```
+
+这样设置后，当你在 `branchB` 上执行 `git pull` 时，它会从 `otherRemote` 的 `branchB` 拉取代码。<br>
+
+### 更详细的示例:
+
+假设你项目的git信息如下:<br>
+
+```log
+(base) root@iZ2zea5v77oawjy2qz7c20Z:/data/baidu-hot-search-crawling-code# git branch -a
+* main
+  master
+  remotes/github/main
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/master
+(base) root@iZ2zea5v77oawjy2qz7c20Z:/data/baidu-hot-search-crawling-code# git remote -v
+github  git@github.com:peilongchencc/baidu_hot_search.git (fetch)
+github  git@github.com:peilongchencc/baidu_hot_search.git (push)
+origin  git@gitee.com:beijing-zhixing-qiming/baidu-hot-search-crawling-code.git (fetch)
+origin  git@gitee.com:beijing-zhixing-qiming/baidu-hot-search-crawling-code.git (push)
+(base) root@iZ2zea5v77oawjy2qz7c20Z:/data/baidu-hot-search-crawling-code# 
+```
+
+你当前处于 `main` 分支，你想要让 `main` 分支跟踪远程仓库 github 的 main 分支。你需要先设置跟踪关系，然后可以拉取该远程仓库的代码。这里是步骤：<br>
+
+1. **设置本地 `main` 分支跟踪远程 `github` 仓库的 `main` 分支**：
+
+```bash
+git branch --set-upstream-to=github/main main
+```
+
+`github` 是区别于 `origin` 的远程链接的别名，不要混淆了。‼️‼️‼️<br>
+
+2. **拉取最新的代码**：
+
+```bash
+# 只会拉取当前分支的远程代码
+git pull
+```
+
+这样，你的本地 `main` 分支就会从远程 `github` 仓库的 `main` 分支拉取最新的代码。如果你想要查看当前分支的跟踪情况，可以使用：<br>
+
+```bash
+git branch -vv
+```
+
+这会显示你本地分支的详细信息，包括它们正在跟踪的远程分支。如果一切设置正确，你应该看到 `main` 分支跟踪 `github/main`。
+
+```log
+(base) root@iZ2zea5v77oawjy2qz7c20Z:/data/baidu-hot-search-crawling-code# git branch -vv
+* main   b3b7188 [github/main] 百度热搜项目提交
+  master b8c4bf5 [origin/master] 剔除log文件
+```
+
+### 将不同分支的内容上传到不同的远程仓库:
+
+要将你的 `main` 分支的代码上传到 GitHub，你需要使用 `git push` 命令。这个操作不会影响你的 `master` 分支，因为 Git 的推送操作是基于当前分支的，不会影响其他本地分支。<br>
+
+以下是如何上传 `main` 分支到 GitHub 的步骤：<br>
+
+1. **切换到 `main` 分支**（如果你不在该分支上）：
+
+```bash
+git checkout main
+```
+
+2. **推送 `main` 分支到 GitHub**：
+
+```bash
+git push github main
+```
+
+这里，`github` 是你的远程仓库的名称，`main` 是要推送的分支名。如果你已经设置了 `main` 分支跟踪 `github` 的 `main` 分支，你也可以简单使用：<br>
+
+```bash
+git push
+```
+
+这会根据设置的跟踪关系推送到正确的远程分支。<br>
+
+🔥🔥🔥在 Git 中，使用 `git push` 命令时，它 **默认只推送当前分支到该分支跟踪的远程分支** 。这个操作不会影响到 `master` `分支或其他任何分支。master` 分支的代码也不会被推送，除非你切换到 `master` 分支并执行 `git push`（前提是 `master` 分支也设置了相应的跟踪关系）。<br>
+
 
 ## Git常见场景运用：
+
 ### 协同工作时，你当前所在的分支被其他人更新，你需要拉取最新的内容再接着自己的工作：
+
 问题描述：<br>
+
 "人物A" 正在分支"release"上工作，工作正做了一半。"同事B"告诉"人物A"，他修改了"release"分支的内容，让"人物A"在修改后的基础上操作，"人物A"现在应该怎么做？<br>
 
 解决方案：<br>
+
 在这种情况下，你可以按照以下步骤来处理：
 
 1. **保存当前工作：** 如果你正在进行一项工作，先确保将你当前的工作保存并提交到你的本地分支。使用以下命令来提交你的更改：
