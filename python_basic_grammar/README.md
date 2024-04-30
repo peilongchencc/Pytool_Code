@@ -117,13 +117,13 @@
     - [参数构建原则：](#参数构建原则)
     - [函数调用：](#函数调用)
     - [返回值：](#返回值)
-    - [函数的文档字符串：](#函数的文档字符串)
     - [默认参数：](#默认参数)
     - [指定参数数据类型：](#指定参数数据类型)
     - [不定参数：](#不定参数)
       - [不定位置参数 (\*args)：](#不定位置参数-args)
       - [不定关键字参数 (\*\*kwargs)：](#不定关键字参数-kwargs)
     - [函数中定义函数：](#函数中定义函数)
+  - [函数-Google风格的文档字符串：](#函数-google风格的文档字符串)
   - [lambda函数：](#lambda函数)
   - [lambda函数进阶(sorted+字典+lambda)：](#lambda函数进阶sorted字典lambda)
   - [python常用内建函数：](#python常用内建函数)
@@ -2168,13 +2168,15 @@ print(person1.__dict__)
 # 输出: {'name': 'Alice', 'age': 31, 'city': 'New York'}
 ```
 
-<br>
 
 ## python的函数语法：
+
 函数是一段可重复使用的代码块，它可以接受输入参数，执行一些操作，然后返回结果。在Python中，函数使用`def`关键字来定义，下面是一些关于Python函数的基本用法：<br>
 
 ### 函数的定义：
+
 使用`def`关键字来定义函数，后面跟着函数的名称和一对小括号，括号内可以包含参数列表。函数定义的基本语法如下：<br>
+
 ```python
 def function_name(parameters):
     # 函数体，包含一系列操作
@@ -2183,6 +2185,7 @@ def function_name(parameters):
 ```
 
 ### 参数类型：
+
 函数可以接受零个或多个参数。参数是在函数调用时传递给函数的值。参数类型有：**位置参数**、**关键字参数**和**默认参数**。<br>
 
 在Python中，位置参数、关键字参数和默认参数是函数参数的不同类型，它们之间有以下关系：<br>
@@ -2201,6 +2204,7 @@ def function_name(parameters):
    - 默认参数通常位于参数列表的末尾。
 
 关系总结：<br>
+
 - 位置参数是在函数定义中按顺序声明的参数，必须按照相同的顺序传递值。
 - 关键字参数是通过参数名来传递值的，可以在调用函数时以任何顺序使用。
 - 默认参数是具有默认值的参数，如果调用函数时不提供值，将使用默认值。默认参数通常与关键字参数一起使用，以提供更多的灵活性。
@@ -2221,8 +2225,8 @@ example_function(city="New York", age=25, name="Bob")  # Name: Bob, Age: 25, Cit
 example_function("Carol", 35)  # Name: Carol, Age: 35, City: Unknown
 ```
 
-
 ### 参数构建原则：
+
 在Python中，函数的参数构建遵循以下原则：<br>
 
 1. 位置参数（没有默认值）应该放在参数列表的前面，而默认参数（有默认值）应该放在后面。
@@ -2249,66 +2253,26 @@ example_function(name="Carol", city="Los Angeles", age=35)  # 输出：Name: Car
 在上面的示例中，`name` 和 `age` 是位置参数，它们必须在调用时提供值，而 `city` 是默认参数，**可以根据需要省略或显式提供值或采用键值对形式传参**🐳🐳🐳。如果你试图将位置参数放在默认参数后面，会导致语法错误。<br>
 
 ### 函数调用：
+
 要调用一个函数，只需使用函数的名称，并传递所需的参数。例如：<br>
+
 ```python
 result = function_name(arg1, arg2, kwarg1=value1, kwarg2=value2)
 ```
 
 ### 返回值：
+
 函数可以使用`return`语句返回一个值。如果没有`return`语句，函数将返回`None`。<br>
+
 ```python
 def add(a, b):
     return a + b
 ```
 
-### 函数的文档字符串：
-函数通常应该包含一个文档字符串（docstring），它用于描述函数的用途和参数，以及其他相关信息。它是函数的用户和其他开发者了解函数如何工作的重要来源。<br>
-
-良好的文档字符串可以提高代码的可读性和可维护性。这个文档字符串会在调用`help()`函数时显示出来。<br>
-
-格式约定：Python社区通常采用一种特定的文档字符串格式约定，称为"Google风格"或"reStructuredText风格"。这些约定包括以下部分：<br>
-- 函数的简短描述（一行），概括性地描述函数的用途。
-- 空行。
-- 参数说明，列出每个参数的名称、类型和说明。
-- 返回值说明，描述函数的返回值类型和含义。
-- 示例用法，提供函数的使用示例。
-
-示例，Google风格的文档字符串：<br>
-```python
-def calculate_total(price, quantity):
-    """Calculate the total cost of items.
-    
-    Args:
-        price (float): The price of a single item.
-        quantity (int): The number of items.
-    
-    Returns:
-        float: The total cost of the items.
-    """
-    total_cost = price * quantity
-    return total_cost
-
-help(calculate_total)   # 也可以使用 print(help(calculate_total)) 的形式。
-```
-终端显示效果：<br>
-```log
-Help on function calculate_total in module __main__:
-
-calculate_total(price, quantity)
-    Calculate the total cost of items.
-    
-    Args:
-        price (float): The price of a single item.
-        quantity (int): The number of items.
-    
-    Returns:
-        float: The total cost of the items.
-(END)
-```
-上述内容会自动在一个新的界面显示，可以按字母`q`退出。<br>
-
 ### 默认参数：
+
 可以为函数的参数指定默认值，这样在调用函数时如果没有提供该参数，将使用默认值。<br>
+
 ```python
 def add_numbers(a=5, b=3):
     """计算并返回两个数的和。"""
@@ -2321,6 +2285,7 @@ print(sum_result)  # 输出：8
 ```
 
 ### 指定参数数据类型：
+
 在Python中，通常不需要显式指定函数参数的数据类型，因为Python是一种动态类型语言，它会自动推断参数的类型。这意味着你可以将不同类型的数据传递给函数参数，Python会根据传入的实际数据来执行相应的操作。这种特性称为动态类型检查。<br>
 
 例如，你可以编写一个函数，接受整数、浮点数、字符串或其他数据类型的参数，Python会根据传递的参数执行相应的操作，而不需要显式指定参数的数据类型：<br>
@@ -2358,12 +2323,15 @@ def add(a: int, b: int) -> int:
 尽管这些类型提示不会影响运行时的行为，但它们可以在编辑器中提供更好的自动补全和静态类型检查支持。同时，一些工具和IDE（集成开发环境）可以根据这些类型提示提供更好的代码分析和错误检查。<br>
 
 ### 不定参数：
+
 Python支持不定数量的位置参数和关键字参数，可以使用不定位置参数`*args`和不定关键字参数`**kwargs`来处理这些参数。<br>
 
 #### 不定位置参数 (*args)：
+
 不定位置参数允许你传递任意数量的位置参数给函数。这些参数将被打包成一个元组（tuple），可以在函数内部进行迭代或处理。<br>
 
 示例：<br>
+
 ```python
 def print_args(*args):
     for arg in args:
@@ -2376,9 +2344,11 @@ print_args(1, 2, 3, "hello")
 # 3
 # hello
 ```
+
 在这个示例中，`*args` 接受了任意数量的位置参数，并在函数内部以元组的形式进行处理。<br>
 
 #### 不定关键字参数 (**kwargs)：
+
 不定关键字参数允许你传递任意数量的关键字参数给函数。这些参数将被打包成一个字典（dictionary），其中关键字是参数名称，对应的值是参数的值。<br>
 
 示例：<br>
@@ -2393,13 +2363,17 @@ print_kwargs(name="Alice", age=30, city="New York")
 # age: 30
 # city: New York
 ```
+
 在这个示例中，`**kwargs` 接受了任意数量的关键字参数，并在函数内部以字典的形式进行处理。<br>
 
 使用不定参数可以使函数更加灵活，因为它们允许函数接受不同数量的参数而不需要提前定义固定数量的参数。通常，`*args` 用于不确定数量的位置参数，而 `**kwargs` 用于不确定数量的关键字参数。这对于编写通用函数或包装其他函数时非常有用，因为它们可以适应各种输入情况。<br>
 
 ### 函数中定义函数：
+
 python支持在函数内部定义函数，这被称为**内嵌函数或局部函数**。内嵌函数在外部函数的作用域内定义，只能在外部函数内部访问。这可以用于封装某些逻辑或将代码模块化，以便在外部函数中更清晰地组织代码。🌵🌵🌵<br>
+
 示例代码如下：<br>
+
 ```python
 def outer_function():
     def inner_function():
@@ -2411,7 +2385,9 @@ def outer_function():
 # 调用外部函数
 outer_function()
 ```
+
 🚨🚨🚨一定要注意，内部函数是无法在外部调用的，除非你采用了返回值的方式。例如下列代码形式的调用会返回 `NameError`。<br>
+
 ```python
 def outer_function():
     def inner_function():
@@ -2426,6 +2402,85 @@ outer_function()
 # 尝试在外部函数之外调用内部函数，将引发 NameError: name 'inner_function' is not defined. 
 inner_function()
 ```
+
+
+## 函数-Google风格的文档字符串：
+
+函数通常应该包含一个文档字符串（docstring），它用于描述函数的用途和参数，以及其他相关信息。它是函数的用户和其他开发者了解函数如何工作的重要来源。<br>
+
+良好的文档字符串可以提高代码的可读性和可维护性。这个文档字符串会在调用`help()`函数时显示出来。<br>
+
+格式约定：Python社区通常采用一种特定的文档字符串格式约定，称为"Google风格"或"reStructuredText风格"。这些约定包括以下部分：<br>
+
+- 函数的简短描述（一行），概括性地描述函数的用途。
+- 空行。
+- 参数说明，列出每个参数的名称、类型和说明。
+- 返回值说明，描述函数的返回值类型和含义。
+- 示例用法，提供函数的使用示例。
+
+示例，Google风格的文档字符串：<br>
+
+```python
+def calculate_total(price, quantity):
+    """Calculate the total cost of items.
+    
+    Args:
+        price (float): The price of a single item.
+        quantity (int): The number of items.
+    
+    Returns:
+        float: The total cost of the items.
+    """
+    total_cost = price * quantity
+    return total_cost
+
+help(calculate_total)   # 也可以使用 print(help(calculate_total)) 的形式。
+```
+
+终端显示效果：<br>
+
+```log
+Help on function calculate_total in module __main__:
+
+calculate_total(price, quantity)
+    Calculate the total cost of items.
+    
+    Args:
+        price (float): The price of a single item.
+        quantity (int): The number of items.
+    
+    Returns:
+        float: The total cost of the items.
+(END)
+```
+
+上述内容会自动在一个新的界面显示，可以按字母`q`退出。<br>
+
+有时你会看到函数中类似下列 `Examples` 的模块:<br>
+
+> 代码、注释等其他部分均已省略。
+
+```python
+def main():
+    """Load the data into memory.
+    Examples:
+        >>> from pymilvus import Collection, FieldSchema, CollectionSchema, DataType
+        >>> connections.connect()
+        >>> schema = CollectionSchema([
+        ...     FieldSchema("film_id", DataType.INT64, is_primary=True),
+        ...     FieldSchema("films", dtype=DataType.FLOAT_VECTOR, dim=2)
+        ... ])
+        >>> collection = Collection("test_collection_load", schema)
+        >>> collection.insert([[1, 2], [[1.0, 2.0], [3.0, 4.0]]])
+        >>> index_param = {"index_type": "FLAT", "metric_type": "L2", "params": {}}
+        >>> collection.create_index("films", index_param)
+        >>> collection.load()
+    """
+    return 
+```
+
+非常形象对吧，但这部分必须要手动添加。 `>>>` 表示Python交互式解释器中的输入提示符。对于多行代码，如果语句需要跨行继续，你还需要添加 `...` 表示行的延续。同时，正确的缩进也是必须手动维护的，以确保代码的结构清晰且能正确执行。<br>
+
 
 ## lambda函数：
 
@@ -2508,8 +2563,11 @@ lambda 表达式定义了一个函数，它接受一个元组 `element`（表示
 
 
 ## python常用内建函数：
+
 python一些内建函数非常有用，这里介绍一些笔者常用的python内建函数，笔者常用的python库会在对应的文件夹中介绍，如果需要请自行查看～<br>
+
 ### open() 函数：
+
 Python 的内建函数 `open()` 函数用于打开文件，常搭配 `read()`, `readline()` 和 `readlines()` 方法来读取文件内容。<br>
 
 `read()`: 一次性读取所有内容为字符串。可通过添加 `size` 参数控制读取的字节，例如 `file.read(100)` 表示读取前100个字节的内容。<br>
@@ -2517,19 +2575,24 @@ Python 的内建函数 `open()` 函数用于打开文件，常搭配 `read()`, `
 `readlines()`: 读取整个文件并返回一个包含文件每一行的列表。虽然这个方法很方便，但如果文件很大，一次性加载所有行到一个列表可能会消耗大量内存。<br>
 
 现在以读取 `test.txt` 文件为例，讲解三种读取方式的不同。`test.txt`文件内容如下：<br>
+
 ```txt
 黄鹤楼送孟浩然之广陵
     唐·李白
 故人西辞黄鹤楼，烟花三月下扬州。
 孤帆远影碧空尽，唯见长江天际流。
 ```
+
 ### read():
+
 ```python
 with open("test.txt", "r") as file:
     content = file.read()
     print(content)
 ```
+
 `python read_file.py` 运行结果如下，以😲😲😲字符串形式😲😲😲一次性返回所有内容：<br>
+
 ```shell
 黄鹤楼送孟浩然之广陵
     唐·李白
