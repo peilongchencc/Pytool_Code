@@ -169,43 +169,57 @@ typing | 类型提示和类型注解 | 不常用，仅作为记录
 安装方式也很简单，网页搜索对应名称下载即可。<br>
 
 ### 第一个代码文件--hello,world:
+
 安装了vscode后，新建一个以`.py`为后缀的文件，就可以开始我们的代码之旅了。假设你创建的文件为 `sample.py`，将以下内容复制到你的文件中：<br>
+
 ```python
 print('hello,world')
 ```
+
 现在，请在屏幕右下角选择你的python解释器，根据需要选择自己需要的解释器即可～<br>
+
 ![image](https://github.com/peilongchencc/Pytool_Code/assets/89672905/87f42aa3-ff36-4bc9-8c23-6436c09985d1)
 
 终端运行以下指令即可运行`sample.py`文件：<br>
+
 > Tips:终端输入一部分内容后，可以按 `tab` 进行智能填充。
 
 ```python
 python sample.py
 ```
+
 此时，你应该可以从终端看到以下内容：<br>
+
 ```log
 hello,world
 ```
 
 ### print()换行控制：
+
 在Python中，print 函数默认会在打印完内容后自动添加换行符(`\n`)，使下一次打印内容从新的一行开始。如果你想控制 print 函数不换行，可以使用 `end` 参数来指定打印结束时的字符，将其设置为空字符串 `""` 即可。例如：<br>
+
 ```python
 print("这是一行内容", end="")
 print("这是同一行的内容")
 print("这是另一行内容")  # 这个print会自动换行
 ```
+
 终端效果：<br>
+
 ```log
 这是一行内容这是同一行的内容
 这是另一行内容
 ```
+
 🤭🤭🤭从上述内容我们可以看出，`print()` 其实等效于 `print(end="\n")`。<br>
+
 
 ## python基础数据结构：
 
 数据结构是不同编程语言的操作基础，各种函数，对象都与数据结构密不可分，对基础数据结构的了解是必要的。Python具有多种基础数据结构，这些数据结构用于存储和组织数据。以下是Python中常见的基础数据结构：<br>
 
 1. **整数（int）**：整数是不带小数点的数字，可以是正数、负数或零。例如：`-5`, `0`, `42`。
+
 ```python
 x = 5
 y = -10
@@ -214,6 +228,7 @@ print(result)  # 输出: -5
 ```
 
 2. **浮点数（float）**：浮点数用于表示带有小数点的数字。例如：`3.14`, `2.71828`。
+
 ```python
 pi = 3.14159
 radius = 2.0
@@ -222,6 +237,7 @@ print(area)  # 输出: 12.56636
 ```
 
 3. **字符串（str）**：字符串是一系列字符的序列，可以用单引号或双引号括起来。例如：`"Hello, World!"`, `'Python'`。
+
 ```python
 name = "Alice"
 greeting = "Hello, " + name
@@ -229,6 +245,7 @@ print(greeting)  # 输出: Hello, Alice
 ```
 
 4. **列表（list）**：列表是有序的可变序列，可以包含不同类型的元素。列表使用方括号表示。例如：`[1, 2, 3]`, `['apple', 'banana', 'cherry']`。
+
 ```python
 fruits = ["apple", "banana", "cherry"]
 fruits.append("date")
@@ -236,6 +253,7 @@ print(fruits)  # 输出: ['apple', 'banana', 'cherry', 'date']
 ```
 
 5. **元组（tuple）**：元组也是有序的序列，但是与列表不同，元组是不可变的，用圆括号表示。例如：`(1, 2, 3)`, `('red', 'green', 'blue')`。
+
 ```python
 coordinates = (3, 4)
 x, y = coordinates
@@ -244,12 +262,14 @@ print("y =", y)  # 输出: y = 4
 ```
 
 6. **集合（set）**：集合是无序的唯一元素的集合。集合中不允许重复的元素，用大括号或`set()`构造函数表示。例如：`{1, 2, 3}`, `set([2, 2, 3, 4])`。
+
 ```python
 unique_numbers = {1, 2, 3, 2, 4, 5}
 print(unique_numbers)  # 输出: {1, 2, 3, 4, 5}
 ```
 
 7. **字典（dictionary）**：字典是一种键-值对的映射，用大括号表示。每个键都是唯一的，用于查找相应的值。例如：`{'name': 'Alice', 'age': 30}`。
+
 ```python
 person = {'name': 'Alice', 'age': 30, 'city': 'New York'}
 print(person['name'])  # 输出: Alice
@@ -257,6 +277,7 @@ print(person['age'])   # 输出: 30
 ```
 
 8. **布尔值（bool）**：布尔值表示逻辑真或假，只有两个可能的值：`True`和`False`。
+
 ```python
 is_python_fun = True
 is_learning = False
@@ -265,6 +286,7 @@ print(is_learning)    # 输出: False
 ```
 
 9.  **None**：`None`是Python中的特殊值，表示空或缺失的数据。
+
 ```python
 value = None
 if value is None:
@@ -277,10 +299,13 @@ if value is None:
 
 
 ## 字符串(str):
+
 Python 中的字符串是一个非常重要的数据类型，用于存储文本信息。字符串是不可变的，这意味着一旦创建，就不能修改它们的内容🚨🚨🚨。下面是关于 Python 字符串的详细介绍：<br>
 
 ### 创建字符串：
+
 你可以使用单引号 `'`、双引号 `"` 或三重引号 `'''` 或 `"""` 来创建字符串。<br>
+
 ```python
 str1 = 'Hello, World!'
 str2 = "Python Programming"
@@ -289,7 +314,9 @@ string.'''
 ```
 
 ### 字符串索引：
+
 字符串中的每个字符都可以通过索引访问，索引从0开始，负索引表示从字符串末尾向前数。<br>
+
 ```python
 str1 = 'Hello, World!'
 str2 = "Python Programming"
@@ -301,7 +328,9 @@ print(str2[-1])  # 输出 'g'
 ```
 
 ### 字符串切片：
+
 你可以使用切片来获取字符串的子串。<br>
+
 ```python
 str1 = 'Hello, World!'
 str2 = "Python Programming"
@@ -312,7 +341,9 @@ substring = str1[0:5]  # 从索引0到4获取子串 'Hello'
 ```
 
 ### 字符串长度：
+
 使用 `len()` 函数获取字符串的长度。<br>
+
 ```python
 str1 = 'Hello, World!'
 str2 = "Python Programming"
@@ -323,7 +354,9 @@ length = len(str1)  # 获取字符串 str1 的长度，结果为 13
 ```
 
 ### 字符串拼接：
+
 你可以使用 `+` 运算符将两个字符串连接起来。<br>
+
 ```python
 str1 = 'Hello, World!'
 str2 = "Python Programming"
@@ -334,7 +367,9 @@ combined_str = str1 + " " + str2  # 将 str1 和 str2 连接为 'Hello, World! P
 ```
 
 ### 字符串重复：
+
 使用 `*` 运算符重复一个字符串。<br>
+
 ```python
 str1 = 'Hello, World!'
 str2 = "Python Programming"
@@ -345,7 +380,9 @@ repeated_str = str1 * 3  # 将 str1 重复 3 次，结果为 'Hello, World!Hello
 ```
 
 ### 字符串方法：
+
 Python 提供了许多字符串方法来操作和处理字符串，例如 `split()`、`join()`、`upper()`、`lower()`、`strip()` 等。这些方法允许你执行各种字符串操作。<br>
+
 ```python
 str1 = 'Hello, World!'
 str2 = "Python Programming"
@@ -357,7 +394,9 @@ uppercase_str = str1.upper()  # 将字符串转换为大写，结果为 'HELLO, 
 ```
 
 ### 字符串格式化：
+
 使用字符串的 `format()` 方法或 `f-strings`（Python 3.6+）来创建格式化字符串。更推荐 `f-string` 的方式🥴🥴🥴<br>
+
 ```python
 name = "Alice"
 age = 30
@@ -367,19 +406,25 @@ formatted_str = f"My name is {name} and I am {age} years old."
 ```
 
 ### 转义字符：
+
 可以使用反斜杠 `\` 来转义特殊字符，例如 `\n` 表示换行符，`\t` 表示制表符等。<br>
+
 ```python
 escaped_str = "This is a line with\na newline character."
 ```
 
 ### 原始字符串（Raw Strings）：
+
 使用 `r` 或 `R` 前缀创建原始字符串，这将禁用转义字符的处理。<br>
+
 ```python
 raw_str = r"C:\path\to\file.txt"  # 创建原始字符串
 ```
 
 ### 字符串比较：
+
 你可以使用比较运算符（如 `==`、`!=`、`<`、`>`、`<=`、`>=`）来比较字符串。<br>
+
 ```python
 str1 = 'Hello, World!'
 str2 = "Python Programming"
@@ -390,7 +435,9 @@ result = str1 == str2  # 比较两个字符串是否相等
 ```
 
 ### 字符串查找和替换：
+
 使用 `find()`、`index()`、`replace()` 等方法来查找和替换字符串中的子串。<br>
+
 ```python
 str1 = 'Hello, World!'
 str2 = "Python Programming"
@@ -404,11 +451,13 @@ replaced_str = str1.replace("Hello", "Hi")  # 替换字符串中的子串
 这些是 Python 中字符串的基本用法和操作。字符串在 Python 中非常灵活，你可以使用它们来处理文本数据、格式化输出、解析文本文件等各种任务。希望这个详细的介绍对你有所帮助！<br>
 
 ### 多行字符串的处理：
+
 工作中你会遇到大量字符串堆积的情况，此时采用一种合理的方式，在不破坏字符串结构的基础上，将字符串换行显示是一种很好的方式。常见的方式有两种：**隐式换行（不使用反斜杠 `\`）**、**使用反斜杠 `\` 进行换行** <br>
 
 这两种换行方式在Python中都用于多行字符串的处理，但它们在使用和风格上有一些区别，每种方式都有自己的优劣势。<br>
 
 #### 隐式换行（不使用反斜杠 `\`）：
+
 ```python
 formatted_string = (
     f"Line 1\n"
@@ -416,14 +465,19 @@ formatted_string = (
     f"Line 3"
 )
 ```
+
 **优势**：<br>
-可读性好：每个字符串段都在自己的行上，易于阅读和维护。<br>
-对齐性：属性名称和变量值可以垂直对齐，提高可读性。<br>
+
+- 可读性好：每个字符串段都在自己的行上，易于阅读和维护。
+
+- 对齐性：属性名称和变量值可以垂直对齐，提高可读性。
 
 **劣势**：<br>
+
 在某些情况下，如果字符串中有大量的换行和缩进，可能会导致代码在编辑器中出现不必要的垂直滚动，降低可见性。<br>
 
 #### 使用反斜杠 `\` 进行换行：
+
 ```python
 formatted_string = \
     f"Line 1\n" \
@@ -432,17 +486,20 @@ formatted_string = \
 ```
 
 **优势**：<br>
+
 可以在不引入额外换行的情况下，将字符串段放在一行内，减少代码文件的垂直空间。<br>
+
 在某些情况下，这种方式可能有助于减少代码文件的长度，使代码更紧凑。<br>
 
 **劣势**：<br>
+
 可读性稍差：连续的反斜杠 `\` 可能会使代码不够清晰，阅读起来会稍显困难。<br>
+
 对齐性较差：属性名称和变量值可能无法垂直对齐，降低可读性。<br>
 
 **选择使用哪种方式主要取决于个人偏好和项目的代码风格指南**。一些项目可能更喜欢隐式换行方式，以提高可读性和维护性，而另一些项目可能更注重代码的紧凑性，因此更喜欢使用反斜杠进行换行。<br>
 
-总之，重要的是在整个项目中保持一致的风格，以确保代码的可读性和可维护性。无论你选择哪种方式，都应该遵循项目的代码风格指南和团队的约定。
-
+总之，重要的是在整个项目中保持一致的风格，以确保代码的可读性和可维护性。无论你选择哪种方式，都应该遵循项目的代码风格指南和团队的约定。<br>
 
 ### find()检测字符串中的子串位置并修改:
 
@@ -496,10 +553,13 @@ WJT-3-20220216-32-synonym-24-semantic-2
 ```
 
 ## 列表：
+
 Python 中的列表是一种非常常见和有用的数据结构，用于存储一组有序的元素。列表是可变的，这意味着你可以添加、删除和修改其中的元素。下面是关于 Python 列表的详细介绍：<br>
 
 ### 创建列表：
+
 你可以使用方括号 `[]` 来创建一个空列表，或者使用方括号包含元素来创建一个包含元素的列表。<br>
+
 ```python
 empty_list = []
 numbers = [1, 2, 3, 4, 5]
@@ -507,7 +567,9 @@ fruits = ["apple", "banana", "cherry"]
 ```
 
 ### 列表索引：
+
 列表中的每个元素都可以通过索引访问，索引从0开始，负索引表示从列表末尾向前数。<br>
+
 ```python
 empty_list = []
 numbers = [1, 2, 3, 4, 5]
@@ -518,7 +580,9 @@ print(fruits[-1])    # 输出 "cherry"
 ```
 
 ### 列表切片：
+
 你可以使用切片来获取列表的子列表，注意：切换的范围为左闭右开，即`numbers[1:4]`表示获取numbers中索义为1到索引为3的值，不包括索引为4的值。<br>
+
 ```python
 numbers = [1, 2, 3, 4, 5]
 
@@ -537,7 +601,9 @@ print(sublist4)             # [5, 4, 3]
 ```
 
 ### 列表长度：
+
 使用 `len()` 函数获取列表的长度。<br>
+
 ```python
 empty_list = []
 numbers = [1, 2, 3, 4, 5]
@@ -547,10 +613,13 @@ length = len(numbers)  # 获取列表 numbers 的长度，结果为 5
 ```
 
 ### 列表操作：
+
 列表支持多种操作，包括添加元素、删除元素、更新元素等。<br>
 
 #### 添加元素：
+
 - `append()`：将元素添加到列表的末尾。
+
 - `insert()`：在指定位置插入元素。
 
 ```python
@@ -562,6 +631,7 @@ numbers.insert(2, 99)    # 在索引 2 处插入 99，列表变为 [1, 2, 99, 3,
 ```
 
 #### 删除元素：
+
 - `remove()`：删除列表中的第一个指定元素。
 - `pop()`：删除指定索引处的元素。
 - `del` 语句：删除指定索引处的元素或整个列表。
@@ -577,24 +647,30 @@ del numbers[0]           # 删除索引 0 处的元素，列表变为 [2, 99, 4,
 ```
 
 ##### del用法拓展：
+
 `del` 可以通过指定要删除的元素的索引，删除列表中的一个或多个元素，。<br>
 
 删除列表中单个元素：<br>
+
 ```python
 numbers = [1, 2, 3, 4, 5]
 del numbers[2]  # 删除列表中索引为 2 的元素，列表变为 [1, 2, 4, 5]
 ```
 
 删除列表中多个元素：<br>
+
 ```python
 numbers = [1, 2, 3, 4, 5]
 del numbers[1:3]  # 删除列表中索引 1 到 2 的元素，列表变为 [1, 5]
 ```
+
 ‼️‼️‼️Python 不支持直接使用 del 来删除多个不相邻的列表元素，如 `del numbers[2, 4]`。‼️‼️‼️<br>
 
 
 #### 更新元素：
+
 直接通过索引赋值来更新列表中的元素。<br>
+
 ```python
 empty_list = []
 numbers = [1, 2, 3, 4, 5]
@@ -604,7 +680,9 @@ fruits[0] = "grape"  # 将列表中的第一个元素更新为 "grape"
 ```
 
 #### 合并列表：
+
 使用 `+` 运算符可以将两个列表合并成一个新列表。<br>
+
 ```python
 empty_list = []
 numbers = [1, 2, 3, 4, 5]
@@ -614,6 +692,7 @@ combined_list = numbers + [6, 7, 8]  # 合并 numbers 列表和 [6, 7, 8] 到一
 ```
 
 #### 复制列表：
+
 列表的复制可以使用切片或 `copy()` 方法。<br>
 
 ```python
@@ -626,13 +705,17 @@ copied_list = numbers.copy()  # 使用 copy() 方法复制列表
 ```
 
 #### 嵌套列表：
+
 列表可以包含其他列表，形成嵌套结构。<br>
+
 ```python
 matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 ```
 
 #### 比较列表：
+
 你可以使用比较运算符（如 `==`、`!=`、`<`、`>`、`<=`、`>=`）来比较两个列表。<br>
+
 ```python
 empty_list = []
 numbers = [1, 2, 3, 4, 5]
@@ -642,14 +725,19 @@ result = numbers == [2, 99, 4, 5]  # 比较两个列表是否相等
 ```
 
 ### 列表方法：
+
 Python 提供了许多有用的列表方法，如 `sort()`、`reverse()`、`count()`、`index()` 等，用于操作和查询列表。<br>
 
 #### `sorted`排序和`sort()`排序：
+
 在Python中，`sorted()` 和 `sort()` 都用于对列表进行排序，但它们的用法略有不同：<br>
+
 - 如果你需要保留原始列表并获得一个已排序的新列表，使用 `sorted()` 函数。
+
 - 如果你想在原始列表上进行排序，改变它的顺序，并且不需要一个新的列表，使用 `list.sort()` 方法。
 
 `sorted`使用示例:<br>
+
 ```python
 numbers = [4, 1, 5, 3, 2]
 sorted_numbers = sorted(numbers)
@@ -658,6 +746,7 @@ print(f'numbers经过sorted排序的结果为：{sorted_numbers}')    # numbers�
 ```
 
 `sort`使用示例:<br>
+
 ```python
 numbers = [4, 1, 5, 3, 2]
 numbers.sort()             # 升序排序列表
@@ -665,6 +754,7 @@ print(numbers)             # [1, 2, 3, 4, 5]
 ```
 
 #### `count()`计数：
+
 ```python
 numbers = [4, 1, 5, 3, 2]
 count = numbers.count(3)   # 统计列表中元素 3 的个数
@@ -672,18 +762,22 @@ print(count)               # 1
 ```
 
 #### `reverse()`反转：
+
 ```python
 fruits = ["apple", "banana", "cherry"]
 fruits.reverse()           # 反转列表元素的顺序
 print(fruits)              # ['cherry', 'banana', 'apple']
 ```
+
 还可以通过切片的方式反转列表，`[::-1]` 是切片语法，它表示从列表的末尾开始，以步长为-1（逆向）取所有元素，从而实现了列表的反转。<br>
+
 ```python
 fruits = ["apple", "banana", "cherry"]
 reversed_fruits = fruits[::-1]
 ```
 
 #### `index()`获取索引：
+
 ```python
 fruits = ["apple", "banana", "cherry"]
 index = fruits.index("cherry")  # 查找元素 "cherry" 的索引
@@ -691,6 +785,7 @@ print(index)               # 2
 ```
 
 #### append()、extend()和加法操作符：
+
 `append()` 函数是用于在列表（list）末尾添加单个元素的方法，代码示例如下：<br>
 
 ```python
@@ -712,6 +807,7 @@ print(my_list)
 如果你想一次性添加多个值到列表，可以考虑使用`extend()`方法或者使用加法操作符`+`来合并多个列表，然后将合并后的列表赋值给目标列表。例如：<br>
 
 使用`extend()`方法：<br>
+
 ```python
 my_list = [1, 2, 3]
 values_to_add = [4, 5, 6]
@@ -720,6 +816,7 @@ print(my_list)  # 输出 [1, 2, 3, 4, 5, 6]
 ```
 
 相信你也发现了笔者并没有使用 `my_list.extend(4, 5, 6)` 这种写法，因为这种写法也会报错，同样提示：<br>
+
 ```log
 TypeError: list.extend() takes exactly one argument (3 given)
 ```
@@ -727,6 +824,7 @@ TypeError: list.extend() takes exactly one argument (3 given)
 所以，需要将传入的内容转为list才能使用`extend()`。<br>
 
 使用加法操作符`+`：<br>
+
 ```python
 my_list = [1, 2, 3]
 values_to_add = [4, 5, 6]
@@ -793,21 +891,26 @@ print(f"+=的结果为:{list1}")
 ```
 
 ### 列表解析：
+
 列表解析是一种简洁的方式来创建新的列表，通常通过对现有列表的元素进行变换和筛选来实现。<br>
+
 ```python
 squares = [x**2 for x in range(1, 6)]  # 创建包含 1 到 5 的平方的列表 [1, 4, 9, 16, 25]
 ```
 
 Python 列表是非常灵活和强大的数据结构，用于处理和操作一组元素。它们在编程中非常常见，用途广泛。希望这个详细的介绍对你有所帮助！<br>
-<br>
+
 
 ## 元组：
+
 Python中的元组（tuple）是一种有序、不可变的数据结构，它允许你存储多个元素，就像列表（list）一样，但与列表不同，元组的内容不可修改‼️‼️‼️。<br>
 
 以下是关于Python元组的详细介绍：<br>
 
 ### 创建元组：
+
 你可以使用圆括号来创建元组，可以包含一个或多个元素。例如：<br>
+
 ```python
 my_tuple = (1, 2, 3)
 another_tuple = ('apple', 'banana', 'cherry')
@@ -820,7 +923,9 @@ single_element_tuple = (42,)
 元组的元素不可修改，这意味着一旦创建，你不能更改、添加或删除元素。如果你尝试修改元组中的元素，会引发`TypeError`。<br>
 
 ### 访问元组元素：
+
 你可以使用索引来访问元组中的元素，索引从0开始。例如：<br>
+
 ```python
 my_tuple = (1, 2, 3)
 another_tuple = ('apple', 'banana', 'cherry')
@@ -830,13 +935,16 @@ print(another_tuple[2])  # 输出 'cherry'
 ```
 
 ### 切片元组：
+
 你可以使用切片来访问元组的子集。切片的语法是`[start:stop:step]`，其中`start`是起始索引，`stop`是结束索引（不包括该位置的元素），`step`是步长。例如：<br>
+
 ```python
 my_tuple = (1, 2, 3)
 a_slice = my_tuple[1:3]  # 返回一个包含(2, 3)的新元组
 ```
 
 ### 元组的长度和成员检查：
+
 你可以使用内置函数`len()`来获取元组的长度，并使用`in`来检查某个元素是否存在于元组中。例如：
 
 ```python
@@ -848,7 +956,9 @@ print('apple' in another_tuple)  # 输出 True
 ```
 
 ### 元组的拼接和复制：
+
 你可以通过使用`+`操作符将两个元组拼接在一起，创建一个新的元组。也可以使用`*`操作符复制元组中的元素。例如：<br>
+
 ```python
 my_tuple = (1, 2, 3)
 another_tuple = ('apple', 'banana', 'cherry')
@@ -858,21 +968,28 @@ repeated_tuple = my_tuple * 3  # 创建一个新元组包含(1, 2, 3, 1, 2, 3, 1
 ```
 
 ### 元组的解包（Unpacking）：
+
 你可以将元组中的元素解包给多个变量。例如：<br>
+
 ```python
 my_tuple = (1, 2, 3)
 
 x, y, z = my_tuple  # 将元组中的元素分别赋值给x、y、z变量
 ```
 
+
 ## 字典：
+
 Python 中的字典允许你存储键值对（key-value pairs），并且可以根据键来快速检索和访问值。字典是可变的（Mutable）和无序的（Unordered），这意味着你可以随时添加、修改和删除键值对，但字典中的元素没有固定的顺序。<br>
+
 > 在 Python 3.7 之前，字典是无序的，这意味着字典中的键值对没有固定的顺序。Python 3.8 开始字典变为有序。
 
 以下是 Python 字典的详细用法和操作：<br>
 
 ### 创建字典
+
 可以使用花括号 `{}` 或者内置的 `dict()` 构造函数来创建一个字典。键值对用冒号 `:` 分隔，键与键值对之间用逗号 `,` 分隔。<br>
+
 ```python
 # 创建一个空字典
 my_dict = {}
@@ -887,6 +1004,7 @@ my_dict = {'name': 'John', 'age': 30, 'score': {'chinese':87, 'math':99, 'englis
 ### 访问字典中的值
 
 #### 使用键来访问字典中的值：
+
 ```python
 my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
 
@@ -895,7 +1013,9 @@ print(name)  # 输出: 'John'
 ```
 
 #### 使用get()方法来访问字典中的值：
+
 可以使用 `get()` 方法来安全地获取值，如果键不存在，不会抛出异常。<br>
+
 ```python
 my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
 
@@ -905,6 +1025,7 @@ if age is not None:
 ```
 
 如果不确定字典中是否有某个key，需要用 `get()` 函数进行判断，不能用 `if item["key_name"]:` 的方式判断，如果字典中没有 `"key_name"` 这个键，使用 `if item["key_name"]:` 运行代码会报错。<br>
+
 ```python
 data = [{"name":"Tom(汤姆)","score":"640(720)"}, {"name":"Spike(斯派克)"},{"name":"Jerry(杰瑞)","score":"700(720)"}]
 
@@ -919,7 +1040,9 @@ for item in data:
 ```
 
 #### 使用关键字in判断字典中是否存在某个键：
+
 可以使用 `in` 操作符来检查键是否存在于字典中。<br>
+
 ```python
 my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
 
@@ -934,7 +1057,9 @@ else:
 ```
 
 ### 修改字典中的值：
+
 可以通过赋值操作来修改字典中的值。<br>
+
 ```python
 my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
 
@@ -942,7 +1067,9 @@ my_dict['age'] = 31  # 修改键'age'对应的值为31
 ```
 
 ### 添加新键值对：
+
 可以通过赋值操作来添加新的键值对。<br>
+
 ```python
 my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
 
@@ -1013,12 +1140,14 @@ print(my_dict)
 ### 删除键值对：
 
 #### 使用del语句：
+
 ```python
 my_dict = {"key1": "value1", "key2": "value2", "key3": "value3"}
 del my_dict["key2"]  # 删除键"key2"及其对应的值
 ```
 
 #### 使用pop()方法：
+
 ```python
 my_dict = {"key1": "value1", "key2": "value2", "key3": "value3"}
 my_dict.pop("key2")  # 删除键"key2"及其对应的值
@@ -1026,6 +1155,7 @@ print(my_dict)       # {'key1': 'value1', 'key3': 'value3'}
 ```
 
 请注意，如果要删除一个不存在的键，使用`del`语句或`pop()`方法会引发`KeyError`异常。如果不确定键是否存在，可以使用`pop()`方法的第二个参数来设置默认值，以避免异常。例如：<br>
+
 ```python
 my_dict = {"key1": "value1", "key2": "value2", "key3": "value3"}
 deleted_value = my_dict.pop("key4", None)  # 如果键"key4"不存在，则返回None，而不会引发异常
@@ -1034,6 +1164,7 @@ print(deleted_value)                       # None
 ```
 
 #### 使用popitem()方法删除最后一个键值对：
+
 ```python
 my_dict = {"key1": "value1", "key2": "value2", "key3": "value3"}
 my_dict.popitem()  # 删除最后一个键值对，返回一个元组
@@ -1041,6 +1172,7 @@ print(my_dict)     # {'key1': 'value1', 'key2': 'value2'}
 ```
 
 #### 使用clear()方法删除所有键值对：
+
 ```python
 my_dict = {"key1": "value1", "key2": "value2", "key3": "value3"}
 my_dict.clear()  # 删除所有键值对，字典变为空字典
@@ -1096,6 +1228,7 @@ for key, value in my_dict.items():
 
 
 #### `for` 循环遍历字典:
+
 可以使用 `for` 循环来遍历字典的键值对。<br>
 
 ```python
@@ -1105,6 +1238,7 @@ for key in my_dict:
 ```
 
 或者使用 `items()` 方法:<br>
+
 ```python
 my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
 
@@ -1113,7 +1247,9 @@ for key, value in my_dict.items():
 ```
 
 #### 清空字典--`clear()`:
+
 可以使用 `clear()` 方法来清空字典。<br>
+
 ```python
 my_dict = {'name': 'John', 'age': 30, 'city': 'New York'}
 
@@ -1121,7 +1257,9 @@ my_dict.clear()  # 清空字典中的所有键值对
 ```
 
 ### 字典的嵌套:
+
 字典可以嵌套在其他字典中，或者嵌套在列表中，以构建更复杂的数据结构。<br>
+
 ```python
 nested_dict = {
     'person': {'name': 'Alice', 'age': 25},
@@ -1134,7 +1272,9 @@ print(name)  # 输出: 'Alice'
 ```
 
 ### 以数字作为字典的key:
+
 python中字典支持以数字作为键，但不推荐这种写法，毕竟我们也代码要考虑可读性，单纯的数字作为 `key` 自己或同事并不能看出代码的含义。<br>
+
 > 无用的知识又增加了。。。我真不想在工作中见到这种无用的知识。😰😰😰
 
 ```python
@@ -1143,7 +1283,6 @@ print(my_dict)
 print(my_dict[1])    # 调用的时候也以数字的方式调用，如果写为 print(dictionary['1']) 会报错。
 print(my_dict[2])
 ```
-<br>
 
 ### 字典中**的使用：
 
