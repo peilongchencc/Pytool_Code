@@ -11,6 +11,13 @@ Milvus备份提供数据备份和恢复功能，以确保您的Milvus数据安�
       - [compile from the source(源码编译):](#compile-from-the-source源码编译)
   - [Prepare configuration file(准备配置文件):](#prepare-configuration-file准备配置文件)
     - [backup.yaml 修改注意项:](#backupyaml-修改注意项)
+  - [Back up data](#back-up-data)
+  - [Minio Console、mc client和Attu的关系:](#minio-consolemc-client和attu的关系)
+    - [1. Minio Console](#1-minio-console)
+    - [2. mc client](#2-mc-client)
+    - [3. Attu](#3-attu)
+    - [如何理解它们之间的关系？](#如何理解它们之间的关系)
+    - [总结:](#总结)
 
 
 ## 安装Go语言
@@ -131,8 +138,6 @@ Because Milvus Backup cannot back up your data to a local path, ensure that Mini
 
 由于 Milvus Backup 无法将数据备份到本地路径，请在调整配置文件时确保 Minio 设置正确。<br>
 
-请将下列内容的注释部分改为英汉双语形式:
-
 ```yaml
 # Configures the system log output.
 log:
@@ -198,6 +203,8 @@ backup:
     seconds: 7200
     address: http://localhost:9091
 ```
+
+英汉双语形式:<br>
 
 ```yaml
 # 配置系统日志输出
@@ -311,3 +318,76 @@ The name of the default Minio bucket varies with the way you install Milvus. Whe
 |---------------|-------------------------|-----------------------------------|
 | `bucketName`  | a-bucket                | milvus-bucket                     |
 | `rootPath`    | files                   | file                              |
+
+
+## Back up data
+
+Note that running Milvus Backup against a Milvus instance will not normally affect the running of the instance.<br>
+
+请注意，对 Milvus 实例运行 Milvus Backup 通常不会影响实例的运行。<br>
+
+Your Milvus instance is fully functional during backup or restore.<br>
+
+在备份或恢复期间，您的 Milvus 实例仍然可以正常运行。<br>
+
+Run the following command to create a backup.<br>
+
+运行以下命令以创建备份。<br>
+
+```bash
+./milvus-backup create -n <backup_name>
+```
+
+Once the command is executed, you can check the backup files in the bucket specified in the Minio settings.<br>
+
+执行命令后，您可以在Minio设置中指定的桶中查看备份文件。<br>
+
+Specifically, you can download them using **Minio Console** or the **mc client**.<br>
+
+具体来说，您可以使用Minio Console或mc客户端下载它们。<br>
+
+To download from Minio Console, log into Minio Console, locate the bucket specified in minio.address, select the files in the bucket, and click Download to download them.<br>
+
+要从Minio Console下载，请登录Minio Console，找到在minio.address中指定的桶，选择桶中的文件，然后点击下载以下载它们。<br>
+
+If you prefer the mc client, do as follows:<br>
+
+如果您更喜欢mc客户端，请按以下步骤操作：<br>
+
+
+## Minio Console、mc client和Attu的关系:
+
+在Milvus中，Minio Console和mc client的使用可以让人感到困惑，尤其是当你已经熟悉Attu作为Milvus的GUI时。让我们逐一解释这些工具的功能和用途：<br>
+
+### 1. Minio Console
+
+**Minio Console** 是一个用于管理MinIO对象存储系统的Web界面。MinIO是一个高性能的对象存储系统，常用于存储大规模数据，特别是在云环境中。Milvus使用MinIO来管理和存储数据文件。<br>
+
+- **功能**: 通过Minio Console，你可以轻松地浏览、上传、下载和管理存储在MinIO中的对象（如数据文件）。
+- **用途**: 它主要用于运维和管理层面的操作，提供一个直观的图形界面来查看和操作MinIO存储系统中的内容。
+
+### 2. mc client
+
+**mc client** 是MinIO提供的命令行客户端工具，称为MinIO Client（mc）。它用于与MinIO服务器进行交互，支持文件管理和数据操作。<br>
+
+- **功能**: mc client提供了一系列命令，用于管理MinIO存储中的文件和数据，包括上传、下载、同步、复制等操作。
+- **用途**: 它更适合开发者或系统管理员在脚本和命令行环境下进行批量操作和自动化任务。
+
+### 3. Attu
+
+**Attu** 是Milvus提供的官方图形用户界面（GUI）。它专门用于管理和可视化Milvus数据库中的数据和元数据。<br>
+
+- **功能**: Attu允许用户创建和管理集合（collections）、分区（partitions）、索引（indexes）、以及执行向量搜索等操作。它是一个专门针对Milvus的管理工具。
+- **用途**: Attu提供一个用户友好的界面来管理Milvus实例，适合于数据科学家和工程师进行交互式数据操作和查询。
+
+### 如何理解它们之间的关系？
+
+- **Minio Console和mc client** 是用于管理MinIO存储系统的工具。MinIO在Milvus中扮演了存储底层数据文件的角色，因此这些工具主要涉及到数据存储和管理层面。
+- **Attu** 是用于直接管理Milvus数据库的图形界面工具，专注于数据库的操作和查询，而不是底层存储管理。
+
+### 总结:
+
+- 使用Minio Console和mc client来管理Milvus使用的MinIO对象存储。
+- 使用Attu来管理Milvus数据库本身。
+
+如果你仅仅需要管理和操作Milvus数据库的数据，Attu将是你的主要工具。如果你还需要处理底层存储数据（例如数据备份、文件管理等），则Minio Console和mc client将是必不可少的工具。<br>
