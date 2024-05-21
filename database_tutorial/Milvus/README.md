@@ -60,6 +60,7 @@
   - [pymilvus示例代码:](#pymilvus示例代码)
   - [pymilvus简单示例:](#pymilvus简单示例)
   - [python类形式调用milvus:](#python类形式调用milvus)
+  - [query\_iterator:](#query_iterator)
 
 ## Milvus安装:
 
@@ -1851,4 +1852,59 @@ if __name__ == '__main__':
             "output_fields": ["id", "text", "source_from"]
         }
     }
+```
+
+## query_iterator:
+
+```python
+"""
+Description: 测试milvus的 `query_iterator` 函数,方便后期手动迁移出所有数据。
+适用场景: 
+个人的milvus中bank集合中有几十万条数据,我想要为这个集合重新添加一列"doc"，应该怎么做呢？
+
+我想要尽量避免再把数据向量化的时间。
+Notes: 
+1. milvus 版本是 2.3.2依旧可用这个方法,只需要安装 pymilvus 2.4.x 就行。
+2. `query` 函数只支持最大返回16384条数据,所以需要使用 `query_iterator` 函数。
+"""
+import sys
+import os
+
+# 获取当前脚本的绝对路径
+current_script_path = os.path.abspath(__file__)
+# 获取当前脚本的父目录的父目录
+parent_directory_of_the_parent_directory = os.path.dirname(os.path.dirname(current_script_path))
+# 将这个目录添加到 sys.path
+sys.path.append(parent_directory_of_the_parent_directory)
+
+from dotenv import load_dotenv
+from pymilvus import connections, Collection
+
+
+# 加载环境变量
+load_dotenv('env_config/.env.local')
+
+connections.connect(host = os.getenv('MILVUS_DB_HOST'), port = os.getenv('MILVUS_DB_PORT'))
+
+collection = Collection("bank_collection")  
+
+iterator = collection.query_iterator(
+    batch_size=10, # Controls the size of the return each time you call next()
+    expr=None,
+    output_fields=["text","answer"]
+)
+
+results = []
+
+while True:
+    result = iterator.next()
+    if len(result) == 0:
+        iterator.close()
+        break
+
+    results.extend(result)
+    
+print(len(results))
+
+print(results[:3])
 ```
