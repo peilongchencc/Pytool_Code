@@ -287,9 +287,13 @@ Ps:由于github无法自动同步目录，需要在本地 `git pull` 拉取代�
 
 要解决在 VSCode 右下角看不到 Python 版本并且无法选择 conda 虚拟环境的问题，你可以按照以下步骤进行操作：
 
-1. 按 `Ctrl+Shift+P`（Mac 上是 `Cmd+Shift+P`），然后输入并选择 **Python: Select Interpreter**。
+1. 按 `Ctrl+Shift+P`（Mac 上是 `Cmd+Shift+P`），然后输入并选择 **"Python: Select Interpreter"**。
 
-2. 在弹出的列表中找到并选择你的 conda 环境。如果 conda 环境没有显示，你可以手动添加路径，通常是 `~/miniconda3/envs/<env_name>/bin/python`。
+2. 在弹出的列表中找到并选择你的 conda 环境。如果 conda 环境没有显示，你可以手动添加路径，例如:
+
+```log
+~/anaconda3/envs/<env_name>/bin/python
+```
 
 
 ## vscode 突然连接不上服务器了（2024年版本 自动更新从1.85-1.86）:
