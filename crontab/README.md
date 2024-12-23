@@ -435,3 +435,11 @@ crontab中内容:
 # 测试定时任务，每隔两分钟输出内容（使用 which python 查看python解释器）
 */2 * * * * /root/anaconda3/envs/hot_topic/bin/python /data/scheduled_task.py
 ```
+
+`/data/sc_task.log`中显示的内容如下:
+
+```log
+2024-12-23T16:30:01.547891+0800 INFO 测试定时任务
+2024-12-23T16:32:01.648363+0800 INFO 测试定时任务
+2024-12-23T16:34:01.746132+0800 INFO 测试定时任务
+```
