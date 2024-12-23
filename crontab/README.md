@@ -24,17 +24,19 @@ Crontab是一个用于在Linux和Unix系统中定期执行任务的命令。它�
 
 ## 个人配置：
 
-系统：Ubuntu 18.04<br>
+系统：Ubuntu 22.04
 
 ## 编辑crontab:
 
-终端输入 `crontab -e` 进入crontab编辑模式：<br>
+终端输入 `crontab -e` 进入crontab编辑模式：
 
-```shell
+```bash
 crontab -e
 ```
 
-第一次使用 crontab 会显示如下界面:<br>
+第一次使用 crontab 会显示如下界面:
+
+> 如果之后想修改默认编辑器，可以终端输入 `select-editor` 进行更改。
 
 ```shell
 no crontab for root - using an empty one
@@ -48,7 +50,7 @@ Select an editor.  To change later, run 'select-editor'.
 Choose 1-4 [1]: 
 ```
 
-这是cron服务询问你选择使用哪个编辑器进行设置。在这里，你可以选择以下编辑器:<br>
+这是cron服务询问你选择使用哪个编辑器进行设置。在这里，你可以选择以下编辑器:
 
 1. /bin/nano - 这是最简单的编辑器。
 
@@ -58,11 +60,9 @@ Choose 1-4 [1]:
 
 4. /bin/ed - 这是一个行文本编辑器。
 
-根据你的偏好选择一个编辑器。你可以输入1、2、3或4来选择相应的编辑器。如果没有特殊需求，可以选择输入1以使用nano编辑器。<br>
+根据你的偏好选择一个编辑器。你可以输入1、2、3或4来选择相应的编辑器。如果没有特殊需求，可以选择输入1以使用nano编辑器。笔者比较习惯vim，选择的是2🔥
 
-笔者比较习惯vim，选择的是2。<br>
-
-第一次进入crontab后会显示提示内容:<br>
+第一次进入crontab后会显示提示内容:
 
 ```shell
 # Edit this file to introduce tasks to be run by cron.
@@ -89,9 +89,9 @@ Choose 1-4 [1]:
 # m h  dom mon dow   command
 ```
 
-**内容解释:** <br>
+**内容解释:** 
 
-编辑此文件以介绍要由cron运行的任务。<br>
+编辑此文件以介绍要由cron运行的任务。
 
 每个要运行的任务都必须通过一行来定义， 指示任务将在何时运行以及运行任务的命令是什么。<br>
 
@@ -410,3 +410,28 @@ Crontab 和其他类 Unix 系统中的计划任务服务依赖于操作系统的
 4. **Cron服务**：Cron 服务定期检查其任务表（crontab 文件），对比当前时间与计划任务的设定时间。一旦系统时间符合任务指定的时间条件，cron 就会启动那些任务。
 
 因此，确保系统时间的准确性对于 cron 任务能否按预期执行是非常重要的。如果你发现 cron 任务没有在预期时间运行，检查系统时间和时区设置通常是一个好的开始点。<br>
+
+### 定时任务测试:
+
+每隔两分钟，执行一次代码，并记录日志:
+
+```python
+# /data/scheduled_task.py
+from loguru import logger
+
+# 设置日志
+logger.remove()
+# 如果只写 "sc_task.log"，默认crontab会把产生的日志放到 `/root` 目录下。
+logger.add("/data/sc_task.log", rotation="1 GB", backtrace=True, diagnose=True, format="{time} {level} {message}")
+
+logger.info("测试定时任务")
+# print的内容不会出现在日志中
+print("hello,world")
+```
+
+crontab中内容:
+
+```bash
+# 测试定时任务，每隔两分钟输出内容（使用 which python 查看python解释器）
+*/2 * * * * /root/anaconda3/envs/hot_topic/bin/python /data/scheduled_task.py
+```
